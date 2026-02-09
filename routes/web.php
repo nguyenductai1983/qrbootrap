@@ -31,7 +31,6 @@ Route::view('profile', 'profile')
     ->name('profile');
 
 require __DIR__ . '/auth.php';
-Route::get('/qrcodes', QrcodeIndex::class)->middleware(['auth', 'verified'])->name('qrcodes.index');
 Route::middleware(['auth', 'verified'])->group(function () {
     // Quản lý người dùng
     Route::get('admin/users', UserList::class)
