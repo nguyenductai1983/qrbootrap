@@ -1,0 +1,18 @@
+php artisan make:migration create_production_tables
+php artisan migrate
+php artisan make:model Location
+php artisan make:model Order
+php artisan make:model Item
+php artisan make:model ItemGenealogy
+php artisan make:model ItemMovement
+cài tạo barcode
+composer require simplesoftwareio/simple-qrcode
+
+php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvider"
+php artisan migrate
+php artisan db:seed
+php artisan make:migration update_departments_and_add_pivot
+composer require maatwebsite/excel
+php artisan make:livewire Production/ExcelManager
+
+php artisan db:seed --class=ModelSeeder

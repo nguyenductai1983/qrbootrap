@@ -1,0 +1,318 @@
+@import 'bootstrap/dist/css/bootstrap.min.css';
+
+:root {
+    /* Mặc định cho chế độ sáng */
+    --sidebar-bg: #f8f9fa;
+    /* Màu nền sidebar */
+    --sidebar-color: #343a40;
+    /* Màu chữ sidebar */
+    --sidebar-border: rgba(0, 0, 0, 0.125);
+    /* Màu border sidebar */
+    --sidebar-hover-bg: #e9ecef;
+    /* Màu nền hover item */
+    --sidebar-hover-color: #212529;
+    /* Màu chữ hover item */
+    --submenu-bg: #e2e6ea;
+    /* Màu nền submenu */
+    --submenu-color: #343a40;
+    /* Màu chữ submenu */
+
+    /* Màu cho trạng thái active (nổi bật, cố định) */
+    --sidebar-active-bg: #0d6efd;
+    /* Ví dụ: Bootstrap Blue */
+    --sidebar-active-color: #ffffff;
+    /* Chữ trắng */
+}
+
+/* Chế độ tối */
+html[data-bs-theme="dark"] {
+    --sidebar-bg: #343a40;
+    /* Màu nền sidebar tối */
+    --sidebar-color: rgba(255, 255, 255, 0.7);
+    /* Màu chữ sidebar sáng */
+    --sidebar-border: rgba(255, 255, 255, 0.125);
+    /* Màu border sáng */
+    --sidebar-hover-bg: #495057;
+    /* Màu nền hover item tối hơn */
+    --sidebar-hover-color: #ffffff;
+    /* Màu chữ hover item trắng */
+    --submenu-bg: #495057;
+    /* Màu nền submenu tối */
+    --submenu-color: rgba(255, 255, 255, 0.8);
+    /* Màu chữ submenu sáng */
+
+    /* Màu active vẫn giữ nguyên (nếu bạn muốn nó luôn nổi bật) */
+    /* --sidebar-active-bg: #0d6efd; */
+    /* --sidebar-active-color: #ffffff; */
+}
+
+
+body {
+    overflow-x: hidden;
+}
+
+#wrapper {
+    overflow-x: hidden;
+    display: flex;
+}
+
+/* Base styles for sidebar and content wrapper */
+#sidebar-wrapper {
+    width: 250px;
+    height: 100vh; /* Chiều cao full màn hình */
+    min-height: 100vh;
+
+    /* --- KHU VỰC XỬ LÝ CUỘN --- */
+    overflow-y: auto; /* Bật thanh cuộn dọc */
+    overflow-x: hidden; /* Ẩn thanh cuộn ngang */
+    scrollbar-width: thin; /* Firefox: Thanh cuộn mỏng */
+
+    /* --- KHU VỰC CỐ ĐỊNH VỊ TRÍ --- */
+    position: fixed;
+    top: 0;  /* QUAN TRỌNG: Neo chặt vào đỉnh màn hình */
+    left: 0; /* QUAN TRỌNG: Neo vào cạnh trái (kết hợp với margin-left để ẩn/hiện) */
+    z-index: 1030;
+
+    /* --- GIAO DIỆN --- */
+    background-color: var(--sidebar-bg);
+    color: var(--sidebar-color);
+    border-right: 1px solid var(--sidebar-border);
+    transition: margin 0.25s ease-out, width 0.25s ease-out;
+    margin-left: -250px; /* Mặc định ẩn trên mobile */
+    padding-bottom: 50px; /* QUAN TRỌNG: Thêm khoảng trống đáy để không bị che mất mục cuối */
+}
+/* --- TÙY CHỈNH THANH CUỘN (CHROME/EDGE/SAFARI) --- */
+/* Thêm đoạn này ngay bên dưới #sidebar-wrapper để thanh cuộn đẹp hơn */
+#sidebar-wrapper::-webkit-scrollbar {
+    width: 6px;
+}
+#sidebar-wrapper::-webkit-scrollbar-track {
+    background: transparent;
+}
+#sidebar-wrapper::-webkit-scrollbar-thumb {
+    background-color: rgba(100, 100, 100, 0.3); /* Màu thanh cuộn mờ */
+    border-radius: 3px;
+}
+#sidebar-wrapper::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(100, 100, 100, 0.6); /* Đậm hơn khi di chuột vào */
+}
+#page-content-wrapper {
+    min-width: 100vw;
+    flex-grow: 1;
+    transition: margin 0.25s ease-out, min-width 0.25s ease-out;
+    margin-left: 0;
+}
+
+/* Styles for sidebar content (text, icons, headings) */
+#sidebar-wrapper .sidebar-text {
+    opacity: 1;
+    transition: opacity 0.25s ease-out;
+    white-space: nowrap;
+    overflow: hidden;
+    width: auto;
+}
+
+#sidebar-wrapper .sidebar-heading-text {
+    opacity: 1;
+    transition: opacity 0.25s ease-out;
+    white-space: nowrap;
+    overflow: hidden;
+    width: auto;
+}
+
+#sidebar-wrapper .sidebar-arrow {
+    transition: transform 0.25s ease-out;
+}
+
+/* Sidebar heading */
+#sidebar-wrapper .sidebar-heading {
+    height: auto;
+    padding: 1.5rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    font-size: 1.2rem;
+    overflow: hidden;
+    color: var(--sidebar-color);
+    /* Sử dụng biến CSS */
+}
+
+/* Submenu items background */
+#sidebar-wrapper .list-group-item.bg-secondary {
+    background-color: var(--submenu-bg) !important;
+    /* Sử dụng biến CSS */
+    color: var(--submenu-color) !important;
+    /* Sử dụng biến CSS */
+}
+
+/* Default list-group-item styles (for hover and active states) */
+#sidebar-wrapper .list-group-item {
+    color: var(--sidebar-color);
+    /* Sử dụng biến CSS */
+    background-color: var(--sidebar-bg);
+    /* Sử dụng biến CSS */
+    /* Loại bỏ border-bottom nếu bạn không muốn nó */
+    /* border-bottom: 1px solid rgba(0,0,0,0.05); */
+}
+
+#sidebar-wrapper .list-group-item:hover,
+#sidebar-wrapper .list-group-item:focus {
+    background-color: var(--sidebar-hover-bg);
+    /* Sử dụng biến CSS */
+    color: var(--sidebar-hover-color);
+    /* Sử dụng biến CSS */
+}
+
+/* Active state for sidebar items */
+#sidebar-wrapper .list-group-item.active {
+    background-color: var(--sidebar-active-bg) !important;
+    /* Luôn nổi bật */
+    color: var(--sidebar-active-color) !important;
+    /* Luôn nổi bật */
+}
+
+/* Đảm bảo các icon bên trong mục active cũng có màu active */
+#sidebar-wrapper .list-group-item.active i {
+    color: var(--sidebar-active-color) !important;
+}
+
+
+/* Rotate dropdown arrow when expanded */
+.sidebar-dropdown-toggle[aria-expanded="true"] .sidebar-arrow {
+    transform: rotate(180deg);
+}
+
+/* --- Media Queries for Larger Screens (>= 992px - Bootstrap's 'lg' breakpoint) --- */
+@media (min-width: 992px) {
+    #sidebar-wrapper {
+        margin-left: 0;
+    }
+
+    #page-content-wrapper {
+        min-width: calc(100vw - 250px);
+        margin-left: 250px;
+    }
+
+    /* When sidebar is "toggled" (collapsed) on desktop */
+    #wrapper.toggled #sidebar-wrapper {
+        width: 60px;
+        margin-left: 0;
+    }
+
+    #wrapper.toggled #page-content-wrapper {
+        min-width: calc(100vw - 60px);
+        margin-left: 60px;
+    }
+
+    /* Hide text and adjust elements when sidebar is toggled on desktop */
+    #wrapper.toggled #sidebar-wrapper .sidebar-text,
+    #wrapper.toggled #sidebar-wrapper .sidebar-heading-text {
+        opacity: 0;
+        width: 0;
+        pointer-events: none;
+    }
+
+    #wrapper.toggled #sidebar-wrapper .list-group-item {
+        text-align: center;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #wrapper.toggled #sidebar-wrapper .list-group-item i {
+        margin-right: 0 !important;
+        margin-left: 0 !important;
+    }
+
+    #wrapper.toggled #sidebar-wrapper .sidebar-heading {
+        height: 60px;
+        padding: 0 !important;
+        justify-content: center;
+    }
+
+    #wrapper.toggled #sidebar-wrapper .sidebar-arrow {
+        display: none;
+    }
+
+   /* #wrapper.toggled #sidebar-wrapper .collapse.show {
+        display: none !important;
+    } */
+
+    /* Adjust parent link for submenu when sidebar collapsed */
+    #wrapper.toggled #sidebar-wrapper .sidebar-dropdown-toggle {
+        justify-content: center;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+
+    #wrapper.toggled #sidebar-wrapper .sidebar-dropdown-toggle div {
+        width: 100%;
+    }
+}
+
+/* --- Styles for Mobile/Tablet (max-width: 991.98px - Bootstrap's 'lg' breakpoint) --- */
+@media (max-width: 991.98px) {
+    #sidebar-wrapper {
+        margin-left: -250px;
+        position: fixed;
+    }
+
+    #wrapper.toggled #sidebar-wrapper {
+        margin-left: 0;
+    }
+
+    #page-content-wrapper {
+        min-width: 100vw;
+        margin-left: 0;
+    }
+
+    /* Overlay effect when sidebar is open on mobile */
+    #wrapper.toggled #page-content-wrapper::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1020;
+    }
+
+    /* Ensure text and arrows are visible, and proper padding on mobile */
+    #sidebar-wrapper .sidebar-text,
+    #sidebar-wrapper .sidebar-heading-text {
+        opacity: 1;
+        width: auto;
+        pointer-events: auto;
+        text-align: left;
+    }
+
+    #sidebar-wrapper .sidebar-arrow {
+        display: block;
+    }
+
+    #sidebar-wrapper .list-group-item {
+        text-align: left;
+        padding-left: 1.5rem !important;
+        padding-right: 0.5rem !important;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+    }
+
+    #sidebar-wrapper .list-group-item i {
+        margin-right: 0.5rem !important;
+        margin-left: 0 !important;
+    }
+
+    #sidebar-wrapper .sidebar-heading {
+        padding: 1.5rem 1rem !important;
+        justify-content: flex-start;
+    }
+
+    #sidebar-wrapper .collapse.show {
+        display: block !important;
+    }
+}
