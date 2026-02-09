@@ -26,7 +26,7 @@ class DatabaseSeeder extends Seeder
             [
                 'name' => 'Admin',
                 'password' => Hash::make('12345678'), // Đặt mật khẩu
-                // 'department_id' => 1, // Gán vào phòng IT (ID 1) nếu muốn
+                'department_id' => 1, // Gán vào phòng IT (ID 1) nếu muốn
             ]
         );
 
