@@ -49,31 +49,6 @@ class RolesAndPermissionsSeeder extends Seeder
         $adminRole = Role::firstOrCreate(['name' => 'admin']);
         $adminRole->givePermissionTo(Permission::all()); // Gán tất cả quyền cho admin
 
-        // Vai trò Editor: Có thể xem, tạo, sửa người dùng/phòng ban nhưng không xóa
-        $editorRole = Role::firstOrCreate(['name' => 'editor']);
-        $editorRole->givePermissionTo([
-           'view users',
-           'create users',
-           'edit users',
-           'delete users',
-           'assign roles to users',
-           'view departments',
-           'create departments',
-           'edit departments',
-           'delete departments',
-           'view roles',
-           'create roles',
-           'edit roles',
-           'delete roles',
-           'assign permissions to roles',
-           'view permissions',
-           'create permissions',
-           'edit permissions',
-           'delete permissions',
-           'print barcodes',
-           'scan products',
-           'view barcodes',
-        ]);
 
         // Vai trò Viewer: Chỉ có thể xem danh sách người dùng và phòng ban
         $viewerRole = Role::firstOrCreate(['name' => 'viewer']);
