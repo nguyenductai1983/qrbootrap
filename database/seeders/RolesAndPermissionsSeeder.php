@@ -41,16 +41,12 @@ class RolesAndPermissionsSeeder extends Seeder
         Permission::firstOrCreate(['name' => 'edit permissions']);
         Permission::firstOrCreate(['name' => 'delete permissions']);
         Permission::firstOrCreate(['name' => 'print barcodes']); // Quyền mới: in mã vạch
-
+        Permission::firstOrCreate(['name' => 'scan products']);
         // 2. Tạo Roles và gán Permissions
         // Vai trò Admin: Có tất cả các quyền
         $adminRole = Role::firstOrCreate(['name' => 'admin']);
         $adminRole->givePermissionTo(Permission::all()); // Gán tất cả quyền cho admin
 
-
-        // Vai trò Viewer: Chỉ có thể xem danh sách người dùng và phòng ban
-        $viewerRole = Role::firstOrCreate(['name' => 'viewer']);
-        $viewerRole->givePermissionTo(['view users', 'view departments']);
 
 
         // 3. Gán Role cho một người dùng cụ thể (ví dụ: người dùng đầu tiên)
