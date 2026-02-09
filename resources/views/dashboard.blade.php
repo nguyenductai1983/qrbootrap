@@ -1,67 +1,254 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Dashboard') }}
+            <i class="fas fa-tachometer-alt me-2 text-primary"></i> {{ __('Bảng điều khiển') }}
         </h2>
     </x-slot>
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    @cannot('view users')
-                        <p>{{ __('Nếu bạn chưa thấy chức năng nào, vui lòng liên hệ với quản trị viên.') }}</p>
-                        <p>{{ __('Sau khi quản trị viên cài đặt vui lòng nhấn F5 để làm mới trang.') }}</p>
-                    @endcannot
-                    <div class="row mb-2">
-                        @can('view users')
-                            <div class="col-sm-6 mb-3 mb-sm-0">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <h5 class="card-title">Theo dõi mã QR</h5>
-                                        <p class="card-text">Chức năng này cho phép bạn theo dõi và quản lý các mã QR.</p>
-                                        <a href="{{ route('qrcodes.index') }}" class="btn btn-primary">
-                                            <i class="fa-solid fa-qrcode"></i>
-                                            <span class="sidebar-text">Danh sách mã QR</span>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        @endcan
-                        @can('view users')
-                            <div class="col-sm-6">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <h5 class="card-title">Quản lý người dùng</h5>
-                                        <p class="card-text">Chức năng này cho phép bạn quản lý người dùng trong hệ thống.
-                                        </p>
-                                        <a href="{{ route('users.index') }}" class="btn btn-primary">
-                                            <i class="fa-solid fa-user"></i> Xem danh sách người dùng
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        @endcan
-                    </div>
-                     <div class="row">
-                        @can('view departments')
-                            <div class="col-sm-6 mb-3 mb-sm-0">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <h5 class="card-title">Quản lý phòng ban</h5>
-                                        <p class="card-text">Chức năng này cho phép bạn theo dõi và quản lý các phòng ban trong hệ thống.</p>
-                                        <a href="{{ route('departments.index') }}" class="btn btn-primary">
-                                            <i class="fa-solid fa-building"></i>
-                                            <span class="sidebar-text">Danh sách phòng ban</span>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        @endcan
 
+            {{-- THÔNG BÁO NẾU KHÔNG CÓ QUYỀN GÌ --}}
+            <div class="mb-4">
+                @if (Auth::user()->roles->isEmpty() && Auth::user()->permissions->isEmpty())
+                    <div class="alert alert-warning shadow-sm border-0">
+                        <h5 class="fw-bold"><i class="fa-solid fa-triangle-exclamation"></i> Tài khoản chưa được phân
+                            quyền!</h5>
+                        <p class="mb-0">Vui lòng liên hệ quản trị viên để được cấp quyền truy cập các chức năng.</p>
+                    </div>
+                @endif
+            </div>
+
+            {{-- 1. KHU VỰC TÁC VỤ SẢN XUẤT --}}
+            @if (Auth::user()->can('print barcodes') || Auth::user()->can('scan products') || Auth::user()->can('view barcodes'))
+                <h4 class="fw-bold text-secondary mb-3 border-start border-4 border-primary ps-3">
+                    Tác Vụ Sản Xuất
+                </h4>
+                <div class="row g-4 mb-5">
+
+                    {{-- Chức năng: IN TEM --}}
+                    @can('print barcodes')
+                        <div class="col-md-6 col-lg-3">
+                            <div class="card h-100 shadow-sm border-0 hover-card">
+                                {{-- Thêm d-flex flex-column để căn chỉnh chiều dọc --}}
+                                <div class="card-body d-flex flex-column text-center p-4">
+                                    <div class="mb-3">
+                                        <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-inline-flex p-3">
+                                            <i class="fa-solid fa-print fa-2x"></i>
+                                        </div>
+                                    </div>
+                                    <h5 class="card-title fw-bold">In Tem Mã Vạch</h5>
+                                    <p class="card-text text-muted small mb-4">Tạo và in tem QR/Barcode cho sản phẩm mới.
+                                    </p>
+
+                                    {{-- mt-auto: Đẩy nút xuống đáy --}}
+                                    <a href="{{ route('production.barcode-generator') }}"
+                                        class="btn btn-outline-primary w-100 mt-auto stretched-link">
+                                        Truy cập <i class="fas fa-arrow-right ms-1"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Chức năng: EXCEL --}}
+                        <div class="col-md-6 col-lg-3">
+                            <div class="card h-100 shadow-sm border-0 hover-card">
+                                <div class="card-body d-flex flex-column text-center p-4">
+                                    <div class="mb-3">
+                                        <div class="bg-success bg-opacity-10 text-success rounded-circle d-inline-flex p-3">
+                                            <i class="fa-solid fa-file-excel fa-2x"></i>
+                                        </div>
+                                    </div>
+                                    <h5 class="card-title fw-bold">Nhập/Xuất Excel</h5>
+                                    <p class="card-text text-muted small mb-4">Cập nhật dữ liệu hàng loạt từ file Excel.</p>
+
+                                    <a href="{{ route('production.excel-manager') }}"
+                                        class="btn btn-outline-success w-100 mt-auto stretched-link">
+                                        Truy cập <i class="fas fa-arrow-right ms-1"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    @endcan
+
+                    {{-- Chức năng: QUÉT TEM --}}
+                    @can('scan products')
+                        <div class="col-md-6 col-lg-3">
+                            <div class="card h-100 shadow-sm border-0 hover-card">
+                                <div class="card-body d-flex flex-column text-center p-4">
+                                    <div class="mb-3">
+                                        <div class="bg-warning bg-opacity-10 text-warning rounded-circle d-inline-flex p-3">
+                                            <i class="fa-solid fa-barcode fa-2x"></i>
+                                        </div>
+                                    </div>
+                                    <h5 class="card-title fw-bold">Quét Sản Phẩm</h5>
+                                    <p class="card-text text-muted small mb-4">Kiểm tra thông tin và truy xuất nguồn gốc.
+                                    </p>
+
+                                    <a href="{{ route('production.scan') }}"
+                                        class="btn btn-outline-warning text-dark w-100 mt-auto stretched-link">
+                                        Truy cập <i class="fas fa-arrow-right ms-1"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    @endcan
+
+                    {{-- Chức năng: DANH SÁCH TEM --}}
+                    @can('view barcodes')
+                        <div class="col-md-6 col-lg-3">
+                            <div class="card h-100 shadow-sm border-0 hover-card">
+                                <div class="card-body d-flex flex-column text-center p-4">
+                                    <div class="mb-3">
+                                        <div class="bg-info bg-opacity-10 text-info rounded-circle d-inline-flex p-3">
+                                            <i class="fa-solid fa-list-check fa-2x"></i>
+                                        </div>
+                                    </div>
+                                    <h5 class="card-title fw-bold">Danh Sách Tem</h5>
+                                    <p class="card-text text-muted small mb-4">Xem lịch sử và quản lý danh sách tem đã tạo.
+                                    </p>
+
+                                    <a href="{{ route('production.list') }}"
+                                        class="btn btn-outline-info text-dark w-100 mt-auto stretched-link">
+                                        Truy cập <i class="fas fa-arrow-right ms-1"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    @endcan
+                </div>
+            @endif
+
+            {{-- 2. KHU VỰC QUẢN TRỊ HỆ THỐNG --}}
+            @role('admin')
+                <h4 class="fw-bold text-secondary mb-3 border-start border-4 border-danger ps-3">
+                    Quản Trị Hệ Thống
+                </h4>
+
+                {{-- Nhóm Dữ liệu --}}
+                <h6 class="text-muted fw-bold text-uppercase small mb-3 mt-4"><i class="fa-solid fa-database me-1"></i> Cấu
+                    hình Dữ liệu</h6>
+                <div class="row g-4 mb-4">
+                    {{-- Đơn Hàng --}}
+                    <div class="col-md-6 col-lg-3">
+                        <div class="card h-100 shadow-sm border-0 hover-card">
+                            <div class="card-body p-3 d-flex align-items-center">
+                                <div class="bg-secondary bg-opacity-10 text-secondary p-3 rounded me-3">
+                                    <i class="fa-solid fa-file-invoice fa-xl"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="fw-bold mb-0">Đơn Hàng (PO)</h6>
+                                    <small class="text-muted">Quản lý PO nhập khẩu</small>
+                                </div>
+                                <a href="{{ route('admin.orders') }}" class="stretched-link text-secondary"><i
+                                        class="fas fa-chevron-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Model Sản Phẩm --}}
+                    <div class="col-md-6 col-lg-3">
+                        <div class="card h-100 shadow-sm border-0 hover-card">
+                            <div class="card-body p-3 d-flex align-items-center">
+                                <div class="bg-secondary bg-opacity-10 text-secondary p-3 rounded me-3">
+                                    <i class="fa-solid fa-layer-group fa-xl"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="fw-bold mb-0">Model Sản Phẩm</h6>
+                                    <small class="text-muted">Danh mục sản phẩm</small>
+                                </div>
+                                <a href="{{ route('admin.models') }}" class="stretched-link text-secondary"><i
+                                        class="fas fa-chevron-right"></i></a>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
+
+                {{-- Nhóm Phân Quyền --}}
+                <h6 class="text-muted fw-bold text-uppercase small mb-3"><i class="fa-solid fa-user-shield me-1"></i> Phân
+                    Quyền & Người Dùng</h6>
+                <div class="row g-4">
+                    {{-- User --}}
+                    <div class="col-md-6 col-lg-3">
+                        <div class="card h-100 shadow-sm border-0 hover-card">
+                            <div class="card-body p-3 d-flex align-items-center">
+                                <div class="bg-danger bg-opacity-10 text-danger p-3 rounded me-3">
+                                    <i class="fa-solid fa-users fa-xl"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="fw-bold mb-0">Người Dùng</h6>
+                                    <small class="text-muted">Tài khoản & Password</small>
+                                </div>
+                                <a href="{{ route('users.index') }}" class="stretched-link text-danger"><i
+                                        class="fas fa-chevron-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Phòng Ban --}}
+                    <div class="col-md-6 col-lg-3">
+                        <div class="card h-100 shadow-sm border-0 hover-card">
+                            <div class="card-body p-3 d-flex align-items-center">
+                                <div class="bg-danger bg-opacity-10 text-danger p-3 rounded me-3">
+                                    <i class="fa-regular fa-building fa-xl"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="fw-bold mb-0">Phòng Ban</h6>
+                                    <small class="text-muted">Cơ cấu tổ chức</small>
+                                </div>
+                                <a href="{{ route('departments.index') }}" class="stretched-link text-danger"><i
+                                        class="fas fa-chevron-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Vai Trò --}}
+                    <div class="col-md-6 col-lg-3">
+                        <div class="card h-100 shadow-sm border-0 hover-card">
+                            <div class="card-body p-3 d-flex align-items-center">
+                                <div class="bg-danger bg-opacity-10 text-danger p-3 rounded me-3">
+                                    <i class="fa-solid fa-users-gear fa-xl"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="fw-bold mb-0">Vai Trò (Roles)</h6>
+                                    <small class="text-muted">Định nghĩa vai trò</small>
+                                </div>
+                                <a href="{{ route('roles.index') }}" class="stretched-link text-danger"><i
+                                        class="fas fa-chevron-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Quyền Hạn --}}
+                    <div class="col-md-6 col-lg-3">
+                        <div class="card h-100 shadow-sm border-0 hover-card">
+                            <div class="card-body p-3 d-flex align-items-center">
+                                <div class="bg-danger bg-opacity-10 text-danger p-3 rounded me-3">
+                                    <i class="fa-solid fa-key fa-xl"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="fw-bold mb-0">Quyền Hạn</h6>
+                                    <small class="text-muted">Chi tiết quyền</small>
+                                </div>
+                                <a href="{{ route('permissions.index') }}" class="stretched-link text-danger"><i
+                                        class="fas fa-chevron-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endrole
+
         </div>
     </div>
+
+    <style>
+        .hover-card {
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .hover-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15) !important;
+        }
+    </style>
 </x-app-layout>
