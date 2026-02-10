@@ -40,6 +40,7 @@ class BarcodeGenerator extends Component
 
     // --- MỚI: Biến lưu danh sách các ID được chọn để in lại ---
     public $selectedHistoryIds = [];
+    public $printFormat = 'QR';
     public function mount()
     {
         /** @var \App\Models\User $user */ // <-- Đã thêm dòng fix lỗi IDE
