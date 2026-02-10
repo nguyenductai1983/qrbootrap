@@ -48,6 +48,7 @@
                             <th>Thông Tin Chính</th>
                             <th>Thông Số (Properties)</th>
                             <th>Trạng Thái</th>
+                            <th>Người Xác Nhận (Quét)</th>
                             <th>Ngày Tạo</th>
                             <th class="text-end pe-3">Hành động</th>
                         </tr>
@@ -102,7 +103,29 @@
                                         <span class="badge bg-light text-dark border">{{ $item->status }}</span>
                                     @endif
                                 </td>
-
+                                {{-- CỘT 4 (MỚI): NGƯỜI QUÉT --}}
+                                <td>
+                                    @if ($item->verified_at)
+                                        <div class="d-flex align-items-center">
+                                            {{-- Avatar giả lập (chữ cái đầu) --}}
+                                            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2"
+                                                style="width: 32px; height: 32px; font-size: 12px;">
+                                                {{ substr($item->verifier->name ?? 'U', 0, 1) }}
+                                            </div>
+                                            <div>
+                                                <div class="fw-bold small text-dark">
+                                                    {{ $item->verifier->name ?? 'Unknown' }}
+                                                </div>
+                                                <div class="text-muted" style="font-size: 11px;">
+                                                    <i class="fa-regular fa-clock"></i>
+                                                    {{ \Carbon\Carbon::parse($item->verified_at)->format('d/m/Y H:i') }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @else
+                                        <span class="text-muted small fst-italic">-- Chưa quét --</span>
+                                    @endif
+                                </td>
                                 <td>{{ $item->created_at->format('d/m/Y H:i') }}</td>
 
                                 <td class="text-end pe-3">
@@ -180,7 +203,7 @@
             // Lắng nghe sự kiện từ PHP
             Livewire.on('open-detail-modal', () => {
                 console.log(
-                'Đã nhận lệnh mở Modal!'); // Kiểm tra xem dòng này có hiện trong Console (F12) không
+                    'Đã nhận lệnh mở Modal!'); // Kiểm tra xem dòng này có hiện trong Console (F12) không
 
                 const modalElement = document.getElementById('detailModal');
 

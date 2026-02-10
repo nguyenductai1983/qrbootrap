@@ -39,6 +39,7 @@ class BarcodeList extends Component
 
         // 2. QUERY DỮ LIỆU BARCODE (ITEM)
         $query = Item::query();
+        $query->with(['creator', 'verifier']);
 
         // --- A. PHÂN QUYỀN DỮ LIỆU ---
         if (!$user->hasRole('admin')) {

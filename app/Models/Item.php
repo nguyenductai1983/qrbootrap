@@ -40,7 +40,11 @@ class Item extends Model
     {
         return $this->belongsTo(User::class, 'created_by');
     }
-
+    public function verifier()
+    {
+        // Người quét/Xác nhận (verified_by)
+        return $this->belongsTo(User::class, 'verified_by');
+    }
     // --- Quan hệ Phả hệ (Genealogy) ---
 
     // Lấy danh sách "Con" (Ví dụ: Cây vải -> ra các Tấm vải)
