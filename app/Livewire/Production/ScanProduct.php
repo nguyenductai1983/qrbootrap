@@ -87,7 +87,7 @@ class ScanProduct extends Component
             $this->dispatch('play-warning-sound');
 
             if ($source == 'mobile') {
-                $this->dispatch('scan-finished', status: 'warning');
+                $this->dispatch('show-toast', type: 'warning', title: 'Cảnh báo!', text: 'Mã này đã được quét trước đó.');
             } else {
                 $this->dispatch('focus-input'); // PC: Focus lại để quét tiếp
             }
@@ -109,7 +109,7 @@ class ScanProduct extends Component
         $this->dispatch('play-success-sound');
 
         if ($source == 'mobile') {
-            $this->dispatch('scan-finished', status: 'success');
+            $this->dispatch('show-toast', type: 'success', title: 'Thành công!', text: 'Đã xác nhận mã: ' . $code);
         } else {
             $this->dispatch('focus-input'); // PC: Focus lại ngay
         }
@@ -122,7 +122,7 @@ class ScanProduct extends Component
         $this->dispatch('play-error-sound');
 
         if ($source == 'mobile') {
-            $this->dispatch('scan-finished', status: 'error');
+           $this->dispatch('show-toast', type: 'error', title: 'Lỗi!', text: $msg);
         } else {
             $this->dispatch('focus-input');
         }

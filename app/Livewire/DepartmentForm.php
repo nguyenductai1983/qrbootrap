@@ -10,12 +10,13 @@ class DepartmentForm extends Component
 {
     public $department; // Biến để lưu trữ đối tượng Department khi chỉnh sửa
     public $name;
-
+    public $code;
     public function mount($departmentId = null)
     {
         if ($departmentId) {
             $this->department = Department::findOrFail($departmentId);
             $this->name = $this->department->name;
+            $this->code = $this->department->code;
         } else {
             $this->department = new Department();
         }
@@ -39,6 +40,7 @@ class DepartmentForm extends Component
         $this->validate();
 
         $this->department->name = $this->name;
+        $this->department->code = $this->code; // Lưu mã phòng ban
         $this->department->save();
 
         session()->flash('success', 'Phòng ban đã được ' . ($this->department->wasRecentlyCreated ? 'tạo' : 'cập nhật') . ' thành công!');

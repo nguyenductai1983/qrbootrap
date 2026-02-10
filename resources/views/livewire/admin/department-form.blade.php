@@ -15,7 +15,14 @@
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
-
+                  <div class="mb-3">
+                    <label for="code" class="form-label">{{ __('Mã Phòng ban') }}</label>
+                    <input wire:model="code" type="text" id="code"
+                           class="form-control @error('code') is-invalid @enderror" required>
+                    @error('code')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
                 <div class="d-flex justify-content-end mt-4">
                     <a href="{{ route('departments.index') }}" class="btn btn-secondary me-2">
                         {{ __('Hủy') }}

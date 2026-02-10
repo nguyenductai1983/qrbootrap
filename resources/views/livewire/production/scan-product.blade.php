@@ -7,10 +7,12 @@
                 <div class="card-body py-2">
                     <div class="d-flex align-items-center">
                         <i class="fa-solid fa-filter text-secondary me-2"></i>
-                        <select wire:model.live="selectedOrderId" class="form-select form-select-sm border-0 bg-light fw-bold">
+                        <select wire:model.live="selectedOrderId"
+                            class="form-select form-select-sm border-0 bg-light fw-bold">
                             <option value="">-- Quét tất cả đơn hàng --</option>
                             @foreach ($orders as $order)
-                                <option value="{{ $order->id }}">PO: {{ $order->code }} ({{ $order->customer_name }})</option>
+                                <option value="{{ $order->id }}">PO: {{ $order->code }}
+                                    ({{ $order->customer_name }})</option>
                             @endforeach
                         </select>
                     </div>
@@ -31,20 +33,17 @@
                             <span><i class="fa-solid fa-keyboard me-1"></i> Chế độ nhập liệu / Máy quét rời</span>
 
                             {{-- NÚT BẬT CAMERA CHO LAPTOP/TABLET --}}
-                            <button class="btn btn-sm btn-outline-primary bg-white" onclick="toggleCameraDesktop()" id="btn-toggle-cam-pc">
+                            <button class="btn btn-sm btn-outline-primary bg-white" onclick="toggleCameraDesktop()"
+                                id="btn-toggle-cam-pc">
                                 <i class="fa-solid fa-camera me-1"></i> Dùng Camera
                             </button>
                         </div>
 
                         <div class="input-group input-group-lg">
                             <span class="input-group-text bg-light"><i class="fa-solid fa-barcode"></i></span>
-                            <input type="text"
-                                   id="scannerInput"
-                                   wire:model="scannedCodeInput"
-                                   wire:keydown.enter="handleKeyInput"
-                                   class="form-control fw-bold text-primary"
-                                   placeholder="Quét hoặc nhập mã..."
-                                   autocomplete="off">
+                            <input type="text" id="scannerInput" wire:model="scannedCodeInput"
+                                wire:keydown.enter="handleKeyInput" class="form-control fw-bold text-primary"
+                                placeholder="Quét hoặc nhập mã..." autocomplete="off">
                             <button wire:click="handleKeyInput" class="btn btn-primary px-4">Tra cứu</button>
                         </div>
                     </div>
@@ -54,7 +53,8 @@
                         <div id="mobile-guide" class="mb-3">
                             <p class="text-muted small mb-2">Sử dụng Camera điện thoại</p>
                             <div class="d-grid">
-                                <button class="btn btn-primary btn-lg shadow" id="btn-start-camera-mobile" onclick="startCamera()">
+                                <button class="btn btn-primary btn-lg shadow" id="btn-start-camera-mobile"
+                                    onclick="startCamera()">
                                     <i class="fa-solid fa-camera me-2"></i> BẬT CAMERA
                                 </button>
                             </div>
@@ -69,7 +69,8 @@
                             <div id="reader" style="width: 100%;"></div>
 
                             {{-- Nút tắt camera --}}
-                            <button onclick="stopCamera()" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-2" style="z-index: 10;">
+                            <button onclick="stopCamera()"
+                                class="btn btn-danger btn-sm position-absolute top-0 end-0 m-2" style="z-index: 10;">
                                 <i class="fa-solid fa-xmark"></i> Đóng
                             </button>
                         </div>
@@ -80,11 +81,15 @@
 
                     {{-- 4. KẾT QUẢ HIỂN THỊ --}}
                     @if ($message)
-                        <div class="alert alert-{{ $scanStatus == 'success' ? 'success' : ($scanStatus == 'warning' ? 'warning' : 'danger') }} text-center shadow-sm" role="alert">
+                        <div class="alert alert-{{ $scanStatus == 'success' ? 'success' : ($scanStatus == 'warning' ? 'warning' : 'danger') }} text-center shadow-sm"
+                            role="alert">
                             <h4 class="alert-heading fw-bold fs-5 mb-1">
-                                @if($scanStatus == 'success') <i class="fa-solid fa-circle-check"></i>
-                                @elseif($scanStatus == 'warning') <i class="fa-solid fa-triangle-exclamation"></i>
-                                @else <i class="fa-solid fa-circle-xmark"></i>
+                                @if ($scanStatus == 'success')
+                                    <i class="fa-solid fa-circle-check"></i>
+                                @elseif($scanStatus == 'warning')
+                                    <i class="fa-solid fa-triangle-exclamation"></i>
+                                @else
+                                    <i class="fa-solid fa-circle-xmark"></i>
                                 @endif
                                 {{ $message }}
                             </h4>
@@ -94,7 +99,8 @@
                     @if (!empty($itemInfo))
                         <div class="table-responsive bg-light rounded p-2 border position-relative">
                             {{-- Nút Reset nhanh --}}
-                            <button wire:click="resetScan" class="btn btn-sm btn-outline-secondary position-absolute top-0 end-0 m-2">
+                            <button wire:click="resetScan"
+                                class="btn btn-sm btn-outline-secondary position-absolute top-0 end-0 m-2">
                                 <i class="fa-solid fa-rotate-right"></i>
                             </button>
 
@@ -137,6 +143,7 @@
 
     {{-- SCRIPTS --}}
     <script src="js/html5-qrcode.min.js" type="text/javascript"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         // --- ÂM THANH ---
         const audioSuccess = new Audio('audio/cartoon_boing.ogg');
@@ -148,15 +155,21 @@
         document.addEventListener('livewire:initialized', () => {
 
             // Xử lý sự kiện âm thanh
-            Livewire.on('play-success-sound', () => { audioSuccess.play().catch(e => {}); });
-            Livewire.on('play-error-sound', () => { audioError.play().catch(e => {}); });
-            Livewire.on('play-warning-sound', () => { audioError.play().catch(e => {}); });
+            Livewire.on('play-success-sound', () => {
+                audioSuccess.play().catch(e => {});
+            });
+            Livewire.on('play-error-sound', () => {
+                audioError.play().catch(e => {});
+            });
+            Livewire.on('play-warning-sound', () => {
+                audioError.play().catch(e => {});
+            });
 
             // Focus vào ô nhập liệu (Nếu camera đang KHÔNG bật)
             Livewire.on('focus-input', () => {
                 if (!isCameraRunning) {
                     const input = document.getElementById('scannerInput');
-                    if(input) {
+                    if (input) {
                         input.value = '';
                         input.focus();
                     }
@@ -166,7 +179,7 @@
             // Tự động focus lúc đầu (chỉ trên PC)
             if (window.innerWidth >= 768) {
                 const input = document.getElementById('scannerInput');
-                if(input) input.focus();
+                if (input) input.focus();
             }
 
             // Dừng camera khi quét xong (Tùy chọn, ở đây mình để nó chạy tiếp để quét liên tục)
@@ -175,7 +188,28 @@
                 // Nếu muốn dừng sau mỗi lần quét thì gọi: stopCamera();
             });
         });
+        // --- MỚI: HIỂN THỊ POPUP ĐẸP (TOAST) ---
+        Livewire.on('show-toast', (data) => {
+            // data[0] chứa object { type, title, text } do Livewire truyền xuống
+            // Lưu ý: Livewire mới trả về mảng, nên lấy data[0] hoặc data nếu dùng named arguments chuẩn
+            const payload = data[0] || data;
 
+            Swal.fire({
+                icon: payload.type, // success, error, warning
+                title: payload.title, // Tiêu đề to
+                text: payload.text, // Nội dung nhỏ
+                toast: true, // Chế độ Toast (nhỏ gọn góc màn hình)
+                position: 'top-end', // Hiện ở góc trên bên phải
+                showConfirmButton: false, // Không cần nút bấm
+                timer: 3000, // Tự biến mất sau 3 giây
+                timerProgressBar: true,
+                background: '#fff', // Màu nền trắng
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            });
+        });
         // --- HÀM TOGGLE CHO PC/LAPTOP ---
         function toggleCameraDesktop() {
             if (isCameraRunning) {
@@ -195,20 +229,24 @@
 
             // Đổi text nút trên PC
             const btnPc = document.getElementById('btn-toggle-cam-pc');
-            if(btnPc) btnPc.innerHTML = '<i class="fa-solid fa-xmark me-1"></i> Tắt Camera';
+            if (btnPc) btnPc.innerHTML = '<i class="fa-solid fa-xmark me-1"></i> Tắt Camera';
 
             // Khởi tạo Scanner
             html5QrcodeScanner = new Html5Qrcode("reader");
 
             const config = {
                 fps: 10,
-                qrbox: { width: 250, height: 250 },
+                qrbox: {
+                    width: 250,
+                    height: 250
+                },
                 aspectRatio: 1.0
             };
 
             // Cố gắng dùng Camera sau (environment), nếu không có (Laptop) nó sẽ tự dùng Webcam
-            html5QrcodeScanner.start(
-                { facingMode: "environment" },
+            html5QrcodeScanner.start({
+                    facingMode: "environment"
+                },
                 config,
                 (decodedText) => {
                     // QUÉT THÀNH CÔNG
@@ -251,12 +289,12 @@
 
             // Đổi lại text nút PC
             const btnPc = document.getElementById('btn-toggle-cam-pc');
-            if(btnPc) btnPc.innerHTML = '<i class="fa-solid fa-camera me-1"></i> Dùng Camera';
+            if (btnPc) btnPc.innerHTML = '<i class="fa-solid fa-camera me-1"></i> Dùng Camera';
 
             // Focus lại ô input trên PC
             if (window.innerWidth >= 768) {
                 const input = document.getElementById('scannerInput');
-                if(input) input.focus();
+                if (input) input.focus();
             }
         }
     </script>

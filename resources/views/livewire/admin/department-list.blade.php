@@ -37,6 +37,7 @@
                         <tr>
                             <th scope="col">ID</th>
                             <th scope="col">{{ __('Tên Phòng ban') }}</th>
+                            <th scope="col">{{ __('Mã') }}</th>
                             <th scope="col">{{ __('Số lượng Người dùng') }}</th>
                             <th scope="col">{{ __('Ngày tạo') }}</th>
                             <th scope="col">{{ __('Hành động') }}</th>
@@ -47,6 +48,7 @@
                             <tr>
                                 <td>{{ $department->id }}</td>
                                 <td>{{ $department->name }}</td>
+                                <td>{{ $department->code }}</td>
                                 <td>{{ $department->users_count ?? $department->users()->count() }}</td>
                                 {{-- Hiển thị số lượng người dùng --}}
                                 <td>{{ $department->created_at->format('d/m/Y H:i') }}</td>
