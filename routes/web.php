@@ -29,7 +29,7 @@ Route::view('dashboard', 'dashboard')
 Route::view('profile', 'profile')
     ->middleware(['auth'])
     ->name('profile');
-
+Route::view('/huong-dan', 'guide')->middleware(['auth'])->name('guide');
 require __DIR__ . '/auth.php';
 Route::middleware(['auth', 'verified'])->group(function () {
     // Quản lý người dùng

@@ -8,7 +8,7 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
-            {{-- THÔNG BÁO NẾU KHÔNG CÓ QUYỀN GÌ --}}
+            {{-- 1. THÔNG BÁO NẾU KHÔNG CÓ QUYỀN GÌ --}}
             <div class="mb-4">
                 @if (Auth::user()->roles->isEmpty() && Auth::user()->permissions->isEmpty())
                     <div class="alert alert-warning shadow-sm border-0">
@@ -19,7 +19,23 @@
                 @endif
             </div>
 
-            {{-- 1. KHU VỰC TÁC VỤ SẢN XUẤT --}}
+            {{-- 2. BANNER HƯỚNG DẪN SỬ DỤNG (MỚI THÊM) --}}
+            {{-- Thiết kế dạng banner ngang, màu xanh gradient nổi bật --}}
+            <div class="card shadow-sm border-0 bg-primary bg-gradient text-white mb-5">
+                <div class="card-body p-4 d-flex flex-column flex-md-row justify-content-between align-items-center">
+                    <div class="mb-3 mb-md-0">
+                        <h4 class="fw-bold"><i class="fa-solid fa-book-open me-2"></i> Hướng Dẫn Sử Dụng Hệ Thống</h4>
+                        <p class="mb-0 text-white-50">Xem tài liệu chi tiết cách in tem, nhập liệu Excel và quy trình
+                            quét mã.</p>
+                    </div>
+                    <a href="{{ route('guide') }}"
+                        class="btn btn-light text-primary fw-bold shadow-sm px-4 py-2 hover-scale">
+                        <i class="fa-regular fa-circle-question me-2"></i> Xem Hướng Dẫn
+                    </a>
+                </div>
+            </div>
+
+            {{-- 3. KHU VỰC TÁC VỤ SẢN XUẤT --}}
             @if (Auth::user()->can('print barcodes') || Auth::user()->can('scan products') || Auth::user()->can('view barcodes'))
                 <h4 class="fw-bold text-secondary mb-3 border-start border-4 border-primary ps-3">
                     Tác Vụ Sản Xuất
@@ -30,7 +46,6 @@
                     @can('print barcodes')
                         <div class="col-md-6 col-lg-3">
                             <div class="card h-100 shadow-sm border-0 hover-card">
-                                {{-- Thêm d-flex flex-column để căn chỉnh chiều dọc --}}
                                 <div class="card-body d-flex flex-column text-center p-4">
                                     <div class="mb-3">
                                         <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-inline-flex p-3">
@@ -41,7 +56,6 @@
                                     <p class="card-text text-muted small mb-4">Tạo và in tem QR/Barcode cho sản phẩm mới.
                                     </p>
 
-                                    {{-- mt-auto: Đẩy nút xuống đáy --}}
                                     <a href="{{ route('production.barcode-generator') }}"
                                         class="btn btn-outline-primary w-100 mt-auto stretched-link">
                                         Truy cập <i class="fas fa-arrow-right ms-1"></i>
@@ -119,7 +133,7 @@
                 </div>
             @endif
 
-            {{-- 2. KHU VỰC QUẢN TRỊ HỆ THỐNG --}}
+            {{-- 4. KHU VỰC QUẢN TRỊ HỆ THỐNG --}}
             @role('admin')
                 <h4 class="fw-bold text-secondary mb-3 border-start border-4 border-danger ps-3">
                     Quản Trị Hệ Thống
@@ -249,6 +263,15 @@
         .hover-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15) !important;
+        }
+
+        /* Hiệu ứng cho nút Hướng dẫn */
+        .hover-scale {
+            transition: transform 0.2s;
+        }
+
+        .hover-scale:hover {
+            transform: scale(1.05);
         }
     </style>
 </x-app-layout>
