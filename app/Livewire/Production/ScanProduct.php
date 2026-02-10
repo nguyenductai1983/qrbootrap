@@ -6,6 +6,7 @@ use Livewire\Component;
 use App\Models\Item;
 use App\Models\Order;
 use Illuminate\Support\Facades\Auth;
+use App\Models\ProductModel;
 
 class ScanProduct extends Component
 {
@@ -14,18 +15,28 @@ class ScanProduct extends Component
     public $message = '';
     public $itemInfo = [];
     public $orders;
+
+    // BIẾN MỚI
+    public $models = []; // Danh sách Model theo bộ phận
     public $selectedOrderId = '';
+    public $selectedModelId = ''; // Model nhân viên chọn
 
-    // Dữ liệu cho Camera (Mobile)
     public $lastScannedCode = null;
-
-    // Dữ liệu cho Máy quét (PC)
     public $scannedCodeInput = '';
-
     public function mount()
     {
+        $user = Auth::user();
         // Lấy đơn hàng đang chạy
         $this->orders = Order::where('status', 'RUNNING')->orderBy('id', 'desc')->get();
+        if ($user->department_id) {
+            $this->models = ProductModel::whereHas('departments', function ($q) use ($user) {
+                $q->where('departments.id', $user->department_id);
+            })->get();
+        } else {
+            // Nếu user không thuộc phòng ban nào, hoặc là Admin -> Lấy hết (hoặc rỗng tùy logic)
+            // Ở đây mình lấy hết để dễ test, bạn có thể để [] nếu muốn chặt chẽ
+            $this->models = ProductModel::all();
+        }
     }
 
     // --- XỬ LÝ 1: TỪ MÁY QUÉT CẦM TAY / BÀN PHÍM (Sự kiện Enter) ---
@@ -54,7 +65,8 @@ class ScanProduct extends Component
         $this->processCode($code, 'mobile');
     }
 
-    // --- HÀM XỬ LÝ CHUNG (CORE LOGIC) ---
+
+    // --- HÀM XỬ LÝ CHÍNH ĐÃ ĐƯỢC NÂNG CẤP ---
     public function processCode($code, $source = 'mobile')
     {
         $this->lastScannedCode = $code;
@@ -62,56 +74,88 @@ class ScanProduct extends Component
         $this->scanStatus = '';
         $this->message = '';
 
-        // 1. Tìm trong DB
+        // 1. Tìm tem trong DB
         $item = Item::where('code', $code)->first();
 
-        // 2. Kiểm tra tồn tại
         if (!$item) {
             $this->respondError("❌ Lỗi: Không tìm thấy mã '$code'", $source);
             return;
         }
 
-        // 3. Kiểm tra đúng Đơn hàng (Nếu có chọn lọc)
-        if ($this->selectedOrderId && $item->order_id != $this->selectedOrderId) {
-            $this->respondError("❌ SAI ĐƠN HÀNG! Mã này thuộc PO khác.", $source);
-            return;
-        }
-
-        // 4. Kiểm tra đã quét chưa (Tránh quét trùng)
+        // 2. Kiểm tra đã quét chưa
         if ($item->status == 'VERIFIED' || $item->verified_at) {
             $this->scanStatus = 'warning';
-            $this->message = "⚠️ Cảnh báo: Mã này ĐÃ ĐƯỢC QUÉT lúc " . $item->verified_at;
+            $this->message = "⚠️ Cảnh báo: Mã này ĐÃ ĐƯỢC QUÉT trước đó.";
             $this->itemInfo = $item->properties;
 
-            // Nếu là PC thì vẫn phát âm báo lỗi/cảnh báo
             $this->dispatch('play-warning-sound');
-
             if ($source == 'mobile') {
-                $this->dispatch('show-toast', type: 'warning', title: 'Cảnh báo!', text: 'Mã này đã được quét trước đó.');
+                $this->dispatch('show-toast', type: 'warning', title: 'Đã quét!', text: 'Mã này đã được xử lý rồi.');
             } else {
-                $this->dispatch('focus-input'); // PC: Focus lại để quét tiếp
+                $this->dispatch('focus-input');
             }
             return;
         }
 
-        // 5. CẬP NHẬT THÀNH CÔNG
-        $item->update([
+        // 3. CHUẨN BỊ DỮ LIỆU CẬP NHẬT
+        $updateData = [
             'status' => 'VERIFIED',
             'verified_at' => now(),
             'verified_by' => Auth::id(),
-        ]);
+        ];
 
+        $properties = $item->properties ?? [];
+        $hasChange = false;
+
+        // --- A. Cập nhật Đơn hàng (Nếu user có chọn) ---
+        if (!empty($this->selectedOrderId)) {
+            // Nếu tem đang thuộc đơn khác, ta chuyển nó sang đơn mới
+            if ($item->order_id != $this->selectedOrderId) {
+                $updateData['order_id'] = $this->selectedOrderId;
+
+                // Cập nhật text PO trong properties để hiển thị đúng
+                $order = $this->orders->find($this->selectedOrderId);
+                if ($order) {
+                    $properties['PO'] = $order->code;
+                    $hasChange = true;
+                }
+            }
+        }
+        // Lưu ý: Nếu user để trống selectedOrderId -> Giữ nguyên order_id cũ của tem (Không làm gì cả)
+
+        // --- B. Cập nhật Model (Nếu user có chọn) ---
+        if (!empty($this->selectedModelId)) {
+            if ($item->product_model_id != $this->selectedModelId) {
+                $updateData['product_model_id'] = $this->selectedModelId;
+
+                // Cập nhật MA_VAI trong properties (thường Mã vải = Mã Model)
+               $model = ProductModel::find($this->selectedModelId);
+                if ($model) {
+                    $properties['MA_VAI'] = $model->code;
+                    $hasChange = true;
+                }
+            }
+        }
+
+        // Nếu có thay đổi thông tin phụ (PO, MA_VAI), cập nhật lại JSON
+        if ($hasChange) {
+            $updateData['properties'] = $properties;
+        }
+
+        // 4. THỰC HIỆN UPDATE
+        $item->update($updateData);
+
+        // 5. PHẢN HỒI THÀNH CÔNG
         $this->scanStatus = 'success';
         $this->message = "✅ ĐÃ XÁC NHẬN: " . $code;
-        $this->itemInfo = $item->properties;
+        $this->itemInfo = $item->properties; // Hiển thị thông tin MỚI NHẤT
 
-        // Gửi sự kiện xuống JS
         $this->dispatch('play-success-sound');
 
         if ($source == 'mobile') {
-            $this->dispatch('show-toast', type: 'success', title: 'Thành công!', text: 'Đã xác nhận mã: ' . $code);
+            $this->dispatch('show-toast', type: 'success', title: 'Thành công!', text: 'Đã cập nhật & xác nhận: ' . $code);
         } else {
-            $this->dispatch('focus-input'); // PC: Focus lại ngay
+            $this->dispatch('focus-input');
         }
     }
 
@@ -122,7 +166,7 @@ class ScanProduct extends Component
         $this->dispatch('play-error-sound');
 
         if ($source == 'mobile') {
-           $this->dispatch('show-toast', type: 'error', title: 'Lỗi!', text: $msg);
+            $this->dispatch('show-toast', type: 'error', title: 'Lỗi!', text: $msg);
         } else {
             $this->dispatch('focus-input');
         }
