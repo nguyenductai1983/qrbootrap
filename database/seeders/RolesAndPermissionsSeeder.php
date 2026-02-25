@@ -6,7 +6,7 @@ use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use App\Models\User; // Import User model
-
+use Illuminate\Support\Facades\Hash; // Thêm dòng này để mã hóa mật khẩu
 class RolesAndPermissionsSeeder extends Seeder
 {
     public function run(): void
@@ -46,21 +46,21 @@ class RolesAndPermissionsSeeder extends Seeder
         // Vai trò Admin: Có tất cả các quyền
         $adminRole = Role::firstOrCreate(['name' => 'admin']);
         $adminRole->givePermissionTo(Permission::all()); // Gán tất cả quyền cho admin
-
-
-
         // 3. Gán Role cho một người dùng cụ thể (ví dụ: người dùng đầu tiên)
         $user = User::first(); // Lấy người dùng đầu tiên
         if ($user) {
             $user->assignRole('admin'); // Gán vai trò 'admin' cho người dùng này
         }
-        // Hoặc tạo một người dùng mới và gán vai trò
-        // $newAdmin = User::firstOrCreate([
-        //     'email' => 'admin@example.com',
-        // ], [
-        //     'name' => 'Admin User',
-        //     'password' => bcrypt('password'),
-        // ]);
-        // $newAdmin->assignRole('admin');
+        $user = User::firstOrCreate(
+            ['email' => 'admin@qrcode.com'],
+            [
+                'name' => 'Admin',
+                'password' => Hash::make('12345678'), // Đặt mật khẩu
+                // 'department_id' => 1, // Gán vào phòng IT (ID 1) nếu muốn
+            ]
+        );
+
+        // Gán quyền Admin cho user này
+        $user->assignRole('admin');
     }
 }

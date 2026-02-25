@@ -4,12 +4,12 @@
     </div>
 
     <div class="card shadow-sm mb-4">
-        <div class="card-body bg-light">
+        <div class="card-body">
             <div class="row g-3">
                 <div class="col-md-4">
                     <label class="form-label small fw-bold">Từ khóa</label>
                     <div class="input-group">
-                        <span class="input-group-text bg-white"><i class="fa-solid fa-search"></i></span>
+                        <span class="input-group-text"><i class="fa-solid fa-search"></i></span>
                         <input type="text" wire:model.live.debounce.500ms="search" class="form-control"
                             placeholder="Tìm mã barcode, ghi chú...">
                     </div>
@@ -42,7 +42,7 @@
         <div class="card-body p-0">
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0">
-                    <thead class="table-light text-secondary">
+                    <thead >
                         <tr>
                             <th class="ps-3">Mã Barcode</th>
                             <th>Thông Tin Chính</th>
@@ -108,12 +108,12 @@
                                     @if ($item->verified_at)
                                         <div class="d-flex align-items-center">
                                             {{-- Avatar giả lập (chữ cái đầu) --}}
-                                            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2"
+                                            <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center me-2"
                                                 style="width: 32px; height: 32px; font-size: 12px;">
                                                 {{ substr($item->verifier->name ?? 'U', 0, 1) }}
                                             </div>
                                             <div>
-                                                <div class="fw-bold small text-dark">
+                                                <div class="fw-bold small">
                                                     {{ $item->verifier->name ?? 'Unknown' }}
                                                 </div>
                                                 <div class="text-muted" style="font-size: 11px;">

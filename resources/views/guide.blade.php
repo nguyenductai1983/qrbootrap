@@ -51,10 +51,9 @@
 
                 <div class="col-md-9">
                     <div class="tab-content">
-
                         <div class="tab-pane fade show active" id="section-login">
                             <div class="card shadow-sm border-0 mb-4">
-                                <div class="card-header bg-white py-3">
+                                <div class="card-header py-3">
                                     <h5 class="fw-bold text-primary m-0"><i class="fa-solid fa-user-shield me-2"></i>1.
                                         Đăng nhập hệ thống</h5>
                                 </div>
@@ -84,7 +83,7 @@
 
                         <div class="tab-pane fade" id="section-print">
                             <div class="card shadow-sm border-0 mb-4">
-                                <div class="card-header bg-white py-3">
+                                <div class="card-header  py-3">
                                     <h5 class="fw-bold text-success m-0"><i class="fa-solid fa-print me-2"></i>2. Cách
                                         In Tem Mã Vạch</h5>
                                 </div>
@@ -93,7 +92,7 @@
 
                                     <div class="row g-3">
                                         <div class="col-md-6">
-                                            <div class="border rounded p-3 h-100 bg-light">
+                                            <div class="border rounded p-3 h-100">
                                                 <h6 class="fw-bold">Quy trình thực hiện:</h6>
                                                 <ol class="ps-3 mb-0">
                                                     <li class="mb-2">Trên menu trái, chọn mục <br><strong><i
@@ -107,7 +106,7 @@
                                             </div>
                                         </div>
                                         <div class="col-md-6">
-                                            <div class="border rounded p-3 h-100 bg-light">
+                                            <div class="border rounded p-3 h-100">
                                                 <h6 class="fw-bold text-danger">Lưu ý quan trọng:</h6>
                                                 <ul class="ps-3 mb-0 small">
                                                     <li class="mb-2">Hãy kiểm tra kỹ giấy in trong máy in trước khi
@@ -124,7 +123,7 @@
 
                         <div class="tab-pane fade" id="section-excel">
                             <div class="card shadow-sm border-0 mb-4">
-                                <div class="card-header bg-white py-3">
+                                <div class="card-header  py-3">
                                     <h5 class="fw-bold text-success m-0"><i class="fa-solid fa-file-excel me-2"></i>3.
                                         Nhập liệu từ Excel</h5>
                                 </div>
@@ -165,7 +164,7 @@
 
                         <div class="tab-pane fade" id="section-scan">
                             <div class="card shadow-sm border-0 mb-4">
-                                <div class="card-header bg-white py-3">
+                                <div class="card-header  py-3">
                                     <h5 class="fw-bold text-warning m-0"><i class="fa-solid fa-barcode me-2"></i>4. Quét
                                         kiểm tra hàng</h5>
                                 </div>
@@ -241,17 +240,4 @@
             </div>
         </div>
     </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var triggerTabList = [].slice.call(document.querySelectorAll('.list-group-item'))
-            triggerTabList.forEach(function(triggerEl) {
-                var tabTrigger = new bootstrap.Tab(triggerEl)
-                triggerEl.addEventListener('click', function(event) {
-                    event.preventDefault()
-                    tabTrigger.show()
-                })
-            })
-        });
-    </script>
 </x-app-layout>

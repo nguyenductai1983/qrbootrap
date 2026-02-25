@@ -19,7 +19,7 @@
                 placeholder="Tìm kiếm mã PO hoặc khách hàng...">
 
             <table class="table table-hover align-middle">
-                <thead class="table-light">
+                <thead>
                     <tr>
                         <th>Mã PO</th>
                         <th>Khách Hàng</th>
@@ -34,13 +34,10 @@
                             <td class="fw-bold">{{ $order->code }}</td>
                             <td>{{ $order->customer_name }}</td>
                             <td>
-                                @if ($order->status == 'RUNNING')
-                                    <span class="badge bg-success">Đang chạy</span>
-                                @elseif($order->status == 'PENDING')
-                                    <span class="badge bg-warning text-dark">Chờ xử lý</span>
-                                @else
-                                    <span class="badge bg-secondary">Hoàn thành</span>
-                                @endif
+                                {{-- Laravel tự động hiểu $order->status là 1 Enum object --}}
+                                <span class="badge {{ $order->status->badge() }}">
+                                    {{ $order->status->label() }}
+                                </span>
                             </td>
                             <td>{{ $order->created_at->format('d/m/Y') }}</td>
                             <td class="text-end">
@@ -82,7 +79,7 @@
                         <div class="mb-3">
                             <label class="form-label">Tên Khách Hàng <span class="text-danger">*</span></label>
                             <input type="text" wire:model="customer_name" class="form-control"
-                                placeholder="VD: Công ty May Việt Tiến">
+                                placeholder="VD: Công ty ABC">
                             @error('customer_name')
                                 <span class="text-danger small">{{ $message }}</span>
                             @enderror
@@ -90,9 +87,9 @@
                         <div class="mb-3">
                             <label class="form-label">Trạng Thái</label>
                             <select wire:model="status" class="form-select">
-                                <option value="PENDING">Chờ xử lý</option>
-                                <option value="RUNNING">Đang chạy (Sản xuất)</option>
-                                <option value="COMPLETED">Đã hoàn thành</option>
+                                @foreach (\App\Enums\OrderStatus::cases() as $case)
+                                    <option value="{{ $case->value }}">{{ $case->label() }}</option>
+                                @endforeach
                             </select>
                         </div>
                         <div class="text-end">

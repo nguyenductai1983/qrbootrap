@@ -19,6 +19,14 @@
             display: block !important;
         }
     </style>
+    {{-- THÊM ĐOẠN NÀY ĐỂ CHẶN FLICKER --}}
+    <script>
+        // Script này chạy ngay lập tức, chặn việc render cho đến khi set xong theme
+        (function() {
+            const storedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-bs-theme', storedTheme);
+        })();
+    </script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
 </head>
@@ -156,12 +164,13 @@
             const htmlElement = document.documentElement;
             const darkIcon = document.querySelector('.dark-icon');
             const lightIcon = document.querySelector('.light-icon');
-            const currentTheme = localStorage.getItem('theme') || 'light';
 
-            htmlElement.setAttribute('data-bs-theme', currentTheme);
+            // Hàm cập nhật Icon dựa trên theme hiện tại
+            const updateThemeIcon = () => {
+                // Lấy theme trực tiếp từ HTML tag (đã được set ở Head)
+                const currentTheme = htmlElement.getAttribute('data-bs-theme');
 
-            const updateThemeIcon = (theme) => {
-                if (theme === 'dark') {
+                if (currentTheme === 'dark') {
                     darkIcon.classList.remove('d-none');
                     lightIcon.classList.add('d-none');
                 } else {
@@ -169,14 +178,22 @@
                     darkIcon.classList.add('d-none');
                 }
             };
-            updateThemeIcon(currentTheme);
 
+            // Chạy ngay lập tức để icon đúng với theme
+            updateThemeIcon();
+            // Xử lý sự kiện click
             if (themeToggleBtn) {
                 themeToggleBtn.addEventListener('click', () => {
-                    let newTheme = htmlElement.getAttribute('data-bs-theme') === 'dark' ? 'light' : 'dark';
+                    // Đảo ngược theme
+                    const newTheme = htmlElement.getAttribute('data-bs-theme') === 'dark' ? 'light' :
+                    'dark';
+
+                    // Cập nhật lại HTML và LocalStorage
                     htmlElement.setAttribute('data-bs-theme', newTheme);
                     localStorage.setItem('theme', newTheme);
-                    updateThemeIcon(newTheme);
+
+                    // Cập nhật Icon
+                    updateThemeIcon();
                 });
             }
         });

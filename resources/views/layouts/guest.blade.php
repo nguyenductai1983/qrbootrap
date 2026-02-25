@@ -22,7 +22,7 @@
         @if (Route::has('login'))
             <livewire:welcome.navigation />
         @endif
-        <div class="top-10 start-10 mx-auto" style="width: 10%;">
+        <div class="top-0 start-10 mx-auto" style="width: 10%;">
             <a href="/" wire:navigate>
                 <x-application-logo/>
             </a>

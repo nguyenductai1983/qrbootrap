@@ -5,7 +5,7 @@ namespace App\Livewire\Production;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use App\Models\Order;
-use App\Models\ProductModel;
+use App\Models\Product;
 use App\Exports\ItemsExport;
 use App\Imports\ItemsImport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -23,7 +23,7 @@ class ExcelManager extends Component
     public function mount()
     {
         $this->orders = Order::all();
-        $this->models = ProductModel::all();
+        $this->models = Product::all();
     }
 
     // 1. XUẤT FILE EXCEL

@@ -10,41 +10,48 @@ class ItemsImport implements ToModel, WithHeadingRow
 {
     public function model(array $row)
     {
-        // Cột A trong Excel là 'BARCODE' (thư viện tự chuyển slug)
-        $barcode = $row['BARCODE'] ?? null;
+        // Thư viện Maatwebsite Excel (WithHeadingRow) tự động chuyển đổi header
+        // thành dạng slug (viết thường, dấu cách thành gạch dưới).
+        // Nên ta có thể gọi trực tiếp 'code' thay vì dùng array_key_first().
+        $code = $row['code'] ?? null;
 
-        if (!$barcode) return null;
+        if (!$code) return null;
 
-        $item = Item::where('code', $barcode)->first();
+        $item = Item::where('code', $code)->first();
 
         if ($item) {
-            // Lấy properties hiện tại
             $props = $item->properties ?? [];
 
-            // Cập nhật thông tin mới từ Excel
-            // Lưu ý: Tên key mảng $row phụ thuộc vào Heading trong file Excel
+            // 1. Khai báo các cột CỐ ĐỊNH không được lưu vào JSON properties
+            $ignoredColumns = ['code', 'created_at'];
+
+            // 2. (Tùy chọn) Cập nhật trường PO nếu PO lưu ở bảng Item
+            // Nếu PO nằm ở bảng khác hoặc bạn không muốn update, hãy xóa dòng này đi.
+            // if (isset($row['po'])) {
+            //     $item->po = $row['po'];
+            // }
+
+            // 3. Quét các cột còn lại để đưa vào properties
             foreach ($row as $key => $value) {
 
-                // BƯỚC A: Loại bỏ các cột hệ thống không muốn lưu vào properties
-                // Ví dụ: Bỏ qua cột barcode chính, hoặc các cột rỗng
-                if ($key === 'BARCODE' || is_null($value)) {
+                // BƯỚC A: Bỏ qua các cột cố định và các ô rỗng
+                if (in_array($key, $ignoredColumns) || is_null($value)) {
                     continue;
                 }
 
-                // BƯỚC B: Chuẩn hóa Key (Tùy chọn)
-                // Vì Excel import vào sẽ ra dạng 'so_met', 'ghi_chu'...
-                // Nếu bạn muốn lưu vào DB dạng 'SO_MET', 'GHI_CHU' thì dùng strtoupper
+                // BƯỚC B: Chuẩn hóa Key từ 'so_met' thành 'SO_MET'
                 $dbKey = strtoupper($key);
 
                 // Gán giá trị động
                 $props[$dbKey] = $value;
             }
 
-            // Lưu lại
-            $item->update([
-                'properties' => $props
-            ]);
+            // 4. Lưu lại thông tin
+            // Cập nhật cả properties và các trường cố định (như po) nếu có thay đổi
+            $item->properties = $props;
+            $item->save();
         }
+
         return null;
     }
 }

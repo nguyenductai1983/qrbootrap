@@ -59,10 +59,10 @@
                 <i class="fas fa-ellipsis-h d-none mini-icon-separator"></i>
             </div>
 
-            {{-- MỚI: Dropdown Quản lý Dữ liệu Sản xuất (Orders & Models) --}}
+            {{-- MỚI: Dropdown Quản lý Dữ liệu Sản xuất (Orders & products) --}}
             <div class="list-group-item py-3 ps-4 pe-2 d-flex justify-content-between align-items-center sidebar-dropdown-toggle"
                 data-bs-toggle="collapse" href="#productionConfigSubmenu" role="button"
-                aria-expanded="{{ request()->routeIs('admin.orders') || request()->routeIs('admin.models') ? 'true' : 'false' }}"
+                aria-expanded="{{ request()->routeIs('admin.orders') || request()->routeIs('admin.products') ? 'true' : 'false' }}"
                 aria-controls="productionConfigSubmenu">
                 <div>
                     <i class="fa-solid fa-boxes-stacked me-2"></i> {{-- Icon kho hàng/dữ liệu --}}
@@ -71,7 +71,7 @@
                 <i class="fas fa-chevron-down sidebar-arrow"></i>
             </div>
 
-            <div class="collapse {{ request()->routeIs('admin.orders') || request()->routeIs('admin.models') ? 'show' : '' }}"
+            <div class="collapse {{ request()->routeIs('admin.orders') || request()->routeIs('admin.products') ? 'show' : '' }}"
                 id="productionConfigSubmenu" data-bs-parent="#sidebar-wrapper">
 
                 {{-- Link Đơn Hàng --}}
@@ -81,11 +81,21 @@
                     <span class="sidebar-text">Đơn hàng (PO)</span>
                 </a>
 
-                {{-- Link Model Sản Phẩm --}}
-                <a href="{{ route('admin.models') }}"
-                    class="list-group-item list-group-item-action py-2 ps-5 bg-secondary {{ request()->routeIs('admin.models') ? 'active' : '' }}">
+                {{-- Link Sản Phẩm --}}
+                <a href="{{ route('admin.products') }}"
+                    class="list-group-item list-group-item-action py-2 ps-5 bg-secondary {{ request()->routeIs('admin.products') ? 'active' : '' }}">
                     <i class="fa-solid fa-layer-group me-2"></i>
-                    <span class="sidebar-text">Model Sản phẩm</span>
+                    <span class="sidebar-text"> Sản phẩm</span>
+                </a>
+                <a href="{{ route('admin.properties') }}"
+                    class="list-group-item list-group-item-action py-2 ps-5 bg-secondary {{ request()->routeIs('admin.properties') ? 'active' : '' }}">
+                    <i class="fa-solid fa-tags me-2"></i>
+                    <span class="sidebar-text">Thuộc Tính</span>
+                </a>
+                <a href="{{ route('admin.item-types') }}"
+                    class="list-group-item list-group-item-action py-2 ps-5 bg-secondary {{ request()->routeIs('admin.item-types') ? 'active' : '' }}">
+                    <i class="fa-solid fa-layer-group me-2"></i>
+                    <span class="sidebar-text">Loại Tem (Prefix)</span>
                 </a>
             </div>
 

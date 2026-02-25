@@ -6,7 +6,7 @@ use Livewire\Component;
 use App\Models\Item;
 use App\Models\Order;
 use Illuminate\Support\Facades\Auth;
-use App\Models\ProductModel;
+use App\Models\Product;
 
 class ScanProduct extends Component
 {
@@ -29,13 +29,13 @@ class ScanProduct extends Component
         // Lấy đơn hàng đang chạy
         $this->orders = Order::where('status', 'RUNNING')->orderBy('id', 'desc')->get();
         if ($user->department_id) {
-            $this->models = ProductModel::whereHas('departments', function ($q) use ($user) {
+            $this->models = Product::whereHas('departments', function ($q) use ($user) {
                 $q->where('departments.id', $user->department_id);
             })->get();
         } else {
             // Nếu user không thuộc phòng ban nào, hoặc là Admin -> Lấy hết (hoặc rỗng tùy logic)
             // Ở đây mình lấy hết để dễ test, bạn có thể để [] nếu muốn chặt chẽ
-            $this->models = ProductModel::all();
+            $this->models = Product::all();
         }
     }
 
@@ -129,7 +129,7 @@ class ScanProduct extends Component
                 $updateData['product_model_id'] = $this->selectedModelId;
 
                 // Cập nhật MA_VAI trong properties (thường Mã vải = Mã Model)
-               $model = ProductModel::find($this->selectedModelId);
+               $model = Product::find($this->selectedModelId);
                 if ($model) {
                     $properties['MA_VAI'] = $model->code;
                     $hasChange = true;

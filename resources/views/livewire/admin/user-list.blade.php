@@ -32,7 +32,7 @@
 
             <div class="table-responsive">
                 <table class="table table-hover table-striped">
-                    <thead class="table-light">
+                    <thead>
                         <tr>
                             <th scope="col">ID</th>
                             <th scope="col">{{ __('Tên') }}</th>

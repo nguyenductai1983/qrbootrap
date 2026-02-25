@@ -5,21 +5,26 @@ namespace App\Livewire\Admin;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\Order;
-
+use App\Enums\OrderStatus; // <-- Import Enum
+use Illuminate\Validation\Rule; // <-- Import Rule để validate
 class OrderManager extends Component
 {
     use WithPagination;
 
-    public $code, $customer_name, $status = 'RUNNING', $orderId;
+    public $code, $customer_name, $status = OrderStatus::RUNNING, $orderId;
     public $isEditMode = false;
     public $searchTerm = '';
-
+    public function mount()
+    {
+        // Gán giá trị mặc định khi vừa mở form
+        $this->status = OrderStatus::RUNNING->value;
+    }
     // Reset form khi đóng modal hoặc hủy
     public function resetInput()
     {
         $this->code = '';
         $this->customer_name = '';
-        $this->status = 'RUNNING';
+        $this->status = OrderStatus::RUNNING;
         $this->orderId = null;
         $this->isEditMode = false;
         $this->resetErrorBag();
@@ -50,7 +55,7 @@ class OrderManager extends Component
             $this->orderId = $order->id;
             $this->code = $order->code;
             $this->customer_name = $order->customer_name;
-            $this->status = $order->status;
+            $this->status = $order->status->value; // Lấy giá trị chuỗi từ Enum để gán vào select
             $this->isEditMode = true;
             $this->dispatch('open-modal'); // Mở modal bằng JS
         }

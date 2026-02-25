@@ -15,10 +15,11 @@ use Spatie\Permission\Models\Role;
 use App\Livewire\Production\BarcodeGenerator;
 use App\Livewire\Production\ScanProduct;
 use App\Livewire\Admin\OrderManager;
-use App\Livewire\Admin\ProductModelManager;
+use App\Livewire\Admin\ProductManager;
 use App\Livewire\Production\ExcelManager;
 use App\Livewire\Production\BarcodeList;
-
+use App\Livewire\Admin\PropertyManager;
+use App\Livewire\Admin\ItemTypeManager;
 //Role::withoutGlobalScopes()->get(); // Lấy tất cả vai trò mà không áp dụng bất kỳ global scope nào
 Route::view('/', 'welcome');
 
@@ -90,7 +91,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->middleware('permission:print barcodes');
     Route::get('/scan-mobile', ScanProduct::class)->name('production.scan');
     Route::get('/orders', OrderManager::class)->name('admin.orders');
-    Route::get('/models', ProductModelManager::class)->name('admin.models');
+    Route::get('/products', ProductManager::class)->name('admin.products');
     Route::get('/excel-manager', ExcelManager::class)->name('production.excel-manager');
     Route::get('/barcode-list', BarcodeList::class)->name('production.list');
+    Route::get('/properties', PropertyManager::class)->name('admin.properties');
+    Route::get('/item-types', ItemTypeManager::class)->name('admin.item-types');
 });

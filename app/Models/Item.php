@@ -14,6 +14,7 @@ class Item extends Model
         'status',
         'current_location_id',
         'order_id',
+        'product_id', // <-- Thêm khóa ngoại liên kết với Product
         'properties',
         'created_by',
         'verified_at',
@@ -67,5 +68,10 @@ class Item extends Model
     public function movements()
     {
         return $this->hasMany(ItemMovement::class);
+    }
+    public function product()
+    {
+        // Chỉ định rõ khóa ngoại là 'product_model_id' vì nó không theo chuẩn tên mặc định 'product_id'
+        return $this->belongsTo(Product::class, 'product_id');
     }
 }

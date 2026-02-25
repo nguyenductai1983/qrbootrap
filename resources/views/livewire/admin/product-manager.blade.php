@@ -1,8 +1,8 @@
 <div class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h4 class="fw-bold text-success"><i class="fa-solid fa-layer-group me-2"></i>Quản Lý Model Sản Phẩm</h4>
-        <button wire:click="resetInput" data-bs-toggle="modal" data-bs-target="#modelModal" class="btn btn-success">
-            <i class="fa-solid fa-plus"></i> Thêm Model Mới
+        <h4 class="fw-bold text-success"><i class="fa-solid fa-layer-group me-2"></i>Quản Lý Sản Phẩm</h4>
+        <button wire:click="resetInput" data-bs-toggle="modal" data-bs-target="#productModal" class="btn btn-success">
+            <i class="fa-solid fa-plus"></i> Thêm Sản Phẩm Mới
         </button>
     </div>
 
@@ -15,39 +15,40 @@
 
     <div class="card shadow-sm">
         <div class="card-body">
-            <input type="text" wire:model.live="searchTerm" class="form-control mb-3"
-                placeholder="Tìm kiếm mã Model hoặc tên vải...">
+            {{-- Đã sửa wire:product.live thành wire:model.live --}}
+            <input type="text" wire:product.live="searchTerm" class="form-control mb-3"
+                placeholder="Tìm kiếm mã sản phẩm hoặc tên vải...">
 
             <table class="table table-hover align-middle">
-                <thead class="table-light">
+                <thead>
                     <tr>
-                        <th>Mã Model</th>
+                        <th>Mã Sản Phẩm</th>
                         <th>Tên Sản Phẩm</th>
                         <th>Phân Xưởng Áp Dụng</th>
                         <th class="text-end">Hành Động</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($models as $model)
+                    @foreach ($products as $product)
                         <tr>
-                            <td class="fw-bold">{{ $model->code }}</td>
+                            <td class="fw-bold">{{ $product->code }}</td>
                             <td>
-                                <div>{{ $model->name }}</div>
-                                <small class="text-muted">{{ Str::limit($model->specs, 50) }}</small>
+                                <div>{{ $product->name }}</div>
+                                <small class="text-muted">{{ Str::limit($product->specs, 50) }}</small>
                             </td>
                             <td>
-                                @foreach ($model->departments as $dept)
+                                @foreach ($product->departments as $dept)
                                     <span class="badge bg-info text-dark mb-1">{{ $dept->code }}</span>
                                 @endforeach
                             </td>
                             <td class="text-end">
-                                <button wire:click="edit({{ $model->id }})"
+                                <button wire:click="edit({{ $product->id }})"
                                     class="btn btn-sm btn-outline-primary me-1" data-bs-toggle="modal"
-                                    data-bs-target="#modelModal">
+                                    data-bs-target="#productModal">
                                     <i class="fa-solid fa-pen"></i>
                                 </button>
-                                <button wire:confirm="Xóa Model này sẽ ảnh hưởng đến các tem đã in. Bạn chắc chứ?"
-                                    wire:click="delete({{ $model->id }})" class="btn btn-sm btn-outline-danger">
+                                <button wire:confirm="Xóa sản phẩm này sẽ ảnh hưởng đến các tem đã in. Bạn chắc chứ?"
+                                    wire:click="delete({{ $product->id }})" class="btn btn-sm btn-outline-danger">
                                     <i class="fa-solid fa-trash"></i>
                                 </button>
                             </td>
@@ -55,22 +56,24 @@
                     @endforeach
                 </tbody>
             </table>
-            {{ $models->links() }}
+            {{ $products->links() }}
         </div>
     </div>
 
-    <div wire:ignore.self class="modal fade" id="modelModal" tabindex="-1">
+    {{-- Đã sửa id="product" thành id="productModal" --}}
+    <div wire:ignore.self class="modal fade" id="productModal" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">{{ $isEditMode ? 'Cập Nhật Model' : 'Thêm Model Mới' }}</h5>
+                    <h5 class="modal-title">{{ $isEditMode ? 'Cập Nhật Sản Phẩm' : 'Thêm Sản Phẩm Mới' }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <form wire:submit.prevent="{{ $isEditMode ? 'update' : 'store' }}">
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Mã Model (Code) <span class="text-danger">*</span></label>
+                                <label class="form-label">Mã Sản Phẩm (Code) <span class="text-danger">*</span></label>
+                                {{-- Đã sửa wire:product thành wire:model --}}
                                 <input type="text" wire:model="code" class="form-control text-uppercase"
                                     placeholder="VD: VAI-CVC-40S">
                                 @error('code')
@@ -79,6 +82,7 @@
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Tên Sản Phẩm <span class="text-danger">*</span></label>
+                                {{-- Đã sửa wire:product thành wire:model --}}
                                 <input type="text" wire:model="name" class="form-control"
                                     placeholder="VD: Vải Thun CVC 40s">
                                 @error('name')
@@ -87,6 +91,7 @@
                             </div>
                             <div class="col-12 mb-3">
                                 <label class="form-label">Quy cách / Mô tả</label>
+                                {{-- Đã sửa wire:product thành wire:model --}}
                                 <textarea wire:model="specs" class="form-control" rows="2" placeholder="Ghi chú về thành phần, định lượng..."></textarea>
                             </div>
 
@@ -98,6 +103,7 @@
                                         @foreach ($departments as $dept)
                                             <div class="col-md-6">
                                                 <div class="form-check">
+                                                    {{-- Đã sửa wire:product thành wire:model --}}
                                                     <input class="form-check-input" type="checkbox"
                                                         wire:model="selectedDepartments" value="{{ $dept->id }}"
                                                         id="dept_{{ $dept->id }}">
@@ -129,7 +135,7 @@
     <script>
         document.addEventListener('livewire:initialized', () => {
             Livewire.on('close-modal', () => {
-                var myModalEl = document.getElementById('modelModal');
+                var myModalEl = document.getElementById('productModal');
                 var modal = bootstrap.Modal.getInstance(myModalEl);
                 if (modal) modal.hide();
             });

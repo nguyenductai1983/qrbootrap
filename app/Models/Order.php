@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+use App\Enums\OrderStatus; // <-- Thêm dòng này
 class Order extends Model
 {
     use HasFactory;
@@ -13,6 +13,7 @@ class Order extends Model
 
     protected $casts = [
         'meta_data' => 'array', // Tự động chuyển JSON sang mảng
+        'status' => OrderStatus::class, // <-- Báo cho Laravel biết status là Enum
     ];
 
     public function items()

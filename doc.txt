@@ -18,3 +18,7 @@ php artisan make:livewire Production/ExcelManager
 php artisan db:seed --class=ModelSeeder
 cài đặt tạo QR codoe
 composer require simplesoftwareio/simple-qrcode
+
+php artisan make:model ItemProperty -m
+php artisan make:migration add_product_relation_to_item_properties
+php artisan make:model ItemType -m

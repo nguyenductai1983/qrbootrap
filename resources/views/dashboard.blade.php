@@ -171,7 +171,7 @@
                                     <h6 class="fw-bold mb-0">Model Sản Phẩm</h6>
                                     <small class="text-muted">Danh mục sản phẩm</small>
                                 </div>
-                                <a href="{{ route('admin.models') }}" class="stretched-link text-secondary"><i
+                                <a href="{{ route('admin.products') }}" class="stretched-link text-secondary"><i
                                         class="fas fa-chevron-right"></i></a>
                             </div>
                         </div>

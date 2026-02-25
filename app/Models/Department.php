@@ -14,7 +14,7 @@ class Department extends Model
     {
         return $this->hasMany(User::class);
     }
-    public function productModels() {
-        return $this->belongsToMany(ProductModel::class, 'department_product_model');
+    public function products() {
+        return $this->belongsToMany(Product::class, 'department_product');
     }
 }
