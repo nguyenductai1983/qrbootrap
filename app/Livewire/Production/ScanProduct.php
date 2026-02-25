@@ -7,7 +7,7 @@ use App\Models\Item;
 use App\Models\Order;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Product;
-
+USE App\Enums\ItemStatus;
 class ScanProduct extends Component
 {
     // Dữ liệu chung
@@ -83,7 +83,7 @@ class ScanProduct extends Component
         }
 
         // 2. Kiểm tra đã quét chưa
-        if ($item->status == 'VERIFIED' || $item->verified_at) {
+        if ($item->status == ItemStatus::VERIFIED || $item->verified_at) {
             $this->scanStatus = 'warning';
             $this->message = "⚠️ Cảnh báo: Mã này ĐÃ ĐƯỢC QUÉT trước đó.";
             $this->itemInfo = $item->properties;
@@ -99,7 +99,8 @@ class ScanProduct extends Component
 
         // 3. CHUẨN BỊ DỮ LIỆU CẬP NHẬT
         $updateData = [
-            'status' => 'VERIFIED',
+            'status' => ItemStatus::VERIFIED,
+            'order_id' => !empty($this->selectedOrderId) ? $this->selectedOrderId : $item->order_id,
             'verified_at' => now(),
             'verified_by' => Auth::id(),
         ];
