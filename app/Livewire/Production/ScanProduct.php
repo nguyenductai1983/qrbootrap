@@ -17,9 +17,9 @@ class ScanProduct extends Component
     public $orders;
 
     // BIẾN MỚI
-    public $models = []; // Danh sách Model theo bộ phận
+    public $products = []; // Danh sách Model theo bộ phận
     public $selectedOrderId = '';
-    public $selectedModelId = ''; // Model nhân viên chọn
+    public $selectedProductId = ''; // Model nhân viên chọn
 
     public $lastScannedCode = null;
     public $scannedCodeInput = '';
@@ -27,15 +27,15 @@ class ScanProduct extends Component
     {
         $user = Auth::user();
         // Lấy đơn hàng đang chạy
-        $this->orders = Order::where('status', 'RUNNING')->orderBy('id', 'desc')->get();
+        $this->orders = Order::where('status','>=', 1)->orderBy('id', 'desc')->get();
         if ($user->department_id) {
-            $this->models = Product::whereHas('departments', function ($q) use ($user) {
+            $this->products = Product::whereHas('departments', function ($q) use ($user) {
                 $q->where('departments.id', $user->department_id);
             })->get();
         } else {
             // Nếu user không thuộc phòng ban nào, hoặc là Admin -> Lấy hết (hoặc rỗng tùy logic)
             // Ở đây mình lấy hết để dễ test, bạn có thể để [] nếu muốn chặt chẽ
-            $this->models = Product::all();
+            $this->products = Product::all();
         }
     }
 
@@ -124,14 +124,14 @@ class ScanProduct extends Component
         // Lưu ý: Nếu user để trống selectedOrderId -> Giữ nguyên order_id cũ của tem (Không làm gì cả)
 
         // --- B. Cập nhật Model (Nếu user có chọn) ---
-        if (!empty($this->selectedModelId)) {
-            if ($item->product_model_id != $this->selectedModelId) {
-                $updateData['product_model_id'] = $this->selectedModelId;
+        if (!empty($this->selectedProductId)) {
+            if ($item->product_id != $this->selectedProductId) {
+                $updateData['product_id'] = $this->selectedProductId;
 
                 // Cập nhật MA_VAI trong properties (thường Mã vải = Mã Model)
-               $model = Product::find($this->selectedModelId);
-                if ($model) {
-                    $properties['MA_VAI'] = $model->code;
+               $product = Product::find($this->selectedProductId);
+                if ($product) {
+                    $properties['SP'] = $product->code;
                     $hasChange = true;
                 }
             }

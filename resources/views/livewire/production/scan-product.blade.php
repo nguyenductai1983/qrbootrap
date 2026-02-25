@@ -25,11 +25,11 @@
                         {{-- 2. Chọn Model --}}
                         <div class="col-6">
                             <label class="small text-muted fw-bold">Gán Model</label>
-                            <select wire:model.live="selectedModelId"
+                            <select wire:model.live="selectedProductId"
                                 class="form-select form-select-sm border-secondary fw-bold text-success">
                                 <option value="">-- Mặc định --</option>
-                                @foreach ($models as $model)
-                                    <option value="{{ $model->id }}">{{ $model->code }} - {{ $model->name }}
+                                @foreach ($products as $product)
+                                    <option value="{{ $product->id }}">{{ $product->code }} - {{ $product->name }}
                                     </option>
                                 @endforeach
                             </select>
