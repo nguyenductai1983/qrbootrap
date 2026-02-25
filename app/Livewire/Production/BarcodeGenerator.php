@@ -189,11 +189,9 @@ class BarcodeGenerator extends Component
     {
         $this->validate([
             'selectedDeptCode' => 'required',
-            'itemData.ORDER_ID' => 'required',
             'itemData.PRODUCT_ID' => 'required',
             'quantity' => 'required|integer|min:1',
         ], [
-            'itemData.ORDER_ID.required' => 'Vui lòng chọn Đơn hàng.',
             'itemData.PRODUCT_ID.required' => 'Vui lòng chọn sản phẩm.',
         ]);
 
@@ -210,22 +208,23 @@ class BarcodeGenerator extends Component
             $item = Item::create([
                 'code' => (string) Str::uuid(), // Mã tạm ngẫu nhiên để không bị lỗi trùng
                 'type' => $this->type,
-                'status' => 'NEW',
+                'status' => 1,
                 'properties' => $this->itemData,
                 'created_by' => Auth::id(),
                 // Map thêm các cột khóa ngoại nếu bạn đã tạo trong DB
-                'order_id' => $this->itemData['ORDER_ID'] ?? null,
-                'product_id' => $this->itemData['PRODUCT_ID'] ?? null,
+                'order_id' => !empty($this->itemData['ORDER_ID']) ? $this->itemData['ORDER_ID'] : null,
+                'product_id' => !empty($this->itemData['PRODUCT_ID']) ? $this->itemData['PRODUCT_ID'] : null,
             ]);
-
+            $prefix .= '-' . Product::find($this->itemData['PRODUCT_ID'])->code; // Thêm mã sản phẩm vào prefix
             // 2. SINH MÃ CHÍNH THỨC DỰA TRÊN ID VỪA CÓ
             // Sử dụng str_pad 6 số để mã đẹp và đều (VD: ID 5 -> ...000005)
             // Nếu ID của bạn lớn, nó sẽ tự giãn ra, không bị cắt
             // Thêm thuộc tính động vào item
             $code_properties = '';
             foreach ($this->dynamicProperties as $prop) {
-
-                $code_properties .= '-' . ($this->itemData[$prop->code] ?? '');
+                if (isset($this->itemData[$prop->code]) && $this->itemData[$prop->code] !== '') {
+                    $code_properties .= $this->itemData[$prop->code] . '-';
+                }
             }
             $code_properties .= '-';
             $realCode = strtoupper($prefix . $code_properties . str_pad($item->id, 6, '0', STR_PAD_LEFT));
