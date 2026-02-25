@@ -77,7 +77,7 @@
                     </div>
 
                     {{-- 3. KHUNG CAMERA (Ẩn mặc định) --}}
-                    <div id="camera-container" style="display:none;" class="mb-4">
+                    <div id="camera-container" style="display:none;" class="mb-4" wire:ignore>
                         <div class="position-relative border rounded overflow-hidden shadow-sm bg-black">
                             <div id="reader" style="width: 100%;"></div>
                             <button onclick="stopCamera()"
@@ -104,6 +104,12 @@
                                 @endif
                                 {{ $message }}
                             </h4>
+                            {{-- MỚI THÊM: Nút Quét lại hiển thị khi có lỗi hoặc cảnh báo --}}
+                            @if ($scanStatus == 'error' || $scanStatus == 'warning')
+                                <button wire:click="resetScan" class="btn btn-sm btn-outline-dark mt-3">
+                                    <i class="fa-solid fa-rotate-right me-1"></i> Bấm để quét lại
+                                </button>
+                            @endif
                         </div>
                     @endif
 
@@ -223,6 +229,26 @@
                         toast.addEventListener('mouseleave', Swal.resumeTimer)
                     }
                 });
+            });
+            Livewire.on('resume-camera', () => {
+                if (isCameraRunning) {
+                    // Nếu camera đang chạy (Mobile), ẩn các phần tử giữ chỗ đi
+                    // Cần setTimeout nhỏ để đợi Livewire render xong HTML mới
+                    setTimeout(() => {
+                        const placeholder = document.getElementById('placeholder-icon');
+                        if (placeholder) placeholder.style.display = 'none';
+
+                        const mobileGuide = document.getElementById('mobile-guide');
+                        if (mobileGuide) mobileGuide.style.display = 'none';
+                    }, 50);
+                } else {
+                    // Nếu dùng máy quét PC, xóa ô input và focus lại
+                    const input = document.getElementById('scannerInput');
+                    if (input) {
+                        input.value = '';
+                        input.focus();
+                    }
+                }
             });
         });
 

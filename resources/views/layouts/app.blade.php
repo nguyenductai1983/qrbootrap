@@ -52,7 +52,7 @@
                     <button class="btn btn-primary d-block" id="sidebarToggle"><i class="fas fa-bars"></i></button>
 
                     {{-- Brand cho mobile: Chỉ hiển thị khi sidebar ẩn trên mobile --}}
-                    <a class="navbar-brand d-lg-none ms-3" href="#">Laravel Admin</a>
+                    <a class="navbar-brand d-lg-none ms-3" href="#">QR Mobile</a>
 
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                         data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
