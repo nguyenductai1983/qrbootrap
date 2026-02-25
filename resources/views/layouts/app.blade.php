@@ -13,6 +13,10 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+
+    <meta name="theme-color" content="#0d6efd" />
+    <link rel="manifest" href="{{ asset('manifest.json') }}">
+    <link rel="apple-touch-icon" href="{{ asset('images/icons/icon-192x192.png') }}">
     <style>
         /* Bắt buộc hiển thị menu con khi nó có class .show, bất kể sidebar đang đóng hay mở */
         #wrapper.toggled #sidebar-wrapper .collapse.show {
@@ -186,7 +190,7 @@
                 themeToggleBtn.addEventListener('click', () => {
                     // Đảo ngược theme
                     const newTheme = htmlElement.getAttribute('data-bs-theme') === 'dark' ? 'light' :
-                    'dark';
+                        'dark';
 
                     // Cập nhật lại HTML và LocalStorage
                     htmlElement.setAttribute('data-bs-theme', newTheme);
