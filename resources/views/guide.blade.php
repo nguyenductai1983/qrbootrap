@@ -206,7 +206,7 @@
                                                 <tbody>
                                                     <tr>
                                                         <td>1</td>
-                                                        <td><a href="{{ route('admin.models') }}">Model Sản Phẩm</a></td>
+                                                        <td><a href="{{ route('admin.products') }}">Model Sản Phẩm</a></td>
                                                         <td>Tạo danh sách các mã hàng (Ví dụ: Áo thun, Vải Cotton...)</td>
                                                     </tr>
                                                     <tr>
