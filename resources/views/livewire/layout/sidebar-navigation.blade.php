@@ -47,7 +47,7 @@
                 <span class="sidebar-text">Danh Sách Tem</span>
             </a>
         @endcan
-        @role('manager')
+        @role('manager|admin')
             @can('product manager')
                 {{-- MỚI: Dropdown Quản lý Dữ liệu Sản xuất (Orders & products) --}}
                 <div class="list-group-item py-3 ps-4 pe-2 d-flex justify-content-between align-items-center sidebar-dropdown-toggle"
