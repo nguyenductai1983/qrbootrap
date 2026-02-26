@@ -33,7 +33,7 @@
             </a>
         @endcan
 
-        @can('scan products')
+        @can('products scan')
             <a href="{{ route('production.scan') }}"
                 class="list-group-item list-group-item-action py-3 ps-4 {{ request()->routeIs('production.scan') ? 'active' : '' }}">
                 <i class="fa-solid fa-barcode me-2"></i>
@@ -47,7 +47,53 @@
                 <span class="sidebar-text">Danh Sách Tem</span>
             </a>
         @endcan
+        @role('manager')
+            @can('product manager')
+                {{-- MỚI: Dropdown Quản lý Dữ liệu Sản xuất (Orders & products) --}}
+                <div class="list-group-item py-3 ps-4 pe-2 d-flex justify-content-between align-items-center sidebar-dropdown-toggle"
+                    data-bs-toggle="collapse" href="#productionConfigSubmenu" role="button"
+                    aria-expanded="{{ request()->routeIs('manager.orders') || request()->routeIs('manager.products') ? 'true' : 'false' }}"
+                    aria-controls="productionConfigSubmenu">
+                    <div>
+                        <i class="fa-solid fa-boxes-stacked me-2"></i> {{-- Icon kho hàng/dữ liệu --}}
+                        <span class="sidebar-text">Dữ liệu Sản xuất</span>
+                    </div>
+                    <i class="fas fa-chevron-down sidebar-arrow"></i>
+                </div>
 
+                <div class="collapse {{ request()->routeIs('manager.orders') || request()->routeIs('manager.products') ? 'show' : '' }}"
+                    id="productionConfigSubmenu" data-bs-parent="#sidebar-wrapper">
+                    {{-- Link Đơn Hàng --}}
+                    <a href="{{ route('manager.orders') }}"
+                        class="list-group-item list-group-item-action py-2 ps-5 bg-secondary {{ request()->routeIs('manager.orders') ? 'active' : '' }}">
+                        <i class="fa-solid fa-file-invoice me-2"></i>
+                        <span class="sidebar-text">Đơn hàng (PO)</span>
+                    </a>
+
+                    {{-- Link Sản Phẩm --}}
+                    <a href="{{ route('manager.products') }}"
+                        class="list-group-item list-group-item-action py-2 ps-5 bg-secondary {{ request()->routeIs('manager.products') ? 'active' : '' }}">
+                        <i class="fa-solid fa-layer-group me-2"></i>
+                        <span class="sidebar-text"> Sản phẩm</span>
+                    </a>
+                    <a href="{{ route('manager.properties') }}"
+                        class="list-group-item list-group-item-action py-2 ps-5 bg-secondary {{ request()->routeIs('manager.properties') ? 'active' : '' }}">
+                        <i class="fa-solid fa-tags me-2"></i>
+                        <span class="sidebar-text">Thuộc Tính</span>
+                    </a>
+                    <a href="{{ route('manager.item-types') }}"
+                        class="list-group-item list-group-item-action py-2 ps-5 bg-secondary {{ request()->routeIs('manager.item-types') ? 'active' : '' }}">
+                        <i class="fa-solid fa-layer-group me-2"></i>
+                        <span class="sidebar-text">Loại Tem (Prefix)</span>
+                    </a>
+                    <a href="{{ route('manager.items') }}"
+                        class="list-group-item list-group-item-action py-2 ps-5 bg-secondary {{ request()->routeIs('manager.items') ? 'active' : '' }}">
+                        <i class="fa-solid fa-tags me-2"></i>
+                        <span class="sidebar-text">Code đã tạo (Items)</span>
+                    </a>
+                </div>
+            @endcan
+        @endrole
         {{-- 3. NHÓM QUẢN TRỊ (ADMIN ONLY) --}}
         @role('admin')
             {{-- MỚI: --}}
@@ -59,45 +105,6 @@
                 <i class="fas fa-ellipsis-h d-none mini-icon-separator"></i>
             </div>
 
-            {{-- MỚI: Dropdown Quản lý Dữ liệu Sản xuất (Orders & products) --}}
-            <div class="list-group-item py-3 ps-4 pe-2 d-flex justify-content-between align-items-center sidebar-dropdown-toggle"
-                data-bs-toggle="collapse" href="#productionConfigSubmenu" role="button"
-                aria-expanded="{{ request()->routeIs('admin.orders') || request()->routeIs('admin.products') ? 'true' : 'false' }}"
-                aria-controls="productionConfigSubmenu">
-                <div>
-                    <i class="fa-solid fa-boxes-stacked me-2"></i> {{-- Icon kho hàng/dữ liệu --}}
-                    <span class="sidebar-text">Dữ liệu Sản xuất</span>
-                </div>
-                <i class="fas fa-chevron-down sidebar-arrow"></i>
-            </div>
-
-            <div class="collapse {{ request()->routeIs('admin.orders') || request()->routeIs('admin.products') ? 'show' : '' }}"
-                id="productionConfigSubmenu" data-bs-parent="#sidebar-wrapper">
-
-                {{-- Link Đơn Hàng --}}
-                <a href="{{ route('admin.orders') }}"
-                    class="list-group-item list-group-item-action py-2 ps-5 bg-secondary {{ request()->routeIs('admin.orders') ? 'active' : '' }}">
-                    <i class="fa-solid fa-file-invoice me-2"></i>
-                    <span class="sidebar-text">Đơn hàng (PO)</span>
-                </a>
-
-                {{-- Link Sản Phẩm --}}
-                <a href="{{ route('admin.products') }}"
-                    class="list-group-item list-group-item-action py-2 ps-5 bg-secondary {{ request()->routeIs('admin.products') ? 'active' : '' }}">
-                    <i class="fa-solid fa-layer-group me-2"></i>
-                    <span class="sidebar-text"> Sản phẩm</span>
-                </a>
-                <a href="{{ route('admin.properties') }}"
-                    class="list-group-item list-group-item-action py-2 ps-5 bg-secondary {{ request()->routeIs('admin.properties') ? 'active' : '' }}">
-                    <i class="fa-solid fa-tags me-2"></i>
-                    <span class="sidebar-text">Thuộc Tính</span>
-                </a>
-                <a href="{{ route('admin.item-types') }}"
-                    class="list-group-item list-group-item-action py-2 ps-5 bg-secondary {{ request()->routeIs('admin.item-types') ? 'active' : '' }}">
-                    <i class="fa-solid fa-layer-group me-2"></i>
-                    <span class="sidebar-text">Loại Tem (Prefix)</span>
-                </a>
-            </div>
 
             {{-- Dropdown Quản lý Người dùng (Cũ) --}}
             <div class="list-group-item py-3 ps-4 pe-2 d-flex justify-content-between align-items-center sidebar-dropdown-toggle"

@@ -55,12 +55,12 @@
                                 </td>
                                 <td>{{ $user->department->name ?? '-' }}</td>
                                 <td>
-                                    @can('edit users')
+                                    @can('users edit')
                                         <a href="{{ route('users.edit', $user) }}" class="btn btn-sm btn-info me-2">
                                             {{ __('Sửa') }}
                                         </a>
                                     @endcan
-                                    @can('delete users')
+                                    @can('users delete')
                                         <button wire:click="deleteUser({{ $user->id }})"
                                                 onclick="return confirm('Bạn có chắc chắn muốn xóa người dùng này không?');"
                                                 class="btn btn-sm btn-danger"

@@ -16,36 +16,47 @@ class RolesAndPermissionsSeeder extends Seeder
 
         // 1. Tạo Permissions
         // Quyền quản lý người dùng
-        Permission::firstOrCreate(['name' => 'view users']);
-        Permission::firstOrCreate(['name' => 'create users']);
-        Permission::firstOrCreate(['name' => 'edit users']);
-        Permission::firstOrCreate(['name' => 'delete users']);
-        Permission::firstOrCreate(['name' => 'assign roles to users']); // Quyền mới: gán vai trò cho người dùng
+        Permission::firstOrCreate(['name' => 'users view']);
+        Permission::firstOrCreate(['name' => 'users create']);
+        Permission::firstOrCreate(['name' => 'users edit']);
+        Permission::firstOrCreate(['name' => 'users delete']);
+        Permission::firstOrCreate(['name' => 'users assign roles']); // Quyền mới: gán vai trò cho người dùng
 
         // Quyền quản lý phòng ban
-        Permission::firstOrCreate(['name' => 'view departments']);
-        Permission::firstOrCreate(['name' => 'create departments']);
-        Permission::firstOrCreate(['name' => 'edit departments']);
-        Permission::firstOrCreate(['name' => 'delete departments']);
+        Permission::firstOrCreate(['name' => 'departments view']);
+        Permission::firstOrCreate(['name' => 'departments create']);
+        Permission::firstOrCreate(['name' => 'departments edit']);
+        Permission::firstOrCreate(['name' => 'departments delete']);
 
         // Quyền quản lý vai trò
-        Permission::firstOrCreate(['name' => 'view roles']);
-        Permission::firstOrCreate(['name' => 'create roles']);
-        Permission::firstOrCreate(['name' => 'edit roles']);
-        Permission::firstOrCreate(['name' => 'delete roles']);
-        Permission::firstOrCreate(['name' => 'assign permissions to roles']); // Quyền mới: gán quyền cho vai trò
+        Permission::firstOrCreate(['name' => 'roles view']);
+        Permission::firstOrCreate(['name' => 'roles create']);
+        Permission::firstOrCreate(['name' => 'roles edit']);
+        Permission::firstOrCreate(['name' => 'roles delete']);
+        Permission::firstOrCreate(['name' => 'roles assign permissions']); // Quyền mới: gán quyền cho vai trò
 
         // Quyền quản lý quyền hạn (ít dùng trực tiếp)
-        Permission::firstOrCreate(['name' => 'view permissions']);
-        Permission::firstOrCreate(['name' => 'create permissions']);
-        Permission::firstOrCreate(['name' => 'edit permissions']);
-        Permission::firstOrCreate(['name' => 'delete permissions']);
+        Permission::firstOrCreate(['name' => 'permissions view']);
+        Permission::firstOrCreate(['name' => 'permissions create']);
+        Permission::firstOrCreate(['name' => 'permissions edit']);
+        Permission::firstOrCreate(['name' => 'permissions delete']);
         Permission::firstOrCreate(['name' => 'print barcodes']); // Quyền mới: in mã vạch
-        Permission::firstOrCreate(['name' => 'scan products']);
+        Permission::firstOrCreate(['name' => 'products scan']); // Quyền mới: quét sản phẩm
+        Permission::firstOrCreate(['name' => 'product manager']); // Quyền mới: quản lý sản phẩm
         // 2. Tạo Roles và gán Permissions
         // Vai trò Admin: Có tất cả các quyền
         $adminRole = Role::firstOrCreate(['name' => 'admin']);
+        $managerRole = Role::firstOrCreate(['name' => 'manager']);
         $adminRole->givePermissionTo(Permission::all()); // Gán tất cả quyền cho admin
+        $managerRole->givePermissionTo([
+            'departments view',
+            'departments create',
+            'departments edit',
+            'departments delete',
+            'print barcodes', // Quyền mới: in mã vạch
+            'products scan',
+            'product manager',
+        ]);
         // 3. Gán Role cho một người dùng cụ thể (ví dụ: người dùng đầu tiên)
         $user = User::first(); // Lấy người dùng đầu tiên
         if ($user) {

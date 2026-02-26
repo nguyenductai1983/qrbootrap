@@ -50,12 +50,12 @@
                                 <td>{{ $permission->roles_count }}</td>
                                 <td>{{ $permission->created_at->format('d/m/Y H:i') }}</td>
                                 <td>
-                                    @can('edit permissions')
+                                    @can('permissions edit')
                                         <a href="{{ route('permissions.edit', $permission) }}" class="btn btn-sm btn-info me-2">
                                             {{ __('Sửa') }}
                                         </a>
                                     @endcan
-                                    @can('delete permissions')
+                                    @can('permissions delete')
                                         <button wire:click="deletePermission({{ $permission->id }})"
                                                 onclick="return confirm('Bạn có chắc chắn muốn xóa quyền hạn này không?');"
                                                 class="btn btn-sm btn-danger"

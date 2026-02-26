@@ -22,7 +22,7 @@ class UserList extends Component
         // Kiểm tra quyền
         /** @var \App\Models\User $user */
         $user = Auth::user();
-        if (!$user || !$user->can('delete users')) {
+        if (!$user || !$user->can('users delete')) {
             session()->flash('error', 'Bạn không có quyền xóa người dùng!');
             return;
         }

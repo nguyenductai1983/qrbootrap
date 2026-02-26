@@ -21,28 +21,28 @@ class PermissionPolicy
 
     public function viewAny(User $user): Response
     {
-        return $user->hasPermissionTo('view permissions')
+        return $user->hasPermissionTo('permissions view')
                     ? Response::allow()
                     : Response::deny('Bạn không có quyền xem danh sách quyền hạn.');
     }
 
     public function view(User $user, Permission $permission): Response
     {
-        return $user->hasPermissionTo('view permissions')
+        return $user->hasPermissionTo('permissions view')
                     ? Response::allow()
                     : Response::deny('Bạn không có quyền xem quyền hạn này.');
     }
 
     public function create(User $user): Response
     {
-        return $user->hasPermissionTo('create permissions')
+        return $user->hasPermissionTo('permissions create')
                     ? Response::allow()
                     : Response::deny('Bạn không có quyền tạo quyền hạn mới.');
     }
 
     public function update(User $user, Permission $permission): Response
     {
-        return $user->hasPermissionTo('edit permissions')
+        return $user->hasPermissionTo('permissions edit')
                     ? Response::allow()
                     : Response::deny('Bạn không có quyền cập nhật quyền hạn này.');
     }
@@ -53,7 +53,7 @@ class PermissionPolicy
         if ($permission->roles()->count() > 0) {
             return Response::deny('Không thể xóa quyền hạn này vì có vai trò đang giữ nó.');
         }
-        return $user->hasPermissionTo('delete permissions')
+        return $user->hasPermissionTo('permissions delete')
                     ? Response::allow()
                     : Response::deny('Bạn không có quyền xóa quyền hạn này.');
     }

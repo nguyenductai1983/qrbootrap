@@ -134,7 +134,7 @@
             @endif
 
             {{-- 4. KHU VỰC QUẢN TRỊ HỆ THỐNG --}}
-            @role('admin')
+            @role('manager')
                 <h4 class="fw-bold text-secondary mb-3 border-start border-4 border-danger ps-3">
                     Quản Trị Hệ Thống
                 </h4>
@@ -154,7 +154,7 @@
                                     <h6 class="fw-bold mb-0">Đơn Hàng (PO)</h6>
                                     <small class="text-muted">Quản lý PO nhập khẩu</small>
                                 </div>
-                                <a href="{{ route('admin.orders') }}" class="stretched-link text-secondary"><i
+                                <a href="{{ route('manager.orders') }}" class="stretched-link text-secondary"><i
                                         class="fas fa-chevron-right"></i></a>
                             </div>
                         </div>
@@ -171,13 +171,14 @@
                                     <h6 class="fw-bold mb-0">Model Sản Phẩm</h6>
                                     <small class="text-muted">Danh mục sản phẩm</small>
                                 </div>
-                                <a href="{{ route('admin.products') }}" class="stretched-link text-secondary"><i
+                                <a href="{{ route('manager.products') }}" class="stretched-link text-secondary"><i
                                         class="fas fa-chevron-right"></i></a>
                             </div>
                         </div>
                     </div>
                 </div>
-
+            @endrole
+            @role('admin')
                 {{-- Nhóm Phân Quyền --}}
                 <h6 class="text-muted fw-bold text-uppercase small mb-3"><i class="fa-solid fa-user-shield me-1"></i> Phân
                     Quyền & Người Dùng</h6>

@@ -37,7 +37,7 @@
                     <label for="password_confirmation" class="form-label">{{ __('Xác nhận Mật khẩu') }}</label>
                     <input wire:model="password_confirmation" type="password" id="password_confirmation"
                            class="form-control @error('password_confirmation') is-invalid @enderror"
-                           @if($user->exists) placeholder="Để trống nếu không muốn thay đổi" @else required @endif>
+                           @if($user->exists) placeholder="Để trống nếu không muốn thay đổi" @else required @endif autocomplete="new-password">
                     @error('password_confirmation')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror

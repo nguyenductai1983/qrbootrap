@@ -20,21 +20,21 @@ class DepartmentPolicy
      */
     public function viewAny(User $user): Response
     {
-        return $user->hasPermissionTo('view departments')
+        return $user->hasPermissionTo('departments view')
                     ? Response::allow()
                     : Response::deny('Bạn không có quyền xem danh sách phòng ban.');
     }
 
     public function view(User $user, Department $department): Response
     {
-        return $user->hasPermissionTo('view departments')
+        return $user->hasPermissionTo('departments view')
                     ? Response::allow()
                     : Response::deny('Bạn không có quyền xem phòng ban này.');
     }
 
     public function create(User $user): Response
     {
-        return $user->hasPermissionTo('create departments')
+        return $user->hasPermissionTo('departments create')
                     ? Response::allow()
                     : Response::deny('Bạn không có quyền tạo phòng ban mới.');
     }
@@ -45,7 +45,7 @@ class DepartmentPolicy
         if ($department->name === 'admin' && !$user->hasRole('admin')) {
              return Response::deny('Bạn không có quyền chỉnh sửa phòng ban Admin.');
         }
-        return $user->hasPermissionTo('edit departments')
+        return $user->hasPermissionTo('departments edit')
                     ? Response::allow()
                     : Response::deny('Bạn không có quyền cập nhật phòng ban này.');
     }
@@ -56,7 +56,7 @@ class DepartmentPolicy
         if ($department->name === 'admin' || $department->users()->count() > 0) {
             return Response::deny('Không thể xóa phòng ban này.');
         }
-        return $user->hasPermissionTo('delete departments')
+        return $user->hasPermissionTo('departments delete')
                     ? Response::allow()
                     : Response::deny('Bạn không có quyền xóa phòng ban này.');
     }

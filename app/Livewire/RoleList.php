@@ -24,7 +24,7 @@ class RoleList extends Component
         // Kiểm tra quyền
         /** @var User $user */
         $user = Auth::user();
-        if (!$user->can('delete roles')) {
+        if (!$user->can('roles delete')) {
             session()->flash('error', 'Bạn không có quyền xóa vai trò!');
             return;
         }

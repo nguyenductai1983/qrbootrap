@@ -23,7 +23,7 @@ class PermissionList extends Component
         // Kiểm tra quyền
         /** @var \App\Models\User $user */
         $user = Auth::user();
-        if (!$user->can('delete permissions')) {
+        if (!$user->can('permissions delete')) {
             session()->flash('error', 'Bạn không có quyền xóa quyền hạn!');
             return;
         }

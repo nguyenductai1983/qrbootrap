@@ -60,6 +60,7 @@ class RoleForm extends Component
     public function render()
     {
         $title = $this->role->exists ? 'Chỉnh sửa Vai trò' : 'Tạo Vai trò Mới';
+        // $allPermissions = Permission::orderBy('name', 'asc')->get();
         return view('livewire.admin.role-form', compact('title'));
     }
 }

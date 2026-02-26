@@ -20,6 +20,7 @@ use App\Livewire\Production\ExcelManager;
 use App\Livewire\Production\BarcodeList;
 use App\Livewire\Admin\PropertyManager;
 use App\Livewire\Admin\ItemTypeManager;
+use App\Livewire\Production\ItemManager;
 //Role::withoutGlobalScopes()->get(); // Lấy tất cả vai trò mà không áp dụng bất kỳ global scope nào
 Route::view('/', 'welcome');
 
@@ -33,67 +34,63 @@ Route::view('profile', 'profile')
 Route::view('/huong-dan', 'guide')->middleware(['auth'])->name('guide');
 require __DIR__ . '/auth.php';
 Route::middleware(['auth', 'verified'])->group(function () {
-    // Quản lý người dùng
-    Route::get('admin/users', UserList::class)
-        ->name('users.index')
-        // ->middleware('permission:view users');
-        ->middleware('role:admin');
-    // Thêm middleware kiểm tra quyền tạo người dùng
 
-    Route::get('admin/users/create', UserForm::class)
-        ->name('users.create')
-        ->middleware('permission:create users');
+    // ==========================================
+    // 1. NHÓM ADMIN (Tiền tố: /admin/...)
+    // ==========================================
+    Route::prefix('admin')->group(function () {
 
-    Route::get('admin/users/{userId}/edit', UserForm::class)
-        ->name('users.edit')
-        ->middleware('permission:edit users');
+        // --- Quản lý Users ---
+        Route::prefix('users')->name('users.')->group(function () {
+            Route::get('/', UserList::class)->name('index')->middleware('role:admin');
+            Route::get('/create', UserForm::class)->name('create')->middleware('permission:users create');
+            Route::get('/{userId}/edit', UserForm::class)->name('edit')->middleware('permission:users edit');
+        });
 
-    // Quản lý phòng ban
-    Route::get('admin/departments', DepartmentList::class)
-        ->name('departments.index')
-        ->middleware('permission:view departments');
+        // --- Quản lý Departments ---
+        Route::prefix('departments')->name('departments.')->group(function () {
+            Route::get('/', DepartmentList::class)->name('index')->middleware('permission:departments view');
+            Route::get('/create', DepartmentForm::class)->name('create')->middleware('permission:departments create');
+            Route::get('/{departmentId}/edit', DepartmentForm::class)->name('edit')->middleware('permission:departments edit');
+        });
 
-    Route::get('admin/departments/create', DepartmentForm::class)
-        ->name('departments.create')
-        ->middleware('permission:create departments');
+        // --- Quản lý Roles ---
+        Route::prefix('roles')->name('roles.')->group(function () {
+            Route::get('/', RoleList::class)->name('index')->middleware('permission:roles view');
+            Route::get('/create', RoleForm::class)->name('create')->middleware('permission:roles create');
+            Route::get('/{roleId}/edit', RoleForm::class)->name('edit')->middleware('permission:roles edit');
+        });
 
-    Route::get('admin/departments/{departmentId}/edit', DepartmentForm::class)
-        ->name('departments.edit')
-        ->middleware('permission:edit departments');
+        // --- Quản lý Permissions ---
+        Route::prefix('permissions')->name('permissions.')->group(function () {
+            Route::get('/', PermissionList::class)->name('index')->middleware('permission:permissions view');
+            Route::get('/create', PermissionForm::class)->name('create')->middleware('permission:permissions create');
+            Route::get('/{permissionId}/edit', PermissionForm::class)->name('edit')->middleware('permission:permissions edit');
+        });
 
-    // <-- Quản lý Vai trò -->
-    Route::get('admin/roles', RoleList::class)
-        ->name('roles.index')
-        ->middleware('permission:view roles');
+        // --- Các danh mục Admin khác ---
 
-    Route::get('admin/roles/create', RoleForm::class)
-        ->name('roles.create')
-        ->middleware('permission:create roles');
+    });
+    Route::middleware(['permission:product manager'])->prefix('manager')->group(function () {
+        Route::get('/orders', OrderManager::class)->name('manager.orders');
+        Route::get('/products', ProductManager::class)->name('manager.products');
+        Route::get('/properties', PropertyManager::class)->name('manager.properties');
+        Route::get('/item-types', ItemTypeManager::class)->name('manager.item-types');
+        Route::get('/items', ItemManager::class)->name('manager.items');
+    });
+    // ==========================================
+    // 2. NHÓM PRODUCTION (Sản xuất)
+    // ==========================================
+    // Ví dụ: Bọc tất cả các route in tem, quét tem vào chung 1 quyền "manage production"
+    // Nếu các route này dùng chung 1 quyền, đây là cách bạn bọc middleware cho cả group:
+    Route::middleware(['permission:print barcodes'])->group(function () {
+        Route::get('/production/barcode-generator', BarcodeGenerator::class)->name('production.barcode-generator');
+        Route::get('/barcode-list', BarcodeList::class)->name('production.list');
+    });
 
-    Route::get('admin/roles/{roleId}/edit', RoleForm::class)
-        ->name('roles.edit')
-        ->middleware('permission:edit roles');
-
-    // <-- Quản lý Quyền hạn (Tùy chọn, ít dùng trực tiếp) -->
-    Route::get('admin/permissions', PermissionList::class)
-        ->name('permissions.index')
-        ->middleware('permission:view permissions');
-
-    Route::get('admin/permissions/create', PermissionForm::class)
-        ->name('permissions.create')
-        ->middleware('permission:create permissions');
-
-    Route::get('admin/permissions/{permissionId}/edit', PermissionForm::class)
-        ->name('permissions.edit')
-        ->middleware('permission:edit permissions');
-    Route::get('/production/barcode-generator', BarcodeGenerator::class)
-        ->name('production.barcode-generator')
-        ->middleware('permission:print barcodes');
-    Route::get('/scan-mobile', ScanProduct::class)->name('production.scan');
-    Route::get('/orders', OrderManager::class)->name('admin.orders');
-    Route::get('/products', ProductManager::class)->name('admin.products');
-    Route::get('/excel-manager', ExcelManager::class)->name('production.excel-manager');
-    Route::get('/barcode-list', BarcodeList::class)->name('production.list');
-    Route::get('/properties', PropertyManager::class)->name('admin.properties');
-    Route::get('/item-types', ItemTypeManager::class)->name('admin.item-types');
+    // Các route production khác không dùng chung middleware trên
+    Route::prefix('production')->name('production.')->group(function () {
+        Route::get('/scan-mobile', ScanProduct::class)->name('scan'); // Đã gộp tiền tố URL
+        Route::get('/excel-manager', ExcelManager::class)->name('excel-manager');
+    });
 });

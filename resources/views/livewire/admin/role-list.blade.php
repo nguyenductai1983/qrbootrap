@@ -50,12 +50,12 @@
                                 <td>{{ $role->users_count }}</td>
                                 <td>{{ $role->created_at->format('d/m/Y H:i') }}</td>
                                 <td>
-                                    @can('edit roles')
+                                    @can('roles edit')
                                         <a href="{{ route('roles.edit', $role) }}" class="btn btn-sm btn-info me-2">
                                             {{ __('Sửa') }}
                                         </a>
                                     @endcan
-                                    @can('delete roles')
+                                    @can('roles delete')
                                         <button wire:click="deleteRole({{ $role->id }})"
                                                 onclick="return confirm('Bạn có chắc chắn muốn xóa vai trò này không?');"
                                                 class="btn btn-sm btn-danger"

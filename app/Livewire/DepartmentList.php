@@ -22,7 +22,7 @@ class DepartmentList extends Component
     {
         /** @var \App\Models\User $user */
         $user = Auth::user();
-        if (!$user->can('delete departments')) {
+        if (!$user->can('departments delete')) {
             session()->flash('error', 'Bạn không có quyền xóa phòng ban!');
             return;
         }

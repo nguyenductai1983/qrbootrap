@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+use App\Enums\ItemStatus;
 class Item extends Model
 {
     use HasFactory;
@@ -24,6 +24,7 @@ class Item extends Model
     protected $casts = [
         'properties' => 'array', // Lưu màu, khổ, trọng lượng
         'verified_at' => 'datetime',
+        'status' => ItemStatus::class,
     ];
 
     // --- Quan hệ cơ bản ---
