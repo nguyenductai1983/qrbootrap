@@ -32,52 +32,61 @@ new #[Layout('layouts.guest')] class extends Component
 
         Auth::login($user);
 
-        $this->redirect(route('dashboard', absolute: false), navigate: true);
+        // Bỏ navigate: true để ép tải lại toàn trang, giúp hiển thị đúng Sidebar của Admin
+        $this->redirect(route('dashboard', absolute: false));
     }
 }; ?>
 
+{{-- Bỏ thẻ <div class="container..."><div class="card..."> vì layout gốc đã có --}}
 <div>
-    {{-- Bao bọc form trong một container Bootstrap để căn giữa và tạo hiệu ứng thẻ --}}
-    <div class="container d-flex justify-content-center align-items-center" >
-        {{-- Khoảng trống giả định cho Navbar nếu có --}}
-        <div class="card p-4 shadow-lg" style="width: 450px;">
-            <h2 class="text-center mb-4">Đăng ký tài khoản</h2>
+    <h3 class="text-center fw-bold text-primary mb-4">Đăng Ký Tài Khoản</h3>
 
-            <form wire:submit="register">
-                <div class="mb-1">
-                    <label for="name" class="form-label">{{ __('Tên của bạn') }}</label>
-                    <input wire:model="name" id="name" class="form-control" type="text" name="name" required autofocus autocomplete="name" />
-                    @error('name') <div class="text-danger mt-2">{{ $message }}</div> @enderror
-                </div>
+    <form wire:submit="register">
 
-                <div class="mb-1">
-                    <label for="email" class="form-label">{{ __('Email') }}</label>
-                    <input wire:model="email" id="email" class="form-control" type="email" name="email" required autocomplete="username" />
-                    @error('email') <div class="text-danger mt-2">{{ $message }}</div> @enderror
-                </div>
-
-                <div class="mb-1">
-                    <label for="password" class="form-label">{{ __('Mật khẩu') }}</label>
-                    <input wire:model="password" id="password" class="form-control" type="password" name="password" required autocomplete="new-password" />
-                    @error('password') <div class="text-danger mt-2">{{ $message }}</div> @enderror
-                </div>
-
-                <div class="mb-1">
-                    <label for="password_confirmation" class="form-label">{{ __('Xác nhận mật khẩu') }}</label>
-                    <input wire:model="password_confirmation" id="password_confirmation" class="form-control" type="password" name="password_confirmation" required autocomplete="new-password" />
-                    @error('password_confirmation') <div class="text-danger mt-2">{{ $message }}</div> @enderror
-                </div>
-
-                <div class="d-flex justify-content-between align-items-center mt-4">
-                    <a class="text-secondary text-decoration-none" href="{{ route('login') }}" wire:navigate>
-                        {{ __('Đã có tài khoản?') }}
-                    </a>
-
-                    <button type="submit" class="btn btn-primary">
-                        {{ __('Đăng ký') }}
-                    </button>
-                </div>
-            </form>
+        {{-- Tên của bạn --}}
+        <div class="mb-3">
+            <label for="name" class="form-label fw-semibold">{{ __('Tên của bạn') }}</label>
+            <input wire:model="name" id="name" class="form-control form-control-lg" type="text" name="name"
+                required autofocus autocomplete="name" placeholder="Ví dụ: Nguyễn Văn A" />
+            @error('name') <div class="text-danger mt-1 small">{{ $message }}</div> @enderror
         </div>
-    </div>
+
+        {{-- Email --}}
+        <div class="mb-3">
+            <label for="email" class="form-label fw-semibold">{{ __('Email') }}</label>
+            <input wire:model="email" id="email" class="form-control form-control-lg" type="email" name="email"
+                required autocomplete="username" placeholder="name@example.com" />
+            @error('email') <div class="text-danger mt-1 small">{{ $message }}</div> @enderror
+        </div>
+
+        {{-- Mật khẩu --}}
+        <div class="mb-3">
+            <label for="password" class="form-label fw-semibold">{{ __('Mật khẩu') }}</label>
+            <input wire:model="password" id="password" class="form-control form-control-lg" type="password" name="password"
+                required autocomplete="new-password" placeholder="********" />
+            @error('password') <div class="text-danger mt-1 small">{{ $message }}</div> @enderror
+        </div>
+
+        {{-- Xác nhận mật khẩu --}}
+        <div class="mb-4">
+            <label for="password_confirmation" class="form-label fw-semibold">{{ __('Xác nhận mật khẩu') }}</label>
+            <input wire:model="password_confirmation" id="password_confirmation" class="form-control form-control-lg" type="password" name="password_confirmation"
+                required autocomplete="new-password" placeholder="********" />
+            @error('password_confirmation') <div class="text-danger mt-1 small">{{ $message }}</div> @enderror
+        </div>
+
+        {{-- Nút Đăng ký --}}
+        <button type="submit" class="btn btn-primary btn-lg w-100 fw-bold shadow-sm">
+            {{ __('Đăng ký') }}
+        </button>
+
+        {{-- Quay lại Đăng nhập --}}
+        <hr class="my-4 text-muted">
+        <div class="text-center">
+            <p class="text-secondary mb-2 small">Đã có tài khoản?</p>
+            <a class="btn btn-outline-secondary w-100" href="{{ route('login') }}" wire:navigate>
+                Đăng nhập ngay
+            </a>
+        </div>
+    </form>
 </div>

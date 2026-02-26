@@ -206,12 +206,12 @@
                                                 <tbody>
                                                     <tr>
                                                         <td>1</td>
-                                                        <td><a href="{{ route('admin.products') }}">Model Sản Phẩm</a></td>
+                                                        <td><a href="{{ route('manager.products') }}">Model Sản Phẩm</a></td>
                                                         <td>Tạo danh sách các mã hàng (Ví dụ: Áo thun, Vải Cotton...)</td>
                                                     </tr>
                                                     <tr>
                                                         <td>2</td>
-                                                        <td><a href="{{ route('admin.orders') }}">Đơn Hàng (PO)</a></td>
+                                                        <td><a href="{{ route('manager.orders') }}">Đơn Hàng (PO)</a></td>
                                                         <td>Tạo đơn hàng và gán các Model vào đơn hàng đó.</td>
                                                     </tr>
                                                     <tr>

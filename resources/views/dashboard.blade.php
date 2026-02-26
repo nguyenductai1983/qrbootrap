@@ -86,7 +86,7 @@
                     @endcan
 
                     {{-- Chức năng: QUÉT TEM --}}
-                    @can('scan products')
+                    @can('products scan')
                         <div class="col-md-6 col-lg-3">
                             <div class="card h-100 shadow-sm border-0 hover-card">
                                 <div class="card-body d-flex flex-column text-center p-4">
@@ -134,7 +134,7 @@
             @endif
 
             {{-- 4. KHU VỰC QUẢN TRỊ HỆ THỐNG --}}
-            @role('manager')
+            @role('manager|admin')
                 <h4 class="fw-bold text-secondary mb-3 border-start border-4 border-danger ps-3">
                     Quản Trị Hệ Thống
                 </h4>
@@ -168,10 +168,40 @@
                                     <i class="fa-solid fa-layer-group fa-xl"></i>
                                 </div>
                                 <div class="flex-grow-1">
-                                    <h6 class="fw-bold mb-0">Model Sản Phẩm</h6>
+                                    <h6 class="fw-bold mb-0">Sản Phẩm</h6>
                                     <small class="text-muted">Danh mục sản phẩm</small>
                                 </div>
                                 <a href="{{ route('manager.products') }}" class="stretched-link text-secondary"><i
+                                        class="fas fa-chevron-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        <div class="card h-100 shadow-sm border-0 hover-card">
+                            <div class="card-body p-3 d-flex align-items-center">
+                                <div class="bg-secondary bg-opacity-10 text-secondary p-3 rounded me-3">
+                                    <i class="fa-solid fa-tags fa-xl"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="fw-bold mb-0">Loại Sản Phẩm</h6>
+                                    <small class="text-muted">Danh mục loại sản phẩm</small>
+                                </div>
+                                <a href="{{ route('manager.item-types') }}" class="stretched-link text-secondary">
+                                    <i class="fas fa-chevron-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        <div class="card h-100 shadow-sm border-0 hover-card">
+                            <div class="card-body p-3 d-flex align-items-center">
+                                <div class="bg-secondary bg-opacity-10 text-secondary p-3 rounded me-3">
+                                    <i class="fa-solid fa-layer-group fa-xl"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="fw-bold mb-0">Thuộc Tính</h6>
+                                    <small class="text-muted">Danh mục thuộc tính sản phẩm</small>
+                                </div>
+                                <a href="{{ route('manager.properties') }}" class="stretched-link text-secondary"><i
                                         class="fas fa-chevron-right"></i></a>
                             </div>
                         </div>

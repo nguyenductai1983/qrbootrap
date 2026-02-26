@@ -1,6 +1,6 @@
 {{-- sidebar-navigation.blade.php --}}
 <div class="border-right" id="sidebar-wrapper">
-    <div class="sidebar-heading py-4 ps-4 d-flex justify-content-between align-items-center">
+    <div class="sidebar-heading d-flex justify-content-between align-items-center">
         <x-mh-logo-icon class="size-5 fill-current text-white dark:text-black" />
 
         {{-- Nút đóng sidebar cho mobile --}}
