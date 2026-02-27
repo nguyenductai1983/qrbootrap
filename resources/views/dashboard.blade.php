@@ -91,7 +91,7 @@
                             <div class="card h-100 shadow-sm border-0 hover-card">
                                 <div class="card-body d-flex flex-column text-center p-4">
                                     <div class="mb-3">
-                                        <div class="bg-warning bg-opacity-10 text-warning rounded-circle d-inline-flex p-3">
+                                        <div class="bg-warning bg-opacity-10 rounded-circle d-inline-flex p-3">
                                             <i class="fa-solid fa-barcode fa-2x"></i>
                                         </div>
                                     </div>
@@ -100,7 +100,7 @@
                                     </p>
 
                                     <a href="{{ route('production.scan') }}"
-                                        class="btn btn-outline-warning text-dark w-100 mt-auto stretched-link">
+                                        class="btn btn-outline-warning  w-100 mt-auto stretched-link">
                                         Truy cập <i class="fas fa-arrow-right ms-1"></i>
                                     </a>
                                 </div>

@@ -17,7 +17,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="bg-light">
+<body >
     {{-- Wrapper chính chiếm tối thiểu 100% chiều cao màn hình --}}
     <div class="d-flex flex-column min-vh-100">
 
@@ -43,10 +43,10 @@
                     </a>
 
                     {{-- Dòng giới thiệu (Bạn có thể tùy chỉnh chữ ở đây) --}}
-                    <h1 class="fw-bold text-dark mb-3 display-6">
+                    <h1 class="fw-bold mb-3 display-6">
                         Chào mừng đến với hệ thống
                     </h1>
-                    <p class="text-secondary fs-5 mb-0">
+                    <p class="fs-5 mb-0">
                         Nền tảng quản lý thông minh, kiểm soát tem nhãn và theo dõi tiến độ sản xuất hiện đại. Đăng nhập
                         để bắt đầu công việc.
                     </p>
