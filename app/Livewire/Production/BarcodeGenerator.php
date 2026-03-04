@@ -227,7 +227,7 @@ class BarcodeGenerator extends Component
         $colorCode = Color::find($this->selectedColor)?->code ?? '';
         $specCode = Specification::find($this->selectedSpec)?->code ?? '';
         $plasticCode = PlasticType::find($this->selectedPlastic)?->code ?? '';
-        $prefix = $widthCode . '-' . $colorCode . '-' . $specCode . '-' . $plasticCode;
+        $prefix = $widthCode . ' ' . $colorCode . ' ' . $specCode . ' ' . $plasticCode;
 
         // Không cần tính $startSeq nữa vì ta sẽ dùng ID
 
@@ -252,15 +252,40 @@ class BarcodeGenerator extends Component
             // Sử dụng str_pad 6 số để mã đẹp và đều (VD: ID 5 -> ...000005)
             // Nếu ID của bạn lớn, nó sẽ tự giãn ra, không bị cắt
             // Thêm thuộc tính động vào item
-            $code_properties = '';
+            // 1. Tạo một mảng trống để chứa các cụm thuộc tính
+            $propParts = [];
+
             foreach ($this->dynamicProperties as $prop) {
-                if (isset($this->itemData[$prop->code]) && $this->itemData[$prop->code] !== '' &&  $prop->code_usage == 1) {
-                    $code_properties .= $this->itemData[$prop->code] . '-';
+                if (isset($this->itemData[$prop->code]) && $this->itemData[$prop->code] !== '') {
+
+                    $part = ''; // Biến tạm chứa chuỗi của riêng thuộc tính này
+
+                    // Nếu admin bật code_usage -> Nối Code (VD: "GSM ")
+                    if ($prop->code_usage == 1) {
+                        $part .= $prop->code . ' ';
+                    }
+
+                    // Nối thêm Value và Unit (VD: "165" + "g" -> "165g")
+                    $part .= $this->itemData[$prop->code] . ($prop->unit ?? '');
+
+                    // Đẩy cụm hoàn chỉnh (VD: "GSM 165g" hoặc chỉ "165g") vào mảng
+                    $propParts[] = trim($part);
                 }
             }
-            $code_properties .= '-';
-            $realCode = strtoupper($prefix . $code_properties . str_pad($item->id, 3, '0', STR_PAD_LEFT));
 
+            // 2. Dùng implode để ghép mảng lại bằng khoảng trắng
+            // Lệnh này tự động ráp: "cụm 1" + " " + "cụm 2" + " " + "cụm 3" (Không bị dư ở cuối)
+            $code_properties = '';
+            if (count($propParts) > 0) {
+                // Thêm 1 khoảng trắng ở đầu và 1 ở cuối để cách ly với Prefix và Số thứ tự (ID)
+                $code_properties = ' ' . implode(' ', $propParts) . ' ';
+            } else {
+                // Nếu không có thuộc tính nào, chỉ cần 1 khoảng trắng để cách ly Prefix và ID
+                $code_properties = ' ';
+            }
+
+            // 3. Ghép mã cuối cùng (Ví dụ: K1800 WE ONG/MANH 000005)
+            $realCode = strtoupper($prefix . $code_properties . str_pad($item->id, 3, '0', STR_PAD_LEFT));
             // 3. CẬP NHẬT LẠI MÃ THẬT
             $item->update(['code' => $realCode]);
 
