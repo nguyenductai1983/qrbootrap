@@ -1,4 +1,75 @@
 <div>
+    {{-- CSS: ĐỊNH DẠNG TEM VÀ CHẾ ĐỘ IN --}}
+    <style>
+        /* 1. Giao diện trên màn hình (Luôn chia 2 hoặc 3 cột cho dễ nhìn) */
+        .print-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        @media (min-width: 992px) {
+            .print-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .label-item {
+            border: 1px dashed #333;
+            padding: 10px;
+            background: #fff;
+            border-radius: 4px;
+            width: 100%;
+        }
+
+        .barcode-wrapper svg {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .cursor-pointer {
+            cursor: pointer;
+        }
+
+        /* 2. Giao diện khi bấm In (Ctrl + P) - BIẾN HÌNH THEO LỰA CHỌN CỦA USER */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+
+            .print-area,
+            .print-area * {
+                visibility: visible;
+            }
+
+            .print-area {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                padding: 0;
+                margin: 0;
+            }
+
+            /* LƯỚI IN THÔNG MINH */
+            .print-grid {
+                display: grid;
+                /* Lấy đúng số cột mà user chọn trên giao diện */
+                grid-template-columns: repeat(var(--print-cols), 1fr);
+                gap: 2mm;
+                /* Khoảng cách giữa các tem */
+            }
+
+            .label-item {
+                border: 1px solid #000 !important;
+                border-radius: 0;
+                page-break-inside: avoid;
+                padding: 2mm !important;
+                margin-bottom: 0;
+                /* Đã có gap lo khoảng cách */
+            }
+        }
+    </style>
     <div class="container py-4">
 
         <div class="card shadow-sm mb-4 d-print-none">
@@ -95,21 +166,89 @@
 
                             {{-- Chọn Đơn Hàng --}}
                             <div class="col-md-6">
-                                <label class="form-label small fw-bold">Chọn Đơn Hàng (PO) <span
-                                        class="text-danger">*</span></label>
-                                <select wire:model.live="itemData.ORDER_ID"
+                                <div class="d-flex justify-content-between align-items-end mb-1">
+                                    <label class="form-label small fw-bold mb-0">Chọn Đơn Hàng (PO) <span
+                                            class="text-danger">*</span></label>
+                                    {{-- Nút gọi Modal tạo nhanh --}}
+                                    <button type="button" class="btn btn-sm btn-outline-primary py-0"
+                                        data-bs-toggle="modal" data-bs-target="#quickOrderModal">
+                                        <i class="fa-solid fa-plus me-1"></i> Tạo nhanh
+                                    </button>
+                                </div>
+
+                                {{-- Thêm wire:key="select-po-{{ count($orders) }}" vào thẳng thẻ select --}}
+                                <select wire:key="select-po-{{ count($orders) }}" wire:model.live="itemData.ORDER_ID"
                                     class="form-select @error('itemData.ORDER_ID') is-invalid @enderror">
                                     <option value="">-- Chọn Đơn Hàng ({{ count($orders) }}) --</option>
                                     @foreach ($orders as $order)
-                                        <option value="{{ $order->id }}">{{ $order->code }} -
-                                            {{ $order->customer_name }}</option>
+                                        <option value="{{ $order->id }}" wire:key="opt-po-{{ $order->id }}">
+                                            {{ $order->code }} - {{ $order->customer_name }}
+                                        </option>
                                     @endforeach
                                 </select>
                                 @error('itemData.ORDER_ID')
                                     <span class="text-danger small fst-italic">{{ $message }}</span>
                                 @enderror
                             </div>
+                            {{-- MODAL TẠO NHANH ĐƠN HÀNG --}}
+                            <div wire:ignore.self class="modal fade" id="quickOrderModal" tabindex="-1"
+                                aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header bg-light">
+                                            <h5 class="modal-title fw-bold text-primary">Tạo Nhanh Đơn Hàng</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                        </div>
+                                        <form wire:submit="quickCreateOrder">
+                                            <div class="modal-body">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-semibold">Loại Đơn Hàng <span
+                                                            class="text-danger">*</span></label>
+                                                    <select wire:model="newOrderType" class="form-select" required>
+                                                        {{-- Lấy từ Enum hoặc viết cứng tạm thời --}}
+                                                        <option value="C">Đơn hàng loại C</option>
+                                                        <option value="F">Đơn hàng loại F</option>
+                                                        <option value="H">Đơn hàng loại H</option>
+                                                    </select>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-semibold">Số lượng sản phẩm <span
+                                                            class="text-danger">*</span></label>
+                                                    <input wire:model="newOrderTotal" type="number"
+                                                        class="form-control" min="1">
+                                                    @error('newOrderTotal')
+                                                        <span class="text-danger small">{{ $message }}</span>
+                                                    @enderror
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-semibold">Tên Khách Hàng / Đối tác
+                                                        <span class="text-danger">*</span></label>
+                                                    <input wire:model="newOrderCustomer" type="text"
+                                                        class="form-control" placeholder="Nhập tên khách..." required>
+                                                    @error('newOrderCustomer')
+                                                        <span class="text-danger small">{{ $message }}</span>
+                                                    @enderror
+                                                </div>
 
+                                                {{-- Giải thích quy tắc cho người dùng hiểu --}}
+                                                <div class="alert alert-info py-2 small mb-0">
+                                                    <i class="fa-solid fa-circle-info me-1"></i> Mã PO sẽ tạo tự động:
+                                                    <strong>[Loại] + [STT] + [Tháng] + [Năm]</strong>.
+                                                    <br>Ví dụ: <strong>C001{{ date('my') }}</strong>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer bg-light">
+                                                <button type="button" class="btn btn-secondary"
+                                                    data-bs-dismiss="modal">Hủy</button>
+                                                <button type="submit" class="btn btn-primary">
+                                                    <i class="fa-solid fa-check me-1"></i> Tạo & Chọn Ngay
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
                             {{-- Chọn Model --}}
                             <div class="col-md-6">
                                 <label class="form-label small fw-bold">Chọn Mã Hàng <span
@@ -132,7 +271,64 @@
                                 @endif
                             </div>
                         </div>
+                        <div class="row g-4">
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">Loại Nhựa</label>
+                                <select wire:model="selectedPlastic" class="form-select">
+                                    <option value="">-- Chọn Loại Nhựa --</option>
+                                    @foreach ($plasticTypes as $plastic)
+                                        <option value="{{ $plastic->id }}">{{ $plastic->code }} -
+                                            {{ $plastic->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">Quy Cách</label>
+                                <select wire:model="selectedSpec" class="form-select">
+                                    <option value="">-- Chọn Quy Cách --</option>
+                                    @foreach ($specifications as $specification)
+                                        <option value="{{ $specification->id }}">{{ $specification->code }} -
+                                            {{ $specification->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">Màu</label>
+                                <select wire:model="selectedColor" class="form-select">
+                                    <option value="">-- Chọn Màu --</option>
+                                    @foreach ($colors as $color)
+                                        <option value="{{ $color->id }}">{{ $color->code }} -
+                                            {{ $color->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <div class="d-flex gap-2 align-items-stretch">
 
+                                    {{-- Nút link sang trang quản lý (Chiếm 7 phần chiều ngang) --}}
+                                    <a href="{{ route('manager.categories') }}" target="_new" style="flex: 7;"
+                                        class="list-group-item list-group-item-action text-primary border rounded px-3 py-2 d-flex justify-content-center align-items-center {{ request()->routeIs('manager.categories') ? 'active' : '' }}">
+                                        <span><i class="fa-solid fa-tags me-1"></i> Tạo mới: Nhựa - Quy Cách -
+                                            Màu</span>
+                                    </a>
+
+                                    {{-- Nút bấm Làm mới danh sách (Chiếm 3 phần chiều ngang) --}}
+                                    <button type="button" wire:click="refreshMasterData" style="flex: 3;"
+                                        class="btn btn-outline-success shadow-sm px-3 d-flex justify-content-center align-items-center"
+                                        title="Tải lại dữ liệu ngay lập tức">
+                                        <span>
+                                            <i class="fa-solid fa-arrows-rotate me-1" wire:loading.class="fa-spin"
+                                                wire:target="refreshMasterData"></i>
+                                            Tải danh mục
+                                        </span>
+                                    </button>
+
+                                </div>
+                            </div>
+                        </div>
                         {{-- Các trường nhập liệu chi tiết --}}
                         {{-- Thay thế toàn bộ khối nhập "Thông tin chi tiết" cứng của bạn bằng khối này --}}
                         <div class="row g-2 mt-2 border-top pt-2">
@@ -307,83 +503,27 @@
     {{-- SCRIPT: TỰ ĐỘNG BẬT CỬA SỔ IN --}}
     <script>
         document.addEventListener('livewire:initialized', () => {
+            // 1. Script in tem của bạn
             Livewire.on('trigger-print', () => {
                 setTimeout(() => {
                     window.print();
-                }, 500); // Đợi 0.5s để ảnh QR render xong mới in
+                }, 500);
+            });
+
+            // 2. SCRIPT ĐÓNG MODAL TẠO NHANH ĐƠN HÀNG (SỬA LẠI Ở ĐÂY)
+            Livewire.on('close-quick-order-modal', () => {
+                // Lấy Modal hiện tại đang mở thay vì tạo mới
+                let modalEl = document.getElementById('quickOrderModal');
+                let modalInstance = bootstrap.Modal.getInstance(modalEl);
+
+                if (modalInstance) {
+                    modalInstance.hide();
+                } else {
+                    // Phòng hờ nếu chưa có instance
+                    let newModal = new bootstrap.Modal(modalEl);
+                    newModal.hide();
+                }
             });
         });
     </script>
-
-    {{-- CSS: ĐỊNH DẠNG TEM VÀ CHẾ ĐỘ IN --}}
-    <style>
-        /* 1. Giao diện trên màn hình (Luôn chia 2 hoặc 3 cột cho dễ nhìn) */
-        .print-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-        }
-
-        @media (min-width: 992px) {
-            .print-grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
-        }
-
-        .label-item {
-            border: 1px dashed #333;
-            padding: 10px;
-            background: #fff;
-            border-radius: 4px;
-            width: 100%;
-        }
-
-        .barcode-wrapper svg {
-            max-width: 100%;
-            height: auto;
-        }
-
-        .cursor-pointer {
-            cursor: pointer;
-        }
-
-        /* 2. Giao diện khi bấm In (Ctrl + P) - BIẾN HÌNH THEO LỰA CHỌN CỦA USER */
-        @media print {
-            body * {
-                visibility: hidden;
-            }
-
-            .print-area,
-            .print-area * {
-                visibility: visible;
-            }
-
-            .print-area {
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 100%;
-                padding: 0;
-                margin: 0;
-            }
-
-            /* LƯỚI IN THÔNG MINH */
-            .print-grid {
-                display: grid;
-                /* Lấy đúng số cột mà user chọn trên giao diện */
-                grid-template-columns: repeat(var(--print-cols), 1fr);
-                gap: 2mm;
-                /* Khoảng cách giữa các tem */
-            }
-
-            .label-item {
-                border: 1px solid #000 !important;
-                border-radius: 0;
-                page-break-inside: avoid;
-                padding: 2mm !important;
-                margin-bottom: 0;
-                /* Đã có gap lo khoảng cách */
-            }
-        }
-    </style>
 </div>

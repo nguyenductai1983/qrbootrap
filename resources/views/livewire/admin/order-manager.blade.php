@@ -22,6 +22,8 @@
                 <thead>
                     <tr>
                         <th>Mã PO</th>
+                        <th>Loại</th>
+                        <th>Số Lượng</th>
                         <th>Khách Hàng</th>
                         <th>Trạng Thái</th>
                         <th>Ngày Tạo</th>
@@ -32,6 +34,12 @@
                     @foreach ($orders as $order)
                         <tr>
                             <td class="fw-bold">{{ $order->code }}</td>
+                            <td>
+                                <span class="badge {{ $order->type?->badge() ?? 'bg-secondary' }}">
+                                    {{ $order->type?->label() ?? 'Chưa phân loại' }}
+                                </span>
+                            </td>
+                            <td>{{ $order->total }}</td>
                             <td>{{ $order->customer_name }}</td>
                             <td>
                                 {{-- Laravel tự động hiểu $order->status là 1 Enum object --}}
@@ -73,6 +81,22 @@
                             <input type="text" wire:model="code" class="form-control text-uppercase"
                                 placeholder="VD: PO-2023-001">
                             @error('code')
+                                <span class="text-danger small">{{ $message }}</span>
+                            @enderror
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Loại Đơn Hàng</label>
+                            <select wire:model="type" class="form-select">
+                                @foreach (\App\Enums\OrderType::cases() as $case)
+                                    <option value="{{ $case->value }}">{{ $case->label() }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Tổng Số Lượng</label>
+                            <input type="number" wire:model="total" class="form-control" min="0"
+                                placeholder="VD: 100">
+                            @error('total')
                                 <span class="text-danger small">{{ $message }}</span>
                             @enderror
                         </div>

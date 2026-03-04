@@ -16,6 +16,9 @@ class DatabaseSeeder extends Seeder
         $this->call(ItemTypeSeeder::class);
         $this->call(ItemPropertySeeder::class);
         $this->call(OrderSeeder::class);
+        $this->call(ColorSeeder::class);
+        $this->call(PlasticTypeSeeder::class);
+        $this->call(SpecificationSeeder::class);
         // 3. Tạo User Admin mẫu (Sau khi đã có Role và Department)
         // Kiểm tra xem user đã tồn tại chưa để tránh lỗi trùng email khi chạy lại
     }

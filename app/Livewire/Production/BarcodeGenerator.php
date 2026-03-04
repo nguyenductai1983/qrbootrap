@@ -14,6 +14,11 @@ use App\Models\ItemProperty; // Thêm model này
 use App\Models\ItemType;
 use Livewire\Attributes\On; // Nhớ import
 use SebastianBergmann\Environment\Console;
+use App\Enums\OrderStatus;
+use App\Enums\OrderType;
+use App\Models\Specification;
+use App\Models\Color;
+use App\Models\PlasticType;
 
 class BarcodeGenerator extends Component
 {
@@ -37,11 +42,18 @@ class BarcodeGenerator extends Component
     public $selectedHistoryIds = [];
     public $printFormat = 'QR';
     public $printColumns = 1;
+    public $colors, $specifications, $plasticTypes;
+    public $selectedColor, $selectedSpec, $selectedPlastic;
+    // --- BIẾN CHO TẠO NHANH ĐƠN HÀNG ---
+    public $newOrderType = 'C'; // Mặc định là loại C
+    public $newOrderCustomer = '';
     public function mount()
     {
         /** @var \App\Models\User $user */ // <-- Đã thêm dòng fix lỗi IDE
         $user = Auth::user();
-
+        $this->colors = Color::where('is_active', true)->get();
+        $this->specifications = Specification::where('is_active', true)->get();
+        $this->plasticTypes = PlasticType::where('is_active', true)->get();
         // LOGIC LẤY BỘ PHẬN:
         if ($user->hasRole('admin')) {
             // Nếu là Admin: Lấy tất cả bộ phận có Code
@@ -59,7 +71,7 @@ class BarcodeGenerator extends Component
             $this->type = $this->itemTypes[0]->code;
         }
         // Lấy danh sách Đơn hàng đang chạy
-        $this->orders = Order::where('status', \App\Enums\OrderStatus::RUNNING->value)->orderBy('id', 'desc')->get();
+        $this->orders = Order::whereIn('status', [OrderStatus::RUNNING->value, OrderStatus::PENDING->value])->orderBy('id', 'desc')->get();
         if (count($this->departments) > 0) {
             $this->selectedDeptCode = $this->departments[0]->code;
             $this->loadProductsByDepartment();
@@ -187,6 +199,16 @@ class BarcodeGenerator extends Component
 
     public function generate()
     {
+        //K1800 165g WE ONG/MANH PP/PE 1000m 850kg
+        // Loại sản phẩm: K
+        // khổ :1800
+        // GSM: 165g
+        // WE: MÀU
+        // ONG/MANH: LOẠI
+        // PP/PE: CHẤT LIỆU
+        // 1000m: ĐỘ DÀI
+        // 850kg: TRỌNG LƯỢNG
+
         $this->validate([
             'selectedDeptCode' => 'required',
             'itemData.PRODUCT_ID' => 'required',
@@ -211,6 +233,9 @@ class BarcodeGenerator extends Component
                 'status' => 1,
                 'properties' => $this->itemData,
                 'created_by' => Auth::id(),
+                'color_id' => $this->selectedColor,
+                'specification_id' => $this->selectedSpec,
+                'plastic_type_id' => $this->selectedPlastic,
                 // Map thêm các cột khóa ngoại nếu bạn đã tạo trong DB
                 'order_id' => !empty($this->itemData['ORDER_ID']) ? $this->itemData['ORDER_ID'] : null,
                 'product_id' => !empty($this->itemData['PRODUCT_ID']) ? $this->itemData['PRODUCT_ID'] : null,
@@ -281,5 +306,56 @@ class BarcodeGenerator extends Component
         return view('livewire.production.barcode-generator', [
             'historyItems' => $historyItems
         ]);
+    }
+    public function quickCreateOrder()
+    {
+        // 1. Validate dữ liệu nhập vào
+        $this->validate([
+            'newOrderType' => 'required',
+            'newOrderCustomer' => 'required|string|max:255',
+        ]);
+
+        // 2. Lấy tháng và năm hiện tại
+        $year = date('y'); // Lấy 2 số cuối của năm (ví dụ: 2026 -> 26)
+        $month = date('m');
+        $yearcount = date('Y'); // Lấy đầy đủ 4 số của năm (ví dụ: 2026)
+        // 3. Đếm số đơn hàng đã tạo TRONG NĂM NAY để làm số thứ tự (STT)
+        $countThisYear = Order::whereYear('created_at', $yearcount)->count();
+        $sequence = $countThisYear + 1;
+
+        // 4. Lắp ráp quy tắc sinh Mã (Code): Loại + STT (3 chữ số) + Tháng + Năm
+        // Hàm sprintf('%03d', $sequence) sẽ biến 1 thành '001', 12 thành '012'
+        // Ví dụ kết quả: C001-03-2026
+        $orderCode = $this->newOrderType . sprintf('%03d', $sequence) .  $month .  $year;
+        // 5. Lưu vào Database
+        $order = Order::create([
+            'code' => $orderCode,
+            'type' => $this->newOrderType, // Lưu ý: Database phải nhận App\Enums\OrderType
+            'total' => $this->newOrderTotal ?? 0, // Lưu tổng số lượng vào cột total
+            'customer_name' => $this->newOrderCustomer,
+            'status' => OrderStatus::PENDING, // Trạng thái mặc định
+        ]);
+        // 6. Cập nhật lại danh sách Dropdown đơn hàng
+        $this->orders = Order::orderBy('id', 'desc')->get();
+        // 7. TỰ ĐỘNG CHỌN luôn đơn hàng vừa tạo vào ô Chọn PO
+        $tempData = $this->itemData;
+        $tempData['ORDER_ID'] = (string) $order->id; // Ép kiểu chuỗi
+        $tempData['PO'] = $order->code;
+        // Gọi thủ công hàm này để đảm bảo mọi logic ăn theo đều hoạt động
+        $this->itemData = $tempData; // Ụp ngược lại mảng chính để kích hoạt updatedItemDataOrderId
+        // 6. Reset lại ô nhập liệu trên Modal cho lần sau
+        $this->reset(['newOrderType', 'newOrderCustomer']);
+        // 8. Đóng Modal, xóa form và báo thành công
+        $this->dispatch('close-quick-order-modal');
+        session()->flash('message', 'Đã tạo nhanh đơn hàng: ' . $orderCode);
+    }
+    public function refreshMasterData()
+    {
+        $this->colors = Color::where('is_active', true)->get();
+        $this->specifications = Specification::where('is_active', true)->get();
+        $this->plasticTypes = PlasticType::where('is_active', true)->get();
+
+        // (Tùy chọn) Bạn có thể cho in log ra màn hình console để biết nó đang tự động chạy
+        // $this->js("console.log('🔄 Đã tự động cập nhật danh mục mới nhất!');");
     }
 }

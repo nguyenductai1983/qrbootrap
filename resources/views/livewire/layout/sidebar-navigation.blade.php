@@ -91,6 +91,11 @@
                         <i class="fa-solid fa-tags me-2"></i>
                         <span class="sidebar-text">Code đã tạo (Items)</span>
                     </a>
+                    <a href="{{ route('manager.categories') }}"
+                        class="list-group-item list-group-item-action py-2 ps-5 bg-secondary {{ request()->routeIs('manager.categories') ? 'active' : '' }}">
+                        <i class="fa-solid fa-list me-2"></i>
+                        <span class="sidebar-text">Danh mục</span>
+                    </a>
                 </div>
             @endcan
         @endrole

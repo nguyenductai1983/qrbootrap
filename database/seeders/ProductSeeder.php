@@ -11,7 +11,7 @@ class ProductSeeder extends Seeder
     public function run(): void
     {
         // Tạo 2 Model
-        $ProductMoc = Product::create(['code' => 'V', 'name' => 'Vải']);
+        $ProductMoc = Product::create(['code' => 'K', 'name' => 'Vải']);
         $ProductTP  = Product::create(['code' => 'S', 'name' => 'SỢI']);
 
         // Lấy Department (Giả sử đã chạy seeder trước đó)

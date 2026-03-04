@@ -21,6 +21,7 @@ use App\Livewire\Production\BarcodeList;
 use App\Livewire\Admin\PropertyManager;
 use App\Livewire\Admin\ItemTypeManager;
 use App\Livewire\Production\ItemManager;
+use App\Livewire\Admin\CategoryManager;
 //Role::withoutGlobalScopes()->get(); // Lấy tất cả vai trò mà không áp dụng bất kỳ global scope nào
 Route::view('/', 'welcome');
 
@@ -33,6 +34,9 @@ Route::view('profile', 'profile')
     ->name('profile');
 Route::view('/huong-dan', 'guide')->middleware(['auth'])->name('guide');
 require __DIR__ . '/auth.php';
+Route::get('/test-500', function () {
+    abort(500, 'đang thử lỗi 500'); // Lệnh ép hệ thống quăng lỗi 500
+});
 Route::middleware(['auth', 'verified'])->group(function () {
 
     // ==========================================
@@ -77,6 +81,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/properties', PropertyManager::class)->name('manager.properties');
         Route::get('/item-types', ItemTypeManager::class)->name('manager.item-types');
         Route::get('/items', ItemManager::class)->name('manager.items');
+        Route::get('/categories', CategoryManager::class)->name('manager.categories');
     });
     // ==========================================
     // 2. NHÓM PRODUCTION (Sản xuất)

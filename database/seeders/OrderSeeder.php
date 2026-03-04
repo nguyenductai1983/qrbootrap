@@ -11,9 +11,11 @@ class OrderSeeder extends Seeder
     public function run(): void
     {
         Order::create([
-            'code' => 'PO001',
+            'code' => 'KO0010126',
             'customer_name' => 'CÔNG TY TNHH ABC',
             'status' => 1,
+            'type' => 'F',
+            'total' => 100,
         ]);
     }
 }

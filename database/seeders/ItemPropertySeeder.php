@@ -17,9 +17,7 @@ class ItemPropertySeeder extends Seeder
         ItemProperty::create(['name' => 'Cao', 'code' => 'CAO']);
         ItemProperty::create(['name' => 'Trọng Lượng', 'code' => 'TRONGLUONG']);
         ItemProperty::create(['name' => 'GSM', 'code' => 'GSM']);
-        ItemProperty::create(['name' => 'Màu Sắc', 'code' => 'MAU']);
         ItemProperty::create(['name' => 'Kích Thước', 'code' => 'KICHTHUOC']);
-        ItemProperty::create(['name' => 'Chất Liệu', 'code' => 'CHATLIEU']);
         //
     }
 }

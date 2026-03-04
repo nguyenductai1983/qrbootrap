@@ -11,7 +11,7 @@ class PropertyManager extends Component
     use WithPagination;
 
     public $code, $name, $type = 'text', $options = '', $sort_order = 0;
-    public $is_required = false, $is_active = true, $propertyId;
+    public $is_required = false, $is_active = true, $propertyId, $code_usage = 0;
 
     public $isEditMode = false;
     public $searchTerm = '';
@@ -32,6 +32,7 @@ class PropertyManager extends Component
         $this->type = 'text';
         $this->options = '';
         $this->sort_order = ItemProperty::max('sort_order') + 1;
+        $this->code_usage = 0;
         $this->is_required = false;
         $this->is_active = true;
         $this->propertyId = null;
@@ -57,6 +58,7 @@ class PropertyManager extends Component
 
         $prop =  ItemProperty::create([
             'code' => strtoupper(str_replace(' ', '_', trim($this->code))), // Tự động in hoa và đổi dấu cách thành _
+            'code_usage' => $this->sort_order ?: 0,
             'name' => $this->name,
             'type' => $this->type,
             'options' => $optionsArray,
@@ -87,7 +89,7 @@ class PropertyManager extends Component
             $this->is_required = $property->is_required;
             $this->sort_order = $property->sort_order;
             $this->is_active = $property->is_active;
-
+            $this->code_usage = $property->code_usage;
             $this->is_global = $property->is_global;
             $this->selectedProducts = $property->products->pluck('id')->toArray();
 
@@ -119,6 +121,7 @@ class PropertyManager extends Component
                 'options' => $optionsArray,
                 'is_required' => $this->is_required,
                 'sort_order' => $this->sort_order ?: 0,
+                'code_usage' => $this->code_usage ?: 0,
                 'is_active' => $this->is_active,
                 'is_global' => $this->is_global,
             ]);
