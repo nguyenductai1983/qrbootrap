@@ -172,7 +172,7 @@
                                     {{-- Nút gọi Modal tạo nhanh --}}
                                     <button type="button" class="btn btn-sm btn-outline-primary py-0"
                                         data-bs-toggle="modal" data-bs-target="#quickOrderModal">
-                                        <i class="fa-solid fa-plus me-1"></i> Tạo nhanh
+                                        <i class="fa-solid fa-plus me-1"></i> Tạo nhanh PO
                                     </button>
                                 </div>
 

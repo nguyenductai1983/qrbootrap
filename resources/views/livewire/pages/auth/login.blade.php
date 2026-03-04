@@ -38,7 +38,7 @@ new #[Layout('layouts.guest')] class extends Component {
             <label for="email" class="form-label fw-semibold">{{ __('Email') }}</label>
             <input wire:model="form.email" id="email" class="form-control form-control-lg" type="email" name="email"
                 value="{{ old('email') }}" required autofocus placeholder="name@example.com" />
-            <x-input-error :messages="$errors->get('email')" class="mt-1 text-danger small" />
+            <x-input-error :messages="$errors->get('form.email')" class="mt-1 text-danger small" />
         </div>
 
         {{-- Password --}}
@@ -46,7 +46,7 @@ new #[Layout('layouts.guest')] class extends Component {
             <label for="password" class="form-label fw-semibold">{{ __('Password') }}</label>
             <input id="password" class="form-control form-control-lg" wire:model="form.password" type="password"
                 name="password" required placeholder="********" />
-            <x-input-error :messages="$errors->get('password')" class="mt-1 text-danger small" />
+           <x-input-error :messages="$errors->get('form.password')" class="mt-1 text-danger small" />
         </div>
 
         {{-- Remember Me & Forgot Password --}}

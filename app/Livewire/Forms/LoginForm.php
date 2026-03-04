@@ -8,8 +8,9 @@ use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Validate;
+use Illuminate\Support\Facades\Hash;
 use Livewire\Form;
-
+use  App\Models\User;
 class LoginForm extends Form
 {
     #[Validate('required|string|email')]
@@ -26,7 +27,7 @@ class LoginForm extends Form
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function authenticate(): void
+    public function authenticateold(): void
     {
         $this->ensureIsNotRateLimited();
 
@@ -34,9 +35,39 @@ class LoginForm extends Form
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
-                'form.email' => trans('auth.failed'),
+                'form.email' => trans('Thông tin đăng nhập không chính xác.'),
             ]);
         }
+
+        RateLimiter::clear($this->throttleKey());
+    }
+    public function authenticate(): void
+    {
+        $this->ensureIsNotRateLimited();
+
+        // 1. Tìm kiếm User trong Database theo Email người dùng nhập
+        $user = User::where('email', $this->email)->first();
+
+        // 2. KỊCH BẢN 1: Nếu không tìm thấy Email trong hệ thống
+        if (! $user) {
+            RateLimiter::hit($this->throttleKey());
+
+            throw ValidationException::withMessages([
+                'form.email' => 'Email này chưa được đăng ký trong hệ thống.',
+            ]);
+        }
+
+        // 3. KỊCH BẢN 2: Đã tìm thấy Email, nhưng check Mật khẩu bị sai
+        if (! Hash::check($this->password, $user->password)) {
+           RateLimiter::hit($this->throttleKey());
+
+            throw ValidationException::withMessages([
+                'form.password' => 'Mật khẩu bạn nhập không chính xác.',
+            ]);
+        }
+
+        // 4. KỊCH BẢN 3: Đúng cả Email và Mật khẩu -> Cho phép đăng nhập
+        Auth::login($user, $this->remember);
 
         RateLimiter::clear($this->throttleKey());
     }
@@ -67,6 +98,6 @@ class LoginForm extends Form
      */
     protected function throttleKey(): string
     {
-        return Str::transliterate(Str::lower($this->email).'|'.request()->ip());
+        return Str::transliterate(Str::lower($this->email) . '|' . request()->ip());
     }
 }
