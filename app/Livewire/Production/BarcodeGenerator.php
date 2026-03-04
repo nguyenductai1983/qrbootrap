@@ -202,23 +202,41 @@ class BarcodeGenerator extends Component
 
     public function generate()
     {
-        //K1800 165g WE ONG/MANH PP/PE 1000m 850kg
-        // Loại sản phẩm: K
-        // khổ :1800
-        // GSM: 165g
-        // WE: MÀU
-        // ONG/MANH: LOẠI
-        // PP/PE: CHẤT LIỆU
-        // 1000m: ĐỘ DÀI
-        // 850kg: TRỌNG LƯỢNG
-
-        $this->validate([
+        // 1. Định nghĩa các quy tắc kiểm tra cố định ban đầu
+        $rules = [
             'selectedDeptCode' => 'required',
             'itemData.PRODUCT_ID' => 'required',
             'quantity' => 'required|integer|min:1',
-        ], [
-            'itemData.PRODUCT_ID.required' => 'Vui lòng chọn sản phẩm.',
-        ]);
+            'selectedWidth' => 'required',
+            'selectedColor' => 'required',
+            'selectedSpec' => 'required',
+            'selectedPlastic' => 'required',
+        ];
+
+        // Định nghĩa các câu báo lỗi bằng tiếng Việt cho các trường cố định
+        $messages = [
+            'selectedDeptCode.required' => 'Vui lòng chọn Phân xưởng.',
+            'itemData.PRODUCT_ID.required' => 'Vui lòng chọn Mã Hàng.',
+            'selectedWidth.required' => 'Vui lòng chọn Khổ.',
+            'selectedColor.required' => 'Vui lòng chọn Màu.',
+            'selectedSpec.required' => 'Vui lòng chọn Quy cách.',
+            'selectedPlastic.required' => 'Vui lòng chọn Loại nhựa.',
+            'quantity.min' => 'Số lượng ít nhất phải là 1.',
+        ];
+
+        // 2. 🌟 QUÉT THUỘC TÍNH ĐỘNG: Nếu is_required = true thì thêm vào mảng Rules 🌟
+        foreach ($this->dynamicProperties as $prop) {
+            if ($prop->is_required) {
+                // Thêm rule required cho ô nhập liệu này
+                $rules['itemData.' . $prop->code] = 'required';
+
+                // Thêm câu thông báo lỗi tương ứng với Tên thuộc tính
+                $messages['itemData.' . $prop->code . '.required'] = 'Vui lòng nhập ' . $prop->name . '.';
+            }
+        }
+
+        // 3. Thực thi kiểm tra với mảng động vừa tạo
+        $this->validate($rules, $messages);
 
         $this->generatedItems = [];
         $this->selectedHistoryIds = [];
@@ -262,7 +280,7 @@ class BarcodeGenerator extends Component
 
                     // Nếu admin bật code_usage -> Nối Code (VD: "GSM ")
                     if ($prop->code_usage == 1) {
-                        $part .= $prop->code . ' ';
+                        $part .= $prop->code;
                     }
 
                     // Nối thêm Value và Unit (VD: "165" + "g" -> "165g")

@@ -319,7 +319,7 @@
                                             <input type="{{ $prop->type === 'number' ? 'number' : 'text' }}"
                                                 wire:model="itemData.{{ $prop->code }}"
                                                 class="form-control form-control-sm"
-                                                placeholder="Nhập {{ strtolower($prop->name) }}">
+                                                placeholder="Nhập {{ strtolower($prop->name) }}" @required($prop->is_required)>
                                         @endif
 
                                         @error('itemData.' . $prop->code)

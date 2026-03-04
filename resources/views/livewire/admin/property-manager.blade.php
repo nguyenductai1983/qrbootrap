@@ -101,6 +101,13 @@
                                     <span class="text-danger small">{{ $message }}</span>
                                 @enderror
                             </div>
+                              <div class="col-md-6">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" wire:model="code_usage"
+                                        id="code_usage">
+                                    <label class="form-check-label fw-bold text-success" for="code_usage">Dùng code tạo mã?</label>
+                                </div>
+                            </div>
                             <div class="col-md-6">
                                 <label class="form-label">Tên Hiển Thị <span class="text-danger">*</span></label>
                                 <input type="text" wire:model="name" class="form-control"
@@ -145,7 +152,7 @@
                         @endif
 
                         <div class="row mb-4 mt-3">
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <div class="form-check form-switch">
                                     <input class="form-check-input" type="checkbox" wire:model="is_required"
                                         id="is_required">
@@ -153,7 +160,7 @@
                                         phải nhập?</label>
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <div class="form-check form-switch">
                                     <input class="form-check-input" type="checkbox" wire:model="is_active"
                                         id="is_active">
@@ -161,13 +168,7 @@
                                         động?</label>
                                 </div>
                             </div>
-                            <div class="col-md-4">
-                                <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" wire:model="code_usage"
-                                        id="code_usage">
-                                    <label class="form-check-label fw-bold text-success" for="code_usage">Dùng code tạo mã?</label>
-                                </div>
-                            </div>
+
                         </div>
                         <div class="row mb-3 border-top pt-3">
                             <div class="col-12 mb-2">
