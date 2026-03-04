@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Enums\ItemStatus;
+
 class Item extends Model
 {
     use HasFactory;
@@ -74,5 +75,27 @@ class Item extends Model
     {
         // Chỉ định rõ khóa ngoại là 'product_model_id' vì nó không theo chuẩn tên mặc định 'product_id'
         return $this->belongsTo(Product::class, 'product_id');
+    }
+    public function width()
+    {
+        return $this->belongsTo(Width::class, 'width_id');
+    }
+    public function color()
+    {
+        return $this->belongsTo(Color::class, 'color_id');
+    }
+    public function specification()
+    {
+        return $this->belongsTo(Specification::class, 'specification_id');
+    }
+    public function plasticType()
+    {
+        return $this->belongsTo(PlasticType::class, 'plastic_type_id');
+    }
+
+    // --- Scope để lọc theo trạng thái ---
+    public function scopeActive($query)
+    {
+        return $query->where('status', ItemStatus::VERIFIED);
     }
 }

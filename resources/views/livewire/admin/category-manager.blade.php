@@ -1,30 +1,27 @@
 <div>
     <div class="container py-4">
-
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h4 class="fw-bold text-primary"><i class="fa-solid fa-layer-group me-2"></i>Quản lý Danh mục (Master Data)
+            <h4 class="fw-bold text-primary"><i class="fa-solid fa-layer-group me-2"></i>Quản lý Danh mục
             </h4>
             <button wire:click="resetForm" class="btn btn-primary shadow-sm" data-bs-toggle="modal"
                 data-bs-target="#categoryModal">
                 <i class="fa-solid fa-plus me-1"></i> Thêm mới
             </button>
         </div>
-
         @if (session()->has('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
                 <i class="fa-solid fa-circle-check me-1"></i> {{ session('success') }}
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         @endif
-
         <div class="card shadow-sm border-0 rounded-3">
             <div class="card-header bg-white border-bottom-0 pt-3 pb-0">
                 {{-- DANH SÁCH TAB --}}
                 <ul class="nav nav-tabs" id="myTab" role="tablist">
                     <li class="nav-item" role="presentation">
-                        <button wire:click="switchTab('color')"
-                            class="nav-link fw-semibold {{ $activeTab === 'color' ? 'active text-primary' : 'text-secondary' }}">
-                            Màu sắc
+                        <button wire:click="switchTab('width')"
+                            class="nav-link fw-semibold {{ $activeTab === 'width' ? 'active text-primary' : 'text-secondary' }}">
+                            Khổ
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
@@ -37,6 +34,12 @@
                         <button wire:click="switchTab('plastic_type')"
                             class="nav-link fw-semibold {{ $activeTab === 'plastic_type' ? 'active text-primary' : 'text-secondary' }}">
                             Loại nhựa
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button wire:click="switchTab('color')"
+                            class="nav-link fw-semibold {{ $activeTab === 'color' ? 'active text-primary' : 'text-secondary' }}">
+                            Màu sắc
                         </button>
                     </li>
                 </ul>
@@ -125,7 +128,8 @@
                     </div>
                     <div class="modal-footer bg-light">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                        <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk me-1"></i> Lưu
+                        <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk me-1"></i>
+                            Lưu
                             lại</button>
                     </div>
                 </form>

@@ -19,6 +19,7 @@ use App\Enums\OrderType;
 use App\Models\Specification;
 use App\Models\Color;
 use App\Models\PlasticType;
+use App\Models\Width;
 
 class BarcodeGenerator extends Component
 {
@@ -42,11 +43,12 @@ class BarcodeGenerator extends Component
     public $selectedHistoryIds = [];
     public $printFormat = 'QR';
     public $printColumns = 1;
-    public $colors, $specifications, $plasticTypes;
-    public $selectedColor, $selectedSpec, $selectedPlastic;
+    public $colors, $specifications, $plasticTypes, $widths;
+    public $selectedColor, $selectedSpec, $selectedPlastic, $selectedWidth;
     // --- BIẾN CHO TẠO NHANH ĐƠN HÀNG ---
     public $newOrderType = 'C'; // Mặc định là loại C
     public $newOrderCustomer = '';
+    public $newOrderTotal = 1;
     public function mount()
     {
         /** @var \App\Models\User $user */ // <-- Đã thêm dòng fix lỗi IDE
@@ -54,6 +56,7 @@ class BarcodeGenerator extends Component
         $this->colors = Color::where('is_active', true)->get();
         $this->specifications = Specification::where('is_active', true)->get();
         $this->plasticTypes = PlasticType::where('is_active', true)->get();
+        $this->widths = Width::where('is_active', true)->get();
         // LOGIC LẤY BỘ PHẬN:
         if ($user->hasRole('admin')) {
             // Nếu là Admin: Lấy tất cả bộ phận có Code
@@ -220,7 +223,11 @@ class BarcodeGenerator extends Component
         $this->generatedItems = [];
         $this->selectedHistoryIds = [];
         // Prefix chung (Ví dụ: RMKHO1)
-        $prefix = $this->type . '-' . $this->selectedDeptCode;
+        $widthCode = Width::find($this->selectedWidth)?->code ?? '';
+        $colorCode = Color::find($this->selectedColor)?->code ?? '';
+        $specCode = Specification::find($this->selectedSpec)?->code ?? '';
+        $plasticCode = PlasticType::find($this->selectedPlastic)?->code ?? '';
+        $prefix = $widthCode . '-' . $colorCode . '-' . $specCode . '-' . $plasticCode;
 
         // Không cần tính $startSeq nữa vì ta sẽ dùng ID
 
@@ -236,23 +243,23 @@ class BarcodeGenerator extends Component
                 'color_id' => $this->selectedColor,
                 'specification_id' => $this->selectedSpec,
                 'plastic_type_id' => $this->selectedPlastic,
+                'width_id' => $this->selectedWidth,
                 // Map thêm các cột khóa ngoại nếu bạn đã tạo trong DB
                 'order_id' => !empty($this->itemData['ORDER_ID']) ? $this->itemData['ORDER_ID'] : null,
                 'product_id' => !empty($this->itemData['PRODUCT_ID']) ? $this->itemData['PRODUCT_ID'] : null,
             ]);
-            $prefix .= '-' . Product::find($this->itemData['PRODUCT_ID'])->code; // Thêm mã sản phẩm vào prefix
             // 2. SINH MÃ CHÍNH THỨC DỰA TRÊN ID VỪA CÓ
             // Sử dụng str_pad 6 số để mã đẹp và đều (VD: ID 5 -> ...000005)
             // Nếu ID của bạn lớn, nó sẽ tự giãn ra, không bị cắt
             // Thêm thuộc tính động vào item
             $code_properties = '';
             foreach ($this->dynamicProperties as $prop) {
-                if (isset($this->itemData[$prop->code]) && $this->itemData[$prop->code] !== '') {
+                if (isset($this->itemData[$prop->code]) && $this->itemData[$prop->code] !== '' &&  $prop->code_usage == 1) {
                     $code_properties .= $this->itemData[$prop->code] . '-';
                 }
             }
             $code_properties .= '-';
-            $realCode = strtoupper($prefix . $code_properties . str_pad($item->id, 6, '0', STR_PAD_LEFT));
+            $realCode = strtoupper($prefix . $code_properties . str_pad($item->id, 3, '0', STR_PAD_LEFT));
 
             // 3. CẬP NHẬT LẠI MÃ THẬT
             $item->update(['code' => $realCode]);
@@ -354,8 +361,13 @@ class BarcodeGenerator extends Component
         $this->colors = Color::where('is_active', true)->get();
         $this->specifications = Specification::where('is_active', true)->get();
         $this->plasticTypes = PlasticType::where('is_active', true)->get();
+        $this->widths = Width::where('is_active', true)->get();
 
         // (Tùy chọn) Bạn có thể cho in log ra màn hình console để biết nó đang tự động chạy
         // $this->js("console.log('🔄 Đã tự động cập nhật danh mục mới nhất!');");
+    }
+    public function refreshdynamicProperties()
+    {
+        $this->dynamicProperties = ItemProperty::where('is_active', true)->get();
     }
 }
