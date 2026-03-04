@@ -109,6 +109,14 @@
                                     <span class="text-danger small">{{ $message }}</span>
                                 @enderror
                             </div>
+                              <div class="col-md-6">
+                                <label class="form-label">Đơn Vị <span class="text-danger">*</span></label>
+                                <input type="text" wire:model="unit" class="form-control"
+                                    placeholder="VD: m, kg, cm">
+                                @error('unit')
+                                    <span class="text-danger small">{{ $message }}</span>
+                                @enderror
+                            </div>
                         </div>
 
                         <div class="row g-3 mb-3">

@@ -10,7 +10,7 @@ class PropertyManager extends Component
 {
     use WithPagination;
 
-    public $code, $name, $type = 'text', $options = '', $sort_order = 0;
+    public $code, $name, $type = 'text', $options = '', $sort_order = 0 , $unit = '';
     public $is_required = false, $is_active = true, $propertyId, $code_usage = 0;
 
     public $isEditMode = false;
@@ -38,6 +38,7 @@ class PropertyManager extends Component
         $this->propertyId = null;
         $this->isEditMode = false;
         $this->is_global = true;
+        $this->unit = '';
         $this->selectedProducts = [];
         $this->resetErrorBag();
     }
@@ -66,6 +67,7 @@ class PropertyManager extends Component
             'sort_order' => $this->sort_order ?: 0,
             'is_active' => $this->is_active,
             'is_global' => $this->is_global,
+            'unit' => $this->unit,
         ]);
         // Nếu không phải thuộc tính chung, lưu quan hệ với Product
         if (!$this->is_global) {
@@ -91,8 +93,8 @@ class PropertyManager extends Component
             $this->is_active = $property->is_active;
             $this->code_usage = $property->code_usage;
             $this->is_global = $property->is_global;
+            $this->unit = $property->unit;
             $this->selectedProducts = $property->products->pluck('id')->toArray();
-
             $this->isEditMode = true;
             $this->dispatch('open-modal');
         }
@@ -124,6 +126,7 @@ class PropertyManager extends Component
                 'code_usage' => $this->code_usage ?: 0,
                 'is_active' => $this->is_active,
                 'is_global' => $this->is_global,
+                'unit' => $this->unit,
             ]);
             if (!$this->is_global) {
                 $property->products()->sync($this->selectedProducts);

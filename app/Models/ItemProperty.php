@@ -18,7 +18,8 @@ class ItemProperty extends Model
         'is_active',
         'color_id',
         'specification_id',
-        'plastic_type_id'
+        'plastic_type_id',
+        'unit',
     ];
 
     protected $casts = [
