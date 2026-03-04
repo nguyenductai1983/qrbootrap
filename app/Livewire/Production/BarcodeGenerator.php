@@ -237,6 +237,15 @@ class BarcodeGenerator extends Component
 
         // 3. Thực thi kiểm tra với mảng động vừa tạo
         $this->validate($rules, $messages);
+        // 4. Nếu vượt qua kiểm tra -> Bắt đầu logic tạo tem
+
+        if (!empty($this->itemData['ORDER_ID'])) {
+            // Tự động điền PO nếu admin đã chọn Order (Dù đã có hàm updatedItemDataOrderId nhưng vẫn đảm bảo nếu sau này có thay đổi gì thì PO luôn được cập nhật chính xác)
+            $orderInfo = Order::find($this->itemData['ORDER_ID']);
+            $this->itemData['PO'] = $orderInfo ? $orderInfo->code : '';
+        } else {
+            $this->itemData['PO'] = '';
+        }
 
         $this->generatedItems = [];
         $this->selectedHistoryIds = [];
@@ -327,18 +336,25 @@ class BarcodeGenerator extends Component
             return;
         }
 
-        // Lấy tất cả tem trong database dựa theo ID đã check
-        $items = Item::whereIn('id', $this->selectedHistoryIds)->get();
+        // 🌟 TỐI ƯU TỐC ĐỘ BẰNG EAGER LOADING (Thêm hàm with) 🌟
+        // Lấy tất cả tem, gom luôn quan hệ order và product trong 1 lần query duy nhất
+        $items = Item::with(['order', 'product'])
+            ->whereIn('id', $this->selectedHistoryIds)
+            ->get();
 
         $this->generatedItems = [];
 
         foreach ($items as $item) {
-            $info = $item->properties ?? []; // Lấy JSON hiện tại
+            $info = $item->properties ?? [];
 
-            // NẾU LÀ TEM CŨ (Chưa có key PRODUCT_NAME trong JSON), ta tự động bổ sung vào lúc in
             if (!isset($info['PRODUCT_NAME']) && $item->product) {
                 $info['PRODUCT_NAME'] = $item->product->name;
             }
+            // Điền lại PO từ Order đã được load sẵn
+            if (!isset($info['PO']) && $item->order) {
+                $info['PO'] = $item->order->code;
+            }
+
             $info['type'] = $item->type;
             $this->generatedItems[] = [
                 'code' => $item->code,
@@ -346,7 +362,9 @@ class BarcodeGenerator extends Component
             ];
         }
 
-        // Kích hoạt lệnh in phía client
+        // Bỏ chọn các checkbox sau khi đã lấy xong dữ liệu để dọn dẹp giao diện
+        $this->selectedHistoryIds = [];
+
         $this->dispatch('trigger-print');
     }
 

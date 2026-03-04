@@ -101,11 +101,12 @@
                                     <span class="text-danger small">{{ $message }}</span>
                                 @enderror
                             </div>
-                              <div class="col-md-6">
+                            <div class="col-md-6">
                                 <div class="form-check form-switch">
                                     <input class="form-check-input" type="checkbox" wire:model="code_usage"
                                         id="code_usage">
-                                    <label class="form-check-label fw-bold text-success" for="code_usage">Dùng code tạo mã?</label>
+                                    <label class="form-check-label fw-bold text-success" for="code_usage">Dùng code tạo
+                                        mã?</label>
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -116,7 +117,7 @@
                                     <span class="text-danger small">{{ $message }}</span>
                                 @enderror
                             </div>
-                              <div class="col-md-6">
+                            <div class="col-md-6">
                                 <label class="form-label">Đơn Vị <span class="text-danger">*</span></label>
                                 <input type="text" wire:model="unit" class="form-control"
                                     placeholder="VD: m, kg, cm">
@@ -197,7 +198,7 @@
                                                             id="prod_{{ $product->id }}">
                                                         <label class="form-check-label"
                                                             for="prod_{{ $product->id }}">
-                                                            {{ $product->code }}
+                                                            {{ $product->code }} - {{ $product->name }}
                                                         </label>
                                                     </div>
                                                 </div>

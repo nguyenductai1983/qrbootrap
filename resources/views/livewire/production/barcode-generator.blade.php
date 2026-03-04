@@ -35,8 +35,9 @@
                     </div>
                     {{-- 2. Chọn Loại Tem --}}
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Loại Tem</label>
-                        <select wire:model.live="type" class="form-select text-primary fw-bold">
+                        <label class="form-label fw-bold">Loại Sản phẩm (Thành Phẩm , Nguyên Vật Liệu, Bán thành
+                            phẩm)</label>
+                        <select wire:model="type" class="form-select text-primary fw-bold">
                             @if (count($itemTypes) > 0)
                                 @foreach ($itemTypes as $t)
                                     <option value="{{ $t->code }}">{{ $t->code }} - {{ $t->name }}
@@ -55,19 +56,20 @@
 
                     {{-- 4. Tùy chọn Định dạng In (MỚI) --}}
                     <div class="mb-3 p-3 rounded border">
-                        <label class="form-label fw-bold small text-uppercase text-muted mb-2">Định dạng mã
-                            in</label>
+                        <label class="form-label fw-bold small text-uppercase text-muted mb-2">Định dạng mã in</label>
                         <div class="d-flex gap-3">
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" wire:model.live="printFormat"
-                                    value="QR" id="fmtQR">
+                                {{-- Đã xóa .live --}}
+                                <input class="form-check-input" type="radio" wire:model="printFormat" value="QR"
+                                    id="fmtQR">
                                 <label class="form-check-label fw-bold cursor-pointer" for="fmtQR">
                                     <i class="fa-solid fa-qrcode text-primary me-1"></i> QR Code
                                 </label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" wire:model.live="printFormat"
-                                    value="BARCODE" id="fmtBar">
+                                {{-- Đã xóa .live --}}
+                                <input class="form-check-input" type="radio" wire:model="printFormat" value="BARCODE"
+                                    id="fmtBar">
                                 <label class="form-check-label fw-bold cursor-pointer" for="fmtBar">
                                     <i class="fa-solid fa-barcode text-dark me-1"></i> Barcode 1D
                                 </label>
@@ -77,7 +79,7 @@
                     {{-- 5. Số tem / Hàng (Khổ giấy in) --}}
                     <div class="mb-3">
                         <label class="form-label fw-bold">Khổ giấy in (Số tem ngang)</label>
-                        <select wire:model.live="printColumns" class="form-select border-primary">
+                        <select wire:model="printColumns" class="form-select border-primary">
                             <option value="1">Máy in nhiệt cuộn (1 tem/dòng)</option>
                             <option value="2">Giấy A4 Decal (2 tem/dòng)</option>
                         </select>
@@ -103,7 +105,7 @@
                             </div>
 
                             {{-- Thêm wire:key="select-po-{{ count($orders) }}" vào thẳng thẻ select --}}
-                            <select wire:key="select-po-{{ count($orders) }}" wire:model.live="itemData.ORDER_ID"
+                            <select wire:key="select-po-{{ count($orders) }}" wire:model="itemData.ORDER_ID"
                                 class="form-select @error('itemData.ORDER_ID') is-invalid @enderror">
                                 <option value="">-- Chọn Đơn Hàng ({{ count($orders) }}) --</option>
                                 @foreach ($orders as $order)
@@ -188,6 +190,7 @@
                                     </option>
                                 @endforeach
                             </select>
+                            {{-- Sẽ tải thuộc tính tương ứng với Mã Hàng đã chọn. Nếu bạn không thấy Mã Hàng nào, hãy kiểm tra lại Phân Xưởng hoặc liên hệ quản lý để được hỗ trợ thêm. --}}
                             @error('itemData.PRODUCT_ID')
                                 <span class="text-danger small fst-italic">{{ $message }}</span>
                             @enderror
@@ -346,12 +349,21 @@
                     </h6>
 
                     {{-- Nút in lại chỉ hiện khi có item được chọn --}}
-                    @if (count($selectedHistoryIds) > 0)
-                        <button wire:click="reprintSelected" class="btn btn-sm btn-dark shadow-sm">
-                            <i class="fa-solid fa-print me-1"></i>
-                            In lại {{ count($selectedHistoryIds) }} tem đã chọn
-                        </button>
-                    @endif
+                    {{-- Dùng x-show của Alpine để tự động ẩn/hiện phía Client (Trình duyệt) mà không cần gọi Server --}}
+                    <button x-show="$wire.selectedHistoryIds.length > 0" style="display: none; min-width: 160px;"
+                        wire:click="reprintSelected" class="btn btn-sm btn-dark shadow-sm">
+
+                        {{-- Trạng thái bình thường --}}
+                        <span wire:loading.remove wire:target="reprintSelected">
+                            <i class="fa-solid fa-print me-1"></i> In lại <span
+                                x-text="$wire.selectedHistoryIds.length"></span> tem
+                        </span>
+
+                        {{-- Trạng thái đang tải (Quay vòng vòng) --}}
+                        <span wire:loading wire:target="reprintSelected">
+                            <i class="fa-solid fa-circle-notch fa-spin me-1"></i> Đang nạp tem...
+                        </span>
+                    </button>
                 </div>
 
                 <div class="table-responsive">
@@ -369,12 +381,24 @@
                         <tbody>
                             @foreach ($historyItems as $item)
                                 <tr class="{{ in_array($item->id, $selectedHistoryIds) ? 'table-warning' : '' }}">
+
+                                    {{-- CỘT 1: Ô CHECKBOX --}}
                                     <td class="text-center">
-                                        <input type="checkbox" wire:model.live="selectedHistoryIds"
-                                            value="{{ $item->id }}" class="form-check-input"
-                                            style="cursor: pointer;">
+                                        {{-- Thêm id="check-{{ $item->id }}" vào đây để tạo ID độc nhất cho mỗi dòng --}}
+                                        <input type="checkbox" id="check-{{ $item->id }}"
+                                            wire:model="selectedHistoryIds" value="{{ $item->id }}"
+                                            class="form-check-input" style="cursor: pointer;">
                                     </td>
-                                    <td class="fw-bold text-primary">{{ $item->code }}</td>
+
+                                    {{-- CỘT 2: MÃ BARCODE (Chữ có thể bấm được) --}}
+                                    <td class="fw-bold text-primary">
+                                        {{-- Bọc chữ bằng thẻ label và chỉ định for="" khớp với ID của checkbox ở trên --}}
+                                        <label for="check-{{ $item->id }}"
+                                            style="cursor: pointer; margin: 0; width: 100%;">
+                                            {{ $item->code }}
+                                        </label>
+                                    </td>
+
                                     <td>{{ $item->order->code ?? '-' }}</td>
                                     <td>{{ $item->properties['MAU'] ?? '-' }}</td>
                                     <td>{{ $item->product->name ?? 'N/A' }}</td>
