@@ -12,8 +12,8 @@ class SpecificationSeeder extends Seeder
      */
     public function run(): void
     {
-        Specification::create(['name' => 'ONG', 'code' => 'ONG']);
-        Specification::create(['name' => 'MANH', 'code' => 'MANH']);
+        Specification::create(['name' => 'DOUBLE', 'code' => 'D']);
+        Specification::create(['name' => 'SINGLE', 'code' => 'S']);
         //
     }
 }

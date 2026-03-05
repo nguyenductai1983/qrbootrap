@@ -20,6 +20,10 @@ class Item extends Model
         'created_by',
         'verified_at',
         'verified_by',
+        'color_id',
+        'specification_id',
+        'plastic_type_id',
+        'width_id',
     ];
 
     protected $casts = [

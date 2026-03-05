@@ -57,39 +57,40 @@ class BarcodeGenerator extends Component
         $this->specifications = Specification::where('is_active', true)->get();
         $this->plasticTypes = PlasticType::where('is_active', true)->get();
         $this->widths = Width::where('is_active', true)->get();
+
         // LOGIC LẤY BỘ PHẬN:
         if ($user->hasRole('admin')) {
-            // Nếu là Admin: Lấy tất cả bộ phận có Code
             $this->departments = Department::whereNotNull('code')->get();
         } else {
-            // Nếu là Nhân viên: Chỉ lấy những bộ phận họ được gán
-            // Sử dụng quan hệ belongsToMany đã khai báo ở Bước 2
             $this->departments = $user->departments;
         }
+
         // Lấy danh sách Loại tem đang Active
         $this->itemTypes = ItemType::where('is_active', true)->get();
 
-        // Tự động chọn loại tem đầu tiên nếu có
         if (count($this->itemTypes) > 0) {
             $this->type = $this->itemTypes[0]->code;
         }
+
         // Lấy danh sách Đơn hàng đang chạy
         $this->orders = Order::whereIn('status', [OrderStatus::RUNNING->value, OrderStatus::PENDING->value])->orderBy('id', 'desc')->get();
-        if (count($this->departments) > 0) {
-            $this->selectedDeptCode = $this->departments[0]->code;
-            $this->loadProductsByDepartment();
-        }
-        // Lấy danh sách thuộc tính động đang Active, sắp xếp theo thứ tự
-        $this->dynamicProperties = ItemProperty::where('is_active', true)
-            ->orderBy('sort_order', 'asc')
-            ->get();
-        $this->loadDynamicProperties(null);
-        // Khởi tạo mảng itemData với các key động
+
+        // 🌟 BƯỚC 1: KHỞI TẠO DỮ LIỆU RỖNG TRƯỚC 🌟
         $this->itemData['ORDER_ID'] = '';
         $this->itemData['PRODUCT_ID'] = '';
-        $this->itemData['PRODUCT_NAME'] = ''; // <--- THÊM DÒNG NÀY
-        foreach ($this->dynamicProperties as $prop) {
-            $this->itemData[$prop->code] = '';
+        $this->itemData['PRODUCT_NAME'] = '';
+
+        // 🌟 BƯỚC 2: TỰ ĐỘNG CHỌN XƯỞNG VÀ SẢN PHẨM 🌟
+        if (count($this->departments) > 0) {
+            // Chọn xưởng đầu tiên
+            $this->selectedDeptCode = $this->departments[0]->code;
+
+            // Hàm này sẽ lấy danh sách Sản phẩm, TỰ ĐỘNG đè lên PRODUCT_ID vừa khởi tạo ở trên
+            // và gọi luôn loadDynamicProperties() nên mọi thứ sẽ được set chuẩn 100%.
+            $this->updatedSelectedDeptCode();
+        } else {
+            // Nếu User không có xưởng nào, chỉ load các thuộc tính chung chung
+            $this->loadDynamicProperties(null);
         }
     }
     // Hàm này tự chạy khi người dùng thay đổi giá trị của select box Chọn Product
@@ -134,18 +135,36 @@ class BarcodeGenerator extends Component
     }
     public function updatedSelectedDeptCode()
     {
-        $this->js("console.log('🔵 Chọn BP: {$this->selectedDeptCode}');");
-
-        // Khi đổi phân xưởng -> Load lại danh sách Mã Hàng
+        // 1. Tải lại danh sách Mã Hàng (Sản phẩm) thuộc Phân xưởng vừa chọn
         $this->loadProductsByDepartment();
 
-        // ĐỒNG THỜI Xóa trắng Mã Hàng đang chọn (Vì xưởng mới không có mã hàng cũ)
-        $this->itemData['PRODUCT_ID'] = '';
-        $this->itemData['PRODUCT'] = '';
-        $this->itemData['PRODUCT_NAME'] = '';
+        // 2. Kiểm tra xem xưởng này có sản phẩm nào không
+        if (count($this->availableProducts) > 0) {
 
-        // Reset luôn cả danh sách thuộc tính động
-        $this->loadDynamicProperties(null);
+            // Dùng collect() để bao bọc lại, tránh lỗi ->first() trên mảng
+            $firstProduct = collect($this->availableProducts)->first();
+
+            // Kiểm tra xem phần tử này đang là Object (Model) hay Array (Do Livewire ép kiểu)
+            $productId = is_array($firstProduct) ? $firstProduct['id'] : $firstProduct->id;
+            $productCode = is_array($firstProduct) ? $firstProduct['code'] : $firstProduct->code;
+            $productName = is_array($firstProduct) ? $firstProduct['name'] : $firstProduct->name;
+
+            // Gán dữ liệu an toàn
+            $this->itemData['PRODUCT_ID'] = $productId;
+            $this->itemData['PRODUCT'] = $productCode;
+            $this->itemData['PRODUCT_NAME'] = $productName;
+
+            // Kích hoạt hàm load thuộc tính động
+            $this->loadDynamicProperties($productId);
+        } else {
+            // Nếu xưởng mới chọn không có sản phẩm nào -> Xoá trắng dữ liệu
+            $this->itemData['PRODUCT_ID'] = '';
+            $this->itemData['PRODUCT'] = '';
+            $this->itemData['PRODUCT_NAME'] = '';
+
+            // Reset danh sách thuộc tính động
+            $this->loadDynamicProperties(null);
+        }
     }
 
     // Khi chọn Order -> Tự điền PO Text
@@ -238,14 +257,20 @@ class BarcodeGenerator extends Component
         // 3. Thực thi kiểm tra với mảng động vừa tạo
         $this->validate($rules, $messages);
         // 4. Nếu vượt qua kiểm tra -> Bắt đầu logic tạo tem
+        $orderCode = $this->itemData['ORDER_CODE'] ?? null;
+        $orderId = null;
+        if ($orderCode) {
+            // Lệnh này sẽ tự động tìm Order có code = $orderCode.
+            // Nếu không tìm thấy, nó sẽ tự động Create kèm thuộc tính status = PENDING.
+            $order = Order::firstOrCreate(
+                ['code' => $orderCode], // Mảng 1: Điều kiện tìm kiếm
+                ['status' => OrderStatus::PENDING] // Mảng 2: Dữ liệu thêm vào nếu phải tạo mới
+            );
 
-        if (!empty($this->itemData['ORDER_ID'])) {
-            // Tự động điền PO nếu admin đã chọn Order (Dù đã có hàm updatedItemDataOrderId nhưng vẫn đảm bảo nếu sau này có thay đổi gì thì PO luôn được cập nhật chính xác)
-            $orderInfo = Order::find($this->itemData['ORDER_ID']);
-            $this->itemData['PO'] = $orderInfo ? $orderInfo->code : '';
-        } else {
-            $this->itemData['PO'] = '';
+            // Bất kể là tìm thấy hay tạo mới, ta luôn có đối tượng $order và lấy được ID
+            $orderId = $order->id;
         }
+        $this->itemData['ORDER_ID'] = (string) $orderId; // Ép kiểu chuỗi để lưu vào properties
 
         $this->generatedItems = [];
         $this->selectedHistoryIds = [];
@@ -254,9 +279,9 @@ class BarcodeGenerator extends Component
         $colorCode = Color::find($this->selectedColor)?->code ?? '';
         $specCode = Specification::find($this->selectedSpec)?->code ?? '';
         $plasticCode = PlasticType::find($this->selectedPlastic)?->code ?? '';
-        $prefix = $widthCode . ' ' . $colorCode . ' ' . $specCode . ' ' . $plasticCode;
-
-        // Không cần tính $startSeq nữa vì ta sẽ dùng ID
+        $prefix = $orderCode . ' '  . $colorCode . ' ' . $specCode . ' ' . $widthCode . ' ' . $plasticCode;
+        // Mã đơn hang + Mã khổ + Mã màu + Mã quy cách + Mã loại nhựa
+        // Các thuộc tính động: GSM, Độ dài, trọng lượng, v.v... và sẽ  ID được tự động ghép vào cuối cùng để đảm bảo tính duy nhất
 
         for ($i = 0; $i < $this->quantity; $i++) {
 
@@ -267,10 +292,10 @@ class BarcodeGenerator extends Component
                 'status' => 1,
                 'properties' => $this->itemData,
                 'created_by' => Auth::id(),
-                'color_id' => $this->selectedColor,
-                'specification_id' => $this->selectedSpec,
-                'plastic_type_id' => $this->selectedPlastic,
-                'width_id' => $this->selectedWidth,
+                'color_id'         => $this->selectedColor ?: null,
+                'specification_id' => $this->selectedSpec ?: null,
+                'plastic_type_id'  => $this->selectedPlastic ?: null,
+                'width_id'         => $this->selectedWidth ?: null,
                 // Map thêm các cột khóa ngoại nếu bạn đã tạo trong DB
                 'order_id' => !empty($this->itemData['ORDER_ID']) ? $this->itemData['ORDER_ID'] : null,
                 'product_id' => !empty($this->itemData['PRODUCT_ID']) ? $this->itemData['PRODUCT_ID'] : null,
@@ -319,6 +344,9 @@ class BarcodeGenerator extends Component
             // 4. Đưa vào danh sách in
             $printInfo = $this->itemData;
             $printInfo['type'] = $this->type; // <-- Bổ sung thêm type vào thông tin in mới
+            $printInfo['PO'] = $orderCode ?? ''; // <-- Bổ sung thêm PO vào thông tin in mới
+            $printInfo['PRODUCT_NAME'] = $this->itemData['PRODUCT_NAME'] ?? ''; // <-- Bổ sung thêm PRODUCT_NAME vào thông tin in mới
+            $printInfo['COLOR_NAME'] = Color::find($this->selectedColor)->name ?? ''; // <-- Bổ sung thêm COLOR_NAME vào thông tin in mới
             $this->generatedItems[] = [
                 'code' => $realCode,
                 'info' => $printInfo
@@ -350,6 +378,9 @@ class BarcodeGenerator extends Component
             if (!isset($info['PRODUCT_NAME']) && $item->product) {
                 $info['PRODUCT_NAME'] = $item->product->name;
             }
+            if (!isset($info['COLOR_NAME']) && $item->color) {
+                $info['COLOR_NAME'] = $item->color->name ?? '';
+            }
             // Điền lại PO từ Order đã được load sẵn
             if (!isset($info['PO']) && $item->order) {
                 $info['PO'] = $item->order->code;
@@ -358,7 +389,8 @@ class BarcodeGenerator extends Component
             $info['type'] = $item->type;
             $this->generatedItems[] = [
                 'code' => $item->code,
-                'info' => $info
+                'info' => $info,
+
             ];
         }
 
