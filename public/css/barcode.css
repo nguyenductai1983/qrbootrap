@@ -3,7 +3,7 @@
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 15px;
-    margin-top: 20px;
+
 }
 
 @media (min-width: 992px) {
@@ -41,7 +41,7 @@
     /* 1. XÓA SẠCH LỀ TRANG GIẤY CỦA TRÌNH DUYỆT */
     @page {
         /* Đặt lề cực nhỏ (hoặc bằng 0) để không lãng phí giấy decal */
-        margin: 1mm;
+        margin: 20px 1mm 1mm 1mm;
         /* Xóa luôn Header/Footer (ngày tháng, link) mặc định của trình duyệt in */
         size: auto;
     }
