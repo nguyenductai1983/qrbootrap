@@ -187,7 +187,6 @@ class BarcodeGenerator extends Component
     // }
     private function loadProductsByDepartment()
     {
-        $this->js("console.log('Đổi Sản phẩm với BP: {$this->selectedDeptCode}');");
         // Tìm Department theo Code đang chọn
         $dept = Department::where('code', $this->selectedDeptCode)->first();
 

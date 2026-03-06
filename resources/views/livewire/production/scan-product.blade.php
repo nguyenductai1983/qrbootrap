@@ -169,15 +169,15 @@
 
     {{-- SCRIPTS --}}
     {{-- 1. Sửa lại đường dẫn thư viện HTML5-QRCode dùng bản Online (CDN) để đảm bảo chạy được ngay --}}
-    <script src="js/html5-qrcode.min.js" type="text/javascript"></script>
+    <script src="/js/html5-qrcode.min.js" type="text/javascript"></script>
 
     {{-- 2. Thư viện SweetAlert2 --}}
-    <script src="js/sweetalert2@11.js" type="text/javascript"></script>
+    <script src="/js/sweetalert2@11.js" type="text/javascript"></script>
 
     <script>
         // 3. Sửa lại đường dẫn âm thanh dùng link Online của Google (để không phải tải file về)
-        const audioSuccess = new Audio('audio/cartoon_boing.ogg');
-        const audioError = new Audio('audio/beep_short.ogg');
+        const audioSuccess = new Audio('/audio/cartoon_boing.ogg');
+        const audioError = new Audio('/audio/beep_short.ogg');
 
         let html5QrcodeScanner = null;
         let isCameraRunning = false;
