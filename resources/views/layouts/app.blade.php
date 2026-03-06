@@ -57,7 +57,7 @@
                          - d-lg-none: Ẩn trên màn hình lớn (>= lg) nếu muốn.
                            Nếu bạn muốn nút này luôn hiện trên desktop để thu gọn sidebar, hãy bỏ d-lg-none.
                     --}}
-                    <button class="btn btn-primary d-block" id="sidebarToggle"><i class="fas fa-bars"></i></button>
+                    <button class="btn btn-primary d-block" id="sidebarToggle"><i class="fas fa-bars" id="toggleIcon"></i></button>
 
                     {{-- Brand cho mobile: Chỉ hiển thị khi sidebar ẩn trên mobile --}}
                     <a class="navbar-brand d-lg-none ms-3" href="#">QR Mobile</a>
@@ -122,101 +122,6 @@
     </div>
     {{-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script> --}}
     @livewireScripts
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // --- 1. KHAI BÁO BIẾN ---
-            const sidebarToggle = document.getElementById('sidebarToggle');
-            const sidebarClose = document.getElementById('sidebarClose');
-            const wrapper = document.getElementById('wrapper');
-            // Lấy tất cả các nút menu có khả năng sổ xuống (Menu cha)
-            const dropdownToggles = document.querySelectorAll('.sidebar-dropdown-toggle');
-            // --- 2. XỬ LÝ NÚT 3 GẠCH (MỞ/THU NHỎ THỦ CÔNG) ---
-            if (sidebarToggle && wrapper) {
-                sidebarToggle.addEventListener('click', function(e) {
-                    e.preventDefault();
-
-                    // Bật/tắt class toggled
-                    wrapper.classList.toggle('toggled');
-
-                    // 🌟 LƯU VÀO LOCAL STORAGE 🌟
-                    if (wrapper.classList.contains('toggled')) {
-                        localStorage.setItem('sidebarState', 'toggled');
-                    } else {
-                        localStorage.setItem('sidebarState', 'expanded');
-                    }
-                });
-            }
-
-            // Tương tự cho nút đóng trên Mobile
-            if (sidebarClose && wrapper) {
-                sidebarClose.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    wrapper.classList.remove('toggled');
-                    localStorage.setItem('sidebarState', 'expanded'); // Lưu lại
-                });
-            }
-
-            // --- 3. XỬ LÝ NÚT ĐÓNG (TRÊN MOBILE) ---
-            if (sidebarClose && wrapper) {
-                sidebarClose.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    wrapper.classList.remove('toggled');
-                });
-            }
-
-            // --- 4. [TÍNH NĂNG BẠN CẦN]: TỰ ĐỘNG MỞ TO KHI CHỌN MENU ---
-            // if (dropdownToggles && wrapper) {
-            //     dropdownToggles.forEach(toggle => {
-            //         toggle.addEventListener('click', function() {
-            //             // Kiểm tra: Nếu Sidebar đang bị thu nhỏ (có class toggled)
-            //             if (wrapper.classList.contains('toggled')) {
-            //                 // Thì xóa class toggled đi => Sidebar sẽ tự động mở to ra ngay lập tức
-            //                 wrapper.classList.remove('toggled');
-            //             }
-            //             // Nếu Sidebar đang to sẵn rồi thì thôi, để Bootstrap tự xử lý việc sổ menu con
-            //         });
-            //     });
-            // }
-
-            // --- 5. XỬ LÝ DARK/LIGHT MODE (GIỮ NGUYÊN) ---
-            const themeToggleBtn = document.getElementById('themeToggle');
-            const htmlElement = document.documentElement;
-            const darkIcon = document.querySelector('.dark-icon');
-            const lightIcon = document.querySelector('.light-icon');
-
-            // Hàm cập nhật Icon dựa trên theme hiện tại
-            const updateThemeIcon = () => {
-                // Lấy theme trực tiếp từ HTML tag (đã được set ở Head)
-                const currentTheme = htmlElement.getAttribute('data-bs-theme');
-
-                if (currentTheme === 'dark') {
-                    darkIcon.classList.remove('d-none');
-                    lightIcon.classList.add('d-none');
-                } else {
-                    lightIcon.classList.remove('d-none');
-                    darkIcon.classList.add('d-none');
-                }
-            };
-
-            // Chạy ngay lập tức để icon đúng với theme
-            updateThemeIcon();
-            // Xử lý sự kiện click
-            if (themeToggleBtn) {
-                themeToggleBtn.addEventListener('click', () => {
-                    // Đảo ngược theme
-                    const newTheme = htmlElement.getAttribute('data-bs-theme') === 'dark' ? 'light' :
-                        'dark';
-
-                    // Cập nhật lại HTML và LocalStorage
-                    htmlElement.setAttribute('data-bs-theme', newTheme);
-                    localStorage.setItem('theme', newTheme);
-
-                    // Cập nhật Icon
-                    updateThemeIcon();
-                });
-            }
-        });
-    </script>
 </body>
 
 </html>
