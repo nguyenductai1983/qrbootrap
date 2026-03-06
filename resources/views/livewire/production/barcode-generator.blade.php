@@ -4,7 +4,6 @@
             <h5 class="mb-0"><i class="fa-solid fa-barcode me-2"></i>Phát hành Tem & Barcode</h5>
         </div>
         <div class="card-body position-relative"> {{-- Thêm position-relative vào đây --}}
-
             {{-- 🌟 LỚP MÀN MỜ BẢO VỆ CHỐNG CLICK NHANH 🌟 --}}
             <div wire:loading class="position-absolute w-100 h-100 top-0 start-0 bg-white"
                 style="opacity: 0.6; z-index: 10; cursor: not-allowed;">
@@ -14,7 +13,6 @@
                 </div>
             </div>
             <div class="row g-4">
-
                 {{-- CỘT TRÁI: CẤU HÌNH IN --}}
                 <div class="col-md-4 border-end">
                     {{-- 1. Chọn Phân Xưởng --}}
@@ -55,8 +53,6 @@
                     </div>
                     {{-- 2. Chọn Loại Tem --}}
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Loại Sản phẩm (Thành Phẩm , Nguyên Vật Liệu, Bán thành
-                            phẩm)</label>
                         <select wire:model="type" class="form-select text-primary fw-bold">
                             @if (count($itemTypes) > 0)
                                 @foreach ($itemTypes as $t)
@@ -68,7 +64,6 @@
                             @endif
                         </select>
                     </div>
-
                     {{-- 4. Tùy chọn Định dạng In (MỚI) --}}
                     <div class="mb-3 p-3 rounded border">
                         <label class="form-label fw-bold small text-uppercase text-muted mb-2">Định dạng mã in</label>
@@ -103,8 +98,29 @@
                 </div>
                 {{-- CỘT PHẢI: NHẬP THÔNG TIN CHI TIẾT --}}
                 <div class="col-md-8">
-                    <h6 class="text-primary fw-bold mb-3">Thông tin lô hàng</h6>
                     <div class="row g-1">
+                        <div class="col-12">
+                            <div class="d-flex gap-2 align-items-stretch">
+                                {{-- Nút link sang trang quản lý (Chiếm 7 phần chiều ngang) --}}
+                                <a href="{{ route('manager.categories') }}" target="_new" style="flex: 7;"
+                                    class="list-group-item list-group-item-action text-primary border rounded px-3 py-2 d-flex justify-content-center align-items-center {{ request()->routeIs('manager.categories') ? 'active' : '' }}">
+                                    <span><i class="fa-solid fa-tags me-1"></i> Quản lý thuộc tính</span>
+                                </a>
+                                {{-- Nút bấm Làm mới danh sách (Chiếm 3 phần chiều ngang) --}}
+                                <button type="button" wire:click="refreshMasterData" style="flex: 3;"
+                                    class="btn btn-outline-success shadow-sm px-3 d-flex justify-content-center align-items-center"
+                                    title="Tải lại dữ liệu ngay lập tức">
+                                    <span>
+                                        <i class="fa-solid fa-arrows-rotate me-1" wire:loading.class="fa-spin"
+                                            wire:target="refreshMasterData"></i>
+                                        Tải lại thuộc tính
+                                    </span>
+                                </button>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row g-1 mt-3">
                         {{-- 3. Số lượng --}}
                         <div class="col-md-4">
                             <label class="form-label fw-bold">Số lượng tem</label>
@@ -162,113 +178,86 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="col-12">
-                                <div class="d-flex gap-2 align-items-stretch">
+                        </div>
+                    </div>
+                    {{-- Các trường nhập liệu chi tiết --}}
+                    <div class="row g-1 mt-3">
+                        <div class="col-12">
+                            <div class="d-flex gap-2 align-items-stretch">
+                                {{-- Nút link sang trang quản lý (Chiếm 7 phần chiều ngang) --}}
+                                <a href="{{ route('manager.properties') }}" target="_new" style="flex: 7;"
+                                    class="list-group-item list-group-item-action text-primary border rounded px-3 py-2 d-flex justify-content-center align-items-center {{ request()->routeIs('manager.categories') ? 'active' : '' }}">
+                                    <span><i class="fa-solid fa-tags me-1"></i> Cài đặt thuộc tính động</span>
+                                </a>
+                                {{-- Nút bấm Làm mới danh sách (Chiếm 3 phần chiều ngang) --}}
+                                <button type="button" wire:click="refreshDynamicProperties" style="flex: 3;"
+                                    class="btn btn-outline-success shadow-sm px-3 d-flex justify-content-center align-items-center"
+                                    title="Tải lại dữ liệu ngay lập tức">
+                                    <span>
+                                        <i class="fa-solid fa-arrows-rotate me-1" wire:loading.class="fa-spin"
+                                            wire:target="refreshMasterData"></i>
+                                        Tải thuộc tính động
+                                    </span>
+                                </button>
 
-                                    {{-- Nút link sang trang quản lý (Chiếm 7 phần chiều ngang) --}}
-                                    <a href="{{ route('manager.categories') }}" target="_new" style="flex: 7;"
-                                        class="list-group-item list-group-item-action text-primary border rounded px-3 py-2 d-flex justify-content-center align-items-center {{ request()->routeIs('manager.categories') ? 'active' : '' }}">
-                                        <span><i class="fa-solid fa-tags me-1"></i> Tạo mới: Nhựa - Quy Cách -
-                                            Màu</span>
-                                    </a>
-
-                                    {{-- Nút bấm Làm mới danh sách (Chiếm 3 phần chiều ngang) --}}
-                                    <button type="button" wire:click="refreshMasterData" style="flex: 3;"
-                                        class="btn btn-outline-success shadow-sm px-3 d-flex justify-content-center align-items-center"
-                                        title="Tải lại dữ liệu ngay lập tức">
-                                        <span>
-                                            <i class="fa-solid fa-arrows-rotate me-1" wire:loading.class="fa-spin"
-                                                wire:target="refreshMasterData"></i>
-                                            Tải danh mục
-                                        </span>
-                                    </button>
-
-                                </div>
                             </div>
-                            {{-- Các trường nhập liệu chi tiết --}}
-                            {{-- Thay thế toàn bộ khối nhập "Thông tin chi tiết" cứng của bạn bằng khối này --}}
-                            <div class="col-12">
-                                <div class="row g-2 mt-2 border-top pt-2">
-                                    <div class="col-12">
-                                        <div class="d-flex justify-content-between align-items-center ">
-                                            {{-- Tiêu đề bên trái --}}
-                                            <label class="small text-muted fw-bold mb-0">Thông tin chi tiết (Thuộc tính
-                                                động):</label>
+                        </div>
+                    </div>
+                    <div class="row g-1">
+                        {{-- Vòng lặp hiển thị các thuộc tính động --}}
+                        @foreach ($dynamicProperties as $prop)
+                            <div class="col-6">
+                                <label class="form-label mb-1" style="font-size: 0.85rem;">
+                                    {{ $prop->name }}
+                                    @if ($prop->is_required)
+                                        <span class="text-danger">*</span>
+                                    @endif
+                                </label>
 
-                                            {{-- Nhóm Link và Nút bấm bên phải --}}
-                                            <div class="d-flex align-items-center gap-3">
-                                                <a href="{{ route('manager.properties') }}" target="_new"
-                                                    class="small text-decoration-none">
-                                                    <i class="fa-solid fa-gear me-1"></i> Quản lý thuộc tính
-                                                </a>
+                                @if ($prop->type === 'select' && is_array($prop->options))
+                                    <select wire:model="itemData.{{ $prop->code }}"
+                                        class="form-select form-select-sm">
+                                        <option value="">-- Chọn --</option>
+                                        @foreach ($prop->options as $opt)
+                                            <option value="{{ $opt }}">{{ $opt }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                @else
+                                    <input type="{{ $prop->type === 'number' ? 'number' : 'text' }}"
+                                        wire:model="itemData.{{ $prop->code }}"
+                                        class="form-control form-control-sm"
+                                        placeholder="Nhập {{ strtolower($prop->name) }}" @required($prop->is_required)>
+                                @endif
 
-                                                <button type="button" wire:click="refreshDynamicProperties"
-                                                    class="btn btn-sm btn-outline-success shadow-sm px-3 d-flex justify-content-center align-items-center"
-                                                    title="Tải lại dữ liệu ngay lập tức">
-                                                    <span>
-                                                        <i class="fa-solid fa-arrows-rotate me-1"
-                                                            wire:loading.class="fa-spin"
-                                                            wire:target="refreshDynamicProperties"></i>
-                                                        Tải thuộc tính
-                                                    </span>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    {{-- Vòng lặp hiển thị các thuộc tính động --}}
-                                    @foreach ($dynamicProperties as $prop)
-                                        <div class="col-6">
-                                            <label class="form-label mb-1" style="font-size: 0.85rem;">
-                                                {{ $prop->name }}
-                                                @if ($prop->is_required)
-                                                    <span class="text-danger">*</span>
-                                                @endif
-                                            </label>
-
-                                            @if ($prop->type === 'select' && is_array($prop->options))
-                                                <select wire:model="itemData.{{ $prop->code }}"
-                                                    class="form-select form-select-sm">
-                                                    <option value="">-- Chọn --</option>
-                                                    @foreach ($prop->options as $opt)
-                                                        <option value="{{ $opt }}">{{ $opt }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                            @else
-                                                <input type="{{ $prop->type === 'number' ? 'number' : 'text' }}"
-                                                    wire:model="itemData.{{ $prop->code }}"
-                                                    class="form-control form-control-sm"
-                                                    placeholder="Nhập {{ strtolower($prop->name) }}"
-                                                    @required($prop->is_required)>
-                                            @endif
-
-                                            @error('itemData.' . $prop->code)
-                                                <span class="text-danger" style="font-size: 0.75rem;">Vui lòng nhập
-                                                    {{ $prop->name }}</span>
-                                            @enderror
-                                        </div>
-                                    @endforeach
-                                </div>
-
-                                <div class="mt-4 text-end">
-                                    <button wire:click="generate" class="btn btn-success px-4 fw-bold">
-                                        <i class="fa-solid fa-plus me-1"></i> Tạo Mới & In Ngay
-                                    </button>
-                                </div>
+                                @error('itemData.' . $prop->code)
+                                    <span class="text-danger" style="font-size: 0.75rem;">Vui lòng nhập
+                                        {{ $prop->name }}</span>
+                                @enderror
                             </div>
+                        @endforeach
+                    </div>
+                    <div class="mt-4">
+                        <div class="input-group mb-3">
+                            <button wire:click="generate" class="form-control btn btn-success px-4 fw-bold">
+                                <i class="fa-solid fa-plus me-1"></i> Tạo Mới & In Ngay
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="card shadow-sm d-print-none mt-4">
-                <div class="card-headerd-flex justify-content-between align-items-center">
-                    <h6 class="mb-0 fw-bold"><i class="fa-solid fa-clock-rotate-left me-2"></i>Lịch sử tạo tem
+            <div class="card shadow-sm d-print-none">
+                {{-- Tách card-header và d-flex ra bằng 1 dấu khoảng trắng --}}
+                {{-- <div class="card-header d-flex justify-content-between align-items-center"> --}}
+                <div class="input-group">
+                    <h6 class="mb-0 fw-bold form-control me-3">
+                        <i class="fa-solid fa-clock-rotate-left me-2"></i>Lịch sử tạo tem
                     </h6>
 
                     {{-- Nút in lại chỉ hiện khi có item được chọn --}}
                     {{-- Dùng x-show của Alpine để tự động ẩn/hiện phía Client (Trình duyệt) mà không cần gọi Server --}}
                     <button x-show="$wire.selectedHistoryIds.length > 0" style="display: none; min-width: 160px;"
-                        wire:click="reprintSelected" class="btn btn-sm btn-dark shadow-sm">
+                        wire:click="reprintSelected" class="btn btn-sm btn-success shadow-sm form-control">
 
                         {{-- Trạng thái bình thường --}}
                         <span wire:loading.remove wire:target="reprintSelected">
@@ -282,6 +271,7 @@
                         </span>
                     </button>
                 </div>
+                {{-- </div> --}}
 
                 <div class="table-responsive">
                     <table class="table table-hover table-sm mb-0 align-middle">
@@ -331,6 +321,7 @@
             </div>
         </div>
     </div>
+    {{-- kết thúc vùng không in  --}}
     {{-- KHU VỰC IN TEM (ẨN TRÊN MÀN HÌNH, CHỈ HIỆN KHI IN) --}}
     @if (count($generatedItems) > 0)
         @php
@@ -405,7 +396,6 @@
             </div>
         </div>
     @endif
-
     {{-- CSS: ĐỊNH DẠNG TEM VÀ CHẾ ĐỘ IN MỚI (CHỐNG LỖI MENU) --}}
     <style>
         /* --- GIAO DIỆN TRÊN MÀN HÌNH MÁY TÍNH --- */

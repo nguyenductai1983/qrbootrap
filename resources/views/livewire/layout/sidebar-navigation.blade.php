@@ -73,7 +73,7 @@
                     {{-- Link Sản Phẩm --}}
                     <a href="{{ route('manager.products') }}" title="Sản phẩm"
                         class="list-group-item list-group-item-action py-2 ps-5 bg-secondary {{ request()->routeIs('manager.products') ? 'active' : '' }}">
-                        <i class="fa-solid fa-layer-group me-2"></i>
+                        <i class="fa-brands fa-product-hunt me-2"></i>
                         <span class="sidebar-text"> Sản phẩm</span>
                     </a>
                     <a href="{{ route('manager.properties') }}" title="Thuộc tính sản phẩm"
@@ -88,7 +88,7 @@
                     </a>
                     <a href="{{ route('manager.items') }}" title="Code đã tạo (Items)"
                         class="list-group-item list-group-item-action py-2 ps-5 bg-secondary {{ request()->routeIs('manager.items') ? 'active' : '' }}">
-                        <i class="fa-solid fa-tags me-2"></i>
+                       <i class="fa-solid fa-code me-2"></i>
                         <span class="sidebar-text">Code đã tạo (Items)</span>
                     </a>
                     <a href="{{ route('manager.categories') }}" title="Danh mục sản phẩm"
