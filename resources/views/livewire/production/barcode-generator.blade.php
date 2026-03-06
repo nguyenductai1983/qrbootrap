@@ -389,123 +389,17 @@
                         </div>
                     </div>
                     {{-- Chỉ in thẻ <hr> nếu KHÔNG PHẢI là tem cuối cùng --}}
-                    @if ($loop->odd && !$loop->last)
+                    @if ($loop->odd && !$loop->last && $printColumns == 1)
                         <hr class="my-1" style="border-top: 1px dashed #ccc;">
                     @endif
                 @endforeach
             </div>
         </div>
     @endif
-    {{-- CSS: ĐỊNH DẠNG TEM VÀ CHẾ ĐỘ IN MỚI (CHỐNG LỖI MENU) --}}
-    <style>
-        /* --- GIAO DIỆN TRÊN MÀN HÌNH MÁY TÍNH --- */
-        .print-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            margin-top: 20px;
-        }
 
-        @media (min-width: 992px) {
-            .print-grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
-        }
-
-        .label-item {
-            border: 1px dashed #333;
-            padding: 0px;
-            background: #fff;
-            border-radius: 4px;
-            width: 100%;
-        }
-
-        .barcode-wrapper svg {
-            max-width: 100%;
-            height: auto;
-        }
-
-        .cursor-pointer {
-            cursor: pointer;
-        }
-
-        .print-area {
-            display: none;
-            /* Mặc định ẩn trên màn hình */
-        }
-
-
-        /* 🌟 --- CẤU TRÚC KHI BẤM IN (CTRL + P) --- 🌟 */
-        @media print {
-
-            /* 1. XÓA SẠCH LỀ TRANG GIẤY CỦA TRÌNH DUYỆT */
-            @page {
-                /* Đặt lề cực nhỏ (hoặc bằng 0) để không lãng phí giấy decal */
-                margin: 1mm;
-                /* Xóa luôn Header/Footer (ngày tháng, link) mặc định của trình duyệt in */
-                size: auto;
-            }
-
-            /* 1. TÀNG HÌNH MENU BẰNG BỘ QUÉT TỰ ĐỘNG (WILDCARD) */
-            /* Quét sạch mọi thẻ div có chữ "sidebar", "menu", "nav" trong tên class */
-            aside,
-            nav,
-            header,
-            footer,
-            [class*="sidebar"],
-            [id*="sidebar"],
-            [class*="menu"],
-            [id*="menu"],
-            [class*="nav"],
-            [id*="nav"] {
-                display: none !important;
-                opacity: 0 !important;
-                visibility: hidden !important;
-            }
-
-            /* 2. Đảm bảo form cấu hình và lịch sử biến mất */
-            .d-print-none {
-                display: none !important;
-            }
-
-            /* 3. TẠO TỜ GIẤY TRẮNG ĐÈ LÊN MỌI THỨ CÒN SÓT LẠI */
-            .print-area {
-                display: block !important;
-                position: absolute !important;
-                top: 0 !important;
-                left: 0 !important;
-                width: 100% !important;
-                /* min-height: 100vh !important; */
-                /* Ép chiều cao tối thiểu bằng 1 trang giấy */
-                background-color: #ffffff !important;
-                /* ĐỔ NỀN TRẮNG ĐỂ CHE MỌI THỨ BÊN DƯỚI */
-                z-index: 999999 !important;
-                /* Nổi lên trên cùng */
-            }
-
-            /* Lưới in tự động chia cột theo tùy chọn */
-            .print-grid {
-                display: grid;
-                grid-template-columns: repeat(var(--print-cols), 1fr);
-                gap: 1mm;
-                width: 100%;
-                background-color: #ffffff !important;
-                /* Đảm bảo nền lưới cũng trắng */
-            }
-
-            .label-item {
-                border: 1px solid #000 !important;
-                /* Viền đen đậm khi in */
-                border-radius: 0;
-                page-break-inside: avoid;
-                /* Không để tem bị đứt đôi giữa 2 trang giấy */
-                padding: 1mm !important;
-                margin-bottom: 0;
-                background-color: #ffffff !important;
-            }
-        }
-    </style>
-
+    @push('styles')
+        <link rel="stylesheet" href="{{ asset('css/barcode.css') }}">
+    @endpush
     {{-- SCRIPT: TỰ ĐỘNG BẬT CỬA SỔ IN --}}
     <script>
         document.addEventListener('livewire:initialized', () => {

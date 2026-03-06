@@ -33,6 +33,8 @@
     </script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
+    {{-- THÊM DÒNG NÀY ĐỂ MỞ ĐƯỜNG CHÈN CSS TỪ CÁC TRANG CON --}}
+    @stack('styles')
 </head>
 
 <body class="font-sans antialiased">
