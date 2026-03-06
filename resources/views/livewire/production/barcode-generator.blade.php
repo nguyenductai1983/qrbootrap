@@ -104,7 +104,7 @@
                                 {{-- Nút link sang trang quản lý (Chiếm 7 phần chiều ngang) --}}
                                 <a href="{{ route('manager.categories') }}" target="_new" style="flex: 7;"
                                     class="list-group-item list-group-item-action text-primary border rounded px-3 py-2 d-flex justify-content-center align-items-center {{ request()->routeIs('manager.categories') ? 'active' : '' }}">
-                                    <span><i class="fa-solid fa-tags me-1"></i> Quản lý thuộc tính</span>
+                                    <span><i class="fa-solid fa-list me-2"></i> Quản lý thuộc tính</span>
                                 </a>
                                 {{-- Nút bấm Làm mới danh sách (Chiếm 3 phần chiều ngang) --}}
                                 <button type="button" wire:click="refreshMasterData" style="flex: 3;"
@@ -123,18 +123,18 @@
                     <div class="row g-1 mt-3">
                         {{-- 3. Số lượng --}}
                         <div class="col-md-4">
-                            <label class="form-label fw-bold">Số lượng tem</label>
+                            <label class="form-label fw-bold"><i class="fa-solid fa-arrow-up-9-1"></i>Số lượng tem</label>
                             <input wire:model="quantity" type="number" class="form-control" min="1"
                                 max="100">
                         </div>
                         {{-- Chọn Đơn Hàng --}}
                         <div class="col-md-4">
-                            <label class="form-label small fw-bold">Mã Đơn Hàng</label>
+                            <label class="form-label small fw-bold"><i class="fa-solid fa-file-invoice me-1"></i>Mã Đơn Hàng</label>
                             <input type="text" class="form-control" placeholder="Nhập mã đơn hoặc ..."
                                 wire:model="itemData.ORDER_CODE" list="orderList" autocomplete="off">
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label small fw-bold">Màu</label>
+                            <label class="form-label small fw-bold"><i class="fa-solid fa-palette"></i>Màu</label>
                             <select wire:model="selectedColor" class="form-select">
                                 <option value="">-- Chọn Màu --</option>
                                 @foreach ($colors as $color)
@@ -146,7 +146,7 @@
                         </div>
                         <div class="row g-1">
                             <div class="col-md-4">
-                                <label class="form-label small fw-bold">Quy Cách</label>
+                                <label class="form-label small fw-bold"><i class="fa-solid fa-section"></i>Quy Cách</label>
                                 <select wire:model="selectedSpec" class="form-select">
                                     <option value="">-- Chọn Quy Cách --</option>
                                     @foreach ($specifications as $specification)
@@ -157,7 +157,7 @@
                                 </select>
                             </div>
                             <div class="col-md-4">
-                                <label class="form-label small fw-bold">Khổ</label>
+                                <label class="form-label small fw-bold"><i class="fa-solid fa-text-width"></i>Khổ</label>
                                 <select wire:model="selectedWidth" class="form-select">
                                     <option value="">-- Chọn Khổ --</option>
                                     @foreach ($widths as $width)
@@ -168,7 +168,7 @@
                                 </select>
                             </div>
                             <div class="col-md-4">
-                                <label class="form-label small fw-bold">Loại Nhựa</label>
+                                <label class="form-label small fw-bold"><i class="fa-solid fa-sheet-plastic"></i>Loại Nhựa</label>
                                 <select wire:model="selectedPlastic" class="form-select">
                                     <option value="">-- Chọn Loại Nhựa --</option>
                                     @foreach ($plasticTypes as $plastic)

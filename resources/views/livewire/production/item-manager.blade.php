@@ -7,7 +7,7 @@
 
             <div class="card-body">
                 {{-- KHU VỰC BỘ LỌC TÌM KIẾM --}}
-                <div class="row g-3 mb-4 bg-light p-3 rounded border">
+                <div class="row g-3 mb-4  p-3 rounded border">
                     <div class="col-md-4">
                         <label class="form-label small fw-bold">Tìm mã tem:</label>
                         <input type="text" wire:model.live.debounce.500ms="searchCode" class="form-control"
@@ -45,7 +45,7 @@
                 {{-- BẢNG DỮ LIỆU --}}
                 <div class="table-responsive">
                     <table class="table table-hover table-bordered align-middle">
-                        <thead class="table-light text-center">
+                        <thead class="table text-center">
                             <tr>
                                 <th>Mã Tem</th>
                                 <th>Đơn hàng</th>
@@ -112,7 +112,7 @@
     <div wire:ignore.self class="modal fade" id="itemModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header bg-light">
+                <div class="modal-header ">
                     <h5 class="modal-title fw-bold text-primary">Cập nhật Tem: {{ $editCode }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
@@ -122,7 +122,7 @@
                     <div class="mb-4 border-bottom pb-3">
                         <label class="form-label fw-bold text-success"><i
                                 class="fa-solid fa-map-location-dot me-1"></i>Vị trí hiện tại (Sắp ra mắt)</label>
-                        <select class="form-select bg-light" disabled>
+                        <select class="form-select " disabled>
                             <option>-- Đang phát triển tính năng --</option>
                             {{-- Chỗ này sau này bạn sẽ dùng: wire:model="current_location_id" --}}
                         </select>
@@ -149,7 +149,7 @@
                         @endif
                     </div>
                 </div>
-                <div class="modal-footer bg-light">
+                <div class="modal-footer ">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                     <button wire:click="update" type="button" class="btn btn-primary px-4"><i
                             class="fa-solid fa-save me-1"></i> Lưu thay đổi</button>

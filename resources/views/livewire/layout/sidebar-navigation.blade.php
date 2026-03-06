@@ -35,14 +35,16 @@
 
         @can('products scan')
             <a href="{{ route('production.scan') }}"
-                class="list-group-item list-group-item-action py-3 ps-4 {{ request()->routeIs('production.scan') ? 'active' : '' }}" title="Quét Sản Phẩm">
+                class="list-group-item list-group-item-action py-3 ps-4 {{ request()->routeIs('production.scan') ? 'active' : '' }}"
+                title="Quét Sản Phẩm">
                 <i class="fa-solid fa-barcode me-2"></i>
                 <span class="sidebar-text">Quét Sản Phẩm</span>
             </a>
         @endcan
         @can('view barcodes')
             <a href="{{ route('production.list') }}"
-                class="list-group-item list-group-item-action py-3 ps-4 {{ request()->routeIs('production.list') ? 'active' : '' }}" title="Danh Sách Tem">
+                class="list-group-item list-group-item-action py-3 ps-4 {{ request()->routeIs('production.list') ? 'active' : '' }}"
+                title="Danh Sách Tem">
                 <i class="fa-solid fa-list-check me-2"></i>
                 <span class="sidebar-text">Danh Sách Tem</span>
             </a>
@@ -76,26 +78,27 @@
                         <i class="fa-brands fa-product-hunt me-2"></i>
                         <span class="sidebar-text"> Sản phẩm</span>
                     </a>
-                    <a href="{{ route('manager.properties') }}" title="Thuộc tính sản phẩm"
-                        class="list-group-item list-group-item-action py-2 ps-5 bg-secondary {{ request()->routeIs('manager.properties') ? 'active' : '' }}">
-                        <i class="fa-solid fa-tags me-2"></i>
-                        <span class="sidebar-text">Thuộc Tính</span>
-                    </a>
                     <a href="{{ route('manager.item-types') }}" title="Loại tem (Prefix)"
                         class="list-group-item list-group-item-action py-2 ps-5 bg-secondary {{ request()->routeIs('manager.item-types') ? 'active' : '' }}">
                         <i class="fa-solid fa-layer-group me-2"></i>
                         <span class="sidebar-text">Loại Tem (Prefix)</span>
-                    </a>
-                    <a href="{{ route('manager.items') }}" title="Code đã tạo (Items)"
-                        class="list-group-item list-group-item-action py-2 ps-5 bg-secondary {{ request()->routeIs('manager.items') ? 'active' : '' }}">
-                       <i class="fa-solid fa-code me-2"></i>
-                        <span class="sidebar-text">Code đã tạo (Items)</span>
                     </a>
                     <a href="{{ route('manager.categories') }}" title="Danh mục sản phẩm"
                         class="list-group-item list-group-item-action py-2 ps-5 bg-secondary {{ request()->routeIs('manager.categories') ? 'active' : '' }}">
                         <i class="fa-solid fa-list me-2"></i>
                         <span class="sidebar-text">Danh mục</span>
                     </a>
+                    <a href="{{ route('manager.properties') }}" title="Thuộc tính sản phẩm"
+                        class="list-group-item list-group-item-action py-2 ps-5 bg-secondary {{ request()->routeIs('manager.properties') ? 'active' : '' }}">
+                        <i class="fa-solid fa-tags me-2"></i>
+                        <span class="sidebar-text">Thuộc Tính </span>
+                    </a>
+                    <a href="{{ route('manager.items') }}" title="Code đã tạo (Items)"
+                        class="list-group-item list-group-item-action py-2 ps-5 bg-secondary {{ request()->routeIs('manager.items') ? 'active' : '' }}">
+                        <i class="fa-solid fa-code me-2"></i>
+                        <span class="sidebar-text">Code đã tạo (Items)</span>
+                    </a>
+
                 </div>
             @endcan
         @endrole
