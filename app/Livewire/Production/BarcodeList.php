@@ -26,6 +26,7 @@ class BarcodeList extends Component
 
     public function render()
     {
+       $this->js("console.log('Danh sách mã code')");
         /** @var \App\Models\User $user */ // <-- Đã thêm dòng fix lỗi IDE
         $user = Auth::user();
 

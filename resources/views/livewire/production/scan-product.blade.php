@@ -12,8 +12,8 @@
                     <div class="row g-2">
                         {{-- 1. Chọn Đơn Hàng --}}
                         <div class="col-6">
-                            <label class="small text-muted fw-bold">Gán Đơn Hàng (PO)</label>
-                            <select wire:model.live="selectedOrderId"
+                            <label class="small text-muted fw-bold" for="selectedOrderId">Gán Đơn Hàng (PO)</label>
+                            <select wire:model.live="selectedOrderId" id="selectedOrderId"
                                 class="form-select form-select-sm border-secondary fw-bold text-primary">
                                 <option value="">-- Mặc định --</option>
                                 @foreach ($orders as $order)
@@ -24,8 +24,8 @@
 
                         {{-- 2. Chọn Model --}}
                         <div class="col-6">
-                            <label class="small text-muted fw-bold">Gán Model</label>
-                            <select wire:model.live="selectedProductId"
+                            <label class="small text-muted fw-bold" for="selectedProductId">Gán Model</label>
+                            <select wire:model.live="selectedProductId" id="selectedProductId"
                                 class="form-select form-select-sm border-secondary fw-bold text-success">
                                 <option value="">-- Mặc định --</option>
                                 @foreach ($products as $product)
@@ -58,7 +58,7 @@
                             <span class="input-group-text "><i class="fa-solid fa-barcode"></i></span>
                             <input type="text" id="scannerInput" wire:model="scannedCodeInput"
                                 wire:keydown.enter="handleKeyInput" class="form-control fw-bold text-primary"
-                                placeholder="Quét hoặc nhập mã..." autocomplete="off">
+                                placeholder="Quét hoặc nhập mã..." autocomplete="off" id="scannedCodeInput">
                             <button wire:click="handleKeyInput" class="btn btn-primary px-4">Tra cứu</button>
                         </div>
                     </div>

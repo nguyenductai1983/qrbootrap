@@ -343,7 +343,7 @@
             <div class="print-grid" style="--print-cols: {{ $printColumns }};">
                 @foreach ($generatedItems as $item)
                     {{-- BỎ class col-6 col-md-4 ở đây đi --}}
-                    <div class="label-item" style="font-size: 6pt">
+                    <div class="label-item" style="font-size: 6pt;">
                         {{-- Header Tem --}}
                         <div class="d-flex justify-content-between border-bottom w-100">
                             {{-- Nhóm 1: Tên Sản Phẩm (Nằm bên trái) --}}

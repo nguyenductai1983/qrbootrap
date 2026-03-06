@@ -60,6 +60,7 @@ class ExcelManager extends Component
 
     public function render()
     {
+         $this->js("console.log('Nhập xuất Excel mã code')");
         return view('livewire.production.excel-manager');
     }
 }

@@ -64,6 +64,7 @@ class ItemManager extends Component
 
     public function render()
     {
+         $this->js("console.log('Danh sách mã code')");
         // Query cơ bản kèm theo Relationship để tránh N+1 Query
         $query = Item::with(['order', 'product'])
             ->when($this->searchCode, function ($q) {

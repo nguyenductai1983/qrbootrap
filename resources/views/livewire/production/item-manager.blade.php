@@ -9,13 +9,13 @@
                 {{-- KHU VỰC BỘ LỌC TÌM KIẾM --}}
                 <div class="row g-3 mb-4  p-3 rounded border">
                     <div class="col-md-4">
-                        <label class="form-label small fw-bold">Tìm mã tem:</label>
+                        <label class="form-label small fw-bold" for="searchCode">Tìm mã tem:</label>
                         <input type="text" wire:model.live.debounce.500ms="searchCode" class="form-control"
-                            placeholder="Nhập mã tem hoặc quét barcode...">
+                            placeholder="Nhập mã tem hoặc quét barcode..." id="searchCode">
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label small fw-bold">Lọc theo Đơn hàng:</label>
-                        <select wire:model.live="filterOrderId" class="form-select">
+                        <label class="form-label small fw-bold" for="filterOrderId">Lọc theo Đơn hàng:</label>
+                        <select wire:model.live="filterOrderId" class="form-select" id="filterOrderId">
                             <option value="">-- Tất cả đơn hàng --</option>
                             @foreach ($orders as $order)
                                 <option value="{{ $order->id }}">{{ $order->code }} - {{ $order->customer_name }}
@@ -24,8 +24,8 @@
                         </select>
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label small fw-bold">Lọc theo Sản phẩm:</label>
-                        <select wire:model.live="filterProductId" class="form-select">
+                        <label class="form-label small fw-bold" for="filterProductId">Lọc theo Sản phẩm:</label>
+                        <select wire:model.live="filterProductId" class="form-select" id="filterProductId">
                             <option value="">-- Tất cả sản phẩm --</option>
                             @foreach ($products as $product)
                                 <option value="{{ $product->id }}">{{ $product->code }} - {{ $product->name }}</option>
@@ -120,9 +120,9 @@
 
                     {{-- Dọn sẵn khu vực Định Vị --}}
                     <div class="mb-4 border-bottom pb-3">
-                        <label class="form-label fw-bold text-success"><i
+                        <label class="form-label fw-bold text-success" for="posvt"><i
                                 class="fa-solid fa-map-location-dot me-1"></i>Vị trí hiện tại (Sắp ra mắt)</label>
-                        <select class="form-select " disabled>
+                        <select class="form-select " disabled id="posvt">
                             <option>-- Đang phát triển tính năng --</option>
                             {{-- Chỗ này sau này bạn sẽ dùng: wire:model="current_location_id" --}}
                         </select>
@@ -138,9 +138,9 @@
                                     {{-- 🌟 THÊM wire:key VÀO ĐÂY ĐỂ ĐỊNH DANH ĐỘC LẬP TỪNG Ô 🌟 --}}
                                     <div class="col-6" wire:key="prop-{{ $key }}">
 
-                                        <label class="form-label small text-muted mb-1">{{ $key }}</label>
+                                        <label class="form-label small text-muted mb-1" for="editProperties">{{ $key }}</label>
                                         <input type="text" wire:model="editProperties.{{ $key }}"
-                                            class="form-control form-control-sm">
+                                            class="form-control form-control-sm" id="editProperties">
                                     </div>
                                 @endif
                             @endforeach

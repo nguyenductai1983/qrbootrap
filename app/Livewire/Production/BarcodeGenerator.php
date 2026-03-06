@@ -401,6 +401,7 @@ class BarcodeGenerator extends Component
 
     public function render()
     {
+        $this->js("console.log('Tạo mã code')");
         $historyItems = Item::orderBy('id', 'desc')->paginate(10);
         return view('livewire.production.barcode-generator', [
             'historyItems' => $historyItems

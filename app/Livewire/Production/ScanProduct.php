@@ -185,6 +185,7 @@ class ScanProduct extends Component
 
     public function render()
     {
+        $this->js("console.log('Quyét mã code')");
         return view('livewire.production.scan-product');
     }
 }
