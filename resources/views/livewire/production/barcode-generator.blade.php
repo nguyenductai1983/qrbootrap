@@ -403,6 +403,7 @@
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 15px;
+            margin-top: 20px;
         }
 
         @media (min-width: 992px) {
