@@ -41,7 +41,7 @@
     /* 1. XÓA SẠCH LỀ TRANG GIẤY CỦA TRÌNH DUYỆT */
     @page {
         /* Đặt lề cực nhỏ (hoặc bằng 0) để không lãng phí giấy decal */
-        margin: 20px 0 0 0;
+        margin: 2mm 1mm 1mm 1mm;
         /* Xóa luôn Header/Footer (ngày tháng, link) mặc định của trình duyệt in */
         size: auto;
     }
@@ -69,18 +69,19 @@
     }
 
     /* 3. TẠO TỜ GIẤY TRẮNG ĐÈ LÊN MỌI THỨ CÒN SÓT LẠI */
+    /* BÊN TRONG KHỐI @media print */
     .print-area {
         display: block !important;
+        /* 🌟 Đổi lại thành block, xóa hết các lệnh flex và justify-content đi */
+
         position: absolute !important;
         top: 0 !important;
         left: 0 !important;
         width: 100% !important;
-        /* min-height: 100vh !important; */
-        /* Ép chiều cao tối thiểu bằng 1 trang giấy */
         background-color: #ffffff !important;
-        /* ĐỔ NỀN TRẮNG ĐỂ CHE MỌI THỨ BÊN DƯỚI */
         z-index: 999999 !important;
-        /* Nổi lên trên cùng */
+
+        /* 🌟 Xóa luôn lệnh height: 100vh đi nhé */
     }
 
     /* Lưới in tự động chia cột theo tùy chọn */
