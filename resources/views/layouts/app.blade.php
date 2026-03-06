@@ -6,10 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
-
-    {{-- <link rel="preconnect" href="https://fonts.bunny.net"> --}}
-    <link href="{{ asset('css/bunny.css') }}" rel="stylesheet" />
+    <title>{{ config('app.name', 'QRCode') }}</title>
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
     <link rel="stylesheet" href="{{ asset('css/fontawesome/css/all.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
@@ -60,7 +59,6 @@
 
                     {{-- Brand cho mobile: Chỉ hiển thị khi sidebar ẩn trên mobile --}}
                     <a class="navbar-brand d-lg-none ms-3" href="#">QR Mobile</a>
-
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                         data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">

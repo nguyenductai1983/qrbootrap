@@ -17,8 +17,8 @@
                 <div class="col-md-4 border-end">
                     {{-- 1. Chọn Phân Xưởng --}}
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Phân Xưởng</label>
-                        <select wire:model.live="selectedDeptCode" class="form-select">
+                        <label class="form-label fw-bold" for="selectedDeptCode">Phân Xưởng</label>
+                        <select wire:model.live="selectedDeptCode" class="form-select" id="selectedDeptCode">
                             @if (count($departments) > 0)
                                 @foreach ($departments as $dept)
                                     <option value="{{ $dept->code }}">
@@ -32,9 +32,10 @@
                     </div>
                     {{-- Chọn Model --}}
                     <div class="mb-3">
-                        <label class="form-label small fw-bold">Chọn Sản phẩm <span class="text-danger">*</span></label>
+                        <label class="form-label small fw-bold" for="PRODUCT_ID">Chọn Sản phẩm <span
+                                class="text-danger">*</span></label>
                         <select wire:model.live="itemData.PRODUCT_ID"
-                            class="form-select @error('itemData.PRODUCT_ID') is-invalid @enderror">
+                            class="form-select @error('itemData.PRODUCT_ID') is-invalid @enderror" id="PRODUCT_ID">
                             <option value="">-- Chọn Sản phẩm ({{ count($availableProducts) }}) --
                             </option>
                             @foreach ($availableProducts as $product)
@@ -53,7 +54,7 @@
                     </div>
                     {{-- 2. Chọn Loại Tem --}}
                     <div class="mb-3">
-                        <select wire:model="type" class="form-select text-primary fw-bold">
+                        <select wire:model="type" class="form-select text-primary fw-bold" id="type">
                             @if (count($itemTypes) > 0)
                                 @foreach ($itemTypes as $t)
                                     <option value="{{ $t->code }}">{{ $t->code }} - {{ $t->name }}
@@ -66,7 +67,7 @@
                     </div>
                     {{-- 4. Tùy chọn Định dạng In (MỚI) --}}
                     <div class="mb-3 p-3 rounded border">
-                        <label class="form-label fw-bold small text-uppercase text-muted mb-2">Định dạng mã in</label>
+                        <span class="form-label fw-bold small text-uppercase text-muted mb-2">Định dạng mã in</span>
                         <div class="d-flex gap-3">
                             <div class="form-check">
                                 {{-- Đã xóa .live --}}
@@ -88,8 +89,8 @@
                     </div>
                     {{-- 5. Số tem / Hàng (Khổ giấy in) --}}
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Khổ giấy in (Số tem ngang)</label>
-                        <select wire:model="printColumns" class="form-select border-primary">
+                        <label class="form-label fw-bold" for="printColumns">Khổ giấy in (Số tem ngang)</label>
+                        <select wire:model="printColumns" class="form-select border-primary" id="printColumns">
                             <option value="1">Máy in nhiệt cuộn (1 tem/dòng)</option>
                             <option value="2">Giấy A4 Decal (2 tem/dòng)</option>
                         </select>
@@ -123,19 +124,23 @@
                     <div class="row g-1 mt-3">
                         {{-- 3. Số lượng --}}
                         <div class="col-md-4">
-                            <label class="form-label fw-bold"><i class="fa-solid fa-arrow-up-9-1"></i>Số lượng tem</label>
+                            <label class="form-label fw-bold" for="quantity"><i class="fa-solid fa-arrow-up-9-1"></i>Số
+                                lượng tem</label>
                             <input wire:model="quantity" type="number" class="form-control" min="1"
-                                max="100">
+                                id="quantity" max="100">
                         </div>
                         {{-- Chọn Đơn Hàng --}}
                         <div class="col-md-4">
-                            <label class="form-label small fw-bold"><i class="fa-solid fa-file-invoice me-1"></i>Mã Đơn Hàng</label>
+                            <label class="form-label small fw-bold" for="ORDER_CODE"><i
+                                    class="fa-solid fa-file-invoice me-1"></i>Mã Đơn Hàng</label>
                             <input type="text" class="form-control" placeholder="Nhập mã đơn hoặc ..."
-                                wire:model="itemData.ORDER_CODE" list="orderList" autocomplete="off">
+                                wire:model="itemData.ORDER_CODE" list="orderList" autocomplete="off"
+                                id="ORDER_CODE">
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label small fw-bold"><i class="fa-solid fa-palette"></i>Màu</label>
-                            <select wire:model="selectedColor" class="form-select">
+                            <label class="form-label small fw-bold" for="selectedColor"><i
+                                    class="fa-solid fa-palette"></i>Màu</label>
+                            <select wire:model="selectedColor" class="form-select" id="selectedColor">
                                 <option value="">-- Chọn Màu --</option>
                                 @foreach ($colors as $color)
                                     <option value="{{ $color->id }}">{{ $color->code }} -
@@ -146,8 +151,9 @@
                         </div>
                         <div class="row g-1">
                             <div class="col-md-4">
-                                <label class="form-label small fw-bold"><i class="fa-solid fa-section"></i>Quy Cách</label>
-                                <select wire:model="selectedSpec" class="form-select">
+                                <label class="form-label small fw-bold" for="selectedSpec"><i
+                                        class="fa-solid fa-section"></i>Quy Cách</label>
+                                <select wire:model="selectedSpec" class="form-select" id="selectedSpec">
                                     <option value="">-- Chọn Quy Cách --</option>
                                     @foreach ($specifications as $specification)
                                         <option value="{{ $specification->id }}">{{ $specification->code }} -
@@ -157,8 +163,9 @@
                                 </select>
                             </div>
                             <div class="col-md-4">
-                                <label class="form-label small fw-bold"><i class="fa-solid fa-text-width"></i>Khổ</label>
-                                <select wire:model="selectedWidth" class="form-select">
+                                <label class="form-label small fw-bold" for="selectedWidth"><i
+                                        class="fa-solid fa-text-width"></i>Khổ</label>
+                                <select wire:model="selectedWidth" class="form-select" id="selectedWidth">
                                     <option value="">-- Chọn Khổ --</option>
                                     @foreach ($widths as $width)
                                         <option value="{{ $width->id }}">{{ $width->code }} -
@@ -168,8 +175,10 @@
                                 </select>
                             </div>
                             <div class="col-md-4">
-                                <label class="form-label small fw-bold"><i class="fa-solid fa-sheet-plastic"></i>Loại Nhựa</label>
-                                <select wire:model="selectedPlastic" class="form-select">
+                                <label class="form-label small fw-bold" for="selectedPlastic"><i
+                                        class="fa-solid fa-sheet-plastic"></i>Loại
+                                    Nhựa</label>
+                                <select wire:model="selectedPlastic" class="form-select" id="selectedPlastic">
                                     <option value="">-- Chọn Loại Nhựa --</option>
                                     @foreach ($plasticTypes as $plastic)
                                         <option value="{{ $plastic->id }}">{{ $plastic->code }} -
@@ -207,7 +216,8 @@
                         {{-- Vòng lặp hiển thị các thuộc tính động --}}
                         @foreach ($dynamicProperties as $prop)
                             <div class="col-6">
-                                <label class="form-label mb-1" style="font-size: 0.85rem;">
+                                <label class="form-label mb-1" style="font-size: 0.85rem;"
+                                    for="{{ $prop->code }}">
                                     {{ $prop->name }}
                                     @if ($prop->is_required)
                                         <span class="text-danger">*</span>
@@ -216,7 +226,7 @@
 
                                 @if ($prop->type === 'select' && is_array($prop->options))
                                     <select wire:model="itemData.{{ $prop->code }}"
-                                        class="form-select form-select-sm">
+                                        class="form-select form-select-sm" id="{{ $prop->code }}">
                                         <option value="">-- Chọn --</option>
                                         @foreach ($prop->options as $opt)
                                             <option value="{{ $opt }}">{{ $opt }}
@@ -225,7 +235,7 @@
                                     </select>
                                 @else
                                     <input type="{{ $prop->type === 'number' ? 'number' : 'text' }}"
-                                        wire:model="itemData.{{ $prop->code }}"
+                                        wire:model="itemData.{{ $prop->code }}" id="{{ $prop->code }}"
                                         class="form-control form-control-sm"
                                         placeholder="Nhập {{ strtolower($prop->name) }}" @required($prop->is_required)>
                                 @endif

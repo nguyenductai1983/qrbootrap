@@ -1,7 +1,7 @@
 {{-- sidebar-navigation.blade.php --}}
 <div class="border-right" id="sidebar-wrapper">
     <div class="sidebar-heading d-flex justify-content-between align-items-center">
-        <x-mh-logo-icon class="size-5 fill-current text-white dark:text-black" />
+        <x-mh-logo-icon class="size-5 fill-current" />
 
         {{-- Nút đóng sidebar cho mobile --}}
         <button class="btn btn-link d-block d-lg-none me-2" id="sidebarClose" aria-label="Close sidebar">
