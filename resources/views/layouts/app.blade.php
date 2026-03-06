@@ -40,7 +40,8 @@
 <body class="font-sans antialiased">
     {{-- Loại bỏ class "toggled" ban đầu khỏi #wrapper --}}
     {{-- Mặc định, trên desktop sidebar sẽ mở, trên mobile sẽ ẩn --}}
-    <div class="d-flex" id="wrapper">
+    {{-- Laravel sẽ đọc cookie 'sidebarState'. Nếu là 'toggled' thì in luôn class đó ra HTML --}}
+    <div class="d-flex {{ request()->cookie('sidebarState') === 'toggled' ? 'toggled' : '' }}" id="wrapper">
         {{-- @include('components.sidebar') --}}
         {{-- 🌟 1. THÊM SCRIPT NÀY ĐỂ ĐỌC TRẠNG THÁI TỪ LOCAL STORAGE NGAY LẬP TỨC 🌟 --}}
         <script>
@@ -57,7 +58,8 @@
                          - d-lg-none: Ẩn trên màn hình lớn (>= lg) nếu muốn.
                            Nếu bạn muốn nút này luôn hiện trên desktop để thu gọn sidebar, hãy bỏ d-lg-none.
                     --}}
-                    <button class="btn btn-primary d-block" id="sidebarToggle"><i class="fas fa-bars" id="toggleIcon"></i></button>
+                    <button class="btn btn-primary d-block" id="sidebarToggle"><i class="fas fa-bars"
+                            id="toggleIcon"></i></button>
 
                     {{-- Brand cho mobile: Chỉ hiển thị khi sidebar ẩn trên mobile --}}
                     <a class="navbar-brand d-lg-none ms-3" href="#">QR Mobile</a>

@@ -18,9 +18,9 @@ document.addEventListener('DOMContentLoaded', function () {
             updateToggleIcon();
             // 🌟 LƯU VÀO LOCAL STORAGE 🌟
             if (wrapper.classList.contains('toggled')) {
-                localStorage.setItem('sidebarState', 'toggled');
+                document.cookie = "sidebarState=toggled; path=/; max-age=31536000";
             } else {
-                localStorage.setItem('sidebarState', 'expanded');
+                document.cookie = "sidebarState=expanded; path=/; max-age=31536000";
             }
         });
     }
@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function () {
         sidebarClose.addEventListener('click', function (e) {
             e.preventDefault();
             wrapper.classList.remove('toggled');
-            localStorage.setItem('sidebarState', 'expanded'); // Lưu lại
+            document.cookie = "sidebarState=expanded; path=/; max-age=31536000";
         });
     }
 
