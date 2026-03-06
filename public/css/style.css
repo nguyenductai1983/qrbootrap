@@ -1,17 +1,23 @@
 #sidebar-wrapper {
     width: 250px;
-    height: 100vh; /* Chiều cao full màn hình */
+    height: 100vh;
+    /* Chiều cao full màn hình */
     min-height: 100vh;
 
     /* --- KHU VỰC XỬ LÝ CUỘN --- */
-    overflow-y: auto; /* Bật thanh cuộn dọc */
-    overflow-x: hidden; /* Ẩn thanh cuộn ngang */
-    scrollbar-width: thin; /* Firefox: Thanh cuộn mỏng */
+    overflow-y: auto;
+    /* Bật thanh cuộn dọc */
+    overflow-x: hidden;
+    /* Ẩn thanh cuộn ngang */
+    scrollbar-width: thin;
+    /* Firefox: Thanh cuộn mỏng */
 
     /* --- KHU VỰC CỐ ĐỊNH VỊ TRÍ --- */
     position: fixed;
-    top: 0;  /* QUAN TRỌNG: Neo chặt vào đỉnh màn hình */
-    left: 0; /* QUAN TRỌNG: Neo vào cạnh trái (kết hợp với margin-left để ẩn/hiện) */
+    top: 0;
+    /* QUAN TRỌNG: Neo chặt vào đỉnh màn hình */
+    left: 0;
+    /* QUAN TRỌNG: Neo vào cạnh trái (kết hợp với margin-left để ẩn/hiện) */
     z-index: 1030;
 
     /* --- GIAO DIỆN --- */
@@ -19,28 +25,38 @@
     color: var(--sidebar-color);
     border-right: 1px solid var(--sidebar-border);
     transition: margin 0.25s ease-out, width 0.25s ease-out;
-    margin-left: -250px; /* Mặc định ẩn trên mobile */
-    padding-bottom: 50px; /* QUAN TRỌNG: Thêm khoảng trống đáy để không bị che mất mục cuối */
+    margin-left: -250px;
+    /* Mặc định ẩn trên mobile */
+    padding-bottom: 50px;
+    /* QUAN TRỌNG: Thêm khoảng trống đáy để không bị che mất mục cuối */
 }
+
 /* --- TÙY CHỈNH THANH CUỘN (CHROME/EDGE/SAFARI) --- */
 /* Thêm đoạn này ngay bên dưới #sidebar-wrapper để thanh cuộn đẹp hơn */
 #sidebar-wrapper::-webkit-scrollbar {
     width: 6px;
 }
+
 #sidebar-wrapper::-webkit-scrollbar-track {
     background: transparent;
 }
+
 #sidebar-wrapper::-webkit-scrollbar-thumb {
-    background-color: rgba(100, 100, 100, 0.3); /* Màu thanh cuộn mờ */
+    background-color: rgba(100, 100, 100, 0.3);
+    /* Màu thanh cuộn mờ */
     border-radius: 3px;
 }
+
 #sidebar-wrapper::-webkit-scrollbar-thumb:hover {
-    background-color: rgba(100, 100, 100, 0.6); /* Đậm hơn khi di chuột vào */
+    background-color: rgba(100, 100, 100, 0.6);
+    /* Đậm hơn khi di chuột vào */
 }
- #wrapper.toggled #sidebar-wrapper .collapse.show {
-        display: block !important;
-    }
-    /* Khi Sidebar đang nhỏ, Menu con mở ra sẽ căn giữa và chỉ hiện icon */
+
+#wrapper.toggled #sidebar-wrapper .collapse.show {
+    display: block !important;
+}
+
+/* Khi Sidebar đang nhỏ, Menu con mở ra sẽ căn giữa và chỉ hiện icon */
 #wrapper.toggled #sidebar-wrapper .collapse.show .list-group-item {
     padding-left: 0 !important;
     text-align: center;
@@ -49,5 +65,68 @@
 
 #wrapper.toggled #sidebar-wrapper .collapse.show .list-group-item i {
     margin-right: 0 !important;
-    font-size: 0.9rem; /* Icon menu con nhỏ hơn chút */
+    font-size: 0.9rem;
+    /* Icon menu con nhỏ hơn chút */
+}
+
+/* ==========================================================
+   GIAO DIỆN MINI SIDEBAR (CHỈ ÁP DỤNG TRÊN MÁY TÍNH >= 992px)
+   ========================================================== */
+@media (min-width: 992px) {
+
+    /* 1. Ẩn toàn bộ chữ và mũi tên khi Sidebar thu nhỏ */
+    #wrapper.toggled .sidebar-text,
+    #wrapper.toggled .sidebar-arrow {
+        display: none !important;
+    }
+
+    /* 2. Bắt buộc hiển thị menu con khi được click mở */
+    #wrapper.toggled #sidebar-wrapper .collapse.show {
+        display: block !important;
+    }
+
+    /* 3. Căn giữa Icon của menu con khi thu nhỏ */
+    #wrapper.toggled #sidebar-wrapper .collapse.show .list-group-item {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        text-align: center;
+        justify-content: center;
+        display: flex;
+    }
+
+    #wrapper.toggled #sidebar-wrapper .collapse.show .list-group-item i {
+        margin-right: 0 !important;
+        font-size: 1.1rem;
+        /* Phóng to icon menu con lên một chút cho dễ bấm */
+        padding: 8px 0;
+    }
+
+    /* --- CSS CHO MENU ACTIVE KHI SIDEBAR BỊ THU NHỎ --- */
+
+    /* 1. Xử lý Menu Cha đang active */
+    #wrapper.toggled #sidebar-wrapper .list-group-item.active {
+        justify-content: center;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+
+    #wrapper.toggled #sidebar-wrapper .list-group-item.active i {
+        margin-right: 0 !important;
+        font-size: 1.2rem;
+    }
+
+    /* 2. Xử lý Menu Con đang active (Tạo thành nút vuông vắn) */
+    #wrapper.toggled #sidebar-wrapper .collapse.show .list-group-item.active {
+        background-color: var(--bs-primary);
+        /* Đổ màu nền xanh */
+        color: white !important;
+        /* Đổi icon thành màu trắng */
+        border-radius: 8px;
+        /* Bo tròn góc */
+        margin: 4px 10px;
+        /* Thụt lề 2 bên để không chạm viền */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 }

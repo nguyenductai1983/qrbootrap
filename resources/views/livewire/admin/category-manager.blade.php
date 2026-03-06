@@ -19,9 +19,9 @@
                 {{-- DANH SÁCH TAB --}}
                 <ul class="nav nav-tabs" id="myTab" role="tablist">
                     <li class="nav-item" role="presentation">
-                        <button wire:click="switchTab('width')"
-                            class="nav-link fw-semibold {{ $activeTab === 'width' ? 'active text-primary' : 'text-secondary' }}">
-                            Khổ
+                        <button wire:click="switchTab('color')"
+                            class="nav-link fw-semibold {{ $activeTab === 'color' ? 'active text-primary' : 'text-secondary' }}">
+                            Màu sắc
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
@@ -31,15 +31,15 @@
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button wire:click="switchTab('plastic_type')"
-                            class="nav-link fw-semibold {{ $activeTab === 'plastic_type' ? 'active text-primary' : 'text-secondary' }}">
-                            Loại nhựa
+                        <button wire:click="switchTab('width')"
+                            class="nav-link fw-semibold {{ $activeTab === 'width' ? 'active text-primary' : 'text-secondary' }}">
+                            Khổ
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button wire:click="switchTab('color')"
-                            class="nav-link fw-semibold {{ $activeTab === 'color' ? 'active text-primary' : 'text-secondary' }}">
-                            Màu sắc
+                        <button wire:click="switchTab('plastic_type')"
+                            class="nav-link fw-semibold {{ $activeTab === 'plastic_type' ? 'active text-primary' : 'text-secondary' }}">
+                            Loại nhựa
                         </button>
                     </li>
                 </ul>

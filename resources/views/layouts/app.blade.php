@@ -40,6 +40,12 @@
     {{-- Mặc định, trên desktop sidebar sẽ mở, trên mobile sẽ ẩn --}}
     <div class="d-flex" id="wrapper">
         {{-- @include('components.sidebar') --}}
+        {{-- 🌟 1. THÊM SCRIPT NÀY ĐỂ ĐỌC TRẠNG THÁI TỪ LOCAL STORAGE NGAY LẬP TỨC 🌟 --}}
+        <script>
+            if (localStorage.getItem('sidebarState') === 'toggled') {
+                document.getElementById('wrapper').classList.add('toggled');
+            }
+        </script>
         <livewire:sidebar-navigation />
         <div id="page-content-wrapper" class="flex-grow-1 px-1">
             <nav class="navbar navbar-expand-lg border-bottom">
@@ -122,22 +128,29 @@
             const wrapper = document.getElementById('wrapper');
             // Lấy tất cả các nút menu có khả năng sổ xuống (Menu cha)
             const dropdownToggles = document.querySelectorAll('.sidebar-dropdown-toggle');
-
             // --- 2. XỬ LÝ NÚT 3 GẠCH (MỞ/THU NHỎ THỦ CÔNG) ---
             if (sidebarToggle && wrapper) {
                 sidebarToggle.addEventListener('click', function(e) {
                     e.preventDefault();
 
-                    // (Tùy chọn) Trước khi thu nhỏ, đóng hết các menu con đang mở cho gọn
-                    if (!wrapper.classList.contains('toggled')) {
-                        document.querySelectorAll('#sidebar-wrapper .collapse.show').forEach(openMenu => {
-                            openMenu.classList.remove('show');
-                            let trigger = document.querySelector(`[href="#${openMenu.id}"]`);
-                            if (trigger) trigger.setAttribute('aria-expanded', 'false');
-                        });
-                    }
-
+                    // Bật/tắt class toggled
                     wrapper.classList.toggle('toggled');
+
+                    // 🌟 LƯU VÀO LOCAL STORAGE 🌟
+                    if (wrapper.classList.contains('toggled')) {
+                        localStorage.setItem('sidebarState', 'toggled');
+                    } else {
+                        localStorage.setItem('sidebarState', 'expanded');
+                    }
+                });
+            }
+
+            // Tương tự cho nút đóng trên Mobile
+            if (sidebarClose && wrapper) {
+                sidebarClose.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    wrapper.classList.remove('toggled');
+                    localStorage.setItem('sidebarState', 'expanded'); // Lưu lại
                 });
             }
 
@@ -150,18 +163,18 @@
             }
 
             // --- 4. [TÍNH NĂNG BẠN CẦN]: TỰ ĐỘNG MỞ TO KHI CHỌN MENU ---
-            if (dropdownToggles && wrapper) {
-                dropdownToggles.forEach(toggle => {
-                    toggle.addEventListener('click', function() {
-                        // Kiểm tra: Nếu Sidebar đang bị thu nhỏ (có class toggled)
-                        if (wrapper.classList.contains('toggled')) {
-                            // Thì xóa class toggled đi => Sidebar sẽ tự động mở to ra ngay lập tức
-                            wrapper.classList.remove('toggled');
-                        }
-                        // Nếu Sidebar đang to sẵn rồi thì thôi, để Bootstrap tự xử lý việc sổ menu con
-                    });
-                });
-            }
+            // if (dropdownToggles && wrapper) {
+            //     dropdownToggles.forEach(toggle => {
+            //         toggle.addEventListener('click', function() {
+            //             // Kiểm tra: Nếu Sidebar đang bị thu nhỏ (có class toggled)
+            //             if (wrapper.classList.contains('toggled')) {
+            //                 // Thì xóa class toggled đi => Sidebar sẽ tự động mở to ra ngay lập tức
+            //                 wrapper.classList.remove('toggled');
+            //             }
+            //             // Nếu Sidebar đang to sẵn rồi thì thôi, để Bootstrap tự xử lý việc sổ menu con
+            //         });
+            //     });
+            // }
 
             // --- 5. XỬ LÝ DARK/LIGHT MODE (GIỮ NGUYÊN) ---
             const themeToggleBtn = document.getElementById('themeToggle');
