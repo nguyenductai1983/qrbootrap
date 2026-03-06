@@ -41,14 +41,11 @@
     {{-- Loại bỏ class "toggled" ban đầu khỏi #wrapper --}}
     {{-- Mặc định, trên desktop sidebar sẽ mở, trên mobile sẽ ẩn --}}
     {{-- Laravel sẽ đọc cookie 'sidebarState'. Nếu là 'toggled' thì in luôn class đó ra HTML --}}
-    <div class="d-flex {{ request()->cookie('sidebarState') === 'toggled' ? 'toggled' : '' }}" id="wrapper">
+    {{-- Dùng $_COOKIE của PHP thuần để đọc trực tiếp cookie do JS tạo ra --}}
+    <div class="d-flex {{ isset($_COOKIE['sidebarState']) && $_COOKIE['sidebarState'] === 'toggled' ? 'toggled' : '' }}"
+        id="wrapper">
         {{-- @include('components.sidebar') --}}
-        {{-- 🌟 1. THÊM SCRIPT NÀY ĐỂ ĐỌC TRẠNG THÁI TỪ LOCAL STORAGE NGAY LẬP TỨC 🌟 --}}
-        <script>
-            if (localStorage.getItem('sidebarState') === 'toggled') {
-                document.getElementById('wrapper').classList.add('toggled');
-            }
-        </script>
+
         <livewire:sidebar-navigation />
         <div id="page-content-wrapper" class="flex-grow-1 px-1">
             <nav class="navbar navbar-expand-lg border-bottom">

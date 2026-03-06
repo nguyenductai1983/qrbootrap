@@ -10,6 +10,20 @@ document.addEventListener('DOMContentLoaded', function () {
     const dropdownToggles = document.querySelectorAll('.sidebar-dropdown-toggle');
     const toggleIcon = document.getElementById('toggleIcon');
     // --- 2. XỬ LÝ NÚT 3 GẠCH (MỞ/THU NHỎ THỦ CÔNG) ---
+    // 🌟 HÀM XỬ LÝ ĐỔI ICON 🌟
+    const updateToggleIcon = () => {
+        if (!toggleIcon) return; // Bảo vệ lỡ không tìm thấy icon
+
+        // Kiểm tra xem Sidebar đang thu nhỏ (toggled) hay mở to
+        if (wrapper.classList.contains('toggled')) {
+            // Khi thu nhỏ: Đổi thành icon xếp dòng
+            toggleIcon.className = 'fa-solid fa-align-left';
+        } else {
+            // Khi mở to: Trở về icon 3 gạch mặc định
+            toggleIcon.className = 'fas fa-bars';
+        }
+    };
+    updateToggleIcon();
     if (sidebarToggle && wrapper) {
         sidebarToggle.addEventListener('click', function (e) {
             e.preventDefault();
@@ -24,39 +38,18 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     }
-    // 🌟 HÀM XỬ LÝ ĐỔI ICON 🌟
-    const updateToggleIcon = () => {
-        if (!toggleIcon) return; // Bảo vệ lỡ không tìm thấy icon
-
-        // Kiểm tra xem Sidebar đang thu nhỏ (toggled) hay mở to
-        if (wrapper.classList.contains('toggled')) {
-            // Khi thu nhỏ: Đổi thành icon xếp dòng
-            toggleIcon.className = 'fa-solid fa-align-left';
-        } else {
-            // Khi mở to: Trở về icon 3 gạch mặc định
-            toggleIcon.className = 'fas fa-bars';
-        }
-    };
-
     // Gọi hàm này ngay khi trang vừa tải xong để Icon khớp với bộ nhớ Local Storage
-    updateToggleIcon();
+
+    // Tương tự cho nút đóng trên Mobile
     // Tương tự cho nút đóng trên Mobile
     if (sidebarClose && wrapper) {
         sidebarClose.addEventListener('click', function (e) {
             e.preventDefault();
             wrapper.classList.remove('toggled');
             document.cookie = "sidebarState=expanded; path=/; max-age=31536000";
+            updateToggleIcon(); // Thêm dòng này để cập nhật lại icon nếu cần
         });
     }
-
-    // --- 3. XỬ LÝ NÚT ĐÓNG (TRÊN MOBILE) ---
-    if (sidebarClose && wrapper) {
-        sidebarClose.addEventListener('click', function (e) {
-            e.preventDefault();
-            wrapper.classList.remove('toggled');
-        });
-    }
-
 
     // --- 5. XỬ LÝ DARK/LIGHT MODE (GIỮ NGUYÊN) ---
     const themeToggleBtn = document.getElementById('themeToggle');
