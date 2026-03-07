@@ -4,15 +4,57 @@
             <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                 <h5 class="mb-0"><i class="fa-solid fa-tags me-2"></i>Quản lý Kho Tem (Items)</h5>
             </div>
-
             <div class="card-body">
                 {{-- KHU VỰC BỘ LỌC TÌM KIẾM --}}
-                <div class="row g-3 mb-4  p-3 rounded border">
-                    <div class="col-md-4">
-                        <label class="form-label small fw-bold" for="searchCode">Tìm mã tem:</label>
-                        <input type="text" wire:model.live.debounce.500ms="searchCode" class="form-control"
-                            placeholder="Nhập mã tem hoặc quét barcode..." id="searchCode">
+                <div class="row g-3">
+                    <div class="col-md-12">
+                        {{-- Dùng d-flex để ép Label và Input nằm ngang --}}
+                        <div class="d-flex align-items-center">
+
+                            {{-- Thêm mb-0 (xóa lề dưới), me-2 (cách lề phải) và text-nowrap (chống rớt dòng) --}}
+                            <label class="form-label small fw-bold mb-0 me-2 text-nowrap" for="searchCode">Tìm mã
+                                tem:</label>
+
+                            {{-- 🌟 THẺ BỌC POSITION-RELATIVE 🌟 (Bắt buộc phải có để chứa nút X và Gợi ý) --}}
+                            <div class="position-relative flex-grow-1">
+
+                                {{-- Thêm pe-4 (padding-right) để chữ gõ vào không bị đè lên nút X --}}
+                                <input type="text" wire:model.live.debounce.500ms="searchCode"
+                                    class="form-control pe-4" placeholder="Nhập mã tem hoặc quét barcode..."
+                                    id="searchCode">
+
+                                {{-- Nút Reset (X) --}}
+                                @if (strlen($searchCode) > 0)
+                                    <span wire:click="clearSearch"
+                                        class="position-absolute top-50 translate-middle-y text-secondary"
+                                        style="right: 12px; cursor: pointer; z-index: 10;" title="Xóa tìm kiếm">
+                                        <i class="fas fa-times"></i>
+                                    </span>
+                                @endif
+
+                                {{-- Khối hiển thị danh sách gợi ý --}}
+                                @if ($showSuggestions && !empty($searchCode) && $suggestions->isNotEmpty())
+                                    <ul class="list-group position-absolute w-100 shadow-sm"
+                                        style="z-index: 1050; max-height: 250px; overflow-y: auto; margin-top: 2px;">
+                                        @foreach ($suggestions as $suggestion)
+                                            <li wire:click="selectSuggestion('{{ $suggestion->code }}')"
+                                                class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+                                                style="cursor: pointer;">
+                                                <span>{{ $suggestion->code }}</span>
+                                                <span class="badge bg-secondary rounded-pill">
+                                                    <i class="fas fa-search"></i>
+                                                </span>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                @endif
+
+                            </div> {{-- Kết thúc thẻ bọc --}}
+
+                        </div>
                     </div>
+                </div>
+                <div class="row g-3 ">
                     <div class="col-md-4">
                         <label class="form-label small fw-bold" for="filterOrderId">Lọc theo Đơn hàng:</label>
                         <select wire:model.live="filterOrderId" class="form-select" id="filterOrderId">
@@ -29,6 +71,15 @@
                             <option value="">-- Tất cả sản phẩm --</option>
                             @foreach ($products as $product)
                                 <option value="{{ $product->id }}">{{ $product->code }} - {{ $product->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label small fw-bold" for="filterColorId">Lọc theo Màu:</label>
+                        <select wire:model.live="filterColorId" class="form-select" id="filterColorId">
+                            <option value="">-- Tất cả màu --</option>
+                            @foreach ($colors as $color)
+                                <option value="{{ $color->id }}">{{ $color->code }} - {{ $color->name }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -50,6 +101,7 @@
                                 <th>Mã Tem</th>
                                 <th>Đơn hàng</th>
                                 <th>Sản phẩm</th>
+                                <th>Màu</th>
                                 <th>Trạng thái</th>
                                 <th>Chi tiết (Properties)</th>
                                 <th>Vị trí hiện tại</th>
@@ -62,6 +114,7 @@
                                     <td class="fw-bold text-primary">{{ $item->code }}</td>
                                     <td class="text-center">{{ $item->order->code ?? '-' }}</td>
                                     <td>{{ $item->product->name ?? '-' }}</td>
+                                    <td>{{ $item->color->name ?? '-' }}</td>
                                     <td class="text-center">
                                         <span class="badge {{ $item->status->badge() }}">
                                             {{ $item->status->label() }}
@@ -138,7 +191,8 @@
                                     {{-- 🌟 THÊM wire:key VÀO ĐÂY ĐỂ ĐỊNH DANH ĐỘC LẬP TỪNG Ô 🌟 --}}
                                     <div class="col-6" wire:key="prop-{{ $key }}">
 
-                                        <label class="form-label small text-muted mb-1" for="editProperties">{{ $key }}</label>
+                                        <label class="form-label small text-muted mb-1"
+                                            for="editProperties">{{ $key }}</label>
                                         <input type="text" wire:model="editProperties.{{ $key }}"
                                             class="form-control form-control-sm" id="editProperties">
                                     </div>

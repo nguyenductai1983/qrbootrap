@@ -157,7 +157,7 @@
 
                     {{-- Placeholder khi chưa quét --}}
                     @if (empty($itemInfo) && empty($message))
-                        <div class="text-center text-muted py-4 opacity-50" id="placeholder-icon">
+                        <div class="text-center text-muted py-4" id="placeholder-icon">
                             <i class="fa-solid fa-barcode fa-4x mb-2"></i>
                             <p>Sẵn sàng quét mã...</p>
                         </div>

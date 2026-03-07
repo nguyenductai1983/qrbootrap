@@ -1,12 +1,19 @@
 {{-- sidebar-navigation.blade.php --}}
 <div class="border-right" id="sidebar-wrapper">
-    <div class="sidebar-heading d-flex justify-content-between align-items-center">
-        <x-mh-logo-icon class="size-5 fill-current" />
+    {{-- Thêm position-relative và justify-content-center vào thẻ cha --}}
+    <div class="sidebar-heading position-relative d-flex justify-content-center align-items-center py-3">
 
-        {{-- Nút đóng sidebar cho mobile --}}
-        <button class="btn btn-link d-block d-lg-none me-2" id="sidebarClose" aria-label="Close sidebar">
-            <i class="fas fa-times"></i>
+        {{-- Logo lúc này sẽ tự động nằm ngay chính giữa --}}
+        <div style="width: 100px;">
+            <a href="/dashboard" class="text-reset text-decoration-none"> <x-mh-logo-icon class="fill-current w-100 h-auto" /></a>
+        </div>
+
+        {{-- Nút đóng sidebar cho mobile được neo tuyệt đối (absolute) sang bên phải --}}
+        <button class="btn btn-link d-block d-lg-none position-absolute end-0 top-50 translate-middle-y me-2"
+            id="sidebarClose" aria-label="Close sidebar">
+            <i class="fas fa-times text-dark"></i>
         </button>
+
     </div>
 
     <div class="list-group list-group-flush">
@@ -67,34 +74,34 @@
                     data-bs-parent="#sidebar-wrapper">
                     {{-- Link Đơn Hàng --}}
                     <a href="{{ route('manager.orders') }}" title="Đơn hàng (PO)"
-                        class="list-group-item list-group-item-action py-2 ps-5 bg-secondary {{ request()->routeIs('manager.orders') ? 'active' : '' }}">
+                        class="list-group-item list-group-item-action py-2 ps-5  {{ request()->routeIs('manager.orders') ? 'active' : '' }}">
                         <i class="fa-solid fa-file-invoice me-2"></i>
                         <span class="sidebar-text">Đơn hàng (PO)</span>
                     </a>
 
                     {{-- Link Sản Phẩm --}}
                     <a href="{{ route('manager.products') }}" title="Sản phẩm"
-                        class="list-group-item list-group-item-action py-2 ps-5 bg-secondary {{ request()->routeIs('manager.products') ? 'active' : '' }}">
+                        class="list-group-item list-group-item-action py-2 ps-5 {{ request()->routeIs('manager.products') ? 'active' : '' }}">
                         <i class="fa-brands fa-product-hunt me-2"></i>
                         <span class="sidebar-text"> Sản phẩm</span>
                     </a>
                     <a href="{{ route('manager.item-types') }}" title="Loại tem (Prefix)"
-                        class="list-group-item list-group-item-action py-2 ps-5 bg-secondary {{ request()->routeIs('manager.item-types') ? 'active' : '' }}">
+                        class="list-group-item list-group-item-action py-2 ps-5 {{ request()->routeIs('manager.item-types') ? 'active' : '' }}">
                         <i class="fa-solid fa-layer-group me-2"></i>
                         <span class="sidebar-text">Loại Tem (Prefix)</span>
                     </a>
                     <a href="{{ route('manager.categories') }}" title="Danh mục sản phẩm"
-                        class="list-group-item list-group-item-action py-2 ps-5 bg-secondary {{ request()->routeIs('manager.categories') ? 'active' : '' }}">
+                        class="list-group-item list-group-item-action py-2 ps-5 {{ request()->routeIs('manager.categories') ? 'active' : '' }}">
                         <i class="fa-solid fa-list me-2"></i>
                         <span class="sidebar-text">Danh mục</span>
                     </a>
                     <a href="{{ route('manager.properties') }}" title="Thuộc tính sản phẩm"
-                        class="list-group-item list-group-item-action py-2 ps-5 bg-secondary {{ request()->routeIs('manager.properties') ? 'active' : '' }}">
+                        class="list-group-item list-group-item-action py-2 ps-5 {{ request()->routeIs('manager.properties') ? 'active' : '' }}">
                         <i class="fa-solid fa-tags me-2"></i>
                         <span class="sidebar-text">Thuộc Tính </span>
                     </a>
                     <a href="{{ route('manager.items') }}" title="Code đã tạo (Items)"
-                        class="list-group-item list-group-item-action py-2 ps-5 bg-secondary {{ request()->routeIs('manager.items') ? 'active' : '' }}">
+                        class="list-group-item list-group-item-action py-2 ps-5 {{ request()->routeIs('manager.items') ? 'active' : '' }}">
                         <i class="fa-solid fa-code me-2"></i>
                         <span class="sidebar-text">Code đã tạo (Items)</span>
                     </a>
@@ -120,26 +127,26 @@
 
             <div class="collapse {{ isset($menu) && str_contains($menu, 'admin') ? 'show' : '' }}" id="userSubmenu"
                 data-bs-parent="#sidebar-wrapper">
-                <a href="{{ route('users.index') }}"
-                    class="list-group-item list-group-item-action py-2 ps-5 bg-secondary {{ isset($menu) && str_contains($menu, 'user') ? 'active' : '' }}">
+                <a href="{{ route('users.index') }}" title="Danh sách User"
+                    class="list-group-item list-group-item-action py-2 ps-5 {{ isset($menu) && str_contains($menu, 'user') ? 'active' : '' }}">
                     <i class="fa-solid fa-users me-2"></i>
-                    <span class="sidebar-text" title="Danh sách User">Danh sách User</span>
+                    <span class="sidebar-text" >Danh sách User</span>
                 </a>
 
-                <a href="{{ route('departments.index') }}"
-                    class="list-group-item list-group-item-action py-2 ps-5 bg-secondary {{ isset($menu) && str_contains($menu, 'departments') ? 'active' : '' }}">
+                <a href="{{ route('departments.index') }}" title="Phòng ban"
+                    class="list-group-item list-group-item-action py-2 ps-5 {{ isset($menu) && str_contains($menu, 'departments') ? 'active' : '' }}">
                     <i class="fa-regular fa-building"></i>
-                    <span class="sidebar-text" title="Phòng ban">Phòng ban</span>
+                    <span class="sidebar-text" >Phòng ban</span>
                 </a>
-                <a href="{{ route('roles.index') }}"
-                    class="list-group-item list-group-item-action py-2 ps-5 bg-secondary {{ isset($menu) && str_contains($menu, 'roles') ? 'active' : '' }}">
+                <a href="{{ route('roles.index') }}" title="Vai trò"
+                    class="list-group-item list-group-item-action py-2 ps-5 {{ isset($menu) && str_contains($menu, 'roles') ? 'active' : '' }}">
                     <i class="fa-solid fa-users-gear me-2"></i>
-                    <span class="sidebar-text" title="Vai trò">Vai trò</span>
+                    <span class="sidebar-text" >Vai trò</span>
                 </a>
-                <a href="{{ route('permissions.index') }}"
-                    class="list-group-item list-group-item-action py-2 ps-5 bg-secondary {{ isset($menu) && str_contains($menu, 'permissions') ? 'active' : '' }}">
+                <a href="{{ route('permissions.index') }}" title="Phân quyền"
+                    class="list-group-item list-group-item-action py-2 ps-5 {{ isset($menu) && str_contains($menu, 'permissions') ? 'active' : '' }}">
                     <i class="fa-solid fa-key me-2"></i>
-                    <span class="sidebar-text" title="Phân quyền">Phân quyền</span>
+                    <span class="sidebar-text" >Phân quyền</span>
                 </a>
             </div>
         @endrole

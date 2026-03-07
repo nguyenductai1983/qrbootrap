@@ -25,12 +25,37 @@
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             @endif
+            <div class="mb-3 position-relative">
 
-            <div class="mb-3">
-                <input wire:model.live="search" type="text" placeholder="{{ __('Tìm kiếm quyền hạn...') }}"
-                       class="form-control">
+                {{-- Ô Input: Thêm padding-right: 35px để chừa chỗ cho nút X --}}
+                <input wire:model.live.debounce.300ms="search" type="text"
+                    placeholder="{{ __('Tìm kiếm quyền hạn...') }}" class="form-control pe-5" autocomplete="off">
+
+                {{-- 🌟 NÚT RESET (Chỉ hiển thị khi người dùng đã gõ chữ) 🌟 --}}
+                @if (strlen($search) > 0)
+                    <span wire:click="clearSearch" class="position-absolute top-50 translate-middle-y text-secondary"
+                        style="right: 15px; cursor: pointer; z-index: 10;" title="Xóa tìm kiếm">
+                        <i class="fas fa-times"></i>
+                    </span>
+                @endif
+
+                {{-- Khối hiển thị danh sách gợi ý (GIỮ NGUYÊN) --}}
+                @if ($showSuggestions && !empty($search) && $suggestions->isNotEmpty())
+                    <ul class="list-group position-absolute w-100 shadow-sm"
+                        style="z-index: 1050; max-height: 250px; overflow-y: auto; margin-top: 2px;">
+                        @foreach ($suggestions as $suggestion)
+                            <li wire:click="selectSuggestion('{{ $suggestion->name }}')"
+                                class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+                                style="cursor: pointer;">
+                                <span>{{ $suggestion->name }}</span>
+                                <span class="badge bg-secondary rounded-pill">
+                                    <i class="fas fa-search"></i>
+                                </span>
+                            </li>
+                        @endforeach
+                    </ul>
+                @endif
             </div>
-
             <div class="table-responsive">
                 <table class="table table-hover table-striped">
                     <thead>
@@ -51,15 +76,15 @@
                                 <td>{{ $permission->created_at->format('d/m/Y H:i') }}</td>
                                 <td>
                                     @can('permissions edit')
-                                        <a href="{{ route('permissions.edit', $permission) }}" class="btn btn-sm btn-info me-2">
+                                        <a href="{{ route('permissions.edit', $permission) }}"
+                                            class="btn btn-sm btn-info me-2">
                                             {{ __('Sửa') }}
                                         </a>
                                     @endcan
                                     @can('permissions delete')
                                         <button wire:click="deletePermission({{ $permission->id }})"
-                                                onclick="return confirm('Bạn có chắc chắn muốn xóa quyền hạn này không?');"
-                                                class="btn btn-sm btn-danger"
-                                                @if($permission->roles_count > 0) disabled @endif>
+                                            onclick="return confirm('Bạn có chắc chắn muốn xóa quyền hạn này không?');"
+                                            class="btn btn-sm btn-danger" @if ($permission->roles_count > 0) disabled @endif>
                                             {{ __('Xóa') }}
                                         </button>
                                     @endcan

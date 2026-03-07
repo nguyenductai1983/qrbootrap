@@ -25,7 +25,7 @@
                 placeholder="Tìm kiếm mã hoặc tên thuộc tính...">
 
             <table class="table table-hover align-middle">
-                <thead class="table-light">
+                <thead class="table">
                     <tr>
                         <th class="text-center">Thứ tự</th>
                         <th>Mã (Code)</th>

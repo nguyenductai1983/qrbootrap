@@ -16,7 +16,7 @@
     <div class="card shadow-sm">
         <div class="card-body">
             {{-- Đã sửa wire:product.live thành wire:model.live --}}
-            <input type="text" wire:product.live="searchTerm" class="form-control mb-3"
+            <input type="text" wire:product.live="searchTerm" class="form-control mb-3" id="searchTerm"
                 placeholder="Tìm kiếm mã sản phẩm hoặc tên vải...">
 
             <table class="table table-hover align-middle">
@@ -72,32 +72,36 @@
                     <form wire:submit.prevent="{{ $isEditMode ? 'update' : 'store' }}">
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Mã Sản Phẩm (Code) <span class="text-danger">*</span></label>
+                                <label class="form-label" for="code">Mã Sản Phẩm (Code) <span
+                                        class="text-danger">*</span></label>
                                 {{-- Đã sửa wire:product thành wire:model --}}
-                                <input type="text" wire:model="code" class="form-control text-uppercase"
-                                    placeholder="VD: VAI-CVC-40S">
+                                <input type="text" wire:model="code" id="code"
+                                    class="form-control text-uppercase" placeholder="VD: VAI-CVC-40S">
                                 @error('code')
                                     <span class="text-danger small">{{ $message }}</span>
                                 @enderror
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Tên Sản Phẩm <span class="text-danger">*</span></label>
+                                <label class="form-label" for="namesp">Tên Sản Phẩm <span
+                                        class="text-danger">*</span></label>
                                 {{-- Đã sửa wire:product thành wire:model --}}
-                                <input type="text" wire:model="name" class="form-control"
+                                <input type="text" wire:model="name" class="form-control" id="namesp"
                                     placeholder="VD: Vải Thun CVC 40s">
                                 @error('name')
                                     <span class="text-danger small">{{ $message }}</span>
                                 @enderror
                             </div>
                             <div class="col-12 mb-3">
-                                <label class="form-label">Quy cách / Mô tả</label>
+                                <label class="form-label" for="specs">Quy cách / Mô tả</label>
                                 {{-- Đã sửa wire:product thành wire:model --}}
-                                <textarea wire:model="specs" class="form-control" rows="2" placeholder="Ghi chú về thành phần, định lượng..."></textarea>
+                                <textarea wire:model="specs" id="specs" class="form-control" rows="2"
+                                    placeholder="Ghi chú về thành phần, định lượng..."></textarea>
                             </div>
 
                             <div class="col-12 mb-3">
-                                <label class="form-label fw-bold text-primary">Áp dụng cho Phân Xưởng nào? <span
-                                        class="text-danger">*</span></label>
+                                <span class="form-label fw-bold text-primary">
+                                    Áp dụng cho Phân Xưởng nào?
+                                    <span class="text-danger">*</span></span>
                                 <div class="card p-3 bg-light">
                                     <div class="row">
                                         @foreach ($departments as $dept)

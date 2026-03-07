@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Production;
 
+use App\Models\Color;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\Item;
@@ -16,19 +17,32 @@ class ItemManager extends Component
     public $searchCode = '';
     public $filterOrderId = '';
     public $filterProductId = '';
-
+    public $filterColorId = '';
     // --- CÁC BIẾN CHỈNH SỬA ---
     public $editItemId = null;
     public $editCode = '';
     public $editProperties = []; // Mảng chứa dữ liệu JSON để edit
-
+    public $showSuggestions = false; // Biến kiểm soát ẩn/hiện bảng gợi ý
     // Khai báo sẵn cho tương lai: public $current_location_id;
 
     // Reset trang khi thay đổi điều kiện lọc
-    public function updatingSearchCode() { $this->resetPage(); }
-    public function updatingFilterOrderId() { $this->resetPage(); }
-    public function updatingFilterProductId() { $this->resetPage(); }
-
+    public function updatingSearchCode()
+    {
+        $this->resetPage();
+        $this->showSuggestions = true; // Hiện gợi ý khi người dùng bắt đầu gõ
+    }
+    public function updatingFilterOrderId()
+    {
+        $this->resetPage();
+    }
+    public function updatingFilterProductId()
+    {
+        $this->resetPage();
+    }
+    public function updatingFilterColorId()
+    {
+        $this->resetPage();
+    }
     public function edit($id)
     {
         $item = Item::find($id);
@@ -61,10 +75,22 @@ class ItemManager extends Component
             $this->dispatch('close-modal');
         }
     }
+    public function selectSuggestion($Codestring)
+    {
+        $this->searchCode = $Codestring; // Điền tên vào ô input
+        $this->showSuggestions = false;  // Giấu bảng gợi ý đi
+        $this->resetPage();              // Cập nhật lại bảng dữ liệu chính
+    }
+    public function clearSearch()
+    {
+        $this->searchCode = '';
+        $this->showSuggestions = false;
+        $this->resetPage();
+    }
 
     public function render()
     {
-         $this->js("console.log('Danh sách mã code')");
+        $this->js("console.log('Danh sách mã code')");
         // Query cơ bản kèm theo Relationship để tránh N+1 Query
         $query = Item::with(['order', 'product'])
             ->when($this->searchCode, function ($q) {
@@ -75,12 +101,21 @@ class ItemManager extends Component
             })
             ->when($this->filterProductId, function ($q) {
                 $q->where('product_id', $this->filterProductId);
+            })
+            ->when($this->filterColorId, function ($q) {
+                $q->where('color_id', $this->filterColorId);
             });
-
+        // 3. Lấy dữ liệu cho danh sách gợi ý (Chỉ lấy 5 kết quả đầu tiên cho nhẹ)
+        $suggestions = collect();
+        if ($this->showSuggestions && strlen($this->searchCode) > 0) {
+            $suggestions = (clone $query)->limit(5)->get();
+        }
         return view('livewire.production.item-manager', [
             'items' => $query->orderBy('id', 'desc')->paginate(15),
             'orders' => Order::orderBy('id', 'desc')->get(),
             'products' => Product::orderBy('name', 'asc')->get(),
+            'colors' => Color::orderBy('name', 'asc')->get(),
+            'suggestions' => $suggestions, // Trả thêm biến suggestions ra View
         ]);
     }
 }

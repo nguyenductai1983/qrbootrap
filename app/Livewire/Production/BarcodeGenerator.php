@@ -258,15 +258,23 @@ class BarcodeGenerator extends Component
         // 4. Nếu vượt qua kiểm tra -> Bắt đầu logic tạo tem
         $orderCode = $this->itemData['ORDER_CODE'] ?? null;
         $orderId = null;
+        $quantity = $this->quantity;
         if ($orderCode) {
-            // Lệnh này sẽ tự động tìm Order có code = $orderCode.
-            // Nếu không tìm thấy, nó sẽ tự động Create kèm thuộc tính status = PENDING.
-            $order = Order::firstOrCreate(
+            // 1. Dùng firstOrNew thay vì firstOrCreate
+            $order = Order::firstOrNew(
                 ['code' => $orderCode], // Mảng 1: Điều kiện tìm kiếm
-                ['status' => OrderStatus::PENDING] // Mảng 2: Dữ liệu thêm vào nếu phải tạo mới
+                ['status' => OrderStatus::RUNNING] // Mảng 2: Thuộc tính gán sẵn nếu là tạo mới
             );
 
-            // Bất kể là tìm thấy hay tạo mới, ta luôn có đối tượng $order và lấy được ID
+            // 2. Xử lý logic cộng dồn
+            // Nếu là Order mới, $order->total sẽ là null, ta dùng toán tử ?? 0 để ép nó về 0 rồi cộng với $quantity.
+            // Nếu là Order cũ, nó lấy total cũ cộng thêm $quantity.
+            $order->total = ($order->total ?? 0) + $quantity;
+
+            // 3. Tiến hành lưu vào Database (Lúc này mới thực sự chạy lệnh INSERT hoặc UPDATE)
+            $order->save();
+
+            // 4. Bất kể là tìm thấy hay tạo mới, ta luôn có đối tượng $order và lấy được ID
             $orderId = $order->id;
         }
         $this->itemData['ORDER_ID'] = (string) $orderId; // Ép kiểu chuỗi để lưu vào properties

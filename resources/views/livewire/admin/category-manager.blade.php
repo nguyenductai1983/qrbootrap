@@ -15,7 +15,7 @@
             </div>
         @endif
         <div class="card shadow-sm border-0 rounded-3">
-            <div class="card-header bg-white border-bottom-0 pt-3 pb-0">
+            <div class="card-header border-bottom-0 pt-3 pb-0">
                 {{-- DANH SÁCH TAB --}}
                 <ul class="nav nav-tabs" id="myTab" role="tablist">
                     <li class="nav-item" role="presentation">
@@ -49,7 +49,7 @@
                 {{-- BẢNG DỮ LIỆU --}}
                 <div class="table-responsive">
                     <table class="table table-hover align-middle mb-0">
-                        <thead class="table-light">
+                        <thead class="table">
                             <tr>
                                 <th class="ps-4">Mã (Code)</th>
                                 <th>Tên hiển thị</th>

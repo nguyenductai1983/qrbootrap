@@ -19,7 +19,7 @@
                 placeholder="Tìm kiếm mã hoặc tên loại...">
 
             <table class="table table-hover align-middle">
-                <thead class="table-light">
+                <thead class="table">
                     <tr>
                         <th>Mã Loại (Prefix)</th>
                         <th>Tên Loại</th>

@@ -12,10 +12,11 @@ class PermissionList extends Component
     use WithPagination;
 
     public $search = '';
-
+    public $showSuggestions = false; // Biến kiểm soát ẩn/hiện bảng gợi ý
     public function updatingSearch()
     {
         $this->resetPage();
+        $this->showSuggestions = true; // Hiện gợi ý khi người dùng bắt đầu gõ
     }
 
     public function deletePermission($permissionId)
@@ -41,19 +42,42 @@ class PermissionList extends Component
             session()->flash('error', 'Không tìm thấy quyền hạn để xóa.');
         }
     }
-
+    // Hàm xử lý khi người dùng click vào 1 dòng gợi ý
+    public function selectSuggestion($permissionName)
+    {
+        $this->search = $permissionName; // Điền tên vào ô input
+        $this->showSuggestions = false;  // Giấu bảng gợi ý đi
+        $this->resetPage();              // Cập nhật lại bảng dữ liệu chính
+    }
+    public function clearSearch()
+    {
+        $this->search = '';
+        $this->showSuggestions = false;
+        $this->resetPage();
+    }
     public function render()
     {
-        $permissions = Permission::query()
+        // 1. Tạo query dùng chung
+        $query = Permission::query()
             ->when($this->search, function ($query) {
                 $query->where('name', 'like', '%' . $this->search . '%');
-            })
-            ->withCount('roles') // Đếm số lượng vai trò có quyền này
+            });
+
+        // 2. Lấy dữ liệu cho bảng chính (Paginate)
+        $permissions = (clone $query)
+            ->withCount('roles')
             ->orderBy('id')
             ->paginate(20);
 
+        // 3. Lấy dữ liệu cho danh sách gợi ý (Chỉ lấy 5 kết quả đầu tiên cho nhẹ)
+        $suggestions = collect();
+        if ($this->showSuggestions && strlen($this->search) > 0) {
+            $suggestions = (clone $query)->limit(5)->get();
+        }
+
         return view('livewire.admin.permission-list', [
             'permissions' => $permissions,
+            'suggestions' => $suggestions, // Trả thêm biến suggestions ra View
         ]);
     }
 }
