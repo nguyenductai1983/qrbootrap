@@ -91,7 +91,7 @@
                     <div class="row">
                         <div class="col-8">
                             <div class="mb-3">
-                                <label class="form-label fw-bold" for="printColumns">Số tem ngang</label>
+                                <label class="form-label fw-bold" for="printColumns">Số tem dòng</label>
                                 <select wire:model="printColumns" class="form-select border-primary" id="printColumns">
                                     <option value="1">1 tem/dòng</option>
                                     <option value="2">2 tem/dòng</option>

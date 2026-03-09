@@ -30,8 +30,8 @@
 }
 
 .print-area {
-    /* display: none; */
-    display: block;
+    display: none;
+    /* display: block; */
     /* Mặc định ẩn trên màn hình */
 }
 
