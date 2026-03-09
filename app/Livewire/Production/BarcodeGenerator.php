@@ -43,6 +43,7 @@ class BarcodeGenerator extends Component
     public $selectedHistoryIds = [];
     public $printFormat = 'QR';
     public $printColumns = 1;
+    public $fontSize = 6;
     public $colors, $specifications, $plasticTypes, $widths;
     public $selectedColor, $selectedSpec, $selectedPlastic, $selectedWidth;
     // --- BIẾN CHO TẠO NHANH ĐƠN HÀNG ---
@@ -382,21 +383,21 @@ class BarcodeGenerator extends Component
         foreach ($items as $item) {
             $info = $item->properties ?? [];
 
-            if (!isset($info['PRODUCT_NAME']) && $item->product) {
-                $info['PRODUCT_NAME'] = $item->product->name;
-            }
-            if (!isset($info['COLOR_NAME']) && $item->color) {
-                $info['COLOR_NAME'] = $item->color->name ?? '';
-            }
-            // Điền lại PO từ Order đã được load sẵn
-            if (!isset($info['PO']) && $item->order) {
-                $info['PO'] = $item->order->code;
-            }
+            // if (!isset($info['PRODUCT_NAME']) && $item->product) {
+            //     $info['PRODUCT_NAME'] = $item->product->name;
+            // }
+            // if (!isset($info['COLOR_NAME']) && $item->color) {
+            //     $info['COLOR_NAME'] = $item->color->name ?? '';
+            // }
+            // // Điền lại PO từ Order đã được load sẵn
+            // if (!isset($info['PO']) && $item->order) {
+            //     $info['PO'] = $item->order->code;
+            // }
 
-            $info['type'] = $item->type;
+            // $info['type'] = $item->type;
             $this->generatedItems[] = [
                 'code' => $item->code,
-                'info' => $info,
+                // 'info' => $info,
 
             ];
         }
