@@ -350,13 +350,13 @@
                             <div class="text-truncate ">
                                 <strong class="small text-muted">SP:</strong>
                                 <span
-                                    class="fw-bold text-uppercase small">{{ $item['info']['PRODUCT_NAME'] ?? '' }}</span>
+                                    class="fw-bold text-uppercase small"><strong>{{ $item['info']['PRODUCT_NAME'] ?? '' }}</strong></span>
                             </div>
 
                             {{-- Nhóm 2: Màu (Nằm bên phải) --}}
                             <div class="text-end flex-shrink-0">
                                 <strong class="small text-muted">MÀU:</strong>
-                                <span class="fw-bold small">{{ $item['info']['COLOR_NAME'] ?? '' }}</span>
+                                <span class="fw-bold small"><strong>{{ $item['info']['COLOR_NAME'] ?? '' }}</strong></span>
                             </div>
                         </div>
 
@@ -392,9 +392,9 @@
                         <div class="info-gridsmall text-start border-top" style="font-size: 6pt">
                             <div class="row g-0">
                                 <div class="col-6"><strong class="small text-muted">PO:</strong>
-                                    {{ $item['info']['PO'] ?? '' }}</div>
+                                  <strong>  {{ $item['info']['PO'] ?? '' }}</strong></div>
                                 <div class="col-6 text-end"><strong class="small text-muted">TYPE:</strong>
-                                    {{ $item['info']['type'] ?? '' }}</div>
+                                  <strong>  {{ $item['info']['type'] ?? '' }}</strong></div>
                             </div>
                         </div>
                     </div>
