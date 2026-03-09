@@ -10,7 +10,7 @@ class PropertyManager extends Component
 {
     use WithPagination;
 
-    public $code, $name, $type = 'text', $options = '', $sort_order = 0 , $unit = '';
+    public $code, $name, $type = 'text', $options = '', $sort_order = 0, $unit = '';
     public $is_required = false, $is_active = true, $propertyId, $code_usage = 0;
 
     public $isEditMode = false;
@@ -18,6 +18,7 @@ class PropertyManager extends Component
     public $is_global = true; // Thêm biến này
     public $selectedProducts = []; // Mảng lưu các model được chọn
     public $allProducts = []; // Danh sách tất cả model để hiển thị
+    public $is_code = true;
     public function mount()
     {
         // Gợi ý thứ tự (sort_order) tự động tăng cho thuộc tính mới
@@ -39,6 +40,7 @@ class PropertyManager extends Component
         $this->isEditMode = false;
         $this->is_global = true;
         $this->unit = '';
+        $this->is_code = true;
         $this->selectedProducts = [];
         $this->resetErrorBag();
     }
@@ -59,7 +61,8 @@ class PropertyManager extends Component
 
         $prop =  ItemProperty::create([
             'code' => strtoupper(str_replace(' ', '_', trim($this->code))), // Tự động in hoa và đổi dấu cách thành _
-            'code_usage' => $this->sort_order ?: 0,
+            'code_usage' => $this->code_usage ? 1 : 0,
+            'is_code' => $this->is_code,
             'name' => $this->name,
             'type' => $this->type,
             'options' => $optionsArray,
@@ -92,6 +95,7 @@ class PropertyManager extends Component
             $this->sort_order = $property->sort_order;
             $this->is_active = $property->is_active;
             $this->code_usage = $property->code_usage;
+            $this->is_code = $property->is_code;
             $this->is_global = $property->is_global;
             $this->unit = $property->unit;
             $this->selectedProducts = $property->products->pluck('id')->toArray();
@@ -123,7 +127,8 @@ class PropertyManager extends Component
                 'options' => $optionsArray,
                 'is_required' => $this->is_required,
                 'sort_order' => $this->sort_order ?: 0,
-                'code_usage' => $this->code_usage ?: 0,
+                'code_usage' => $this->code_usage ? 1 : 0, // 🌟 ĐÃ FIX LỖI
+                'is_code' => $this->is_code,         // 🌟 CẬP NHẬT DÒNG NÀY
                 'is_active' => $this->is_active,
                 'is_global' => $this->is_global,
                 'unit' => $this->unit,

@@ -20,6 +20,7 @@ class ItemProperty extends Model
         'specification_id',
         'plastic_type_id',
         'unit',
+        'is_code', // 🌟 THÊM DÒNG NÀY
     ];
 
     protected $casts = [
@@ -28,6 +29,7 @@ class ItemProperty extends Model
         'is_global' => 'boolean', // <-- Thêm dòng này
         'is_active' => 'boolean',
         'code_usage' => 'boolean',
+        'is_code' => 'boolean',
     ];
     // Định nghĩa quan hệ
     public function products()

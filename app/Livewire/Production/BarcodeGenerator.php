@@ -317,19 +317,20 @@ class BarcodeGenerator extends Component
 
             foreach ($this->dynamicProperties as $prop) {
                 if (isset($this->itemData[$prop->code]) && $this->itemData[$prop->code] !== '') {
+                    if ($prop->is_code) {
+                        $part = ''; // Biến tạm chứa chuỗi của riêng thuộc tính này
 
-                    $part = ''; // Biến tạm chứa chuỗi của riêng thuộc tính này
+                        // Nếu admin bật code_usage -> Nối Code (VD: "GSM ")
+                        if ($prop->code_usage == 1) {
+                            $part .= $prop->code;
+                        }
 
-                    // Nếu admin bật code_usage -> Nối Code (VD: "GSM ")
-                    if ($prop->code_usage == 1) {
-                        $part .= $prop->code;
+                        // Nối thêm Value và Unit (VD: "165" + "g" -> "165g")
+                        $part .= $this->itemData[$prop->code] . ($prop->unit ?? '');
+
+                        // Đẩy cụm hoàn chỉnh (VD: "GSM 165g" hoặc chỉ "165g") vào mảng
+                        $propParts[] = trim($part);
                     }
-
-                    // Nối thêm Value và Unit (VD: "165" + "g" -> "165g")
-                    $part .= $this->itemData[$prop->code] . ($prop->unit ?? '');
-
-                    // Đẩy cụm hoàn chỉnh (VD: "GSM 165g" hoặc chỉ "165g") vào mảng
-                    $propParts[] = trim($part);
                 }
             }
 

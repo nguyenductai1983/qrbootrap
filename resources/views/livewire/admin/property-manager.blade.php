@@ -90,7 +90,16 @@
                 </div>
                 <div class="modal-body">
                     <form wire:submit.prevent="{{ $isEditMode ? 'update' : 'store' }}">
-
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-12">
+                                <label class="form-label">Tên Hiển Thị <span class="text-danger">*</span></label>
+                                <input type="text" wire:model="name" class="form-control"
+                                    placeholder="VD: Số Mét, Màu Sắc">
+                                @error('name')
+                                    <span class="text-danger small">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </div>
                         <div class="row g-3 mb-3">
                             <div class="col-md-6">
                                 <label class="form-label">Mã Thuộc Tính (Code) <span
@@ -105,26 +114,23 @@
                                 <div class="form-check form-switch">
                                     <input class="form-check-input" type="checkbox" wire:model="code_usage"
                                         id="code_usage">
-                                    <label class="form-check-label fw-bold text-success" for="code_usage">Dùng code tạo
-                                        mã?</label>
+                                    <label class="form-check-label fw-bold text-success" for="code_usage">
+                                        Dùng code để tạo mã QR/Barcode?</label>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Tên Hiển Thị <span class="text-danger">*</span></label>
-                                <input type="text" wire:model="name" class="form-control"
-                                    placeholder="VD: Số Mét, Màu Sắc">
-                                @error('name')
-                                    <span class="text-danger small">{{ $message }}</span>
-                                @enderror
-                            </div>
-                            <div class="col-md-6">
+                        </div>
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-12">
                                 <label class="form-label">Đơn Vị <span class="text-danger">*</span></label>
                                 <input type="text" wire:model="unit" class="form-control"
                                     placeholder="VD: m, kg, cm">
                                 @error('unit')
                                     <span class="text-danger small">{{ $message }}</span>
                                 @enderror
+                                <small class="d-block text-muted">Khi chọn đơn vị sẽ xuất hiện sau thông tin thuộc
+                                    tính</small>
                             </div>
+
                         </div>
 
                         <div class="row g-3 mb-3">
@@ -169,7 +175,18 @@
                                         động?</label>
                                 </div>
                             </div>
-
+                        </div>
+                        <div class="row mb-4 mt-3">
+                            <div class="col-md-12">
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" wire:model="is_code"
+                                        id="isCode">
+                                    <label class="form-check-label fw-bold" for="isCode">Sử dụng làm
+                                        Barcode/QR</label>
+                                    <small class="d-block text-muted">Nếu tắt, người dùng vẫn phải nhập nhưng nội dung
+                                        này sẽ không xuất hiện trong chuỗi mã vạch.</small>
+                                </div>
+                            </div>
                         </div>
                         <div class="row mb-3 border-top pt-3">
                             <div class="col-12 mb-2">

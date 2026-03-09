@@ -105,8 +105,8 @@
                             <div class="mb-3">
                                 <label class="form-label fw-bold" for="fontSize">Cỡ chữ</label>
                                 <div class="mb-3">
-                                    <input wire:model="fontSize" type="number" class="form-control"
-                                        min="6" id="fontSize">
+                                    <input wire:model="fontSize" type="number" class="form-control" min="6"
+                                        id="fontSize">
                                     <small class="text-muted">Cỡ chữ cho Code</small>
                                 </div>
                             </div>
@@ -236,8 +236,16 @@
                                 <label class="form-label mb-1" style="font-size: 0.85rem;"
                                     for="{{ $prop->code }}">
                                     {{ $prop->name }}
-                                    @if ($prop->is_required)
-                                        <span class="text-danger">*</span>
+                                    @if ($prop->is_code)
+                                        <span class="text-primary fw-bold">
+                                            @if ($prop->code_usage)
+                                                {{ $prop->code }}
+                                            @endif
+                                            DATA {{ $prop->unit }}
+                                            @if ($prop->is_required)
+                                                <span class="text-danger">*</span>
+                                            @endif
+                                        </span>
                                     @endif
                                 </label>
 
