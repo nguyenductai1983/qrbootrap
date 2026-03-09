@@ -17,7 +17,7 @@
                                 class="form-select form-select-sm border-secondary fw-bold text-primary">
                                 <option value="">-- Mặc định --</option>
                                 @foreach ($orders as $order)
-                                    <option value="{{ $order->id }}">{{ $order->code }}</option>
+                                <option value="{{ $order->id }}">{{ $order->code }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -29,8 +29,8 @@
                                 class="form-select form-select-sm border-secondary fw-bold text-success">
                                 <option value="">-- Mặc định --</option>
                                 @foreach ($products as $product)
-                                    <option value="{{ $product->id }}">{{ $product->code }} - {{ $product->name }}
-                                    </option>
+                                <option value="{{ $product->id }}">{{ $product->code }} - {{ $product->name }}
+                                </option>
                                 @endforeach
                             </select>
                         </div>
@@ -92,75 +92,75 @@
 
                     {{-- 4. HIỂN THỊ KẾT QUẢ --}}
                     @if ($message)
-                        <div class="alert alert-{{ $scanStatus == 'success' ? 'success' : ($scanStatus == 'warning' ? 'warning' : 'danger') }} text-center shadow-sm"
-                            role="alert">
-                            <h4 class="alert-heading fw-bold fs-5 mb-1">
-                                @if ($scanStatus == 'success')
-                                    <i class="fa-solid fa-circle-check"></i>
-                                @elseif($scanStatus == 'warning')
-                                    <i class="fa-solid fa-triangle-exclamation"></i>
-                                @else
-                                    <i class="fa-solid fa-circle-xmark"></i>
-                                @endif
-                                {{ $message }}
-                            </h4>
-                            {{-- MỚI THÊM: Nút Quét lại hiển thị khi có lỗi hoặc cảnh báo --}}
-                            @if ($scanStatus == 'error' || $scanStatus == 'warning')
-                                <button wire:click="resetScan" class="btn btn-sm btn-outline-dark mt-3">
-                                    <i class="fa-solid fa-rotate-right me-1"></i> Bấm để quét lại
-                                </button>
+                    <div class="alert alert-{{ $scanStatus == 'success' ? 'success' : ($scanStatus == 'warning' ? 'warning' : 'danger') }} text-center shadow-sm"
+                        role="alert">
+                        <h4 class="alert-heading fw-bold fs-5 mb-1">
+                            @if ($scanStatus == 'success')
+                            <i class="fa-solid fa-circle-check"></i>
+                            @elseif($scanStatus == 'warning')
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                            @else
+                            <i class="fa-solid fa-circle-xmark"></i>
                             @endif
-                        </div>
+                            {{ $message }}
+                        </h4>
+                        {{-- MỚI THÊM: Nút Quét lại hiển thị khi có lỗi hoặc cảnh báo --}}
+                        @if ($scanStatus == 'error' || $scanStatus == 'warning')
+                        <button wire:click="resetScan" class="btn btn-sm btn-outline-dark mt-3">
+                            <i class="fa-solid fa-rotate-right me-1"></i> Bấm để quét lại
+                        </button>
+                        @endif
+                    </div>
                     @endif
 
                     @if (!empty($itemInfo))
-                        <div class="table-responsive  rounded p-2 border position-relative">
-                            <button wire:click="resetScan"
-                                class="btn btn-sm btn-outline-secondary position-absolute top-0 end-0 m-2">
-                                <i class="fa-solid fa-rotate-right"></i>
-                            </button>
-                            <table class="table table-borderless mb-0">
-                                <tr>
-                                    <td class="text-muted small" width="30%">Mã Vải:</td>
-                                    <td class="fw-bold fs-5 text-primary">
-                                        {{ $itemInfo['MA_VAI'] ?? 'N/A' }}
-                                        @if (!empty($selectedModelId))
-                                            <i class="fa-solid fa-pen-to-square text-warning small ms-1"
-                                                title="Đã cập nhật theo cài đặt"></i>
-                                        @endif
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="text-muted small">Màu:</td>
-                                    <td class="fw-bold">{{ $itemInfo['MAU'] ?? '-' }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-muted small">Thông số:</td>
-                                    <td>
-                                        <span class="badge bg-secondary">{{ $itemInfo['MA_CAY_VAI'] ?? 'Lô ?' }}</span>
-                                        <span class="badge bg-info text-dark">{{ $itemInfo['SO_MET'] ?? 0 }} m</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="text-muted small">PO:</td>
-                                    <td>
-                                        {{ $itemInfo['PO'] ?? '' }}
-                                        @if (!empty($selectedOrderId))
-                                            <i class="fa-solid fa-pen-to-square text-warning small ms-1"
-                                                title="Đã cập nhật theo cài đặt"></i>
-                                        @endif
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
+                    <div class="table-responsive  rounded p-2 border position-relative">
+                        <button wire:click="resetScan"
+                            class="btn btn-sm btn-outline-secondary position-absolute top-0 end-0 m-2">
+                            <i class="fa-solid fa-rotate-right"></i>
+                        </button>
+                        <table class="table table-borderless mb-0">
+                            <tr>
+                                <td class="text-muted small" width="30%">Mã Vải:</td>
+                                <td class="fw-bold fs-5 text-primary">
+                                    {{ $itemInfo['MA_VAI'] ?? 'N/A' }}
+                                    @if (!empty($selectedModelId))
+                                    <i class="fa-solid fa-pen-to-square text-warning small ms-1"
+                                        title="Đã cập nhật theo cài đặt"></i>
+                                    @endif
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted small">Màu:</td>
+                                <td class="fw-bold">{{ $itemInfo['MAU'] ?? '-' }}</td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted small">Thông số:</td>
+                                <td>
+                                    <span class="badge bg-secondary">{{ $itemInfo['MA_CAY_VAI'] ?? 'Lô ?' }}</span>
+                                    <span class="badge bg-info text-dark">{{ $itemInfo['SO_MET'] ?? 0 }} m</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted small">PO:</td>
+                                <td>
+                                    {{ $itemInfo['PO'] ?? '' }}
+                                    @if (!empty($selectedOrderId))
+                                    <i class="fa-solid fa-pen-to-square text-warning small ms-1"
+                                        title="Đã cập nhật theo cài đặt"></i>
+                                    @endif
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
                     @endif
 
                     {{-- Placeholder khi chưa quét --}}
                     @if (empty($itemInfo) && empty($message))
-                        <div class="text-center text-muted py-4" id="placeholder-icon">
-                            <i class="fa-solid fa-barcode fa-4x mb-2"></i>
-                            <p>Sẵn sàng quét mã...</p>
-                        </div>
+                    <div class="text-center text-muted py-4" id="placeholder-icon">
+                        <i class="fa-solid fa-barcode fa-4x mb-2"></i>
+                        <p>Sẵn sàng quét mã...</p>
+                    </div>
                     @endif
                 </div>
             </div>
@@ -285,7 +285,9 @@
                 }, config,
                 (decodedText) => {
                     // Gọi hàm PHP xử lý
-                    @this.handleScan(decodedText);
+                    // Sử dụng Livewire API thay cho @this để tránh báo lỗi decorator từ IDE
+                    let componentId = document.getElementById('camera-container').closest('[wire\\:id]').getAttribute('wire:id');
+                    Livewire.find(componentId).handleScan(decodedText);
                 },
                 (errorMessage) => {
                     // Đang quét...

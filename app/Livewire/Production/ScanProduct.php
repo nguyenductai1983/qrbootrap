@@ -7,7 +7,8 @@ use App\Models\Item;
 use App\Models\Order;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Product;
-USE App\Enums\ItemStatus;
+use App\Enums\ItemStatus;
+
 class ScanProduct extends Component
 {
     // Dữ liệu chung
@@ -27,7 +28,7 @@ class ScanProduct extends Component
     {
         $user = Auth::user();
         // Lấy đơn hàng đang chạy
-        $this->orders = Order::where('status','>=', 1)->orderBy('id', 'desc')->get();
+        $this->orders = Order::where('status', '>=', 1)->orderBy('id', 'desc')->get();
         if ($user->department_id) {
             $this->products = Product::whereHas('departments', function ($q) use ($user) {
                 $q->where('departments.id', $user->department_id);
@@ -130,7 +131,7 @@ class ScanProduct extends Component
                 $updateData['product_id'] = $this->selectedProductId;
 
                 // Cập nhật MA_VAI trong properties (thường Mã vải = Mã Model)
-               $product = Product::find($this->selectedProductId);
+                $product = Product::find($this->selectedProductId);
                 if ($product) {
                     $properties['SP'] = $product->code;
                     $hasChange = true;

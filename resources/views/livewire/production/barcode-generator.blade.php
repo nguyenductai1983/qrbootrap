@@ -365,7 +365,7 @@
 
         <div class="print-area">
             {{-- Chuyền biến $printColumns từ PHP sang CSS thông qua thẻ style nội tuyến --}}
-            <div class="print-grid" style="--print-cols: {{ $printColumns }};">
+            <div class="print-grid" @style(['--print-cols: ' . $printColumns])>
                 @foreach ($generatedItems as $item)
                     {{-- BỎ class col-6 col-md-4 ở đây đi --}}
                     <div class="label-item">
@@ -395,7 +395,12 @@
                                         {!! SimpleSoftwareIO\QrCode\Facades\QrCode::size(60)->generate($item['code']) !!}
                                     </div>
                                     <div class="code-text fw-bold mt-2 text-center w-100"
-                                        style="font-size: {{ $fontSize ?? 10 }}px; letter-spacing: 0.5px; word-break: break-all; line-height: 1.2;">
+                                        @style([
+                                            'font-size: ' . ($fontSize ?? 10) . 'px',
+                                            'letter-spacing: 0.5px',
+                                            'word-break: break-all',
+                                            'line-height: 1.2'
+                                        ])>
                                         {{ $item['code'] }}
                                     </div>
                                 </div>
@@ -407,7 +412,11 @@
                                     </div>
                                     {{-- Đổi text-start thành text-center ở đây để đồng bộ với QR --}}
                                     <div class="code-text fw-bold mt-1 text-center w-100"
-                                        style="font-size: {{ $fontSize ?? 10 }}px; letter-spacing: 1px; word-break: break-all;">
+                                        @style([
+                                            'font-size: ' . ($fontSize ?? 10) . 'px',
+                                            'letter-spacing: 1px',
+                                            'word-break: break-all'
+                                        ])>
                                         {{ $item['code'] }}
                                     </div>
                                 </div>
