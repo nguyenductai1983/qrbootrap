@@ -195,7 +195,7 @@
                             <div class="d-flex gap-2 align-items-stretch">
                                 {{-- Nút link sang trang quản lý (Chiếm 7 phần chiều ngang) --}}
                                 <a href="{{ route('manager.properties') }}" target="_new" style="flex: 7;"
-                                    class="list-group-item list-group-item-action text-primary border rounded px-3 py-2 d-flex justify-content-center align-items-center {{ request()->routeIs('manager.categories') ? 'active' : '' }}">
+                                    class="list-group-item list-group-item-action text-primary border rounded px-3 py-2 d-flex justify-content-center align-items-center {{ request()->routeIs('manager.properties') ? 'active' : '' }}">
                                     <span><i class="fa-solid fa-tags me-1"></i> Cài đặt thuộc tính động</span>
                                 </a>
                                 {{-- Nút bấm Làm mới danh sách (Chiếm 3 phần chiều ngang) --}}
@@ -204,7 +204,7 @@
                                     title="Tải lại dữ liệu ngay lập tức">
                                     <span>
                                         <i class="fa-solid fa-arrows-rotate me-1" wire:loading.class="fa-spin"
-                                            wire:target="refreshMasterData"></i>
+                                            wire:target="refreshDynamicProperties"></i>
                                         Tải thuộc tính động
                                     </span>
                                 </button>

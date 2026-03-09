@@ -467,8 +467,15 @@ class BarcodeGenerator extends Component
         // (Tùy chọn) Bạn có thể cho in log ra màn hình console để biết nó đang tự động chạy
         // $this->js("console.log('🔄 Đã tự động cập nhật danh mục mới nhất!');");
     }
-    public function refreshdynamicProperties()
+    public function refreshDynamicProperties()
     {
-        $this->dynamicProperties = ItemProperty::where('is_active', true)->get();
+        // Lấy ID Sản phẩm đang được chọn trong Form (nếu có)
+        $currentProductId = $this->itemData['PRODUCT_ID'] ?? null;
+
+        // Kích hoạt lại hàm chuyên trách tải thuộc tính động
+        $this->loadDynamicProperties($currentProductId);
+
+        // (Tùy chọn) Báo cho Console biết
+        $this->js("console.log('🔄 Đã tự động cập nhật danh sách Thuộc tính động!');");
     }
 }
