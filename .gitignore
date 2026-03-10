@@ -1,0 +1,13 @@
+node_modules
+vendor
+database/migrations
+.vscode
+launch.json
+.env
+composer.json
+composer.lock
+composer.phar
+package-lock.json
+package.json
+storage
+.htaccess
