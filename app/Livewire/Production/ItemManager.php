@@ -18,12 +18,22 @@ class ItemManager extends Component
     public $filterOrderId = '';
     public $filterProductId = '';
     public $filterColorId = '';
+    public $fromDate = '';
+    public $toDate = '';
+    
     // --- CÁC BIẾN CHỈNH SỬA ---
     public $editItemId = null;
     public $editCode = '';
     public $editProperties = []; // Mảng chứa dữ liệu JSON để edit
     public $showSuggestions = false; // Biến kiểm soát ẩn/hiện bảng gợi ý
     // Khai báo sẵn cho tương lai: public $current_location_id;
+
+    public function mount()
+    {
+        // Mặc định xuất 30 ngày gần đây
+        $this->fromDate = now()->subDays(30)->format('Y-m-d');
+        $this->toDate = now()->format('Y-m-d');
+    }
 
     // Reset trang khi thay đổi điều kiện lọc
     public function updatingSearchCode()
@@ -86,6 +96,39 @@ class ItemManager extends Component
         $this->searchCode = '';
         $this->showSuggestions = false;
         $this->resetPage();
+    }
+
+    public function exportExcel()
+    {
+        if (empty($this->fromDate) || empty($this->toDate)) {
+            session()->flash('message', 'Vui lòng chọn Từ ngày và Đến ngày để xuất Excel!');
+            return;
+        }
+
+        $query = Item::with(['order', 'product', 'color'])
+            ->whereDate('created_at', '>=', $this->fromDate)
+            ->whereDate('created_at', '<=', $this->toDate)
+            ->when($this->searchCode, function ($q) {
+                $q->where('code', 'like', '%' . $this->searchCode . '%');
+            })
+            ->when($this->filterOrderId, function ($q) {
+                $q->where('order_id', $this->filterOrderId);
+            })
+            ->when($this->filterProductId, function ($q) {
+                $q->where('product_id', $this->filterProductId);
+            })
+            ->when($this->filterColorId, function ($q) {
+                $q->where('color_id', $this->filterColorId);
+            });
+
+        $items = $query->orderBy('id', 'desc')->get();
+
+        if ($items->isEmpty()) {
+            session()->flash('message', 'Không có dữ liệu trong khoảng thời gian này để xuất Excel!');
+            return;
+        }
+
+        return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\ItemsExport($items), 'danh-sach-tem-' . date('Ymd_His') . '.xlsx');
     }
 
     public function render()

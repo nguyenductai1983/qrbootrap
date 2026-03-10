@@ -2,70 +2,84 @@
 
 namespace App\Exports;
 
-use App\Models\Item;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
-use App\Models\ItemProperty;
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+use Maatwebsite\Excel\Concerns\WithStyles;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class ItemsExport implements FromCollection, WithHeadings, WithMapping
+class ItemsExport implements FromCollection, WithHeadings, WithMapping, ShouldAutoSize, WithStyles
 {
-    protected $orderId;
-    protected $producId;
-    protected $dynamicProperties; // Khai báo thêm biến này để lưu cache properties
+    protected $items;
+    protected $dynamicKeys = [];
 
-    public function __construct($orderId, $producId)
+    public function __construct($items)
     {
-        $this->orderId = $orderId;
-        $this->producId = $producId;
+        $this->items = $items;
 
-        // TỐI ƯU: Chỉ query ItemProperty 1 lần duy nhất khi khởi tạo class
-        $this->dynamicProperties = ItemProperty::where('is_active', true)
-            ->where(function ($q) use ($producId) { // Cần có 'use ($producId)' ở đây
-                $q->where('is_global', true)
-                    ->orWhereHas('products', function ($q2) use ($producId) {
-                        $q2->where('products.id', $producId);
-                    });
-            })
-            ->orderBy('sort_order')
-            ->get();
+        $keys = [];
+        foreach ($items as $item) {
+            $properties = is_array($item->properties) ? $item->properties : json_decode($item->properties, true);
+            if (is_array($properties)) {
+                foreach (array_keys($properties) as $key) {
+                    if (!in_array($key, ['ORDER_ID', 'PRODUCT_ID', 'PRODUCT', 'PRODUCT_NAME'])) {
+                        $keys[$key] = true;
+                    }
+                }
+            }
+        }
+        $this->dynamicKeys = array_keys($keys);
     }
 
     public function collection()
     {
-        return Item::where('order_id', $this->orderId)
-            ->where('product_id', $this->producId)
-            // Nếu trường PO nằm ở bảng Order (ví dụ $item->order->po_number),
-            // bạn nên thêm ->with('order') ở đây để tránh lỗi N+1
-            ->get();
+        return $this->items;
     }
 
     public function headings(): array
     {
-        // Lấy danh sách 'code' từ properties đã query sẵn
-        $dynamicHeaders = $this->dynamicProperties->pluck('code')->toArray();
+        $headings = [
+            'Mã Tem',
+            'Đơn hàng',
+            'Sản phẩm',
+            'Màu',
+            'Trạng thái',
+            'Vị trí hiện tại'
+        ];
 
-        // HƯỚNG DẪN 1: Thêm 'PO' vào mảng cố định (bạn có thể đổi vị trí tùy ý)
-        return array_merge(['code', 'created_at', 'PO'], $dynamicHeaders);
+        foreach ($this->dynamicKeys as $key) {
+            $headings[] = $key;
+        }
+
+        return $headings;
     }
 
     public function map($item): array
     {
+        $properties = is_array($item->properties) ? $item->properties : json_decode($item->properties, true);
+        $properties = is_array($properties) ? $properties : [];
+
         $row = [
             $item->code,
-            $item->created_at->format('d/m/Y'),
-            // HƯỚNG DẪN 2: Lấy giá trị PO tương ứng.
-            // Bạn hãy đổi '$item->po' thành tên cột thực tế chứa PO của bạn.
-            $item->po,
-
-
+            $item->order->code ?? '-',
+            $item->product->name ?? '-',
+            $item->color->name ?? '-',
+            $item->status ? $item->status->label() : '-',
+            '-', // Vị trí hiện tại
         ];
 
-        // Duyệt qua properties đã lưu sẵn, không query lại database nữa
-        foreach ($this->dynamicProperties as $prop) {
-            $row[] = $item->properties[$prop->code] ?? '';
+        foreach ($this->dynamicKeys as $key) {
+            $row[] = $properties[$key] ?? '';
         }
 
         return $row;
+    }
+
+    public function styles(Worksheet $sheet)
+    {
+        return [
+            1 => ['font' => ['bold' => true]],
+        ];
     }
 }

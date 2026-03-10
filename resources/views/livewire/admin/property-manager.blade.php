@@ -90,44 +90,51 @@
                 </div>
                 <div class="modal-body">
                     <form wire:submit.prevent="{{ $isEditMode ? 'update' : 'store' }}">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" wire:model="is_code" id="isCode">
+                                    <label class="form-check-label fw-bold" for="isCode">Sử dụng làm
+                                        Barcode/QR</label>
+                                    <small class="d-block text-muted">
+                                        Nếu tắt, người dùng vẫn phải nhập và ghi nhận nhưng nội dung này sẽ không xuất hiện trong
+                                        chuỗi mã vạch.</small>
+                                </div>
+                            </div>
+                        </div>
                         <div class="row g-3 mb-3">
                             <div class="col-md-12">
                                 <label class="form-label">Tên Hiển Thị <span class="text-danger">*</span></label>
                                 <input type="text" wire:model="name" class="form-control"
-                                    placeholder="VD: Số Mét, Màu Sắc">
+                                    placeholder="VD: GSM, Màu Sắc, Chiều dài">
                                 @error('name')
                                     <span class="text-danger small">{{ $message }}</span>
                                 @enderror
                             </div>
                         </div>
                         <div class="row g-3 mb-3">
-                            <div class="col-md-6">
-                                <label class="form-label">Mã Thuộc Tính (Code) <span
-                                        class="text-danger">*</span></label>
-                                <input type="text" wire:model="code" class="form-control text-uppercase"
-                                    placeholder="VD: SO_MET, MAU_SAC" {{ $isEditMode ? 'readonly' : '' }}>
-                                @error('code')
-                                    <span class="text-danger small">{{ $message }}</span>
-                                @enderror
-                            </div>
-                            <div class="col-md-6">
+                            <div class="col-md-7">
                                 <div class="form-check form-switch">
                                     <input class="form-check-input" type="checkbox" wire:model="code_usage"
                                         id="code_usage">
-                                    <label class="form-check-label fw-bold text-success" for="code_usage">
-                                        Dùng code để tạo mã QR/Barcode?</label>
+                                    <label class="form-check-label text-success mb-2" for="code_usage">
+                                        Code tạo mã QR/Barcode?</label>
                                 </div>
+                                <input type="text" wire:model="code" class="form-control text-uppercase"
+                                    placeholder="GSM, D, TL..." {{ $isEditMode ? 'readonly' : '' }}>
+                                @error('code')
+                                    <span class="text-danger small">{{ $message }}</span>
+                                @enderror
+                                <small class="d-block text-muted">Thông tin sẽ hiện trên mã code</small>
                             </div>
-                        </div>
-                        <div class="row g-3 mb-3">
-                            <div class="col-md-12">
-                                <label class="form-label">Đơn Vị <span class="text-danger">*</span></label>
+                            <div class="col-md-5">
+                                <label class="form-label">Đơn Vị</label>
                                 <input type="text" wire:model="unit" class="form-control"
                                     placeholder="VD: m, kg, cm">
                                 @error('unit')
                                     <span class="text-danger small">{{ $message }}</span>
                                 @enderror
-                                <small class="d-block text-muted">Khi chọn đơn vị sẽ xuất hiện sau thông tin thuộc
+                                <small class="d-block text-muted">Hiện sau thông tin thuộc
                                     tính</small>
                             </div>
 
@@ -176,18 +183,6 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row mb-4 mt-3">
-                            <div class="col-md-12">
-                                <div class="form-check form-switch mb-3">
-                                    <input class="form-check-input" type="checkbox" wire:model="is_code"
-                                        id="isCode">
-                                    <label class="form-check-label fw-bold" for="isCode">Sử dụng làm
-                                        Barcode/QR</label>
-                                    <small class="d-block text-muted">Nếu tắt, người dùng vẫn phải nhập nhưng nội dung
-                                        này sẽ không xuất hiện trong chuỗi mã vạch.</small>
-                                </div>
-                            </div>
-                        </div>
                         <div class="row mb-3 border-top pt-3">
                             <div class="col-12 mb-2">
                                 <div class="form-check form-switch">
@@ -225,11 +220,15 @@
                                 </div>
                             @endif
                         </div>
-                        <div class="text-end">
-                            <button type="button" class="btn btn-secondary me-2"
-                                data-bs-dismiss="modal">Đóng</button>
-                            <button type="submit"
-                                class="btn btn-info text-white">{{ $isEditMode ? 'Lưu Thay Đổi' : 'Tạo Mới' }}</button>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="input-group mb-3">
+                                    <button type="button" class="btn btn-secondary me-2 form-control"
+                                        data-bs-dismiss="modal">Đóng</button>
+                                    <button type="submit"
+                                        class="btn btn-info text-white form-control">{{ $isEditMode ? 'Lưu Thay Đổi' : 'Tạo Mới' }}</button>
+                                </div>
+                            </div>
                         </div>
                     </form>
                 </div>

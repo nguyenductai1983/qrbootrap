@@ -293,12 +293,16 @@ class BarcodeGenerator extends Component
 
         for ($i = 0; $i < $this->quantity; $i++) {
 
+            // Lấy itemData và loại bỏ các trường không cần thiết trước khi lưu vào properties
+            $propertiesToSave = $this->itemData;
+            unset($propertiesToSave['ORDER_CODE']); // Xóa ORDER_CODE vì đã có order_id riêng biệt
+
             // 1. TẠO ITEM VỚI MÃ TẠM (Để lấy được ID từ Database)
             $item = Item::create([
                 'code' => (string) Str::uuid(), // Mã tạm ngẫu nhiên để không bị lỗi trùng
                 'type' => $this->type,
                 'status' => 1,
-                'properties' => $this->itemData,
+                'properties' => $propertiesToSave,
                 'created_by' => Auth::id(),
                 'color_id'         => $this->selectedColor ?: null,
                 'specification_id' => $this->selectedSpec ?: null,
@@ -382,7 +386,7 @@ class BarcodeGenerator extends Component
         $this->generatedItems = [];
 
         foreach ($items as $item) {
-            $info = $item->properties ?? [];
+            // $info = $item->properties ?? [];
 
             // if (!isset($info['PRODUCT_NAME']) && $item->product) {
             //     $info['PRODUCT_NAME'] = $item->product->name;

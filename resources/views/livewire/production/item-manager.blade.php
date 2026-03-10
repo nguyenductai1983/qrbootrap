@@ -3,6 +3,24 @@
         <div class="card shadow-sm">
             <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                 <h5 class="mb-0"><i class="fa-solid fa-tags me-2"></i>Quản lý Kho Tem (Items)</h5>
+                <div class="d-flex align-items-center gap-2">
+                    <div class="input-group input-group-sm" style="width: auto;">
+                        <span class="input-group-text bg-light text-dark fw-bold border-0">Từ ngày</span>
+                        <input type="date" wire:model.live="fromDate" class="form-control border-0">
+                    </div>
+                    <div class="input-group input-group-sm" style="width: auto;">
+                        <span class="input-group-text bg-light text-dark fw-bold border-0">Đến ngày</span>
+                        <input type="date" wire:model.live="toDate" class="form-control border-0">
+                    </div>
+                    <button wire:click="exportExcel" class="btn btn-sm btn-light text-primary fw-bold shadow-sm text-nowrap" style="min-width: 120px;" wire:loading.attr="disabled">
+                        <span wire:loading.remove wire:target="exportExcel">
+                            <i class="fa-solid fa-file-excel me-1 text-success"></i> Xuất Excel
+                        </span>
+                        <span wire:loading wire:target="exportExcel">
+                            <i class="fa-solid fa-spinner fa-spin me-1"></i> Đang xuất...
+                        </span>
+                    </button>
+                </div>
             </div>
             <div class="card-body">
                 {{-- KHU VỰC BỘ LỌC TÌM KIẾM --}}
