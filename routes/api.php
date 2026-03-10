@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController; // Import AuthController
 /*
 |--------------------------------------------------------------------------
-| API Routes
+| API Routes s
 |--------------------------------------------------------------------------
 |
 | Here is where you may register API routes for your application. These
