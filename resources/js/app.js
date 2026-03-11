@@ -1,7 +1,7 @@
 import './bootstrap';
 import * as bootstrap from 'bootstrap'; // Import toàn bộ Bootstrap JS
 window.bootstrap = bootstrap;
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('livewire:navigated', function () {
     // --- 1. KHAI BÁO BIẾN ---
     const sidebarToggle = document.getElementById('sidebarToggle');
     const sidebarClose = document.getElementById('sidebarClose');

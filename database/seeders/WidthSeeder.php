@@ -12,9 +12,9 @@ class WidthSeeder extends Seeder
      */
     public function run(): void
     {
-        Width::create(['name' => '1800', 'code' => 'K1800']);
-        Width::create(['name' => '1500', 'code' => 'K1500']);
-        Width::create(['name' => '1000', 'code' => 'K1000']);
+        Width::create(['name' => '1000', 'code' => '1010']);
+        Width::create(['name' => '1500', 'code' => '1500']);
+        Width::create(['name' => '1800', 'code' => '1800']);
         //
     }
 }

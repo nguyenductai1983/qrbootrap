@@ -12,9 +12,9 @@ class ColorSeeder extends Seeder
      */
     public function run(): void
     {
-        Color::create(['name' => 'Xanh', 'code' => 'BLU']);
-        Color::create(['name' => 'Trắng', 'code' => 'WHT']);
-        Color::create(['name' => 'Lục', 'code' => 'GRN']);
+        Color::create(['name' => 'Trắng', 'code' => 'WE']);
+        Color::create(['name' => 'Xanh', 'code' => 'BL']);
+        Color::create(['name' => 'Lục', 'code' => 'GR']);
         //
     }
 }

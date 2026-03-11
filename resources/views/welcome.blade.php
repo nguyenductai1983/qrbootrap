@@ -60,12 +60,4 @@
 
     </div>
 
-    {{-- SCRIPT DARK MODE --}}
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const htmlElement = document.documentElement;
-            const currentTheme = localStorage.getItem('theme') || 'light';
-            htmlElement.setAttribute('data-bs-theme', currentTheme);
-        });
-    </script>
 </x-guest-layout>

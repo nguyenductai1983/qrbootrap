@@ -75,7 +75,7 @@
                                     </td>
                                     <td class="text-end pe-4">
                                         <button wire:click="edit({{ $item->id }})"
-                                            class="btn btn-sm btn-outline-secondary">
+                                            class="btn btn-sm btn-outline-primary">
                                             <i class="fa-solid fa-pen-to-square"></i> Sửa
                                         </button>
                                     </td>
@@ -97,7 +97,7 @@
     <div wire:ignore.self class="modal fade" id="categoryModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header bg-light">
+                <div class="modal-header">
                     <h5 class="modal-title fw-bold text-primary">{{ $itemId ? 'Cập nhật' : 'Thêm mới' }} dữ liệu</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
@@ -126,7 +126,7 @@
                             <label class="form-check-label" for="activeSwitch">Cho phép sử dụng (Active)</label>
                         </div>
                     </div>
-                    <div class="modal-footer bg-light">
+                    <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                         <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk me-1"></i>
                             Lưu
