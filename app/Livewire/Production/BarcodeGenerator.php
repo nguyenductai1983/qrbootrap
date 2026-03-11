@@ -42,8 +42,8 @@ class BarcodeGenerator extends Component
     // --- MỚI: Biến lưu danh sách các ID được chọn để in lại ---
     public $selectedHistoryIds = [];
     public $printFormat = 'QR';
-    public $printColumns = 1;
-    public $fontSize = 6;
+    public $printColumns = 4;
+    public $fontSize = 7;
     public $colors, $specifications, $plasticTypes, $widths;
     public $selectedColor, $selectedSpec, $selectedPlastic, $selectedWidth;
     // --- BIẾN CHO TẠO NHANH ĐƠN HÀNG ---
@@ -376,7 +376,6 @@ class BarcodeGenerator extends Component
         if (empty($this->selectedHistoryIds)) {
             return;
         }
-
         // 🌟 TỐI ƯU TỐC ĐỘ BẰNG EAGER LOADING (Thêm hàm with) 🌟
         // Lấy tất cả tem, gom luôn quan hệ order và product trong 1 lần query duy nhất
         $items = Item::with(['order', 'product'])

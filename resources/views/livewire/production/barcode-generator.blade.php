@@ -91,13 +91,9 @@
                     <div class="row">
                         <div class="col-8">
                             <div class="mb-3">
-                                <label class="form-label fw-bold" for="printColumns">Số tem dòng</label>
-                                <select wire:model="printColumns" class="form-select border-primary" id="printColumns">
-                                    <option value="1">1 tem/dòng</option>
-                                    <option value="2">2 tem/dòng</option>
-                                    <option value="3">3 tem/dòng</option>
-                                    <option value="4">4 tem/dòng</option>
-                                </select>
+                                <label class="form-label fw-bold" for="printColumns">Số tem 1 dòng</label>
+                                <input wire:model="printColumns" type="number" class="form-control" min="1"
+                                    id="printColumns">
                                 <small class="text-muted">Hệ thống sẽ tự động canh lề khớp với giấy in.</small>
                             </div>
                         </div>
@@ -362,45 +358,18 @@
         @php
             $generator = new \Picqer\Barcode\BarcodeGeneratorSVG();
         @endphp
-
         <div class="print-area">
             {{-- Chuyền biến $printColumns từ PHP sang CSS thông qua thẻ style nội tuyến --}}
             <div class="print-grid" @style(['--print-cols: ' . $printColumns])>
                 @foreach ($generatedItems as $item)
-                    {{-- BỎ class col-6 col-md-4 ở đây đi --}}
                     <div class="label-item">
-                        {{-- Header Tem --}}
-                        {{-- <div class="d-flex justify-content-between border-bottom w-100"> --}}
-                        {{-- Nhóm 1: Tên Sản Phẩm (Nằm bên trái) --}}
-                        {{-- <div class="text-truncate ">
-                                <strong class="small text-muted">SP:</strong>
-                                <span
-                                    class="fw-bold text-uppercase small"><strong>{{ $item['info']['PRODUCT_NAME'] ?? '' }}</strong></span>
-                            </div> --}}
-
-                        {{-- Nhóm 2: Màu (Nằm bên phải) --}}
-                        {{-- <div class="text-end flex-shrink-0">
-                                <strong class="small text-muted">MÀU:</strong>
-                                <span class="fw-bold small"><strong>{{ $item['info']['COLOR_NAME'] ?? '' }}</strong></span>
-                            </div> --}}
-                        {{-- </div> --}}
-
-                        {{-- Code Area (QR hoặc Barcode) - ĐÃ CẬP NHẬT GIAO DIỆN BIẾN HÌNH --}}
                         <div class="barcode-wrapper" style="min-height: 70px;">
-
                             @if ($printFormat == 'QR')
-                                {{-- 1. LAYOUT CHO QR CODE: QR ở trên (Canh giữa), Chữ ở dưới (Canh giữa) --}}
                                 <div class="d-flex flex-column align-items-center justify-content-center h-100 pt-1">
                                     <div class="w-100 text-center">
                                         {!! SimpleSoftwareIO\QrCode\Facades\QrCode::size(60)->generate($item['code']) !!}
                                     </div>
-                                    <div class="code-text fw-bold mt-2 text-center w-100"
-                                        @style([
-                                            'font-size: ' . ($fontSize ?? 10) . 'px',
-                                            'letter-spacing: 0.5px',
-                                            'word-break: break-all',
-                                            'line-height: 1.2'
-                                        ])>
+                                    <div class="code-text fw-bold mt-2 text-center w-100" @style(['font-size: ' . ($fontSize ?? 10) . ' px', 'letter-spacing: 0.5px', 'word-wrap: break-word', 'line-height: 1.2'])>
                                         {{ $item['code'] }}
                                     </div>
                                 </div>
@@ -411,31 +380,17 @@
                                         {!! $generator->getBarcode($item['code'], $generator::TYPE_CODE_128, 2, 45) !!}
                                     </div>
                                     {{-- Đổi text-start thành text-center ở đây để đồng bộ với QR --}}
-                                    <div class="code-text fw-bold mt-1 text-center w-100"
-                                        @style([
-                                            'font-size: ' . ($fontSize ?? 10) . 'px',
-                                            'letter-spacing: 1px',
-                                            'word-break: break-all'
-                                        ])>
+                                    <div class="code-text fw-bold mt-1 text-center w-100" @style(['font-size: ' . ($fontSize ?? 10) . ' px', 'letter-spacing: 1px', 'word-wrap: break-word'])>
                                         {{ $item['code'] }}
                                     </div>
                                 </div>
                             @endif
+                            {{-- Chỉ in thẻ <hr> nếu KHÔNG PHẢI là tem cuối cùng
+                @if ($loop->odd && !$loop->last && $printColumns == 1)
+                    <hr class="my-1" style="border-top: 1px dashed #ccc;">
+                @endif --}}
                         </div>
-                        {{-- Footer Tem --}}
-                        {{-- <div class="info-gridsmall text-start border-top" style="font-size: 6pt">
-                            <div class="row g-0">
-                                <div class="col-6"><strong class="small text-muted">PO:</strong>
-                                  <strong>  {{ $item['info']['PO'] ?? '' }}</strong></div>
-                                <div class="col-6 text-end"><strong class="small text-muted">TYPE:</strong>
-                                  <strong>  {{ $item['info']['type'] ?? '' }}</strong></div>
-                            </div>
-                        </div> --}}
                     </div>
-                    {{-- Chỉ in thẻ <hr> nếu KHÔNG PHẢI là tem cuối cùng --}}
-                    @if ($loop->odd && !$loop->last && $printColumns == 1)
-                        <hr class="my-1" style="border-top: 1px dashed #ccc;">
-                    @endif
                 @endforeach
             </div>
         </div>
