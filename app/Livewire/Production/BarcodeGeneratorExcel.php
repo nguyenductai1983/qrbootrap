@@ -177,7 +177,7 @@ class BarcodeGeneratorExcel extends Component
 
             $prefix = strtoupper(trim("$orderCode $colorCode $specCode $widthCode $plasticCode"));
 
-            $propParts = array_filter([$gsm, $length, $machineNum]);
+            $propParts = array_filter([$gsm, $length]);
             $code_properties = '';
             if (count($propParts) > 0) {
                 $code_properties = ' ' . implode(' ', $propParts) . ' ';
