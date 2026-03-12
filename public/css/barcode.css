@@ -17,7 +17,7 @@
     padding: 0px;
     background: #fff;
     border-radius: 4px;
-    width: 90%;
+    width: 98%;
 }
 
 .barcode-wrapper svg {
@@ -42,7 +42,8 @@
     /* 1. XÓA SẠCH LỀ TRANG GIẤY CỦA TRÌNH DUYỆT */
     @page {
         /* Đặt lề cực nhỏ (hoặc bằng 0) để không lãng phí giấy decal */
-        margin: 2mm 1mm 1mm 1mm;
+        /* trên phải dưới trái */
+        margin: 2mm 3mm 1mm 3mm;
         /* Xóa luôn Header/Footer (ngày tháng, link) mặc định của trình duyệt in */
         size: auto;
     }
