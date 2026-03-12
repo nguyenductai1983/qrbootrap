@@ -35,7 +35,7 @@ class BarcodeGeneratorExcel extends Component
     public $generatedItems = []; // Danh sách tem CHỜ IN (Hiện tại)
     public $selectedHistoryIds = [];
     public $printFormat = 'QR';
-    public $printColumns = 4;
+    public $printColumns = 2;
     public $fontSize = 7;
 
     public function mount()
