@@ -43,7 +43,7 @@
     @page {
         /* Đặt lề cực nhỏ (hoặc bằng 0) để không lãng phí giấy decal */
         /* trên phải dưới trái */
-        margin: 2mm 3mm 1mm 3mm;
+        margin: 2mm 1mm 1mm 1mm;
         /* Xóa luôn Header/Footer (ngày tháng, link) mặc định của trình duyệt in */
         size: auto;
     }
@@ -78,8 +78,8 @@
 
         position: absolute !important;
         top: 0 !important;
-        left: 0 !important;
-        width: 100% !important;
+        left: 20px !important;
+        width: 85% !important;
         background-color: #ffffff !important;
         z-index: 999999 !important;
 
@@ -91,9 +91,8 @@
         display: grid;
         grid-template-columns: repeat(var(--print-cols), 1fr);
         gap: 1mm;
-        width: 98%;
+        width: 100%;
         align-items: center;
-        margin: 1%;
         background-color: #ffffff !important;
         /* Đảm bảo nền lưới cũng trắng */
     }
