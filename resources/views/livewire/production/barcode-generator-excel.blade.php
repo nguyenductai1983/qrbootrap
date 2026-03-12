@@ -243,7 +243,7 @@
                     <div class="label-item">
                         <div class="barcode-wrapper" style="min-height: 70px;">
                             @if ($printFormat == 'QR')
-                                <div class="d-flex flex-column align-items-center justify-content-center h-100 pt-1">
+                                <div class="d-flex flex-column align-items-center justify-content-center pt-1">
                                     <div class="w-100 text-center">
                                         {!! SimpleSoftwareIO\QrCode\Facades\QrCode::size(120)->generate($item['code']) !!}
                                     </div>
