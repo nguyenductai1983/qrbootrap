@@ -245,7 +245,7 @@
                             @if ($printFormat == 'QR')
                                 <div class="d-flex flex-column align-items-center justify-content-center h-100 pt-1">
                                     <div class="w-100 text-center">
-                                        {!! SimpleSoftwareIO\QrCode\Facades\QrCode::size(60)->generate($item['code']) !!}
+                                        {!! SimpleSoftwareIO\QrCode\Facades\QrCode::size(160)->generate($item['code']) !!}
                                     </div>
                                     <div class="code-text fw-bold mt-2 text-center w-100" @style(['font-size: ' . ($fontSize ?? 10) . 'px', 'letter-spacing: 0.5px', 'word-wrap: break-word', 'line-height: 1.2'])>
                                         {{ $item['code'] }}

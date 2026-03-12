@@ -5,9 +5,11 @@
 
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h3 class="h5 card-title">{{ __('Quản lý Phòng ban') }}</h3>
-                <a href="{{ route('departments.create') }}" class="btn btn-primary">
-                    {{ __('Thêm Phòng ban Mới') }}
-                </a>
+                @can('departments create')
+                    <a href="{{ route('departments.create') }}" class="btn btn-primary">
+                        {{ __('Thêm Phòng ban Mới') }}
+                    </a>
+                @endcan
             </div>
 
             {{-- Thông báo Flash --}}

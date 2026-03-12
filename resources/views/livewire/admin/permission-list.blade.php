@@ -5,7 +5,7 @@
 
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h3 class="h5 card-title">{{ __('Quản lý Quyền hạn') }}</h3>
-                @can('create permissions')
+                @can('permissions create')
                     <a href="{{ route('permissions.create') }}" class="btn btn-primary">
                         {{ __('Thêm Quyền hạn Mới') }}
                     </a>

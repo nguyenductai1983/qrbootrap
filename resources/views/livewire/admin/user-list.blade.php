@@ -4,7 +4,7 @@
         <div class="card-body">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h3 class="h5 card-title">{{ __('Danh sách Người dùng') }}</h3>
-                @can('create users')
+                @can('users create')
                     <a href="{{ route('users.create') }}" class="btn btn-primary">
                         {{ __('Thêm Người dùng Mới') }}
                     </a>
@@ -27,7 +27,7 @@
 
             <div class="mb-3">
                 <input wire:model.live="search" type="text" placeholder="{{ __('Tìm kiếm người dùng...') }}"
-                       class="form-control">
+                    class="form-control">
             </div>
 
             <div class="table-responsive">
@@ -49,7 +49,8 @@
                                 <td>{{ $user->name }}</td>
                                 <td>{{ $user->email }}</td>
                                 <td>
-                                    @foreach($user->roles as $role) {{-- <-- Hiển thị vai trò từ Spatie --}}
+                                    @foreach ($user->roles as $role)
+                                        {{-- <-- Hiển thị vai trò từ Spatie --}}
                                         <span class="badge bg-secondary">{{ $role->name }}</span>
                                     @endforeach
                                 </td>
@@ -62,9 +63,9 @@
                                     @endcan
                                     @can('users delete')
                                         <button wire:click="deleteUser({{ $user->id }})"
-                                                onclick="return confirm('Bạn có chắc chắn muốn xóa người dùng này không?');"
-                                                class="btn btn-sm btn-danger"
-                                                @if(auth()->id() === $user->id) disabled @endif> {{-- Không cho tự xóa --}}
+                                            onclick="return confirm('Bạn có chắc chắn muốn xóa người dùng này không?');"
+                                            class="btn btn-sm btn-danger" @if (auth()->id() === $user->id) disabled @endif>
+                                            {{-- Không cho tự xóa --}}
                                             {{ __('Xóa') }}
                                         </button>
                                     @endcan

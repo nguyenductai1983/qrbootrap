@@ -5,7 +5,7 @@
 
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h3 class="h5 card-title">{{ __('Quản lý Vai trò') }}</h3>
-                @can('create roles')
+                @can('roles create')
                     <a href="{{ route('roles.create') }}" class="btn btn-primary">
                         {{ __('Thêm Vai trò Mới') }}
                     </a>
@@ -28,12 +28,12 @@
 
             <div class="mb-3">
                 <input wire:model.live="search" type="text" placeholder="{{ __('Tìm kiếm vai trò...') }}"
-                       class="form-control">
+                    class="form-control">
             </div>
 
             <div class="table-responsive">
                 <table class="table table-hover table-striped">
-                    <thead >
+                    <thead>
                         <tr>
                             <th scope="col">ID</th>
                             <th scope="col">{{ __('Tên Vai trò') }}</th>
@@ -57,9 +57,8 @@
                                     @endcan
                                     @can('roles delete')
                                         <button wire:click="deleteRole({{ $role->id }})"
-                                                onclick="return confirm('Bạn có chắc chắn muốn xóa vai trò này không?');"
-                                                class="btn btn-sm btn-danger"
-                                                @if($role->name === 'admin' || $role->users_count > 0) disabled @endif>
+                                            onclick="return confirm('Bạn có chắc chắn muốn xóa vai trò này không?');"
+                                            class="btn btn-sm btn-danger" @if ($role->name === 'admin' || $role->users_count > 0) disabled @endif>
                                             {{ __('Xóa') }}
                                         </button>
                                     @endcan
