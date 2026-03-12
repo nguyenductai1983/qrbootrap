@@ -1,3 +1,28 @@
+1. Nhóm Core Laravel & PHP
+Đây là bộ khung không thể thiếu để VS Code hiểu được cấu trúc thư mục và cú pháp của Laravel.
+
+Laravel Extension Pack: Một bộ tổng hợp bao gồm Laravel Snippets, Laravel Blade Snippets, và Laravel Extra Intellisense.
+
+PHP Intelephense: Cung cấp khả năng tự động hoàn thành (autocomplete) cực mạnh, nhảy đến định nghĩa hàm (Go to definition) và kiểm tra lỗi cú pháp PHP.
+
+Laravel Blade Spacer: Tự động thêm khoảng trắng thông minh khi bạn gõ {{ }}.
+
+2. Nhóm Livewire & Alpine.js
+Vì Livewire và Alpine.js có những cú pháp đặc thù (như @click, wire:model), các extension này sẽ giúp highlight cú pháp chính xác.
+
+Laravel Livewire Screenshots: Hỗ trợ autocomplete cho các directive của Livewire và hỗ trợ di chuyển nhanh giữa file Class và file View.
+
+Alpine.js IntelliSense: Cung cấp gợi ý cho các thuộc tính của Alpine như x-data, x-init, x-on, giúp bạn không cần nhớ thủ công các directive.
+
+3. Nhóm Giao diện (CSS & Bootstrap)
+Dù bạn dùng Bootstrap, các công cụ hỗ trợ CSS vẫn rất quan trọng để quản lý class.
+
+IntelliSense for CSS class names in HTML: Tự động gợi ý tên các class Bootstrap khi bạn gõ trong thuộc tính class="".
+
+Bootstrap 5 Quick Snippets: Giúp gọi nhanh các component phức tạp của Bootstrap (như modal, navbar, card) chỉ bằng vài ký tự viết tắt.
+
+Auto Rename Tag: Khi bạn đổi thẻ <div> thành <span>, nó sẽ tự động đổi thẻ đóng tương ứng, rất tiện khi dàn trang HTML phức tạp.
+
 php artisan make:migration create_production_tables
 php artisan migrate
 php artisan make:model Location

@@ -5,7 +5,8 @@
 
         {{-- Logo lúc này sẽ tự động nằm ngay chính giữa --}}
         <div style="width: 100px;">
-            <a href="/dashboard" class="text-reset text-decoration-none"> <x-mh-logo-icon class="fill-current w-100 h-auto" /></a>
+            <a href="/dashboard" class="text-reset text-decoration-none"> <x-mh-logo-icon
+                    class="fill-current w-100 h-auto" /></a>
         </div>
 
         {{-- Nút đóng sidebar cho mobile được neo tuyệt đối (absolute) sang bên phải --}}
@@ -26,12 +27,11 @@
         {{-- 2. NHÓM TÍNH NĂNG SẢN XUẤT (Production) --}}
 
         @can('print barcodes')
-            <a href="{{ route('production.barcode-generator') }}" title="In Tem Mã Vạch"
-                class="list-group-item list-group-item-action py-3 ps-4 {{ request()->routeIs('production.barcode-generator') ? 'active' : '' }}">
-                <i class="fa-solid fa-print me-2"></i>
-                <span class="sidebar-text">In Tem Mã Vạch</span>
+            <a href="{{ route('production.barcode-generator-excel') }}" title="In Tem Mã Vạch Excel"
+                class="list-group-item list-group-item-action py-3 ps-4 {{ request()->routeIs('production.barcode-generator-excel') ? 'active' : '' }}">
+                <i class="fa-solid fa-print me-1"></i>
+                <span class="sidebar-text">In Tem Mã Vạch Excel</span>
             </a>
-
             {{-- MỚI: Menu Quản lý Excel (Export/Import số liệu) --}}
             <a href="{{ route('production.excel-manager') }}" title="Quản lý Excel"
                 class="list-group-item list-group-item-action py-3 ps-4 {{ request()->routeIs('production.excel-manager') ? 'active' : '' }}">
@@ -130,23 +130,23 @@
                 <a href="{{ route('users.index') }}" title="Danh sách User"
                     class="list-group-item list-group-item-action py-2 ps-5 {{ isset($menu) && str_contains($menu, 'user') ? 'active' : '' }}">
                     <i class="fa-solid fa-users me-2"></i>
-                    <span class="sidebar-text" >Danh sách User</span>
+                    <span class="sidebar-text">Danh sách User</span>
                 </a>
 
                 <a href="{{ route('departments.index') }}" title="Phòng ban"
                     class="list-group-item list-group-item-action py-2 ps-5 {{ isset($menu) && str_contains($menu, 'departments') ? 'active' : '' }}">
                     <i class="fa-regular fa-building"></i>
-                    <span class="sidebar-text" >Phòng ban</span>
+                    <span class="sidebar-text">Phòng ban</span>
                 </a>
                 <a href="{{ route('roles.index') }}" title="Vai trò"
                     class="list-group-item list-group-item-action py-2 ps-5 {{ isset($menu) && str_contains($menu, 'roles') ? 'active' : '' }}">
                     <i class="fa-solid fa-users-gear me-2"></i>
-                    <span class="sidebar-text" >Vai trò</span>
+                    <span class="sidebar-text">Vai trò</span>
                 </a>
                 <a href="{{ route('permissions.index') }}" title="Phân quyền"
                     class="list-group-item list-group-item-action py-2 ps-5 {{ isset($menu) && str_contains($menu, 'permissions') ? 'active' : '' }}">
                     <i class="fa-solid fa-key me-2"></i>
-                    <span class="sidebar-text" >Phân quyền</span>
+                    <span class="sidebar-text">Phân quyền</span>
                 </a>
             </div>
         @endrole

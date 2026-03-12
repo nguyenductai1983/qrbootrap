@@ -56,7 +56,7 @@
                                     <p class="card-text text-muted small mb-4">Tạo và in tem QR/Barcode cho sản phẩm mới.
                                     </p>
 
-                                    <a href="{{ route('production.barcode-generator') }}"
+                                    <a href="{{ route('production.barcode-generator-excel') }}"
                                         class="btn btn-outline-primary w-100 mt-auto stretched-link">
                                         Truy cập <i class="fas fa-arrow-right ms-1"></i>
                                     </a>

@@ -82,7 +82,7 @@
                                 <input class="form-check-input" type="radio" wire:model="printFormat" value="BARCODE"
                                     id="fmtBar">
                                 <label class="form-check-label fw-bold cursor-pointer" for="fmtBar">
-                                    <i class="fa-solid fa-barcode text-dark me-1"></i> Barcode 1D
+                                    <i class="fa-solid fa-barcode text-primary me-1"></i> Barcode 1D
                                 </label>
                             </div>
                         </div>
@@ -101,12 +101,19 @@
                             <div class="mb-3">
                                 <label class="form-label fw-bold" for="fontSize">Cỡ chữ</label>
                                 <div class="mb-3">
-                                    <input wire:model="fontSize" type="number" class="form-control" min="6"
+                                    <input wire:model="fontSize" type="number" class="form-control" min="3"
                                         id="fontSize">
                                     <small class="text-muted">Cỡ chữ cho Code</small>
                                 </div>
                             </div>
                         </div>
+                    </div>
+                    <div class="mb-3">
+                        <a href="{{ route('production.barcode-generator-excel') }}" class="btn btn-primary"><i
+                                class="fa-solid fa-file-excel me-1"></i> <i class="fa-solid fa-arrow-right me-1"></i>
+                            <i class="fa-solid fa-print me-1"></i>
+                            Tạo Tem
+                            từ Excel</a>
                     </div>
                 </div>
                 {{-- CỘT PHẢI: NHẬP THÔNG TIN CHI TIẾT --}}
@@ -369,7 +376,7 @@
                                     <div class="w-100 text-center">
                                         {!! SimpleSoftwareIO\QrCode\Facades\QrCode::size(60)->generate($item['code']) !!}
                                     </div>
-                                    <div class="code-text fw-bold mt-2 text-center w-100" @style(['font-size: ' . ($fontSize ?? 10) . ' px', 'letter-spacing: 0.5px', 'word-wrap: break-word', 'line-height: 1.2'])>
+                                    <div class="code-text fw-bold mt-2 text-center w-100" @style(['font-size: ' . ($fontSize ?? 10) . 'px', 'letter-spacing: 0.5px', 'word-wrap: break-word', 'line-height: 1.2'])>
                                         {{ $item['code'] }}
                                     </div>
                                 </div>
@@ -380,7 +387,7 @@
                                         {!! $generator->getBarcode($item['code'], $generator::TYPE_CODE_128, 2, 45) !!}
                                     </div>
                                     {{-- Đổi text-start thành text-center ở đây để đồng bộ với QR --}}
-                                    <div class="code-text fw-bold mt-1 text-center w-100" @style(['font-size: ' . ($fontSize ?? 10) . ' px', 'letter-spacing: 1px', 'word-wrap: break-word'])>
+                                    <div class="code-text fw-bold mt-1 text-center w-100" @style(['font-size: ' . ($fontSize ?? 10) . 'px', 'letter-spacing: 1px', 'word-wrap: break-word'])>
                                         {{ $item['code'] }}
                                     </div>
                                 </div>

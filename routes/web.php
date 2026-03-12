@@ -13,6 +13,7 @@ use App\Livewire\PermissionList; // <-- Import PermissionList
 use App\Livewire\PermissionForm; // <-- Import PermissionForm
 use Spatie\Permission\Models\Role;
 use App\Livewire\Production\BarcodeGenerator;
+use App\Livewire\Production\BarcodeGeneratorExcel;
 use App\Livewire\Production\ScanProduct;
 use App\Livewire\Admin\OrderManager;
 use App\Livewire\Admin\ProductManager;
@@ -92,7 +93,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/production/barcode-generator', BarcodeGenerator::class)->name('production.barcode-generator');
         Route::get('/barcode-list', BarcodeList::class)->name('production.list');
     });
-
+    Route::middleware(['permission:print barcodes'])->group(function () {
+        Route::get('/production/barcode-generator-excel', BarcodeGeneratorExcel::class)->name('production.barcode-generator-excel');
+    });
     // Các route production khác không dùng chung middleware trên
     Route::prefix('production')->name('production.')->group(function () {
         Route::get('/scan-mobile', ScanProduct::class)->name('scan'); // Đã gộp tiền tố URL

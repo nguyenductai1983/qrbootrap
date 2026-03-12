@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Product;
 use App\Enums\ItemStatus;
 
+/**
+ * @method void dispatch(string $event, string $type = null, string $title = null, string $text = null)
+ */
 class ScanProduct extends Component
 {
     // Dữ liệu chung
@@ -67,7 +70,7 @@ class ScanProduct extends Component
     }
 
 
-    // --- HÀM XỬ LÝ CHÍNH ĐÃ ĐƯỢC NÂNG CẤP ---
+    // --- HÀM XỬ LÝ CHÍNH ĐÃ ĐƯỢC NÂNG CẤP ---   
     public function processCode($code, $source = 'mobile')
     {
         $this->lastScannedCode = $code;
@@ -91,7 +94,7 @@ class ScanProduct extends Component
 
             $this->dispatch('play-warning-sound');
             if ($source == 'mobile') {
-                $this->dispatch('show-toast', type: 'warning', title: 'Đã quét!', text: 'Mã này đã được xử lý rồi.');
+                $this->dispatch('show-toast', ...['type' => 'warning', 'title' => 'Đã quét!', 'text' => 'Mã này đã được xử lý rồi.']);
             } else {
                 $this->dispatch('focus-input');
             }
@@ -155,7 +158,7 @@ class ScanProduct extends Component
         $this->dispatch('play-success-sound');
 
         if ($source == 'mobile') {
-            $this->dispatch('show-toast', type: 'success', title: 'Thành công!', text: 'Đã cập nhật & xác nhận: ' . $code);
+            $this->dispatch('show-toast', ...['type' => 'success', 'title' => 'Thành công!', 'text' => 'Đã cập nhật & xác nhận: ' . $code]);
         } else {
             $this->dispatch('focus-input');
         }
@@ -168,7 +171,7 @@ class ScanProduct extends Component
         $this->dispatch('play-error-sound');
 
         if ($source == 'mobile') {
-            $this->dispatch('show-toast', type: 'error', title: 'Lỗi!', text: $msg);
+            $this->dispatch('show-toast', ...['type' => 'error', 'title' => 'Lỗi!', 'text' => $msg]);
         } else {
             $this->dispatch('focus-input');
         }
