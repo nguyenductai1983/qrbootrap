@@ -65,46 +65,52 @@
                             @endif
                         </select>
                     </div>
-                    {{-- 4. Tùy chọn Định dạng In (MỚI) --}}
-                    <div class="mb-3 p-3 rounded border">
-                        <span class="form-label fw-bold small text-uppercase text-muted mb-2">Định dạng mã in</span>
-                        <div class="d-flex gap-3">
-                            <div class="form-check">
-                                {{-- Đã xóa .live --}}
-                                <input class="form-check-input" type="radio" wire:model="printFormat" value="QR"
-                                    id="fmtQR">
-                                <label class="form-check-label fw-bold cursor-pointer" for="fmtQR">
-                                    <i class="fa-solid fa-qrcode text-primary me-1"></i> QR Code
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                {{-- Đã xóa .live --}}
-                                <input class="form-check-input" type="radio" wire:model="printFormat" value="BARCODE"
-                                    id="fmtBar">
-                                <label class="form-check-label fw-bold cursor-pointer" for="fmtBar">
-                                    <i class="fa-solid fa-barcode text-primary me-1"></i> Barcode 1D
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                    {{-- 5. Số tem / Hàng (Khổ giấy in) --}}
-                    <div class="row">
-                        <div class="col-8">
-                            <div class="mb-3">
-                                <label class="form-label fw-bold" for="printColumns">Số tem 1 dòng</label>
-                                <input wire:model="printColumns" type="number" class="form-control" min="1"
-                                    id="printColumns">
-                                <small class="text-muted">Hệ thống sẽ tự động canh lề khớp với giấy in.</small>
-                            </div>
-                        </div>
-                        <div class="col-4">
-                            <div class="mb-3">
-                                <label class="form-label fw-bold" for="fontSize">Cỡ chữ</label>
-                                <div class="mb-3">
-                                    <input wire:model="fontSize" type="number" class="form-control" min="3"
-                                        id="fontSize">
-                                    <small class="text-muted">Cỡ chữ cho Code</small>
+                    <div class="row g-1 mt-3 rounded border">
+                        <div class="col-12">
+                            {{-- 4. Tùy chọn Định dạng In (MỚI) --}}
+                            <span class="form-label fw-bold small text-uppercase text-muted ms-1 mb-2">Định dạng mã
+                                in</span>
+                            <div class="d-flex gap-3 ms-1">
+                                <div class="form-check">
+                                    {{-- Đã xóa .live --}}
+                                    <input class="form-check-input" type="radio" wire:model="printFormat"
+                                        value="QR" id="fmtQR">
+                                    <label class="form-check-label fw-bold cursor-pointer" for="fmtQR">
+                                        <i class="fa-solid fa-qrcode text-primary me-1"></i> QR Code
+                                    </label>
                                 </div>
+                                <div class="form-check">
+                                    {{-- Đã xóa .live --}}
+                                    <input class="form-check-input" type="radio" wire:model="printFormat"
+                                        value="BARCODE" id="fmtBar">
+                                    <label class="form-check-label fw-bold cursor-pointer" for="fmtBar">
+                                        <i class="fa-solid fa-barcode text-primary me-1"></i> Barcode 1D
+                                    </label>
+                                </div>
+                            </div>
+
+                        </div>
+                        {{-- 5. Số tem / Hàng (Khổ giấy in) --}}
+                        <div class="col-4">
+                            <label class="form-label fw-bold" for="printColumns">Tem 1 dòng</label>
+                            <input wire:model="printColumns" type="number" class="form-control" min="1"
+                                id="printColumns">
+
+                        </div>
+                        {{-- 6. Số hàng giấy in --}}
+                        <div class="col-4">
+                            <label class="form-label fw-bold" for="rowsPerPage">Số hàng</label>
+                            <input wire:model="rowsPerPage" type="number" class="form-control" min="1"
+                                id="rowsPerPage">
+
+                        </div>
+                        {{-- 7. Cỡ chữ --}}
+                        <div class="col-4">
+                            <label class="form-label fw-bold" for="fontSize">Cỡ chữ</label>
+                            <div class="mb-3">
+                                <input wire:model="fontSize" type="number" class="form-control" min="3"
+                                    id="fontSize">
+
                             </div>
                         </div>
                     </div>
@@ -362,44 +368,57 @@
     {{-- kết thúc vùng không in  --}}
     {{-- KHU VỰC IN TEM (ẨN TRÊN MÀN HÌNH, CHỈ HIỆN KHI IN) --}}
     @if (count($generatedItems) > 0)
-        @php
-            $generator = new \Picqer\Barcode\BarcodeGeneratorSVG();
-        @endphp
         <div class="print-area">
-            {{-- Chuyền biến $printColumns từ PHP sang CSS thông qua thẻ style nội tuyến --}}
-            <div class="print-grid" @style(['--print-cols: ' . $printColumns])>
-                @foreach ($generatedItems as $item)
-                    <div class="label-item">
-                        <div class="barcode-wrapper" style="min-height: 70px;">
-                            @if ($printFormat == 'QR')
-                                <div class="d-flex flex-column align-items-center justify-content-center h-100 pt-1">
-                                    <div class="w-100 text-center">
-                                        {!! SimpleSoftwareIO\QrCode\Facades\QrCode::size(160)->generate($item['code']) !!}
-                                    </div>
-                                    <div class="code-text fw-bold mt-2 text-center w-100" @style(['font-size: ' . ($fontSize ?? 10) . 'px', 'letter-spacing: 0.5px', 'word-wrap: break-word', 'line-height: 1.2'])>
-                                        {{ $item['code'] }}
-                                    </div>
+            @php
+                $generator = new \Picqer\Barcode\BarcodeGeneratorSVG();
+                // 🌟 TÍNH TOÁN TỔNG SỐ TEM TRÊN 1 TỜ GIẤY
+                $cols = $printColumns > 0 ? $printColumns : 2;
+                $rows = $rowsPerPage > 0 ? $rowsPerPage : 2;
+                $itemsPerPage = $cols * $rows;
+
+                // Cắt nhỏ mảng ra thành nhiều trang
+                $pages = array_chunk($generatedItems, $itemsPerPage);
+            @endphp
+            @foreach ($pages as $pageItems)
+                {{-- 🌟 MỖI VÒNG LẶP LÀ 1 TỜ GIẤY ĐỘC LẬP --}}
+                <div class="print-page" @style(['--print-cols: ' . $cols, '--print-rows: ' . $rows])>
+                    <div class="print-grid">
+                        @foreach ($pageItems as $item)
+                            <div class="label-item">
+                                <div class="barcode-wrapper">
+                                    @if ($printFormat == 'QR')
+                                        <div class="d-flex flex-column align-items-center justify-content-center"
+                                            style="height: 100%; width: 100%;">
+
+                                            {{-- 🌟 1. VÙNG CHỨA QR 🌟 --}}
+                                            <div class="qr-container">
+                                                {{-- Mẹo: Đổi size(200) thành size(80) để kích thước gốc nhỏ đi một chút, CSS sẽ ép nó dễ hơn --}}
+                                                {!! SimpleSoftwareIO\QrCode\Facades\QrCode::size(80)->generate($item['code']) !!}
+                                            </div>
+
+                                            {{-- 2. DÒNG CHỮ --}}
+                                            <div class="code-text fw-bold text-center w-100 mt-1" @style(['font-size: ' . ($fontSize ?? 10) . 'px', 'letter-spacing: 0.5px', 'word-wrap: break-word', 'line-height: 1.2'])>
+                                                {{ $item['code'] }}
+                                            </div>
+
+                                        </div>
+                                    @else
+                                        <div
+                                            class="d-flex flex-column align-items-center justify-content-center h-100 pt-1">
+                                            <div class="w-98 text-center">
+                                                {!! $generator->getBarcode($item['code'], $generator::TYPE_CODE_128, 2, 45) !!}
+                                            </div>
+                                            <div class="code-text fw-bold mt-1 text-center w-100" @style(['font-size: ' . ($fontSize ?? 10) . 'px', 'letter-spacing: 1px', 'word-wrap: break-word'])>
+                                                {{ $item['code'] }}
+                                            </div>
+                                        </div>
+                                    @endif
                                 </div>
-                            @else
-                                {{-- 2. LAYOUT CHO BARCODE 1D: Barcode ở trên (Canh giữa), Chữ ở dưới (Canh giữa) --}}
-                                <div class="d-flex flex-column align-items-center justify-content-center h-100 pt-1">
-                                    <div class="w-100 text-center">
-                                        {!! $generator->getBarcode($item['code'], $generator::TYPE_CODE_128, 2, 45) !!}
-                                    </div>
-                                    {{-- Đổi text-start thành text-center ở đây để đồng bộ với QR --}}
-                                    <div class="code-text fw-bold mt-1 text-center w-100" @style(['font-size: ' . ($fontSize ?? 10) . 'px', 'letter-spacing: 1px', 'word-wrap: break-word'])>
-                                        {{ $item['code'] }}
-                                    </div>
-                                </div>
-                            @endif
-                            {{-- Chỉ in thẻ <hr> nếu KHÔNG PHẢI là tem cuối cùng
-                @if ($loop->odd && !$loop->last && $printColumns == 1)
-                    <hr class="my-1" style="border-top: 1px dashed #ccc;">
-                @endif --}}
-                        </div>
+                            </div>
+                        @endforeach
                     </div>
-                @endforeach
-            </div>
+                </div>
+            @endforeach
         </div>
     @endif
 

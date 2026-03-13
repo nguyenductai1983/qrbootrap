@@ -37,11 +37,16 @@ class BarcodeGeneratorExcel extends Component
     public $printFormat = 'QR';
     public $printColumns = 2;
     public $fontSize = 7;
-
+    public $rowsPerPage = 2;
     public function mount()
     {
         /** @var \App\Models\User $user */
         $user = Auth::user();
+
+        $this->printFormat = cache()->get('excel_printFormat_' . $user->id, 'QR');
+        $this->printColumns = cache()->get('excel_printColumns_' . $user->id, 2);
+        $this->fontSize = cache()->get('excel_fontSize_' . $user->id, 7);
+        $this->rowsPerPage = cache()->get('excel_rowsPerPage_' . $user->id, 2);
 
         // LOGIC LẤY BỘ PHẬN:
         if ($user->hasRole('admin')) {
@@ -123,6 +128,27 @@ class BarcodeGeneratorExcel extends Component
 
         return $record->id;
     }
+
+    public function updatedPrintFormat($value)
+    {
+        cache()->forever('excel_printFormat_' . Auth::id(), $value);
+    }
+
+    public function updatedPrintColumns($value)
+    {
+        cache()->forever('excel_printColumns_' . Auth::id(), $value);
+    }
+
+    public function updatedFontSize($value)
+    {
+        cache()->forever('excel_fontSize_' . Auth::id(), $value);
+    }
+
+    public function updatedRowsPerPage($value)
+    {
+        cache()->forever('excel_rowsPerPage_' . Auth::id(), $value);
+    }
+
     public function generate()
     {
         $this->validate([
@@ -263,7 +289,7 @@ class BarcodeGeneratorExcel extends Component
 
     public function render()
     {
-        $historyItems = Item::orderBy('id', 'desc')->paginate(10);
+        $historyItems = Item::orderBy('id', 'desc')->paginate(20);
         return view('livewire.production.barcode-generator-excel', [
             'historyItems' => $historyItems
         ]);

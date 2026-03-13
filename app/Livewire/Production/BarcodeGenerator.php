@@ -44,6 +44,7 @@ class BarcodeGenerator extends Component
     public $printFormat = 'QR';
     public $printColumns = 4;
     public $fontSize = 7;
+    public $rowsPerPage = 4; // Bổ sung cấu hình số hàng
     public $colors, $specifications, $plasticTypes, $widths;
     public $selectedColor, $selectedSpec, $selectedPlastic, $selectedWidth;
     // --- BIẾN CHO TẠO NHANH ĐƠN HÀNG ---
@@ -54,6 +55,13 @@ class BarcodeGenerator extends Component
     {
         /** @var \App\Models\User $user */ // <-- Đã thêm dòng fix lỗi IDE
         $user = Auth::user();
+
+        // 🌟 Lấy cấu hình in từ Cache giống Excel
+        $this->printFormat = cache()->get('normal_printFormat_' . $user->id, 'QR');
+        $this->printColumns = cache()->get('normal_printColumns_' . $user->id, 4);
+        $this->fontSize = cache()->get('normal_fontSize_' . $user->id, 7);
+        $this->rowsPerPage = cache()->get('normal_rowsPerPage_' . $user->id, 4);
+
         $this->colors = Color::where('is_active', true)->get();
         $this->specifications = Specification::where('is_active', true)->get();
         $this->plasticTypes = PlasticType::where('is_active', true)->get();
@@ -217,6 +225,27 @@ class BarcodeGenerator extends Component
         $parts = explode('-', $lastItem->code);
         $lastNumber = end($parts);
         return (int)$lastNumber + 1;
+    }
+
+    // --- LƯU CẤU HÌNH IN VÀO CACHE TỰ ĐỘNG ---
+    public function updatedPrintFormat($value)
+    {
+        cache()->forever('normal_printFormat_' . Auth::id(), $value);
+    }
+
+    public function updatedPrintColumns($value)
+    {
+        cache()->forever('normal_printColumns_' . Auth::id(), $value);
+    }
+
+    public function updatedFontSize($value)
+    {
+        cache()->forever('normal_fontSize_' . Auth::id(), $value);
+    }
+
+    public function updatedRowsPerPage($value)
+    {
+        cache()->forever('normal_rowsPerPage_' . Auth::id(), $value);
     }
 
     public function generate()
@@ -415,7 +444,7 @@ class BarcodeGenerator extends Component
     public function render()
     {
         $this->js("console.log('Tạo mã code')");
-        $historyItems = Item::orderBy('id', 'desc')->paginate(10);
+        $historyItems = Item::orderBy('id', 'desc')->paginate(20);
         return view('livewire.production.barcode-generator', [
             'historyItems' => $historyItems
         ]);

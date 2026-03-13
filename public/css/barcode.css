@@ -6,7 +6,7 @@
 
 }
 
-@media (min-width: 992px) {
+@media (min-width: 3360px) {
     .print-grid {
         grid-template-columns: repeat(3, 1fr);
     }
@@ -14,10 +14,9 @@
 
 .label-item {
     border: 1px dashed #333;
-    padding: 0px;
     background: #fff;
     border-radius: 4px;
-    width: 98%;
+    width: 100%;
 }
 
 .barcode-wrapper svg {
@@ -35,21 +34,32 @@
     /* Mặc định ẩn trên màn hình */
 }
 
+.code-text {
+    color: #000000 !important;
+}
 
 /* 🌟 --- CẤU TRÚC KHI BẤM IN (CTRL + P) --- 🌟 */
 @media print {
 
-    /* 1. XÓA SẠCH LỀ TRANG GIẤY CỦA TRÌNH DUYỆT */
+    /* Đảm bảo không bị lề mặc định phá bĩnh không gian tính toán */
     @page {
-        /* Đặt lề cực nhỏ (hoặc bằng 0) để không lãng phí giấy decal */
-        /* trên phải dưới trái */
-        margin: 2mm 1mm 1mm 1mm;
-        /* Xóa luôn Header/Footer (ngày tháng, link) mặc định của trình duyệt in */
         size: auto;
+        /* 🌟 XÓA SẠCH LỀ MÁY IN ĐỂ KHÔNG XUNG ĐỘT TOÁN HỌC */
+        margin: 0 !important;
     }
 
-    /* 1. TÀNG HÌNH MENU BẰNG BỘ QUÉT TỰ ĐỘNG (WILDCARD) */
-    /* Quét sạch mọi thẻ div có chữ "sidebar", "menu", "nav" trong tên class */
+    html,
+    body {
+        margin: 0 !important;
+        padding: 0 !important;
+        /* height: 100vh !important; */
+        /* Bỏ giới hạn 1 trang để in được n trang */
+        /* 🌟 Bắt buộc phải có để chống tràn */
+        background-color: #ffffff !important;
+        /* overflow: hidden !important; */
+        /* Cho phép body cuộn để nhìn thấy trang 2, 3... */
+    }
+
     aside,
     nav,
     header,
@@ -59,52 +69,126 @@
     [class*="menu"],
     [id*="menu"],
     [class*="nav"],
-    [id*="nav"] {
+    [id*="nav"],
+    .d-print-none {
         display: none !important;
         opacity: 0 !important;
         visibility: hidden !important;
     }
 
-    /* 2. Đảm bảo form cấu hình và lịch sử biến mất */
-    .d-print-none {
-        display: none !important;
-    }
-
-    /* 3. TẠO TỜ GIẤY TRẮNG ĐÈ LÊN MỌI THỨ CÒN SÓT LẠI */
-    /* BÊN TRONG KHỐI @media print */
     .print-area {
         display: block !important;
-        /* 🌟 Đổi lại thành block, xóa hết các lệnh flex và justify-content đi */
-
-        position: absolute !important;
-        top: 20px !important;
-        left: 20px !important;
-        width: 85% !important;
+        position: relative !important;
+        width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
         background-color: #ffffff !important;
         z-index: 999999 !important;
-
-        /* 🌟 Xóa luôn lệnh height: 100vh đi nhé */
     }
 
-    /* Lưới in tự động chia cột theo tùy chọn */
+    /* 🌟 TUYỆT KỸ: ĐỊNH HÌNH TỪNG TRANG GIẤY CHUẨN XÁC 100% */
+    .print-page {
+        /* Dùng 96vh thay vì 100vh để chắc chắn không tràn 1px nào ra ngoài khổ giấy thực tế (chống sinh trang trắng) */
+        height: 95vh !important;
+        width: 100% !important;
+
+        /* 🌟 Không padding ở page nữa, chuyển padding vào grid */
+        padding: 0 !important;
+        box-sizing: border-box !important;
+
+        /* Chém đứt mọi pixel thừa để tránh sinh trang trắng */
+        overflow: hidden !important;
+
+        /* Ngắt trang */
+        page-break-after: always !important;
+        break-after: page !important;
+        page-break-inside: avoid !important;
+    }
+
+    /* 🌟 BÍ KÍP DIỆT TRANG TRẮNG CUỐI CÙNG */
+    .print-page:last-child {
+        page-break-after: auto !important;
+        break-after: auto !important;
+        /* Không đặt max-height hay height auto ở đây, để trang cuối vẫn cao 98vh NHƯ TRANG ĐẦU, giữ vững kích thước tem! */
+    }
+
+    /* 🌟 LƯỚI TỰ ĐỘNG CHIA ĐỀU CHIỀU CAO & CHIỀU RỘNG */
     .print-grid {
-        display: grid;
-        grid-template-columns: repeat(var(--print-cols), 1fr);
-        gap: 1mm;
-        width: 100%;
-        align-items: center;
-        background-color: #ffffff !important;
-        /* Đảm bảo nền lưới cũng trắng */
+        display: grid !important;
+        grid-template-columns: repeat(var(--print-cols), 1fr) !important;
+        grid-template-rows: repeat(var(--print-rows), 1fr) !important;
+
+        gap: 2mm !important;
+        /* Khoảng cách giữa các tem */
+
+        /* Lưới lấp đầy 100% trang in là 98vh */
+        height: 100% !important;
+        width: 100% !important;
+
+        /* Chuyển padding an toàn vào đây */
+        padding: 2mm !important;
+        box-sizing: border-box !important;
     }
 
     .label-item {
-        border: 1px solid #000 !important;
-        /* Viền đen đậm khi in */
-        border-radius: 0;
-        page-break-inside: avoid;
-        /* Không để tem bị đứt đôi giữa 2 trang giấy */
-        padding: 1mm !important;
+        border: 0.5px solid #22222222 !important;
+        border-radius: 0 !important;
+        box-sizing: border-box !important;
 
-        background-color: #ffffff !important;
+        /* Chiều cao 100% để nó ăn khớp hoàn hảo với chiều cao của phân vùng Grid Row (1fr) */
+        height: 100% !important;
+        width: 100% !important;
+
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+
+        overflow: hidden !important;
+    }
+
+    .barcode-wrapper {
+        width: 100% !important;
+        height: 100% !important;
+        /* Bắt buộc wrapper phải cao 100% của tem */
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    /* 🌟 KHÓA CHẶT HỘP CHỨA: Không cho phép nó phình to hơn không gian cho phép 🌟 */
+    .qr-container {
+        flex: 1 !important;
+        /* Choán hết phần chiều cao còn lại sau khi trừ đi dòng chữ */
+        min-height: 0 !important;
+        /* Bắt buộc phải có để Flexbox được phép thu lùn xuống */
+        width: 100% !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        overflow: hidden !important;
+        /* ĐÂY LÀ CHÌA KHÓA: Chém đứt mọi quyền lực phình to của SVG */
+    }
+
+    /* 🌟 ÉP MÃ QR PHẢI THU NHỎ THEO HỘP CHỨA 🌟 */
+    .qr-container svg {
+        width: 100% !important;
+        /* Ép rộng 100% theo hộp chứa */
+        height: 100% !important;
+        /* Ép cao 100% theo hộp chứa */
+        max-width: 100% !important;
+        max-height: 100% !important;
+        object-fit: contain !important;
+        /* Thu nhỏ nhưng bắt buộc phải giữ tỷ lệ hình vuông, không được méo */
+    }
+
+    .code-text {
+        font-family: inherit !important;
+        color: #000000 !important;
+        /* Bắt buộc màu đen tuyệt đối không được pha xám */
+        -webkit-print-color-adjust: exact !important;
+        /* Force trình duyệt in chuẩn mã màu */
+        print-color-adjust: exact !important;
     }
 }
