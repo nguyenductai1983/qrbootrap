@@ -15,8 +15,8 @@
                     {{-- Icon user --}}
                     <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-inline-flex justify-content-center align-items-center mb-3"
                         style="width: 70px; height: 70px;">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35"
-                            fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor"
+                            class="bi bi-person-fill" viewBox="0 0 16 16">
                             <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
                         </svg>
                     </div>
@@ -30,7 +30,6 @@
                 <a href="{{ url('/dashboard') }}" class="btn btn-primary btn-lg w-100 fw-bold shadow-sm">
                     Truy cập Dashboard
                 </a>
-
             @else
                 {{-- TRƯỜNG HỢP CHƯA ĐĂNG NHẬP (GUEST) --}}
                 <div class="mb-4">
@@ -45,7 +44,8 @@
                     </a>
 
                     @if (Route::has('register'))
-                        <a href="{{ route('register') }}" class="btn btn-outline-secondary btn-lg fw-semibold" wire:navigate>
+                        <a href="{{ route('register') }}" class="btn btn-outline-secondary btn-lg fw-semibold"
+                            wire:navigate>
                             Đăng ký tài khoản mới
                         </a>
                     @endif
@@ -54,9 +54,9 @@
         @endif
 
         {{-- FOOTER NHỎ Ở ĐÁY CARD --}}
-        <div class="mt-5 pt-3 border-top text-muted small">
+        {{-- <div class="mt-5 pt-3 border-top text-muted small">
             Laravel v{{ Illuminate\Foundation\Application::VERSION }} (PHP v{{ PHP_VERSION }})
-        </div>
+        </div> --}}
 
     </div>
 
