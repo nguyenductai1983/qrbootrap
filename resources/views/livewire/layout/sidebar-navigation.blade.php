@@ -48,6 +48,14 @@
                 <span class="sidebar-text">Quét Sản Phẩm</span>
             </a>
         @endcan
+        @can('products scan')
+            <a href="{{ route('production.coating-confirmation') }}"
+                class="list-group-item list-group-item-action py-3 ps-4 {{ request()->routeIs('production.coating-confirmation') ? 'active' : '' }}"
+                title=" Xác Nhận Tráng">
+                <i class="fa-solid fa-barcode me-2"></i>
+                <span class="sidebar-text">Xác Nhận Tráng</span>
+            </a>
+        @endcan
         @can('view barcodes')
             <a href="{{ route('production.list') }}"
                 class="list-group-item list-group-item-action py-3 ps-4 {{ request()->routeIs('production.list') ? 'active' : '' }}"

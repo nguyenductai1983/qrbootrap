@@ -23,6 +23,7 @@ use App\Livewire\Admin\PropertyManager;
 use App\Livewire\Admin\ItemTypeManager;
 use App\Livewire\Production\ItemManager;
 use App\Livewire\Admin\CategoryManager;
+use App\Livewire\Production\CoatingConfirmation;
 //Role::withoutGlobalScopes()->get(); // Lấy tất cả vai trò mà không áp dụng bất kỳ global scope nào
 Route::view('/', 'welcome');
 
@@ -101,4 +102,5 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/scan-mobile', ScanProduct::class)->name('scan'); // Đã gộp tiền tố URL
         Route::get('/excel-manager', ExcelManager::class)->name('excel-manager');
     });
+    Route::get('/production/coating-confirmation', CoatingConfirmation::class)->name('production.coating-confirmation');
 });

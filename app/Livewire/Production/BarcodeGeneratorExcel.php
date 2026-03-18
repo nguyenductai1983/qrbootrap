@@ -17,6 +17,8 @@ use App\Models\Specification;
 use App\Models\Width;
 use App\Models\PlasticType;
 use Illuminate\Database\QueryException;
+use Livewire\Attributes\Renderless;
+use App\Services\ItemCodeService;
 
 class BarcodeGeneratorExcel extends Component
 {
@@ -149,6 +151,7 @@ class BarcodeGeneratorExcel extends Component
         cache()->forever('excel_rowsPerPage_' . Auth::id(), $value);
     }
 
+    // 🌟 THÊM KHAI BÁO SERVICE VÀO THAM SỐ CỦA HÀM
     public function generate()
     {
         $this->validate([
@@ -169,9 +172,7 @@ class BarcodeGeneratorExcel extends Component
         foreach ($lines as $line) {
             if (trim($line) === '') continue;
 
-            // $cols = explode("\t", trim($line));
             $cols = preg_split('/\s+/', trim($line));
-            // 15	H212NDS	we	D8	1780	PP	150	1000	02-17
             $cols = array_pad($cols, 9, '');
 
             $quantity     = (int) trim($cols[0]);
@@ -196,20 +197,12 @@ class BarcodeGeneratorExcel extends Component
                 $order->save();
                 $orderId = $order->id;
             }
+
             $colorId   = $this->resolveAttributeId(Color::class, $colorCode);
             $specId    = $this->resolveAttributeId(Specification::class, $specCode);
             $widthId   = $this->resolveAttributeId(Width::class, $widthCode);
             $plasticId = $this->resolveAttributeId(PlasticType::class, $plasticCode);
 
-            $prefix = strtoupper(trim("$orderCode $colorCode $specCode $widthCode $plasticCode"));
-
-            $propParts = array_filter([$gsm, $length]);
-            $code_properties = '';
-            if (count($propParts) > 0) {
-                $code_properties = ' ' . implode(' ', $propParts) . ' ';
-            } else {
-                $code_properties = ' ';
-            }
             $no = 0;
             for ($i = 0; $i < $quantity; $i++) {
                 $no++;
@@ -222,8 +215,21 @@ class BarcodeGeneratorExcel extends Component
                     'DAI' => $length,
                     'MAY' => $machineNum,
                 ];
+                $propParts = array_filter([$gsm, $length]);
                 try {
-                    $realCode = strtoupper($prefix . $code_properties . str_pad($no, 3, '0', STR_PAD_LEFT));
+                    // 🌟 GỌI SERVICE ĐỂ SINH MÃ TẠI ĐÂY (Code ngắn gọn và sạch sẽ hơn hẳn)
+                    $realCode = ItemCodeService::generateStandardCode(
+                        $orderCode,
+                        $colorCode,
+                        $specCode,
+                        $widthCode,
+                        $plasticCode,
+                        $propParts, // <--- Lúc trước bạn truyền riêng lẻ $gsm, $length, giờ bạn truyền nguyên mảng $propParts mà vòng lặp for phía trên của bạn đã tạo ra.
+                        $no
+                    );
+
+                    $numericLength = is_numeric($length) ? (float) $length : null;
+
                     Item::create([
                         'code' => $realCode,
                         'type' => $this->type,
@@ -236,18 +242,18 @@ class BarcodeGeneratorExcel extends Component
                         'width_id'         => $widthId,
                         'order_id' => $orderId,
                         'product_id' => $this->itemData['PRODUCT_ID'] ?? null,
+                        'original_length' => $numericLength,
+                        'length' => $numericLength,
                     ]);
                 } catch (QueryException $e) {
-                    // Kiểm tra xem có phải mã lỗi 1062 (Duplicate) của MySQL không
                     if ($e->errorInfo[1] == 1062) {
-                        // Dịch lỗi SQL thành câu báo lỗi thân thiện cho người dùng
                         session()->flash('error', "Lỗi: Mã tem '{$realCode}' đã tồn tại trong hệ thống! Vui lòng kiểm tra lại số thứ tự hoặc dữ liệu Excel.");
-                        return; // 🌟 Dừng ngay quá trình sinh tem lại
+                        return;
                     }
-                    // Nếu là lỗi Database khác thì cứ báo lỗi chung chung
                     session()->flash('error', 'Lỗi hệ thống Database: ' . $e->getMessage());
                     return;
                 }
+
                 $printInfo = $propertiesToSave;
                 $printInfo['type'] = $this->type;
                 $printInfo['PO'] = $orderCode;
@@ -264,7 +270,6 @@ class BarcodeGeneratorExcel extends Component
         $this->excelData = '';
         $this->dispatch('trigger-print');
     }
-
     public function reprintSelected()
     {
         if (empty($this->selectedHistoryIds)) {

@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+// ghi nhận mối quan hệ giữa các cây item
 class ItemGenealogy extends Model
 {
     use HasFactory;
@@ -16,6 +16,29 @@ class ItemGenealogy extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'parent_item_id', 'child_item_id', 'action_type', 'created_by', 'created_at'
+        'parent_item_id', // 🌟 ID cây Mộc (Nguyên liệu gốc)
+        'child_item_id',  // 🌟 ID cây Tráng (Thành phẩm mới sinh ra)
+        'action_type',    // Hành động tạo ra mối quan hệ này (Ví dụ: COATING, CUTTING)
+        'user_id',        // Ai làm
+        'created_at'
     ];
+    public function item()
+    {
+        return $this->belongsTo(Item::class);
+    }
+
+    public function fromLocation()
+    {
+        return $this->belongsTo(Location::class, 'from_location_id');
+    }
+
+    public function toLocation()
+    {
+        return $this->belongsTo(Location::class, 'to_location_id');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

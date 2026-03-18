@@ -215,6 +215,13 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row g-1">
+                        <div class="col-md-4">
+                            <label class="form-label small fw-bold" for="length"><i
+                                    class="fa-solid fa-ruler-combined"></i>Chiều dài</label>
+                            <input wire:model="length" type="number" class="form-control" id="length">
+                        </div>
+                    </div>
                     {{-- Các trường nhập liệu chi tiết --}}
                     <div class="row g-1 mt-3">
                         <div class="col-12">

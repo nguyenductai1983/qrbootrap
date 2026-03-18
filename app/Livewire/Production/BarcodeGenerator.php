@@ -51,6 +51,7 @@ class BarcodeGenerator extends Component
     public $newOrderType = 'C'; // Mặc định là loại C
     public $newOrderCustomer = '';
     public $newOrderTotal = 1;
+    public $length;
     public function mount()
     {
         /** @var \App\Models\User $user */ // <-- Đã thêm dòng fix lỗi IDE
@@ -259,6 +260,7 @@ class BarcodeGenerator extends Component
             'selectedColor' => 'required',
             'selectedSpec' => 'required',
             'selectedPlastic' => 'required',
+            'length' => 'required|numeric|min:0.1',
         ];
 
         // Định nghĩa các câu báo lỗi bằng tiếng Việt cho các trường cố định
@@ -270,6 +272,9 @@ class BarcodeGenerator extends Component
             'selectedSpec.required' => 'Vui lòng chọn Quy cách.',
             'selectedPlastic.required' => 'Vui lòng chọn Loại nhựa.',
             'quantity.min' => 'Số lượng ít nhất phải là 1.',
+            'length.required' => 'Vui lòng nhập chiều dài.',
+            'length.numeric' => 'Chiều dài phải là số.',
+            'length.min' => 'Chiều dài tối thiểu là 0.1.',
         ];
 
         // 2. 🌟 QUÉT THUỘC TÍNH ĐỘNG: Nếu is_required = true thì thêm vào mảng Rules 🌟
@@ -340,6 +345,8 @@ class BarcodeGenerator extends Component
                 // Map thêm các cột khóa ngoại nếu bạn đã tạo trong DB
                 'order_id' => !empty($this->itemData['ORDER_ID']) ? $this->itemData['ORDER_ID'] : null,
                 'product_id' => !empty($this->itemData['PRODUCT_ID']) ? $this->itemData['PRODUCT_ID'] : null,
+                'original_length' => $this->length ? (float) $this->length : null,
+                'length'          => $this->length ? (float) $this->length : null,
             ]);
             // 2. SINH MÃ CHÍNH THỨC DỰA TRÊN ID VỪA CÓ
             // Sử dụng str_pad 6 số để mã đẹp và đều (VD: ID 5 -> ...000005)
@@ -389,6 +396,7 @@ class BarcodeGenerator extends Component
             $printInfo['PO'] = $orderCode ?? ''; // <-- Bổ sung thêm PO vào thông tin in mới
             $printInfo['PRODUCT_NAME'] = $this->itemData['PRODUCT_NAME'] ?? ''; // <-- Bổ sung thêm PRODUCT_NAME vào thông tin in mới
             $printInfo['COLOR_NAME'] = Color::find($this->selectedColor)->name ?? ''; // <-- Bổ sung thêm COLOR_NAME vào thông tin in mới
+            $printInfo['LENGTH'] = $this->length;
             $this->generatedItems[] = [
                 'code' => $realCode,
                 'info' => $printInfo
@@ -414,24 +422,8 @@ class BarcodeGenerator extends Component
         $this->generatedItems = [];
 
         foreach ($items as $item) {
-            // $info = $item->properties ?? [];
-
-            // if (!isset($info['PRODUCT_NAME']) && $item->product) {
-            //     $info['PRODUCT_NAME'] = $item->product->name;
-            // }
-            // if (!isset($info['COLOR_NAME']) && $item->color) {
-            //     $info['COLOR_NAME'] = $item->color->name ?? '';
-            // }
-            // // Điền lại PO từ Order đã được load sẵn
-            // if (!isset($info['PO']) && $item->order) {
-            //     $info['PO'] = $item->order->code;
-            // }
-
-            // $info['type'] = $item->type;
             $this->generatedItems[] = [
                 'code' => $item->code,
-                // 'info' => $info,
-
             ];
         }
 

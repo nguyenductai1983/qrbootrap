@@ -35,9 +35,9 @@ class UserForm extends Component
             $this->selectedRoles = $this->user->roles->pluck('name')->toArray(); // <-- Lấy các vai trò hiện có
         } else {
             $this->user = new User();
-            $this->role = 'user'; // Giá trị mặc định cho cột 'role'
+            $this->role = 'manager'; // Giá trị mặc định cho cột 'role'
             $this->department_id = null;
-            $this->selectedRoles = ['user']; // Mặc định gán vai trò 'user' khi tạo mới
+            $this->selectedRoles = ['manager']; // Mặc định gán vai trò 'user' khi tạo mới
         }
     }
 
@@ -59,7 +59,7 @@ class UserForm extends Component
                 'min:8',
                 'confirmed',
             ],
-            'role' => ['required', 'string', Rule::in(['admin', 'user'])], // Giữ lại nếu bạn vẫn dùng cột 'role'
+            'role' => ['required', 'string', Rule::in(['admin', 'manager'])], // Giữ lại nếu bạn vẫn dùng cột 'role'
             'department_id' => ['nullable', 'exists:departments,id'],
             'selectedRoles' => ['nullable', 'array'],
             'selectedRoles.*' => ['exists:roles,name'], // <-- Mỗi vai trò phải tồn tại

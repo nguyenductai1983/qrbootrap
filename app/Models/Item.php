@@ -24,6 +24,10 @@ class Item extends Model
         'specification_id',
         'plastic_type_id',
         'width_id',
+        'original_length',
+        'finished_length',
+        'length',
+        'used_length',
     ];
 
     protected $casts = [
@@ -59,17 +63,14 @@ class Item extends Model
     public function children()
     {
         return $this->belongsToMany(Item::class, 'item_genealogies', 'parent_item_id', 'child_item_id')
-            ->withPivot('action_type', 'created_at');
+            ->withPivot('action_type', 'used_length', 'created_at'); // 🌟 Thêm used_length
     }
 
-    // Lấy danh sách "Cha" (Ví dụ: Tấm vải -> được cắt từ Cây nào)
-    // Quan hệ: Item này là Child trong bảng Genealogy
     public function parents()
     {
         return $this->belongsToMany(Item::class, 'item_genealogies', 'child_item_id', 'parent_item_id')
-            ->withPivot('action_type', 'created_at');
+            ->withPivot('action_type', 'used_length', 'created_at'); // 🌟 Thêm used_length
     }
-
     // Lấy lịch sử di chuyển
     public function movements()
     {

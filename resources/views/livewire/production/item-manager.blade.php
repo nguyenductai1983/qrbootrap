@@ -12,7 +12,9 @@
                         <span class="input-group-text bg-light text-dark fw-bold border-0">Đến ngày</span>
                         <input type="date" wire:model.live="toDate" class="form-control border-0">
                     </div>
-                    <button wire:click="exportExcel" class="btn btn-sm btn-light text-primary fw-bold shadow-sm text-nowrap" style="min-width: 120px;" wire:loading.attr="disabled">
+                    <button wire:click="exportExcel"
+                        class="btn btn-sm btn-light text-primary fw-bold shadow-sm text-nowrap"
+                        style="min-width: 120px;" wire:loading.attr="disabled">
                         <span wire:loading.remove wire:target="exportExcel">
                             <i class="fa-solid fa-file-excel me-1 text-success"></i> Xuất Excel
                         </span>
@@ -121,6 +123,8 @@
                                 <th>Sản phẩm</th>
                                 <th>Màu</th>
                                 <th>Trạng thái</th>
+                                <th>Chiều dài (Gốc/Còn)</th>
+                                <th>Nguồn gốc (Cây Cha)</th>
                                 <th>Chi tiết (Properties)</th>
                                 <th>Vị trí hiện tại</th>
                                 <th>Hành động</th>
@@ -137,6 +141,36 @@
                                         <span class="badge {{ $item->status->badge() }}">
                                             {{ $item->status->label() }}
                                         </span>
+                                    </td>
+                                    {{-- CỘT CHIỀU DÀI --}}
+                                    <td class="text-center text-nowrap">
+                                        @if ($item->original_length || $item->length)
+                                            <div class="small">Gốc: <span
+                                                    class="fw-bold">{{ (float) $item->original_length }}m</span></div>
+                                            <div class="small">Còn: <span
+                                                    class="fw-bold text-danger">{{ (float) $item->length }}m</span>
+                                            </div>
+                                        @else
+                                            <span class="text-muted">-</span>
+                                        @endif
+                                    </td>
+
+                                    {{-- CỘT NGUỒN GỐC (PHẢ HỆ) --}}
+                                    <td>
+                                        @if ($item->parents->isNotEmpty())
+                                            <ul class="mb-0 ps-3 text-nowrap" style="font-size: 0.85rem;">
+                                                @foreach ($item->parents as $parent)
+                                                    <li>
+                                                        <span
+                                                            class="fw-bold text-primary">{{ $parent->code }}</span><br>
+                                                        <span class="text-muted fst-italic">(Lấy
+                                                            {{ (float) $parent->pivot->used_length }}m)</span>
+                                                    </li>
+                                                @endforeach
+                                            </ul>
+                                        @else
+                                            <span class="badge bg-light text-secondary border">Nguyên bản</span>
+                                        @endif
                                     </td>
                                     <td>
                                         {{-- Hiển thị tóm tắt properties ra ngoài --}}

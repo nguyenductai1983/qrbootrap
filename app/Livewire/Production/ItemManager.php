@@ -20,14 +20,15 @@ class ItemManager extends Component
     public $filterColorId = '';
     public $fromDate = '';
     public $toDate = '';
-    
+
     // --- CÁC BIẾN CHỈNH SỬA ---
     public $editItemId = null;
     public $editCode = '';
     public $editProperties = []; // Mảng chứa dữ liệu JSON để edit
     public $showSuggestions = false; // Biến kiểm soát ẩn/hiện bảng gợi ý
     // Khai báo sẵn cho tương lai: public $current_location_id;
-
+    public $editOriginalLength = null; // 🌟 Thêm biến này
+    public $editLength = null;         // 🌟 Thêm biến này
     public function mount()
     {
         // Mặc định xuất 30 ngày gần đây
@@ -62,7 +63,8 @@ class ItemManager extends Component
 
             // Ép kiểu về mảng để xử lý an toàn
             $this->editProperties = is_array($item->properties) ? $item->properties : json_decode($item->properties, true) ?? [];
-
+            $this->editOriginalLength = $item->original_length;
+            $this->editLength = $item->length;
             // Chuẩn bị cho chức năng định vị sắp tới:
             // $this->current_location_id = $item->current_location_id;
 
@@ -78,6 +80,8 @@ class ItemManager extends Component
             // Có thể thêm validation nếu cần thiết
             $item->update([
                 'properties' => $this->editProperties,
+                'original_length' => $this->editOriginalLength,
+                'length' => $this->editLength,
                 // 'current_location_id' => $this->current_location_id, // Mở ra khi bạn làm xong table Locations
             ]);
 
@@ -135,7 +139,7 @@ class ItemManager extends Component
     {
         $this->js("console.log('Danh sách mã code')");
         // Query cơ bản kèm theo Relationship để tránh N+1 Query
-        $query = Item::with(['order', 'product'])
+        $query = Item::with(['order', 'product', 'color', 'parents'])
             ->when($this->searchCode, function ($q) {
                 $q->where('code', 'like', '%' . $this->searchCode . '%');
             })

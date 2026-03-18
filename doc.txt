@@ -47,3 +47,19 @@ composer require simplesoftwareio/simple-qrcode
 php artisan make:model ItemProperty -m
 php artisan make:migration add_product_relation_to_item_properties
 php artisan make:model ItemType -m
+php artisan make:migration add_action_type_to_item_movements_table --table=item_movements
+php artisan make:enum ActionType
+public function up()
+{
+    Schema::table('item_movements', function (Blueprint $table) {
+        // Cột lưu loại hành động: MOVE (Di chuyển), COATING (Tráng), CUT (Cắt)...
+        $table->string('action_type')->default('MOVE')->after('item_id'); 
+        
+        // Cột ghi chú thêm (Tùy chọn)
+        $table->text('note')->nullable()->after('to_location_id');
+        
+        // Sửa lại 2 cột location thành nullable vì khi "Tráng", ta không nhất thiết phải di chuyển kho
+        $table->unsignedBigInteger('from_location_id')->nullable()->change();
+        $table->unsignedBigInteger('to_location_id')->nullable()->change();
+    });
+}
