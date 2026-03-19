@@ -25,9 +25,8 @@ class Item extends Model
         'plastic_type_id',
         'width_id',
         'original_length',
-        'finished_length',
         'length',
-        'used_length',
+
     ];
 
     protected $casts = [

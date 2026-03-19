@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens; // Thêm dòng này nếu bạn sử dụng Sanctum
 use Spatie\Permission\Traits\HasRoles;
+
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
@@ -51,11 +52,7 @@ class User extends Authenticatable
     {
         return $this->hasMany(QrScan::class);
     }
-     // Phương thức helper để kiểm tra vai trò quản trị viên
-    // public function isAdmin()
-    // {
-    //     return $this->role === 'admin';
-    // }
+
     public function isAdmin()
     {
         return $this->hasRole('admin'); // Kiểm tra vai trò 'admin' bằng Spatie

@@ -67,10 +67,19 @@ class RolesAndPermissionsSeeder extends Seeder
             [
                 'name' => 'Admin',
                 'password' => Hash::make('12345678'), // Đặt mật khẩu
-                // 'department_id' => 1, // Gán vào phòng IT (ID 1) nếu muốn
+                'department_id' => 1, // Gán vào phòng IT (ID 1) nếu muốn
             ]
         );
-
+        // Gán quyền Admin cho user này
+        $user->assignRole('admin');
+        $user = User::firstOrCreate(
+            ['email' => 'khang@qrcode.com'],
+            [
+                'name' => 'khang',
+                'password' => Hash::make('12345678'), // Đặt mật khẩu
+                'department_id' => 1, // Gán vào phòng IT (ID 1) nếu muốn
+            ]
+        );
         // Gán quyền Admin cho user này
         $user->assignRole('admin');
     }

@@ -12,9 +12,11 @@ class DepartmentSeeder extends Seeder
      */
     public function run(): void
     {
-        Department::create(['name' => 'Đùn', 'code' => 'DUN']);
-        Department::create(['name' => 'Dệt', 'code' => 'DET']);
-        Department::create(['name' => 'May', 'code' => 'MAY']);
+        Department::create(['name' => 'IT', 'code' => 'I']);
+        Department::create(['name' => 'Sợi', 'code' => 'S']);
+        Department::create(['name' => 'Dệt', 'code' => 'D']);
+        Department::create(['name' => 'May', 'code' => 'M']);
+        Department::create(['name' => 'Tráng', 'code' => 'T']);
         //
     }
 }

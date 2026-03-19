@@ -11,19 +11,16 @@ class ProductSeeder extends Seeder
     public function run(): void
     {
         // Tạo 2 Model
-        $ProductMoc = Product::create(['code' => 'K', 'name' => 'Vải']);
-        $ProductTP  = Product::create(['code' => 'S', 'name' => 'SỢI']);
+        $ProductMoc = Product::create(['code' => 'V', 'name' => 'Vải', 'is_active' => true]);
+        $ProductSoi  = Product::create(['code' => 'S', 'name' => 'SỢI', 'is_active' => true]);
+        $ProductTrang  = Product::create(['code' => 'T', 'name' => 'TRÁNG', 'is_active' => true]);
 
         // Lấy Department (Giả sử đã chạy seeder trước đó)
-        $det = Department::where('id', 1)->first();
-        $kho = Department::where('id', 2)->first();
+        $it = Department::where('id', 1)->first();
 
-        // Gán quyền:
-        // Xưởng Dệt chỉ thấy Vải Mộc
-        if ($det) $det->products()->attach($ProductMoc->id);
 
         // Kho Vải thấy cả hai
-        if ($kho) $kho->products()->attach([$ProductMoc->id, $ProductTP->id]);
+        if ($it) $it->products()->attach([$ProductMoc->id, $ProductSoi->id, $ProductTrang->id]);
         // Tạo 1 đơn hàng mẫu
 
     }

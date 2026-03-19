@@ -30,7 +30,7 @@
             <a href="{{ route('production.barcode-generator-excel') }}" title="In Tem Mã Vạch Excel"
                 class="list-group-item list-group-item-action py-3 ps-4 {{ request()->routeIs('production.barcode-generator-excel') ? 'active' : '' }}">
                 <i class="fa-solid fa-print me-1"></i>
-                <span class="sidebar-text">In Tem Mã Vạch Excel</span>
+                <span class="sidebar-text">In Tem Mã Vạch Cây Vải</span>
             </a>
             {{-- MỚI: Menu Quản lý Excel (Export/Import số liệu) --}}
             <a href="{{ route('production.excel-manager') }}" title="Quản lý Excel"

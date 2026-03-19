@@ -11,7 +11,7 @@ class ProductManager extends Component
 {
     use WithPagination;
 
-    public $code, $name, $specs, $productId;
+    public $code, $name, $description, $productId;
     public $selectedDepartments = []; // Mảng chứa ID các phân xưởng được chọn
     public $departments = []; // Danh sách tất cả phân xưởng để hiển thị checkbox
 
@@ -28,7 +28,7 @@ class ProductManager extends Component
     {
         $this->code = '';
         $this->name = '';
-        $this->specs = '';
+        $this->description = '';
         $this->selectedDepartments = [];
         $this->productId = null;
         $this->isEditMode = false;
@@ -48,13 +48,13 @@ class ProductManager extends Component
         $product = Product::create([
             'code' => strtoupper($this->code),
             'name' => $this->name,
-            'specs' => $this->specs
+            'description' => $this->description
         ]);
 
         // Lưu quan hệ Many-to-Many
         $product->departments()->sync($this->selectedDepartments);
 
-        session()->flash('message', 'Đã tạo sản phẩm mới thành công!');
+        session()->flash('message', 'Đã tạo sản phẩm mới thành công ' . $product->name . ' !');
         $this->resetInput();
         $this->dispatch('product-list-changed'); // Thêm dòng này để thông báo cho component khác nếu cần
         $this->dispatch('close-modal');
@@ -67,7 +67,7 @@ class ProductManager extends Component
             $this->productId = $product->id;
             $this->code = $product->code;
             $this->name = $product->name;
-            $this->specs = $product->specs;
+            $this->description = $product->description;
             // Lấy danh sách ID phân xưởng đã gán để check vào checkbox
             $this->selectedDepartments = $product->departments->pluck('id')->toArray();
 
@@ -89,13 +89,13 @@ class ProductManager extends Component
             $product->update([
                 'code' => strtoupper($this->code),
                 'name' => $this->name,
-                'specs' => $this->specs
+                'description' => $this->description
             ]);
 
             // Cập nhật lại quan hệ
             $product->departments()->sync($this->selectedDepartments);
 
-            session()->flash('message', 'Cập nhật sản phẩm thành công!');
+            session()->flash('message', 'Cập nhật sản phẩm thành công ' . $product->name . ' !');
             $this->resetInput();
             $this->dispatch('product-list-changed');
             $this->dispatch('close-modal');
@@ -111,8 +111,12 @@ class ProductManager extends Component
     public function render()
     {
         $products = Product::with('departments')
-            ->where('code', 'like', '%' . $this->searchTerm . '%')
-            ->orWhere('name', 'like', '%' . $this->searchTerm . '%')
+            ->when($this->searchTerm, function ($query) {
+                $query->where(function ($q) {
+                    $q->where('code', 'like', '%' . $this->searchTerm . '%')
+                      ->orWhere('name', 'like', '%' . $this->searchTerm . '%');
+                });
+            })
             ->orderBy('id', 'desc')
             ->paginate(10);
 

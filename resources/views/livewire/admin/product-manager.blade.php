@@ -16,7 +16,7 @@
     <div class="card shadow-sm">
         <div class="card-body">
             {{-- Đã sửa wire:product.live thành wire:model.live --}}
-            <input type="text" wire:product.live="searchTerm" class="form-control mb-3" id="searchTerm"
+            <input type="text" wire:model.live="searchTerm" class="form-control mb-3" id="searchTerm"
                 placeholder="Tìm kiếm mã sản phẩm hoặc tên vải...">
 
             <table class="table table-hover align-middle">
@@ -34,7 +34,7 @@
                             <td class="fw-bold">{{ $product->code }}</td>
                             <td>
                                 <div>{{ $product->name }}</div>
-                                <small class="text-muted">{{ Str::limit($product->specs, 50) }}</small>
+                                <small class="text-muted">{{ Str::limit($product->description, 50) }}</small>
                             </td>
                             <td>
                                 @foreach ($product->departments as $dept)
@@ -92,9 +92,9 @@
                                 @enderror
                             </div>
                             <div class="col-12 mb-3">
-                                <label class="form-label" for="specs">Quy cách / Mô tả</label>
+                                <label class="form-label" for="description">Quy cách / Mô tả</label>
                                 {{-- Đã sửa wire:product thành wire:model --}}
-                                <textarea wire:model="specs" id="specs" class="form-control" rows="2"
+                                <textarea wire:model="description" id="description" class="form-control" rows="2"
                                     placeholder="Ghi chú về thành phần, định lượng..."></textarea>
                             </div>
 

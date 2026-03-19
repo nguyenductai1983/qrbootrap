@@ -27,12 +27,11 @@ class BarcodeGeneratorExcel extends Component
     // Cấu hình
     public $type = '';
     public $itemTypes = [];
-    public $departments = [];
-    public $selectedDeptCode = '';
     public $availableProducts = [];
     // Dữ liệu nhập liệu
     public $itemData = [];
     public $excelData; // Chứa dữ liệu paste từ Excel
+    public $col0Mode = 'quantity'; // 'quantity' hoặc 'sequence'
 
     public $generatedItems = []; // Danh sách tem CHỜ IN (Hiện tại)
     public $selectedHistoryIds = [];
@@ -50,27 +49,34 @@ class BarcodeGeneratorExcel extends Component
         $this->fontSize = cache()->get('excel_fontSize_' . $user->id, 7);
         $this->rowsPerPage = cache()->get('excel_rowsPerPage_' . $user->id, 2);
 
-        // LOGIC LẤY BỘ PHẬN:
-        if ($user->hasRole('admin')) {
-            $this->departments = Department::whereNotNull('code')->get();
-        } else {
-            $this->departments = $user->departments;
-        }
-
         // Lấy danh sách Loại tem đang Active
         $this->itemTypes = ItemType::where('is_active', true)->get();
 
-        if (count($this->itemTypes) > 0) {
-            $this->type = $this->itemTypes[0]->code;
+        if (count($this->itemTypes) > 1) {
+            $this->type = $this->itemTypes[1]->code;
         }
 
         $this->itemData['PRODUCT_ID'] = '';
+        $this->itemData['PRODUCT'] = '';
         $this->itemData['PRODUCT_NAME'] = '';
 
-        if (count($this->departments) > 0) {
-            $this->selectedDeptCode = $this->departments[0]->code;
-            $this->updatedSelectedDeptCode();
+        // Tự động lấy danh sách sản phẩm theo phòng ban của User
+        if ($user->department) {
+            $this->availableProducts = $user->department->products;
+
+            if (count($this->availableProducts) > 0) {
+                $firstProduct = collect($this->availableProducts)->first();
+
+                $productId = is_array($firstProduct) ? $firstProduct['id'] : $firstProduct->id;
+                $productCode = is_array($firstProduct) ? $firstProduct['code'] : $firstProduct->code;
+                $productName = is_array($firstProduct) ? $firstProduct['name'] : $firstProduct->name;
+
+                $this->itemData['PRODUCT_ID'] = $productId;
+                $this->itemData['PRODUCT'] = $productCode;
+                $this->itemData['PRODUCT_NAME'] = $productName;
+            }
         }
+        $this->col0Mode = cache()->get('col0Mode' . Auth::id(), 'quantity');
     }
 
     public function updatedItemDataProductId($value)
@@ -82,33 +88,7 @@ class BarcodeGeneratorExcel extends Component
         }
     }
 
-    public function updatedSelectedDeptCode()
-    {
-        //Tìm Department theo Code đang chọn
-        $dept = Department::where('code', $this->selectedDeptCode)->first();
 
-        if ($dept) {
-            $this->availableProducts = $dept->products;
-        } else {
-            $this->availableProducts = [];
-        }
-
-        if (count($this->availableProducts) > 0) {
-            $firstProduct = collect($this->availableProducts)->first();
-
-            $productId = is_array($firstProduct) ? $firstProduct['id'] : $firstProduct->id;
-            $productCode = is_array($firstProduct) ? $firstProduct['code'] : $firstProduct->code;
-            $productName = is_array($firstProduct) ? $firstProduct['name'] : $firstProduct->name;
-
-            $this->itemData['PRODUCT_ID'] = $productId;
-            $this->itemData['PRODUCT'] = $productCode;
-            $this->itemData['PRODUCT_NAME'] = $productName;
-        } else {
-            $this->itemData['PRODUCT_ID'] = '';
-            $this->itemData['PRODUCT'] = '';
-            $this->itemData['PRODUCT_NAME'] = '';
-        }
-    }
     /**
      * Hàm dùng chung để tìm hoặc tạo mới các thuộc tính (Màu, Khổ, Nhựa, Quy cách...)
      */
@@ -155,18 +135,16 @@ class BarcodeGeneratorExcel extends Component
     public function generate()
     {
         $this->validate([
-            'selectedDeptCode' => 'required',
             'itemData.PRODUCT_ID' => 'required',
             'excelData' => 'required',
         ], [
-            'selectedDeptCode.required' => 'Vui lòng chọn Phân xưởng.',
             'itemData.PRODUCT_ID.required' => 'Vui lòng chọn Mã Hàng.',
             'excelData.required' => 'Vui lòng dán dữ liệu từ Excel.',
         ]);
 
         $this->generatedItems = [];
         $this->selectedHistoryIds = [];
-
+        cache()->forever('col0Mode' . Auth::id(), $this->col0Mode);
         $lines = explode("\n", trim($this->excelData));
 
         foreach ($lines as $line) {
@@ -175,7 +153,8 @@ class BarcodeGeneratorExcel extends Component
             $cols = preg_split('/\s+/', trim($line));
             $cols = array_pad($cols, 9, '');
 
-            $quantity     = (int) trim($cols[0]);
+            $inputCol0    = (int) trim($cols[0]);
+            $quantity     = ($this->col0Mode === 'sequence') ? 1 : $inputCol0;
             $orderCode    = strtoupper(trim($cols[1]));
             $colorCode    = strtoupper(trim($cols[2]));
             $specCode     = strtoupper(trim($cols[3]));
@@ -203,7 +182,7 @@ class BarcodeGeneratorExcel extends Component
             $widthId   = $this->resolveAttributeId(Width::class, $widthCode);
             $plasticId = $this->resolveAttributeId(PlasticType::class, $plasticCode);
 
-            $no = 0;
+            $no = ($this->col0Mode === 'sequence') ? $inputCol0 - 1 : 0;
             for ($i = 0; $i < $quantity; $i++) {
                 $no++;
                 $propertiesToSave = [

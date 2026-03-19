@@ -1,7 +1,7 @@
 <div>
     <div class="card shadow-sm mb-4 d-print-none">
         <div class="card-header bg-primary text-white">
-            <h5 class="mb-0"><i class="fa-solid fa-barcode me-2"></i>Phát hành Tem & Barcode</h5>
+            <h5 class="mb-0"><i class="fa-solid fa-barcode me-2"></i>Phát hành Tem & Barcode Cây Vải</h5>
         </div>
         <div class="card-body position-relative"> {{-- Thêm position-relative vào đây --}}
             {{-- 🌟 LỚP MÀN MỜ BẢO VỆ CHỐNG CLICK NHANH 🌟 --}}
@@ -15,21 +15,7 @@
             <div class="row g-4">
                 {{-- CỘT TRÁI: CẤU HÌNH IN --}}
                 <div class="col-md-4 border-end">
-                    {{-- 1. Chọn Phân Xưởng --}}
-                    <div class="mb-3">
-                        <label class="form-label fw-bold" for="selectedDeptCode">Phân Xưởng</label>
-                        <select wire:model.live="selectedDeptCode" class="form-select" id="selectedDeptCode">
-                            @if (count($departments) > 0)
-                                @foreach ($departments as $dept)
-                                    <option value="{{ $dept->code }}">
-                                        {{ $dept->name }} ({{ $dept->code }})
-                                    </option>
-                                @endforeach
-                            @else
-                                <option value="">Bạn chưa được phân quyền bộ phận nào</option>
-                            @endif
-                        </select>
-                    </div>
+
                     {{-- Chọn Model --}}
                     <div class="mb-3">
                         <label class="form-label small fw-bold" for="PRODUCT_ID">Chọn Sản phẩm <span
@@ -48,7 +34,7 @@
                         @error('itemData.PRODUCT_ID')
                             <span class="text-danger small fst-italic">{{ $message }}</span>
                         @enderror
-                        @if (empty($availableProducts) && $selectedDeptCode)
+                        @if (empty($availableProducts))
                             <small class="text-warning">⚠️ Xưởng này chưa có Mã Hàng nào.</small>
                         @endif
                     </div>
@@ -78,12 +64,30 @@
                 {{-- CỘT PHẢI: NHẬP THÔNG TIN CHI TIẾT --}}
                 <div class="col-md-8">
                     <div class="row g-1">
+                        <div class="col-12 mb-3 bg-light p-2 rounded border border-info">
+                            <label class="form-label fw-bold text-primary mb-1"><i class="fa-solid fa-sliders me-1"></i>Ý nghĩa của Cột đầu tiên (Cột 1) trong Excel là gì?</label>
+                            <div class="d-flex gap-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" wire:model="col0Mode" value="quantity" id="modeQty">
+                                    <label class="form-check-label cursor-pointer" for="modeQty">
+                                        <strong>Số lượng tem</strong> <small class="text-muted">(Sẽ tạo N tem liên tiếp)</small>
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" wire:model="col0Mode" value="sequence" id="modeSeq">
+                                    <label class="form-check-label cursor-pointer" for="modeSeq">
+                                        <strong>Số thứ tự tem</strong> <small class="text-muted">(Sẽ tạo chính xác tem có số thứ tự này)</small>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="col-12">
                             <label class="form-label fw-bold" for="excelData">
                                 <i class="fa-solid fa-file-excel text-success me-1"></i>Dán Dữ Liệu Từ Excel
                             </label>
                             <p class="small text-muted mb-2">
-                                Copy từ các cột Excel theo thứ tự: <strong>Số lượng tem, Mã Đơn Hàng, Màu, Loại,
+                                Copy từ các cột Excel theo thứ tự: <strong>Cột 1 (Số lượng hoặc Số TT), Mã Đơn Hàng, Màu, Loại,
                                     Khổ, Loại Nhựa, GSM, Chiều dài, Số máy</strong>
                             </p>
                             <textarea wire:model="excelData" id="excelData" class="form-control" rows="5"

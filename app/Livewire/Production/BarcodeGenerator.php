@@ -29,8 +29,6 @@ class BarcodeGenerator extends Component
     public $type = ''; // Bỏ giá trị 'RM' mặc định đi
     public $itemTypes = []; // Danh sách loại tem để hiện lên select box
     public $quantity = 1;
-    public $departments = [];
-    public $selectedDeptCode = '';
     public $orders = [];
     public $availableProducts = []; // Danh sách model thay đổi theo xưởng
     // Dữ liệu nhập liệu
@@ -68,18 +66,11 @@ class BarcodeGenerator extends Component
         $this->plasticTypes = PlasticType::where('is_active', true)->get();
         $this->widths = Width::where('is_active', true)->get();
 
-        // LOGIC LẤY BỘ PHẬN:
-        if ($user->hasRole('admin')) {
-            $this->departments = Department::whereNotNull('code')->get();
-        } else {
-            $this->departments = $user->departments;
-        }
-
         // Lấy danh sách Loại tem đang Active
         $this->itemTypes = ItemType::where('is_active', true)->get();
 
-        if (count($this->itemTypes) > 0) {
-            $this->type = $this->itemTypes[0]->code;
+        if (count($this->itemTypes) > 1) {
+            $this->type = $this->itemTypes[1]->code;
         }
 
         // Lấy danh sách Đơn hàng đang chạy
@@ -88,16 +79,29 @@ class BarcodeGenerator extends Component
         // 🌟 BƯỚC 1: KHỞI TẠO DỮ LIỆU RỖNG TRƯỚC 🌟
         $this->itemData['ORDER_ID'] = '';
         $this->itemData['PRODUCT_ID'] = '';
+        $this->itemData['PRODUCT'] = '';
         $this->itemData['PRODUCT_NAME'] = '';
 
-        // 🌟 BƯỚC 2: TỰ ĐỘNG CHỌN XƯỞNG VÀ SẢN PHẨM 🌟
-        if (count($this->departments) > 0) {
-            // Chọn xưởng đầu tiên
-            $this->selectedDeptCode = $this->departments[0]->code;
+        // 🌟 BƯỚC 2: TỰ ĐỘNG TẢI SẢN PHẨM TỪ XƯỞNG CỦA USER 🌟
+        if ($user->department) {
+            $this->availableProducts = $user->department->products;
 
-            // Hàm này sẽ lấy danh sách Sản phẩm, TỰ ĐỘNG đè lên PRODUCT_ID vừa khởi tạo ở trên
-            // và gọi luôn loadDynamicProperties() nên mọi thứ sẽ được set chuẩn 100%.
-            $this->updatedSelectedDeptCode();
+            if (count($this->availableProducts) > 0) {
+                $firstProduct = collect($this->availableProducts)->first();
+
+                $productId = is_array($firstProduct) ? $firstProduct['id'] : $firstProduct->id;
+                $productCode = is_array($firstProduct) ? $firstProduct['code'] : $firstProduct->code;
+                $productName = is_array($firstProduct) ? $firstProduct['name'] : $firstProduct->name;
+
+                $this->itemData['PRODUCT_ID'] = $productId;
+                $this->itemData['PRODUCT'] = $productCode;
+                $this->itemData['PRODUCT_NAME'] = $productName;
+
+                // Load thuộc tính động
+                $this->loadDynamicProperties($productId);
+            } else {
+                $this->loadDynamicProperties(null);
+            }
         } else {
             // Nếu User không có xưởng nào, chỉ load các thuộc tính chung chung
             $this->loadDynamicProperties(null);
@@ -143,39 +147,6 @@ class BarcodeGenerator extends Component
             }
         }
     }
-    public function updatedSelectedDeptCode()
-    {
-        // 1. Tải lại danh sách Mã Hàng (Sản phẩm) thuộc Phân xưởng vừa chọn
-        $this->loadProductsByDepartment();
-
-        // 2. Kiểm tra xem xưởng này có sản phẩm nào không
-        if (count($this->availableProducts) > 0) {
-
-            // Dùng collect() để bao bọc lại, tránh lỗi ->first() trên mảng
-            $firstProduct = collect($this->availableProducts)->first();
-
-            // Kiểm tra xem phần tử này đang là Object (Model) hay Array (Do Livewire ép kiểu)
-            $productId = is_array($firstProduct) ? $firstProduct['id'] : $firstProduct->id;
-            $productCode = is_array($firstProduct) ? $firstProduct['code'] : $firstProduct->code;
-            $productName = is_array($firstProduct) ? $firstProduct['name'] : $firstProduct->name;
-
-            // Gán dữ liệu an toàn
-            $this->itemData['PRODUCT_ID'] = $productId;
-            $this->itemData['PRODUCT'] = $productCode;
-            $this->itemData['PRODUCT_NAME'] = $productName;
-
-            // Kích hoạt hàm load thuộc tính động
-            $this->loadDynamicProperties($productId);
-        } else {
-            // Nếu xưởng mới chọn không có sản phẩm nào -> Xoá trắng dữ liệu
-            $this->itemData['PRODUCT_ID'] = '';
-            $this->itemData['PRODUCT'] = '';
-            $this->itemData['PRODUCT_NAME'] = '';
-
-            // Reset danh sách thuộc tính động
-            $this->loadDynamicProperties(null);
-        }
-    }
 
     // Khi chọn Order -> Tự điền PO Text
     public function updatedItemDataOrderId($value)
@@ -195,23 +166,6 @@ class BarcodeGenerator extends Component
     //     // Hoặc bạn có thể thêm hiệu ứng thông báo Toast ở đây
     //     // $this->dispatch('show-toast', title: 'Danh sách sản phẩm vừa được làm mới!');
     // }
-    private function loadProductsByDepartment()
-    {
-        // Tìm Department theo Code đang chọn
-        $dept = Department::where('code', $this->selectedDeptCode)->first();
-
-        if ($dept) {
-            // Lấy các model được gán cho Department này
-            $this->availableProducts = $dept->products;
-        } else {
-            $this->availableProducts = [];
-        }
-
-        // Reset chọn model
-        // $this->itemData['PRODUCT_ID'] = '';
-        // $this->itemData['PRODUCT'] = '';
-        // $this->itemData['PRODUCT_NAME'] = ''; // <--- THÊM DÒNG NÀY
-    }
 
     private function getNextSequence($prefix)
     {
@@ -253,7 +207,6 @@ class BarcodeGenerator extends Component
     {
         // 1. Định nghĩa các quy tắc kiểm tra cố định ban đầu
         $rules = [
-            'selectedDeptCode' => 'required',
             'itemData.PRODUCT_ID' => 'required',
             'quantity' => 'required|integer|min:1',
             'selectedWidth' => 'required',
@@ -265,7 +218,6 @@ class BarcodeGenerator extends Component
 
         // Định nghĩa các câu báo lỗi bằng tiếng Việt cho các trường cố định
         $messages = [
-            'selectedDeptCode.required' => 'Vui lòng chọn Phân xưởng.',
             'itemData.PRODUCT_ID.required' => 'Vui lòng chọn Mã Hàng.',
             'selectedWidth.required' => 'Vui lòng chọn Khổ.',
             'selectedColor.required' => 'Vui lòng chọn Màu.',

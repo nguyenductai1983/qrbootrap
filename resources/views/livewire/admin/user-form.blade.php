@@ -80,6 +80,29 @@
                     @enderror
                 </div>
 
+                {{-- <-- Trường gán Quyền trực tiếp (từ Spatie) --> --}}
+                <div class="mb-3">
+                    <label class="form-label">{{ __('Cấp Quyền Trực Tiếp') }}</label>
+                    <div class="row">
+                        @foreach($allPermissions as $permissionOption)
+                            <div class="col-md-4 col-sm-6 col-12">
+                                <div class="form-check">
+                                    <input wire:model="selectedPermissions" class="form-check-input" type="checkbox" value="{{ $permissionOption->name }}" id="permission-{{ $permissionOption->id }}">
+                                    <label class="form-check-label" for="permission-{{ $permissionOption->id }}">
+                                        {{ $permissionOption->name }}
+                                    </label>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                    @error('selectedPermissions')
+                        <div class="text-danger mt-1">{{ $message }}</div>
+                    @enderror
+                    @error('selectedPermissions.*')
+                        <div class="text-danger mt-1">{{ $message }}</div>
+                    @enderror
+                </div>
+
                 <div class="d-flex justify-content-end mt-4">
                     <a href="{{ route('users.index') }}" class="btn btn-secondary me-2">
                         {{ __('Hủy') }}

@@ -15,21 +15,7 @@
             <div class="row g-4">
                 {{-- CỘT TRÁI: CẤU HÌNH IN --}}
                 <div class="col-md-4 border-end">
-                    {{-- 1. Chọn Phân Xưởng --}}
-                    <div class="mb-3">
-                        <label class="form-label fw-bold" for="selectedDeptCode">Phân Xưởng</label>
-                        <select wire:model.live="selectedDeptCode" class="form-select" id="selectedDeptCode">
-                            @if (count($departments) > 0)
-                                @foreach ($departments as $dept)
-                                    <option value="{{ $dept->code }}">
-                                        {{ $dept->name }} ({{ $dept->code }})
-                                    </option>
-                                @endforeach
-                            @else
-                                <option value="">Bạn chưa được phân quyền bộ phận nào</option>
-                            @endif
-                        </select>
-                    </div>
+
                     {{-- Chọn Model --}}
                     <div class="mb-3">
                         <label class="form-label small fw-bold" for="PRODUCT_ID">Chọn Sản phẩm <span
@@ -48,7 +34,7 @@
                         @error('itemData.PRODUCT_ID')
                             <span class="text-danger small fst-italic">{{ $message }}</span>
                         @enderror
-                        @if (empty($availableProducts) && $selectedDeptCode)
+                        @if (empty($availableProducts))
                             <small class="text-warning">⚠️ Xưởng này chưa có Mã Hàng nào.</small>
                         @endif
                     </div>

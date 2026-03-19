@@ -23,6 +23,30 @@
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
+
+                {{-- <-- Trường gán Sản phẩm --> --}}
+                <div class="mb-3">
+                    <label class="form-label">{{ __('Sản phẩm phụ trách') }}</label>
+                    <div class="row">
+                        @foreach($allProducts as $productOption)
+                            <div class="col-md-4 col-sm-6 col-12">
+                                <div class="form-check">
+                                    <input wire:model="selectedProducts" class="form-check-input" type="checkbox" value="{{ $productOption->id }}" id="product-{{ $productOption->id }}">
+                                    <label class="form-check-label" for="product-{{ $productOption->id }}">
+                                        {{ $productOption->code }} - {{ $productOption->name }}
+                                    </label>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                    @error('selectedProducts')
+                        <div class="text-danger mt-1">{{ $message }}</div>
+                    @enderror
+                    @error('selectedProducts.*')
+                        <div class="text-danger mt-1">{{ $message }}</div>
+                    @enderror
+                </div>
+
                 <div class="d-flex justify-content-end mt-4">
                     <a href="{{ route('departments.index') }}" class="btn btn-secondary me-2">
                         {{ __('Hủy') }}

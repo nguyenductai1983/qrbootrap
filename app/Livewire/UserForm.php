@@ -9,6 +9,7 @@ use Illuminate\Validation\Rule;
 use App\Models\Department; // <-- Import Department model
 use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Role; // <-- Import Role model
+use Spatie\Permission\Models\Permission; // <-- Import Permission model
 class UserForm extends Component
 {
     public $user;
@@ -21,10 +22,14 @@ class UserForm extends Component
     public $selectedRoles = []; // <-- Mảng để lưu các vai trò được chọn
     public $departments; // <-- Biến để lưu danh sách phòng ban
     public $allRoles; // <-- Biến để lưu tất cả các vai trò
+
+    public $selectedPermissions = []; // <-- Mảng để lưu các quyền cấp trực tiếp
+    public $allPermissions; // <-- Biến để lưu tất cả các quyền
     public function mount($userId = null)
     {
         $this->departments = Department::orderBy('name')->get();
         $this->allRoles = Role::orderBy('name')->get(); // <-- Lấy tất cả vai trò
+        $this->allPermissions = Permission::orderBy('name')->get(); // <-- Lấy tất cả Permission
 
         if ($userId) {
             $this->user = User::findOrFail($userId);
@@ -33,11 +38,13 @@ class UserForm extends Component
             $this->role = $this->user->role; // Giữ lại nếu bạn vẫn dùng cột 'role'
             $this->department_id = $this->user->department_id;
             $this->selectedRoles = $this->user->roles->pluck('name')->toArray(); // <-- Lấy các vai trò hiện có
+            $this->selectedPermissions = $this->user->permissions->pluck('name')->toArray(); // <-- Lấy các quyền trực tiếp hiện có
         } else {
             $this->user = new User();
             $this->role = 'manager'; // Giá trị mặc định cho cột 'role'
             $this->department_id = null;
             $this->selectedRoles = ['manager']; // Mặc định gán vai trò 'user' khi tạo mới
+            $this->selectedPermissions = []; // Không gán quyền trực tiếp nào mặc định
         }
     }
 
@@ -59,10 +66,11 @@ class UserForm extends Component
                 'min:8',
                 'confirmed',
             ],
-            'role' => ['required', 'string', Rule::in(['admin', 'manager'])], // Giữ lại nếu bạn vẫn dùng cột 'role'
             'department_id' => ['nullable', 'exists:departments,id'],
             'selectedRoles' => ['nullable', 'array'],
             'selectedRoles.*' => ['exists:roles,name'], // <-- Mỗi vai trò phải tồn tại
+            'selectedPermissions' => ['nullable', 'array'],
+            'selectedPermissions.*' => ['exists:permissions,name'], // <-- Mỗi quyền phải tồn tại
         ];
     }
 
@@ -78,7 +86,6 @@ class UserForm extends Component
 
         $this->user->name = $this->name;
         $this->user->email = $this->email;
-        $this->user->role = $this->role; // Giữ lại nếu bạn vẫn dùng cột 'role'
         $this->user->department_id = $this->department_id;
 
         if ($this->password) {
@@ -89,6 +96,9 @@ class UserForm extends Component
 
         // Đồng bộ vai trò cho người dùng
         $this->user->syncRoles($this->selectedRoles);
+
+        // Đồng bộ quyền trực tiếp cho người dùng
+        $this->user->syncPermissions($this->selectedPermissions);
 
         $this->password = '';
         $this->password_confirmation = '';

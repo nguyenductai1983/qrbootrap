@@ -2,13 +2,19 @@
     <div class="row g-3">
         {{-- KHU VỰC QUÉT MÃ VẠCH / CAMERA --}}
         <div class="col-md-5">
+            <label class="small text-muted fw-bold" for="selectedProductId">Chọn Thành phẩm</label>
+            <select wire:model="selectedProductId" id="selectedProductId"
+                class="form-select form-select-sm border-secondary fw-bold text-success">
+                @foreach ($products as $product)
+                    <option value="{{ $product->id }}">{{ $product->code }} - {{ $product->name }}
+                    </option>
+                @endforeach
+            </select>
             <div class="card shadow-sm border-0">
                 <div class="card-header bg-primary text-white fw-bold">
-                    <i class="fa-solid fa-barcode me-2"></i> Quét Mã Vải Nguồn
+                    <i class="fa-solid fa-barcode me-2"></i> Quét Mã Mộc (Nguyên Liệu)
                 </div>
                 <div class="card-body text-center">
-
-                    {{-- Dành cho Súng quét USB hoặc Nhập tay --}}
                     <div class="mb-4">
                         <label class="form-label small text-muted fw-bold">Dùng súng quét (nhấp vào đây):</label>
                         <div class="input-group">
@@ -25,19 +31,16 @@
                             class="position-absolute top-50 start-50 translate-middle bg-white px-2 small text-muted fw-bold">HOẶC</span>
                     </div>
 
-                    {{-- Dành cho Camera Điện thoại --}}
                     <div class="mb-3">
                         <button type="button" class="btn btn-outline-dark btn-lg w-100 fw-bold shadow-sm"
                             id="btn-start-camera">
-                            <i class="fa-solid fa-camera me-2"></i> Bật Camera Điện Thoại
+                            <i class="fa-solid fa-camera me-2"></i> Bật Camera
                         </button>
                     </div>
 
-                    {{-- Khung hiển thị Camera --}}
                     <div id="reader" width="100%" class="shadow-sm border border-2 border-primary"
                         style="display: none; border-radius: 8px; overflow: hidden;">
                     </div>
-
                 </div>
             </div>
         </div>
@@ -46,7 +49,7 @@
         <div class="col-md-7">
             <div class="card shadow-sm border-0">
                 <div class="card-header bg-success text-white fw-bold">
-                    <i class="fa-solid fa-layer-group me-2"></i> Thông Số Ghép Tráng
+                    <i class="fa-solid fa-layer-group me-2"></i> Khai Báo Thành Phẩm Tráng
                 </div>
                 <div class="card-body">
 
@@ -54,11 +57,11 @@
                         <div
                             class="alert alert-light border border-secondary border-dashed text-center text-muted py-5">
                             <i class="fa-solid fa-box-open fa-3x mb-3 text-light-subtle"></i>
-                            <br>Chưa có cây vải nguyên liệu nào được quét.
+                            <br>Chưa có cây vải Mộc nào được quét.
                         </div>
                     @else
                         <h6 class="fw-bold text-secondary text-uppercase mb-3"><i
-                                class="fa-solid fa-boxes-stacked me-1"></i> Nguyên liệu mộc đầu vào:</h6>
+                                class="fa-solid fa-boxes-stacked me-1"></i> Mộc Đầu Vào:</h6>
                         <ul class="list-group mb-4 shadow-sm">
                             @foreach ($scannedItems as $index => $item)
                                 <li class="list-group-item border-start border-4 border-primary">
@@ -71,19 +74,16 @@
                                     </div>
                                     <div class="row align-items-center bg-light p-2 rounded">
                                         <div class="col-5 small text-muted">
-                                            Kho tồn: <b class="text-dark fs-6">{{ (float) $item['length'] }} m</b>
+                                            Tồn kho: <b class="text-dark fs-6">{{ (float) $item['length'] }} m</b>
                                         </div>
                                         <div class="col-7">
                                             <div class="input-group input-group-sm shadow-sm">
-                                                <span
-                                                    class="input-group-text bg-white fw-bold text-primary">Dùng:</span>
-
-                                                {{-- 🌟 Ô NHẬP MÉT MỘC: Dùng JS tính toán oninput, KHÔNG DÙNG wire:model.live --}}
+                                                <span class="input-group-text bg-white fw-bold text-primary">Xuất
+                                                    dùng:</span>
                                                 <input type="number" step="0.1" max="{{ $item['length'] }}"
                                                     wire:model="usedLengths.{{ $item['id'] }}"
                                                     class="form-control text-end fw-bold input-used-length"
                                                     oninput="calculateFromUsed()" placeholder="0.0">
-
                                                 <span class="input-group-text bg-white">m</span>
                                             </div>
                                         </div>
@@ -96,8 +96,7 @@
 
                         <div class="d-flex justify-content-between align-items-end mb-3 mt-4">
                             <h6 class="fw-bold text-success text-uppercase mb-0"><i
-                                    class="fa-solid fa-check-double me-1"></i> Thành phẩm sau tráng:</h6>
-                            {{-- 🌟 HIỂN THỊ TỈ LỆ HIỆN TẠI --}}
+                                    class="fa-solid fa-check-double me-1"></i> Thành phẩm đầu ra:</h6>
                             <span class="badge bg-light text-secondary border shadow-sm"
                                 title="Tỉ lệ: Tổng mộc / Thành phẩm">
                                 <i class="fa-solid fa-robot text-info"></i> Tỉ lệ hao hụt: <span id="ratio-display"
@@ -109,25 +108,16 @@
                             <label class="form-label small text-muted fw-bold">Nhập chiều dài cây tráng thực tế thu
                                 được:</label>
                             <div class="input-group shadow-sm">
-
-                                {{-- 🌟 Ô NHẬP MÉT THÀNH PHẨM: Dùng JS tính lại tỉ lệ khi sửa tay --}}
                                 <input type="number" step="0.1" wire:model="newLength" id="input-new-length"
                                     oninput="calculateFromNew(this.value)"
                                     class="form-control form-control-lg text-end fw-bold text-success fs-4"
                                     placeholder="0.0">
-
                                 <span class="input-group-text bg-white fw-bold fs-5 text-success">mét (m)</span>
-                            </div>
-                            <div class="form-text small text-muted mt-2">
-                                <i class="fa-solid fa-circle-info text-info me-1"></i>
-                                Hệ thống tự động tính số liệu dựa trên lịch sử sản xuất. Bạn có thể tự gõ lại nếu số
-                                thực tế trên máy tráng khác biệt.
                             </div>
                         </div>
 
-                        {{-- NÚT LƯU & IN TEM --}}
                         <button wire:click="confirmCoating" class="btn btn-success btn-lg w-100 fw-bold shadow">
-                            <i class="fa-solid fa-print me-2"></i> XÁC NHẬN TRÁNG & IN TEM
+                            <i class="fa-solid fa-print me-2"></i> XÁC NHẬN TẠO MÃ & IN TEM
                         </button>
                     @endif
                 </div>
@@ -136,20 +126,14 @@
     </div>
 
     {{-- ========================================== --}}
-    {{-- SCRIPT: CAMERA QUÉT MÃ & MÁY TÍNH HỌC TỈ LỆ --}}
+    {{-- SCRIPT: TÍNH TOÁN NHANH BẰNG JS & CAMERA   --}}
     {{-- ========================================== --}}
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
     <script>
-        // 1. BIẾN TOÀN CỤC CHỨA TỈ LỆ HAO HỤT
-        // Lấy tỉ lệ từ Server truyền xuống lần đầu
         let currentRatio = {{ $coatingRatio ?? 1.07 }};
 
-        // 2. HÀM TÍNH TOÁN (Đưa ra Global Scope để thẻ HTML gọi được qua oninput)
-
-        // Khi gõ mét Mộc -> Máy tự điền mét Thành Phẩm
         window.calculateFromUsed = function() {
             let totalUsed = 0;
-            // Gom tất cả số mét ở các ô "Dùng" cộng lại
             document.querySelectorAll('.input-used-length').forEach(function(input) {
                 let val = parseFloat(input.value);
                 if (!isNaN(val)) totalUsed += val;
@@ -158,17 +142,13 @@
             if (totalUsed > 0 && currentRatio > 0) {
                 let newLen = (totalUsed / currentRatio).toFixed(1);
                 let newLenInput = document.getElementById('input-new-length');
-
-                newLenInput.value = newLen; // Hiển thị ra màn hình
-
-                // Kích hoạt Event 'input' để báo cho Livewire biết dữ liệu vừa thay đổi
+                newLenInput.value = newLen;
                 newLenInput.dispatchEvent(new Event('input'));
             } else if (totalUsed === 0) {
                 document.getElementById('input-new-length').value = '';
             }
         };
 
-        // Khi sửa tay mét Thành Phẩm -> Máy tự học lại Tỉ Lệ Mới
         window.calculateFromNew = function(newLenValue) {
             let totalUsed = 0;
             document.querySelectorAll('.input-used-length').forEach(function(input) {
@@ -179,23 +159,21 @@
             let newLen = parseFloat(newLenValue);
             if (!isNaN(newLen) && newLen > 0 && totalUsed > 0) {
                 currentRatio = totalUsed / newLen;
-                // Cập nhật lên thẻ Badge hiển thị trên góc
                 document.getElementById('ratio-display').innerText = currentRatio.toFixed(3);
             }
         };
 
-        // 3. KHỞI TẠO CAMERA & LẮNG NGHE LIVEWIRE
         document.addEventListener('livewire:initialized', () => {
-            // 🌟 THÊM ĐOẠN NÀY: Lắng nghe tín hiệu quét/xóa từ Server
+
+            // Lắng nghe tín hiệu khi quét mã / xóa mã để tính toán lại
             Livewire.on('update-calculations', () => {
-                // Dùng setTimeout 100ms để đảm bảo Livewire đã vẽ xong thẻ input HTML ra màn hình
                 setTimeout(() => {
                     if (typeof window.calculateFromUsed === 'function') {
                         window.calculateFromUsed();
                     }
                 }, 100);
             });
-            // Xử lý Camera Điện Thoại
+
             const btnStart = document.getElementById('btn-start-camera');
             const readerDiv = document.getElementById('reader');
             let html5QrcodeScanner = null;
@@ -204,7 +182,6 @@
                 btnStart.addEventListener('click', () => {
                     readerDiv.style.display = 'block';
                     btnStart.style.display = 'none';
-
                     html5QrcodeScanner = new Html5QrcodeScanner("reader", {
                         fps: 10,
                         qrbox: {
@@ -212,7 +189,6 @@
                             height: 250
                         }
                     }, false);
-
                     html5QrcodeScanner.render(onScanSuccess, onScanFailure);
                 });
             }
@@ -221,18 +197,12 @@
                 html5QrcodeScanner.clear();
                 readerDiv.style.display = 'none';
                 btnStart.style.display = 'block';
-
-                // Bắn mã quét được lên Server xử lý
                 @this.call('addScannedItem', decodedText);
             }
 
-            function onScanFailure(error) {
-                // Bỏ qua các frame ảnh rác không có mã vạch
-            }
+            function onScanFailure(error) {}
 
-            // Lắng nghe Alert báo lỗi / thành công từ Server
             Livewire.on('alert', (event) => {
-                // Bạn có thể đổi hàm alert() này thành Toastr hoặc SweetAlert2 cho đẹp
                 alert(event[0].message);
             });
         });
