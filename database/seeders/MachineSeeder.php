@@ -32,7 +32,9 @@ class MachineSeeder extends Seeder
         //
         $user = User::first();
         $user->machines()->attach([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]);
-        $user = User::first(2);
-        $user->machines()->attach([1, 4, 7, 10, 13]);
+        $user = User::skip(1)->first();
+        if ($user) {
+            $user->machines()->attach([1, 4, 7, 10, 13]);
+        }
     }
 }
