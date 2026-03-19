@@ -57,6 +57,12 @@ class User extends Authenticatable
     {
         return $this->hasRole('admin'); // Kiểm tra vai trò 'admin' bằng Spatie
     }
+
+    public function machines()
+    {
+        return $this->belongsToMany(Machine::class, 'machine_user');
+    }
+
     // Định nghĩa mối quan hệ nhiều-một với Department
     public function department()
     {

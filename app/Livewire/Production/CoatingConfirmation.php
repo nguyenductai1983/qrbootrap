@@ -5,6 +5,7 @@ namespace App\Livewire\Production;
 use Livewire\Component;
 use App\Models\Item;
 use App\Models\ItemProperty;
+use App\Models\Machine;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Enums\ActionType;
@@ -19,8 +20,11 @@ class CoatingConfirmation extends Component
     public $coatingRatio = 1.07;
     public $products = [];
     public $selectedProductId = ''; // Model nhân viên chọn
+    public $selectedMachineId = ''; // Máy đang thực hiện tráng
+    public $machines = [];          // Danh sách máy được gán cho user này
     public function mount()
     {
+        /** @var \App\Models\User $user */
         $user = Auth::user();
         // Lấy đơn hàng đang chạy
 
@@ -29,16 +33,22 @@ class CoatingConfirmation extends Component
                 $q->where('departments.id', $user->department_id);
             })->get();
         } else {
-            // Nếu user không thuộc phòng ban nào, hoặc là Admin -> Lấy hết (hoặc rỗng tùy logic)
-            // Ở đây mình lấy hết để dễ test, bạn có thể để [] nếu muốn chặt chẽ
             $this->products = Product::all();
         }
         $this->coatingRatio = cache()->get('coating_ratio_' . Auth::id(), 1.07);
+
+        // Lấy danh sách máy được phân công cho user (có status=true)
+        $this->machines = $user->machines()->where('status', true)->orderBy('code')->get();
 
         // Gán mã thành phẩm mặc định là kết quả đầu tiên của danh sách products
         if (!empty($this->products) && count($this->products) > 0) {
             $firstProduct = is_array($this->products) ? $this->products[0] : $this->products->first();
             $this->selectedProductId = $firstProduct->id;
+        }
+
+        // Gán máy mặc định nếu chỉ có 1 máy
+        if (count($this->machines) === 1) {
+            $this->selectedMachineId = collect($this->machines)->first()->id;
         }
     }
 
@@ -151,18 +161,27 @@ class CoatingConfirmation extends Component
             // Nối chuỗi cơ sở (Ví dụ: "H212NDS98 WE D8 1780 PP 150 650")
             $baseString = implode(' ', $baseParts);
 
-            // Tìm STT tiếp theo cho dòng mã này (Đếm xem đã có bao nhiêu mã giống vậy bắt đầu bằng T)
-            $countExisting = Item::where('code', 'LIKE', $baseString . ' T%')->count();
+            // Tìm STT tiếp theo dựa trên code của Product được chọn
+            $selectedProduct = $this->selectedProductId ? \App\Models\Product::find($this->selectedProductId) : null;
+            $productCode = $selectedProduct?->code ?? '';
+
+            // Nếu có product code thì prefix = " PRODUCTCODE", không có thì để trống
+            $prefix = $productCode ? (' ' . $productCode) : '';
+
+            $countExisting = Item::where('code', 'LIKE', $baseString . $prefix . '%')->count();
             $nextNo = str_pad($countExisting + 1, 3, '0', STR_PAD_LEFT); // Format: 001, 002...
 
-            // MÃ FINAL: H212NDS98 WE D8 1780 PP 150 650 T001
-            $finalCode = $baseString . ' T' . $nextNo;
+            // MÃ FINAL: Ví dụ: "H212NDS98 WE D8 1780 PP 150 650 VT001" hoặc "H212NDS98 WE D8 1780 PP 150 650 001"
+            $finalCode = $baseString . $prefix . $nextNo;
 
             // Dọn rác JSON
             $cleanProps = $sourceItem->properties ?? [];
             unset($cleanProps['DAI'], $cleanProps['DAI_THANH_PHAM'], $cleanProps['LENGTH']);
 
             // 5. KHAI SINH CÂY TRÁNG THÀNH PHẨM
+            /** @var \App\Models\User $currentUser */
+            $currentUser = Auth::user();
+
             $coatedItem = Item::create([
                 'code' => $finalCode,
                 // 'type' => 2, // 🌟 Thay số này bằng Type của Vải Tráng trong hệ thống bạn
@@ -174,12 +193,14 @@ class CoatingConfirmation extends Component
 
                 'created_by' => Auth::id(),
                 'order_id'         => $sourceItem->order_id,
-                'product_id'       => $this->selectedProductId, // 🌟 Nếu Sản phẩm Tráng khác ID, bạn thay ở đây
+                'product_id'       => $this->selectedProductId,
                 'color_id'         => $sourceItem->color_id,
                 'specification_id' => $sourceItem->specification_id,
                 'width_id'         => $sourceItem->width_id,
                 'plastic_type_id'  => $sourceItem->plastic_type_id,
                 'properties'       => $cleanProps,
+                'department_id'    => $currentUser->department_id,
+                'machine_id'       => $this->selectedMachineId ?: null,
             ]);
 
             // 6. CẬP NHẬT CÂY MỘC CŨ VÀ GHI PHẢ HỆ

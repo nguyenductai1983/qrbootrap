@@ -113,6 +113,16 @@
                         <i class="fa-solid fa-code me-2"></i>
                         <span class="sidebar-text">Code đã tạo (Items)</span>
                     </a>
+                    <a href="{{ route('manager.machines') }}" title="Quản lý Máy Móc"
+                        class="list-group-item list-group-item-action py-2 ps-5 {{ request()->routeIs('manager.machines') ? 'active' : '' }}">
+                        <i class="fa-solid fa-gears me-2"></i>
+                        <span class="sidebar-text">Máy Móc</span>
+                    </a>
+                    <a href="{{ route('manager.user-machines') }}" title="Phân Công Máy"
+                        class="list-group-item list-group-item-action py-2 ps-5 {{ request()->routeIs('manager.user-machines') ? 'active' : '' }}">
+                        <i class="fa-solid fa-user-gear me-2"></i>
+                        <span class="sidebar-text">Phân Công Máy</span>
+                    </a>
 
                 </div>
             @endcan

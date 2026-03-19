@@ -16,6 +16,8 @@ class Item extends Model
         'current_location_id',
         'order_id',
         'product_id', // <-- Thêm khóa ngoại liên kết với Product
+        'department_id', // 🌟 Added
+        'machine_id', // 🌟 Added
         'properties',
         'created_by',
         'verified_at',
@@ -101,5 +103,15 @@ class Item extends Model
     public function scopeActive($query)
     {
         return $query->where('status', ItemStatus::VERIFIED);
+    }
+
+    public function department()
+    {
+        return $this->belongsTo(Department::class, 'department_id');
+    }
+
+    public function machine()
+    {
+        return $this->belongsTo(Machine::class, 'machine_id');
     }
 }

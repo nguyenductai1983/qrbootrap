@@ -1,6 +1,9 @@
 <?php
+
 namespace Database\Seeders;
+
 use Illuminate\Database\Seeder;
+
 class DatabaseSeeder extends Seeder
 {
     /**
@@ -19,7 +22,8 @@ class DatabaseSeeder extends Seeder
         $this->call(ColorSeeder::class);
         $this->call(PlasticTypeSeeder::class);
         $this->call(SpecificationSeeder::class);
-         $this->call(WidthSeeder::class);
+        $this->call(WidthSeeder::class);
+        $this->call(MachineSeeder::class);
         // 3. Tạo User Admin mẫu (Sau khi đã có Role và Department)
         // Kiểm tra xem user đã tồn tại chưa để tránh lỗi trùng email khi chạy lại
     }

@@ -4,12 +4,31 @@
         <div class="col-md-5">
             <label class="small text-muted fw-bold" for="selectedProductId">Chọn Thành phẩm</label>
             <select wire:model="selectedProductId" id="selectedProductId"
-                class="form-select form-select-sm border-secondary fw-bold text-success">
+                class="form-select form-select-sm border-secondary fw-bold text-success mb-2">
                 @foreach ($products as $product)
                     <option value="{{ $product->id }}">{{ $product->code }} - {{ $product->name }}
                     </option>
                 @endforeach
             </select>
+
+            <label class="small text-muted fw-bold" for="selectedMachineId">
+                <i class="fa-solid fa-gears me-1"></i>Chọn Máy Thực Hiện
+            </label>
+            <select wire:model="selectedMachineId" id="selectedMachineId"
+                class="form-select form-select-sm border-primary fw-bold text-primary mb-2">
+                <option value="">-- Không chọn / Không rõ --</option>
+                @foreach ($machines as $machine)
+                    <option value="{{ $machine->id }}">
+                        [{{ $machine->code }}] {{ $machine->name }}
+                    </option>
+                @endforeach
+            </select>
+            @if (count($machines) === 0)
+                <div class="alert alert-warning py-1 px-2 small mb-2">
+                    <i class="fa-solid fa-triangle-exclamation me-1"></i>
+                    Bạn chưa được phân công máy nào. Liên hệ Admin để được gán máy.
+                </div>
+            @endif
             <div class="card shadow-sm border-0">
                 <div class="card-header bg-primary text-white fw-bold">
                     <i class="fa-solid fa-barcode me-2"></i> Quét Mã Mộc (Nguyên Liệu)

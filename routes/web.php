@@ -23,6 +23,8 @@ use App\Livewire\Admin\PropertyManager;
 use App\Livewire\Admin\ItemTypeManager;
 use App\Livewire\Production\ItemManager;
 use App\Livewire\Admin\CategoryManager;
+use App\Livewire\Admin\MachineManager;
+use App\Livewire\Admin\UserMachineAssignment;
 use App\Livewire\Production\CoatingConfirmation;
 //Role::withoutGlobalScopes()->get(); // Lấy tất cả vai trò mà không áp dụng bất kỳ global scope nào
 Route::view('/', 'welcome');
@@ -84,6 +86,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/item-types', ItemTypeManager::class)->name('manager.item-types');
         Route::get('/items', ItemManager::class)->name('manager.items');
         Route::get('/categories', CategoryManager::class)->name('manager.categories');
+        Route::get('/machines', MachineManager::class)->name('manager.machines');
+        Route::get('/user-machines', UserMachineAssignment::class)->name('manager.user-machines');
     });
     // ==========================================
     // 2. NHÓM PRODUCTION (Sản xuất)

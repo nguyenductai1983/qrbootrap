@@ -5,6 +5,7 @@ namespace App\Livewire\Production;
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Item;
+use App\Models\Machine;
 use Livewire\WithPagination;
 use App\Models\Department;
 use App\Models\Order;
@@ -196,6 +197,24 @@ class BarcodeGeneratorExcel extends Component
                 ];
                 $propParts = array_filter([$gsm, $length]);
                 try {
+                    // 🌟 Tìm hoặc tạo Machine theo mã máy từ Excel
+                    $machineId = null;
+                    if (!empty($machineNum)) {
+                        /** @var \App\Models\User $user */
+                        $user = Auth::user();
+                        $userDeptId = $user->department_id;
+
+                        $machine = Machine::firstOrCreate(
+                            ['code' => strtoupper($machineNum)],
+                            [
+                                'name'          => 'Máy ' . strtoupper($machineNum),
+                                'department_id' => $userDeptId,
+                                'status'        => true,
+                            ]
+                        );
+                        $machineId = $machine->id;
+                    }
+
                     // 🌟 GỌI SERVICE ĐỂ SINH MÃ TẠI ĐÂY (Code ngắn gọn và sạch sẽ hơn hẳn)
                     $realCode = ItemCodeService::generateStandardCode(
                         $orderCode,
@@ -209,20 +228,25 @@ class BarcodeGeneratorExcel extends Component
 
                     $numericLength = is_numeric($length) ? (float) $length : null;
 
+                    /** @var \App\Models\User $currentUser */
+                    $currentUser = Auth::user();
+
                     Item::create([
-                        'code' => $realCode,
-                        'type' => $this->type,
-                        'status' => 1,
-                        'properties' => $propertiesToSave,
-                        'created_by' => Auth::id(),
+                        'code'         => $realCode,
+                        'type'         => $this->type,
+                        'status'       => 1,
+                        'properties'   => $propertiesToSave,
+                        'created_by'   => Auth::id(),
                         'color_id'         => $colorId,
                         'specification_id' => $specId,
                         'plastic_type_id'  => $plasticId,
                         'width_id'         => $widthId,
-                        'order_id' => $orderId,
-                        'product_id' => $this->itemData['PRODUCT_ID'] ?? null,
-                        'original_length' => $numericLength,
-                        'length' => $numericLength,
+                        'order_id'         => $orderId,
+                        'product_id'       => $this->itemData['PRODUCT_ID'] ?? null,
+                        'original_length'  => $numericLength,
+                        'length'           => $numericLength,
+                        'department_id'    => $currentUser->department_id,
+                        'machine_id'       => $machineId,
                     ]);
                 } catch (QueryException $e) {
                     if ($e->errorInfo[1] == 1062) {

@@ -195,13 +195,51 @@
                         <div class="card h-100 shadow-sm border-0 hover-card">
                             <div class="card-body p-3 d-flex align-items-center">
                                 <div class="bg-secondary bg-opacity-10 text-secondary p-3 rounded me-3">
-                                    <i class="fa-solid fa-layer-group fa-xl"></i>
+                                    <i class="fa-solid fa-tags fa-xl"></i>
                                 </div>
                                 <div class="flex-grow-1">
                                     <h6 class="fw-bold mb-0">Thuộc Tính</h6>
                                     <small class="text-muted">Danh mục thuộc tính sản phẩm</small>
                                 </div>
                                 <a href="{{ route('manager.properties') }}" class="stretched-link text-secondary"><i
+                                        class="fas fa-chevron-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Nhóm Máy Móc --}}
+                <h6 class="text-muted fw-bold text-uppercase small mb-3 mt-4"><i class="fa-solid fa-gears me-1"></i> Máy Móc</h6>
+                <div class="row g-4 mb-4">
+                    {{-- Quản lý Máy --}}
+                    <div class="col-md-6 col-lg-3">
+                        <div class="card h-100 shadow-sm border-0 hover-card">
+                            <div class="card-body p-3 d-flex align-items-center">
+                                <div class="bg-warning bg-opacity-10 text-warning p-3 rounded me-3">
+                                    <i class="fa-solid fa-gears fa-xl"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="fw-bold mb-0">Máy Móc</h6>
+                                    <small class="text-muted">Thêm/sửa danh sách máy</small>
+                                </div>
+                                <a href="{{ route('manager.machines') }}" class="stretched-link text-warning"><i
+                                        class="fas fa-chevron-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Phân Công Máy --}}
+                    <div class="col-md-6 col-lg-3">
+                        <div class="card h-100 shadow-sm border-0 hover-card">
+                            <div class="card-body p-3 d-flex align-items-center">
+                                <div class="bg-warning bg-opacity-10 text-warning p-3 rounded me-3">
+                                    <i class="fa-solid fa-user-gear fa-xl"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="fw-bold mb-0">Phân Công Máy</h6>
+                                    <small class="text-muted">Gán máy cho nhân viên</small>
+                                </div>
+                                <a href="{{ route('manager.user-machines') }}" class="stretched-link text-warning"><i
                                         class="fas fa-chevron-right"></i></a>
                             </div>
                         </div>
