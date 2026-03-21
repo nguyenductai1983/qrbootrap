@@ -8,18 +8,32 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use App\Models\Item;
 
 class ItemsExport implements FromCollection, WithHeadings, WithMapping, ShouldAutoSize, WithStyles
 {
     protected $items;
     protected $dynamicKeys = [];
 
-    public function __construct($items)
+    /**
+     * @param  \Illuminate\Support\Collection|string  $itemsOrOrderId  Either a ready-made collection or an order ID
+     * @param  int|null  $modelId  Product ID — required when $itemsOrOrderId is an order ID
+     */
+    public function __construct($itemsOrOrderId, $modelId = null)
     {
-        $this->items = $items;
+        if ($modelId !== null) {
+            // Called from ExcelManager with two IDs → query internally
+            $this->items = Item::with(['order', 'product', 'color'])
+                ->where('order_id', $itemsOrOrderId)
+                ->where('product_id', $modelId)
+                ->get();
+        } else {
+            // Called from ItemManager with a ready-made collection
+            $this->items = $itemsOrOrderId;
+        }
 
         $keys = [];
-        foreach ($items as $item) {
+        foreach ($this->items as $item) {
             $properties = is_array($item->properties) ? $item->properties : json_decode($item->properties, true);
             if (is_array($properties)) {
                 foreach (array_keys($properties) as $key) {

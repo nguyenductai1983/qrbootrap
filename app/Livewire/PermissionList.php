@@ -6,10 +6,11 @@ use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Permission;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Livewire\WithoutUrlPagination;
 
 class PermissionList extends Component
 {
-    use WithPagination;
+    use WithPagination, WithoutUrlPagination;
 
     public $search = '';
     public $showSuggestions = false; // Biến kiểm soát ẩn/hiện bảng gợi ý
@@ -67,7 +68,8 @@ class PermissionList extends Component
         $permissions = (clone $query)
             ->withCount('roles')
             ->orderBy('id')
-            ->paginate(20);
+            ->paginate(20)
+            ->withPath(route('permissions.index'));
 
         // 3. Lấy dữ liệu cho danh sách gợi ý (Chỉ lấy 5 kết quả đầu tiên cho nhẹ)
         $suggestions = collect();

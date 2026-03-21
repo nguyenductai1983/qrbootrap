@@ -93,13 +93,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // 2. NHÓM PRODUCTION (Sản xuất)
     // ==========================================
     // Ví dụ: Bọc tất cả các route in tem, quét tem vào chung 1 quyền "manage production"
-    // Nếu các route này dùng chung 1 quyền, đây là cách bạn bọc middleware cho cả group:
-    Route::middleware(['permission:print barcodes'])->group(function () {
-        Route::get('/production/barcode-generator', BarcodeGenerator::class)->name('production.barcode-generator');
-        Route::get('/barcode-list', BarcodeList::class)->name('production.list');
-    });
+    // Nếu các route này dùng chung 1 quyền, đây là cách bạn bọc middleware cho cả group:   
     Route::middleware(['permission:print barcodes'])->group(function () {
         Route::get('/production/barcode-generator-excel', BarcodeGeneratorExcel::class)->name('production.barcode-generator-excel');
+        Route::get('/production/barcode-generator', BarcodeGenerator::class)->name('production.barcode-generator');
     });
     // Các route production khác không dùng chung middleware trên
     Route::prefix('production')->name('production.')->group(function () {

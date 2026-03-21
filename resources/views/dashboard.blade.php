@@ -109,7 +109,7 @@
                     @endcan
 
                     {{-- Chức năng: DANH SÁCH TEM --}}
-                    @can('view barcodes')
+                    @can('items view')
                         <div class="col-md-6 col-lg-3">
                             <div class="card h-100 shadow-sm border-0 hover-card">
                                 <div class="card-body d-flex flex-column text-center p-4">
@@ -118,11 +118,11 @@
                                             <i class="fa-solid fa-list-check fa-2x"></i>
                                         </div>
                                     </div>
-                                    <h5 class="card-title fw-bold">Danh Sách Tem</h5>
+                                    <h5 class="card-title fw-bold">Danh Sách Sản Phẩm</h5>
                                     <p class="card-text text-muted small mb-4">Xem lịch sử và quản lý danh sách tem đã tạo.
                                     </p>
 
-                                    <a href="{{ route('production.list') }}"
+                                    <a href="{{ route('manager.items') }}"
                                         class="btn btn-outline-info text-dark w-100 mt-auto stretched-link">
                                         Truy cập <i class="fas fa-arrow-right ms-1"></i>
                                     </a>
@@ -209,7 +209,8 @@
                 </div>
 
                 {{-- Nhóm Máy Móc --}}
-                <h6 class="text-muted fw-bold text-uppercase small mb-3 mt-4"><i class="fa-solid fa-gears me-1"></i> Máy Móc</h6>
+                <h6 class="text-muted fw-bold text-uppercase small mb-3 mt-4"><i class="fa-solid fa-gears me-1"></i> Máy
+                    Móc</h6>
                 <div class="row g-4 mb-4">
                     {{-- Quản lý Máy --}}
                     <div class="col-md-6 col-lg-3">

@@ -43,6 +43,9 @@ class RolesAndPermissionsSeeder extends Seeder
         Permission::firstOrCreate(['name' => 'print barcodes']); // Quyền mới: in mã vạch
         Permission::firstOrCreate(['name' => 'products scan']); // Quyền mới: quét sản phẩm
         Permission::firstOrCreate(['name' => 'product manager']); // Quyền mới: quản lý sản phẩm
+        Permission::firstOrCreate(['name' => 'items view']); // Quyền mới: xem danh sách tem
+        Permission::firstOrCreate(['name' => 'items edit']); // Quyền mới: chỉnh sửa tem
+        Permission::firstOrCreate(['name' => 'items delete']); // Quyền mới: xóa tem
         // 2. Tạo Roles và gán Permissions
         // Vai trò Admin: Có tất cả các quyền
         $adminRole = Role::firstOrCreate(['name' => 'admin']);
@@ -56,6 +59,9 @@ class RolesAndPermissionsSeeder extends Seeder
             'print barcodes', // Quyền mới: in mã vạch
             'products scan',
             'product manager',
+            'barcodes view',
+            'barcodes edit',
+            'barcodes delete',
         ]);
         // 3. Gán Role cho một người dùng cụ thể (ví dụ: người dùng đầu tiên)
         $user = User::first(); // Lấy người dùng đầu tiên

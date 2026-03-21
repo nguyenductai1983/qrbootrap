@@ -75,7 +75,7 @@
                     </div>
                 </div>
                 <div class="row g-3 ">
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <label class="form-label small fw-bold" for="filterOrderId">Lọc theo Đơn hàng:</label>
                         <select wire:model.live="filterOrderId" class="form-select" id="filterOrderId">
                             <option value="">-- Tất cả đơn hàng --</option>
@@ -85,21 +85,33 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
+                        <label class="form-label small fw-bold" for="filterDepartmentId">Lọc theo Xưởng:</label>
+                        <select wire:model.live="filterDepartmentId" class="form-select" id="filterDepartmentId">
+                            <option value="">-- Tất cả xưởng --</option>
+                            @foreach ($departments as $department)
+                                <option value="{{ $department->id }}">{{ $department->code }} - {{ $department->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-3">
                         <label class="form-label small fw-bold" for="filterProductId">Lọc theo Sản phẩm:</label>
                         <select wire:model.live="filterProductId" class="form-select" id="filterProductId">
                             <option value="">-- Tất cả sản phẩm --</option>
                             @foreach ($products as $product)
-                                <option value="{{ $product->id }}">{{ $product->code }} - {{ $product->name }}</option>
+                                <option value="{{ $product->id }}">{{ $product->code }} - {{ $product->name }}
+                                </option>
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <label class="form-label small fw-bold" for="filterColorId">Lọc theo Màu:</label>
                         <select wire:model.live="filterColorId" class="form-select" id="filterColorId">
                             <option value="">-- Tất cả màu --</option>
                             @foreach ($colors as $color)
-                                <option value="{{ $color->id }}">{{ $color->code }} - {{ $color->name }}</option>
+                                <option value="{{ $color->id }}">{{ $color->code }} - {{ $color->name }}
+                                </option>
                             @endforeach
                         </select>
                     </div>
@@ -135,7 +147,11 @@
                                 <tr>
                                     <td class="fw-bold text-primary">{{ $item->code }}</td>
                                     <td class="text-center">{{ $item->order->code ?? '-' }}</td>
-                                    <td>{{ $item->product->name ?? '-' }}</td>
+                                    <td>{{ $item->product->name ?? '-' }} - {{ $item->department->name ?? '-' }}
+                                        <br>
+                                        <span
+                                            class="badge bg-secondary rounded-pill">{{ $item->creator->name ?? '-' }}</span>
+                                    </td>
                                     <td>{{ $item->color->name ?? '-' }}</td>
                                     <td class="text-center">
                                         <span class="badge {{ $item->status->badge() }}">
@@ -191,8 +207,14 @@
                                     </td>
                                     <td class="text-center">
                                         <button wire:click="edit({{ $item->id }})"
-                                            class="btn btn-sm btn-outline-primary" title="Sửa chi tiết">
+                                            class="btn btn-sm btn-outline-primary me-1" title="Sửa chi tiết">
                                             <i class="fa-solid fa-pen-to-square"></i>
+                                        </button>
+                                        <button
+                                            wire:click="delete({{ $item->id }})"
+                                            wire:confirm="⚠️ Bạn có chắc muốn xóa tem [{{ $item->code }}]? Hành động này không thể hoàn tác!"
+                                            class="btn btn-sm btn-outline-danger" title="Xóa tem">
+                                            <i class="fa-solid fa-trash"></i>
                                         </button>
                                     </td>
                                 </tr>

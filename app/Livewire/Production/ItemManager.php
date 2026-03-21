@@ -8,6 +8,7 @@ use Livewire\WithPagination;
 use App\Models\Item;
 use App\Models\Order;
 use App\Models\Product;
+use App\Models\Department;
 
 class ItemManager extends Component
 {
@@ -18,6 +19,7 @@ class ItemManager extends Component
     public $filterOrderId = '';
     public $filterProductId = '';
     public $filterColorId = '';
+    public $filterDepartmentId = '';
     public $fromDate = '';
     public $toDate = '';
 
@@ -54,6 +56,10 @@ class ItemManager extends Component
     {
         $this->resetPage();
     }
+    public function updatingFilterDepartmentId()
+    {
+        $this->resetPage();
+    }
     public function edit($id)
     {
         $item = Item::find($id);
@@ -87,6 +93,16 @@ class ItemManager extends Component
 
             session()->flash('message', 'Cập nhật chi tiết tem thành công!');
             $this->dispatch('close-modal');
+        }
+    }
+
+    public function delete($id)
+    {
+        $item = Item::find($id);
+        if ($item) {
+            $code = $item->code;
+            $item->delete();
+            session()->flash('message', "🗑️ Đã xóa tem [{$code}] thành công!");
         }
     }
     public function selectSuggestion($Codestring)
@@ -151,6 +167,9 @@ class ItemManager extends Component
             })
             ->when($this->filterColorId, function ($q) {
                 $q->where('color_id', $this->filterColorId);
+            })
+            ->when($this->filterDepartmentId, function ($q) {
+                $q->where('department_id', $this->filterDepartmentId);
             });
         // 3. Lấy dữ liệu cho danh sách gợi ý (Chỉ lấy 5 kết quả đầu tiên cho nhẹ)
         $suggestions = collect();
@@ -162,6 +181,7 @@ class ItemManager extends Component
             'orders' => Order::orderBy('id', 'desc')->get(),
             'products' => Product::orderBy('name', 'asc')->get(),
             'colors' => Color::orderBy('name', 'asc')->get(),
+            'departments' => Department::orderBy('name', 'asc')->get(),
             'suggestions' => $suggestions, // Trả thêm biến suggestions ra View
         ]);
     }

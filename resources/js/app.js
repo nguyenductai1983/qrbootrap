@@ -41,7 +41,6 @@ document.addEventListener('livewire:navigated', function () {
     // Gọi hàm này ngay khi trang vừa tải xong để Icon khớp với bộ nhớ Local Storage
 
     // Tương tự cho nút đóng trên Mobile
-    // Tương tự cho nút đóng trên Mobile
     if (sidebarClose && wrapper) {
         sidebarClose.addEventListener('click', function (e) {
             e.preventDefault();
@@ -50,6 +49,20 @@ document.addEventListener('livewire:navigated', function () {
             updateToggleIcon(); // Thêm dòng này để cập nhật lại icon nếu cần
         });
     }
+
+    // --- TỰ ĐÓNG SIDEBAR TRÊN MOBILE KHI BẤM VÀO MENU ITEM ---
+    // Lắng nghe click trên tất cả các link (<a>) bên trong sidebar
+    const sidebarLinks = document.querySelectorAll('#sidebar-wrapper a.list-group-item');
+    sidebarLinks.forEach(function (link) {
+        link.addEventListener('click', function () {
+            // Chỉ đóng khi đang ở màn hình mobile (nhỏ hơn breakpoint lg = 992px)
+            if (window.innerWidth < 992 && wrapper) {
+                wrapper.classList.add('toggled');
+                document.cookie = "sidebarState=expanded; path=/; max-age=31536000";
+                updateToggleIcon();
+            }
+        });
+    });
 
     // --- 5. XỬ LÝ DARK/LIGHT MODE (GIỮ NGUYÊN) ---
     const themeToggleBtn = document.getElementById('themeToggle');

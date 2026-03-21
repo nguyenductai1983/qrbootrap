@@ -58,9 +58,9 @@
 
 /* Khi Sidebar đang nhỏ, Menu con mở ra sẽ căn giữa và chỉ hiện icon */
 #wrapper.toggled #sidebar-wrapper .collapse.show .list-group-item {
-    padding-left: 0 !important;
+    /* padding-left: 0 !important; */
     text-align: center;
-    justify-content: center;
+    /* justify-content: center; */
 }
 
 #wrapper.toggled #sidebar-wrapper .collapse.show .list-group-item i {

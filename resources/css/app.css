@@ -302,6 +302,11 @@ body {
         align-items: center;
     }
 
+    /* Menu con (submenu) cần thụt vào nhiều hơn menu cha */
+    #sidebar-wrapper .collapse .list-group-item {
+        padding-left: 2.5rem !important;
+    }
+
     #sidebar-wrapper .list-group-item i {
         margin-right: 0.5rem !important;
         margin-left: 0 !important;

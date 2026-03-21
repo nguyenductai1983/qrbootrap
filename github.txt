@@ -1,0 +1,12 @@
+# 1. Khởi tạo lại git
+git init
+
+# 2. Kết nối với GitHub của bạn
+git remote add origin git@github.com:nguyenductai1983/qrbootrap.git
+
+# 3. Tải thông tin từ GitHub về (chưa ghi đè)
+git fetch
+
+# 4. Ép buộc ghi đè các file từ GitHub vào thư mục hiện tại
+# Lưu ý: Lệnh này sẽ ghi đè các file trùng tên, nhưng giữ lại các file lạ.
+git checkout -f master
