@@ -97,11 +97,12 @@
                                                 <ol class="ps-3 mb-0">
                                                     <li class="mb-2">Trên menu trái, chọn mục <br><strong><i
                                                                 class="fa-solid fa-print text-muted"></i> In Tem Mã
-                                                            Vạch</strong>.</li>
-                                                    <li class="mb-2">Chọn <strong>Đơn hàng (PO)</strong> và <strong>Mã
-                                                            hàng (Model)</strong> từ danh sách.</li>
-                                                    <li class="mb-2">Nhập <strong>Số lượng tem</strong> cần in.</li>
-                                                    <li>Nhấn nút <strong>Tạo & In Tem</strong>.</li>
+                                                            Vạch</strong> (hoặc <strong>In Tem Excel</strong>).</li>
+                                                    <li class="mb-2">Cột bên trái: Chọn <strong>Sản phẩm</strong> và <strong>Loại Tem</strong>.</li>
+                                                    <li class="mb-2">Cột bên phải: Chọn ý nghĩa cột đầu tiên (<strong>Số lượng tem</strong> hoặc <strong>Số thứ tự tem</strong>).</li>
+                                                    <li class="mb-2">Copy dữ liệu từ Excel và dán vào ô nội dung. <br><small class="text-muted">(Thứ tự cột: Cột 1, Mã Đơn Hàng, Màu, Loại, Khổ, Loại Nhựa, GSM, Chiều dài, Số máy)</small></li>
+                                                    <li class="mb-2">Tùy chỉnh <strong>Định dạng mã in</strong> (QR Code/Barcode) và các thông số khác.</li>
+                                                    <li>Nhấn nút <strong>Tạo Mới & In Ngay</strong>.</li>
                                                 </ol>
                                             </div>
                                         </div>
@@ -146,7 +147,7 @@
                                             <div class="ms-3">
                                                 <strong>Nhập số liệu:</strong> Mở file Excel vừa tải, nhập số liệu vào
                                                 các cột tương ứng. <span class="text-danger fw-bold">Tuyệt đối không sửa
-                                                    cột Barcode</span>.
+                                                    cột Code</span>.
                                             </div>
                                         </div>
                                         <div class="d-flex">
@@ -206,7 +207,8 @@
                                                 <tbody>
                                                     <tr>
                                                         <td>1</td>
-                                                        <td><a href="{{ route('manager.products') }}">Model Sản Phẩm</a></td>
+                                                        <td><a href="{{ route('manager.products') }}">Model Sản Phẩm</a>
+                                                        </td>
                                                         <td>Tạo danh sách các mã hàng (Ví dụ: Áo thun, Vải Cotton...)</td>
                                                     </tr>
                                                     <tr>
