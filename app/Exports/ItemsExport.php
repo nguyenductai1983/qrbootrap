@@ -54,12 +54,9 @@ class ItemsExport implements FromCollection, WithHeadings, WithMapping, ShouldAu
     public function headings(): array
     {
         $headings = [
-            'Mã Tem',
-            'Đơn hàng',
-            'Sản phẩm',
-            'Màu',
-            'Trạng thái',
-            'Vị trí hiện tại'
+            'code',
+            'original_length',
+            'length',
         ];
 
         foreach ($this->dynamicKeys as $key) {
@@ -76,11 +73,8 @@ class ItemsExport implements FromCollection, WithHeadings, WithMapping, ShouldAu
 
         $row = [
             $item->code,
-            $item->order->code ?? '-',
-            $item->product->name ?? '-',
-            $item->color->name ?? '-',
-            $item->status ? $item->status->label() : '-',
-            '-', // Vị trí hiện tại
+            $item->original_length,
+            $item->length,
         ];
 
         foreach ($this->dynamicKeys as $key) {

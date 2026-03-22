@@ -154,17 +154,17 @@ class BarcodeGeneratorExcel extends Component
             $cols = preg_split('/\s+/', trim($line));
             $cols = array_pad($cols, 9, '');
 
-            $inputCol0    = (int) trim($cols[0]);
-            $quantity     = ($this->col0Mode === 'sequence') ? 1 : $inputCol0;
-            $orderCode    = strtoupper(trim($cols[1]));
-            $colorCode    = strtoupper(trim($cols[2]));
-            $specCode     = strtoupper(trim($cols[3]));
-            $widthCode    = strtoupper(trim($cols[4]));
-            $plasticCode  = strtoupper(trim($cols[5]));
-            $gsm          = trim($cols[6]);
-            $length       = trim($cols[7]);
-            $machineNum   = trim($cols[8]);
-
+            $inputCol0    = (int) trim($cols[0]); // số thứ tự
+            $quantity     = ($this->col0Mode === 'sequence') ? 1 : $inputCol0; // số lượng
+            $orderCode    = strtoupper(trim($cols[1])); // mã đơn hàng
+            $colorCode    = strtoupper(trim($cols[2])); // mã màu
+            $specCode     = strtoupper(trim($cols[3])); // mã quy cách
+            $widthCode    = strtoupper(trim($cols[4])); // mã khổ
+            $plasticCode  = strtoupper(trim($cols[5])); // mã nhựa
+            $gsm          = trim($cols[6]); // định lượng
+            $length       = trim($cols[7]); // chiều dài
+            $machineNum   = trim($cols[8]); // mã máy
+            //nếu không có số lượng thì số lượng = 1
             if ($quantity < 1) $quantity = 1;
 
             $orderId = null;
@@ -182,18 +182,12 @@ class BarcodeGeneratorExcel extends Component
             $specId    = $this->resolveAttributeId(Specification::class, $specCode);
             $widthId   = $this->resolveAttributeId(Width::class, $widthCode);
             $plasticId = $this->resolveAttributeId(PlasticType::class, $plasticCode);
-
+            //nếu col0Mode = sequence thì no = inputCol0 - 1, ngược lại thì no = 0
             $no = ($this->col0Mode === 'sequence') ? $inputCol0 - 1 : 0;
             for ($i = 0; $i < $quantity; $i++) {
                 $no++;
                 $propertiesToSave = [
-                    'ORDER_ID' => $orderId,
-                    'PRODUCT_ID' => $this->itemData['PRODUCT_ID'] ?? '',
-                    'PRODUCT_NAME' => $this->itemData['PRODUCT_NAME'] ?? '',
-                    'NHUA' => $plasticCode,
                     'GSM' => $gsm,
-                    'DAI' => $length,
-                    'MAY' => $machineNum,
                 ];
                 $propParts = array_filter([$gsm, $length]);
                 try {
