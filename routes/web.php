@@ -104,4 +104,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/excel-manager', ExcelManager::class)->name('excel-manager');
     });
     Route::get('/production/coating-confirmation', CoatingConfirmation::class)->name('production.coating-confirmation');
+    
+    // --- Tính Năng In Ấn Tập Trung (DRY Reprint) ---
+    Route::get('/print-labels', [\App\Http\Controllers\PrintController::class, 'printLabels'])->name('print.labels')->middleware('permission:print barcodes');
 });

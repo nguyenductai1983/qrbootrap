@@ -24,6 +24,7 @@ use App\Services\ItemCodeService;
 class BarcodeGeneratorExcel extends Component
 {
     use WithPagination;
+    use \App\Livewire\Traits\WithReprinting;
 
     // Cấu hình
     public $type = '';
@@ -143,7 +144,7 @@ class BarcodeGeneratorExcel extends Component
             'excelData.required' => 'Vui lòng dán dữ liệu từ Excel.',
         ]);
 
-        $this->generatedItems = [];
+        $newItemIds = [];
         $this->selectedHistoryIds = [];
         cache()->forever('col0Mode' . Auth::id(), $this->col0Mode);
         $lines = explode("\n", trim($this->excelData));
@@ -225,10 +226,9 @@ class BarcodeGeneratorExcel extends Component
                     /** @var \App\Models\User $currentUser */
                     $currentUser = Auth::user();
 
-                    Item::create([
+                    $itemRecord = Item::create([
                         'code'         => $realCode,
                         'type'         => $this->type,
-                        'status'       => 1,
                         'properties'   => $propertiesToSave,
                         'created_by'   => Auth::id(),
                         'color_id'         => $colorId,
@@ -242,6 +242,8 @@ class BarcodeGeneratorExcel extends Component
                         'department_id'    => $currentUser->department_id,
                         'machine_id'       => $machineId,
                     ]);
+
+                    $newItemIds[] = $itemRecord->id;
                 } catch (QueryException $e) {
                     if ($e->errorInfo[1] == 1062) {
                         session()->flash('error', "Lỗi: Mã tem '{$realCode}' đã tồn tại trong hệ thống! Vui lòng kiểm tra lại số thứ tự hoặc dữ liệu Excel.");
@@ -250,22 +252,21 @@ class BarcodeGeneratorExcel extends Component
                     session()->flash('error', 'Lỗi hệ thống Database: ' . $e->getMessage());
                     return;
                 }
-
-                $printInfo = $propertiesToSave;
-                $printInfo['type'] = $this->type;
-                $printInfo['PO'] = $orderCode;
-                $printInfo['COLOR_NAME'] = $colorCode;
-
-                $this->generatedItems[] = [
-                    'code' => $realCode,
-                    'info' => $printInfo
-                ];
             }
         }
 
-        session()->flash('message', 'Đã tạo thành công ' . count($this->generatedItems) . ' tem.');
+        session()->flash('message', 'Đã tạo thành công ' . count($newItemIds) . ' tem.');
         $this->excelData = '';
-        $this->dispatch('trigger-print');
+
+        if (count($newItemIds) > 0) {
+            $this->reprintItems(
+                $newItemIds,
+                $this->printFormat,
+                $this->printColumns,
+                $this->rowsPerPage,
+                $this->fontSize
+            );
+        }
     }
     public function reprintSelected()
     {
@@ -273,20 +274,15 @@ class BarcodeGeneratorExcel extends Component
             return;
         }
 
-        $items = Item::with(['order', 'product'])
-            ->whereIn('id', $this->selectedHistoryIds)
-            ->get();
-
-        $this->generatedItems = [];
-
-        foreach ($items as $item) {
-            $this->generatedItems[] = [
-                'code' => $item->code,
-            ];
-        }
+        $this->reprintItems(
+            $this->selectedHistoryIds,
+            $this->printFormat,
+            $this->printColumns,
+            $this->rowsPerPage,
+            $this->fontSize
+        );
 
         $this->selectedHistoryIds = [];
-        $this->dispatch('trigger-print');
     }
 
     public function render()

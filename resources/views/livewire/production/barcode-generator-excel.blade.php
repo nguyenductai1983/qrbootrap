@@ -238,75 +238,11 @@
             </div>
         </div>
     </div>
-    {{-- KHU VỰC IN TEM (ẨN TRÊN MÀN HÌNH, CHỈ HIỆN KHI IN) --}}
-    @if (count($generatedItems) > 0)
-        <div class="print-area">
-            @php
-                $generator = new \Picqer\Barcode\BarcodeGeneratorSVG();
-                // 🌟 TÍNH TOÁN TỔNG SỐ TEM TRÊN 1 TỜ GIẤY
-                $cols = $printColumns > 0 ? $printColumns : 2;
-                $rows = $rowsPerPage > 0 ? $rowsPerPage : 2;
-                $itemsPerPage = $cols * $rows;
-
-                // Cắt nhỏ mảng ra thành nhiều trang
-                $pages = array_chunk($generatedItems, $itemsPerPage);
-            @endphp
-            @foreach ($pages as $pageItems)
-                {{-- 🌟 MỖI VÒNG LẶP LÀ 1 TỜ GIẤY ĐỘC LẬP --}}
-                <div class="print-page" @style(['--print-cols: ' . $cols, '--print-rows: ' . $rows])>
-
-                    <div class="print-grid">
-                        @foreach ($pageItems as $item)
-                            <div class="label-item">
-                                <div class="barcode-wrapper">
-                                    @if ($printFormat == 'QR')
-                                        <div class="d-flex flex-column align-items-center justify-content-center"
-                                            style="height: 100%; width: 100%;">
-
-                                            {{-- 🌟 1. VÙNG CHỨA QR 🌟 --}}
-                                            <div class="qr-container">
-                                                {{-- Mẹo: Đổi size(200) thành size(100) để kích thước gốc nhỏ đi một chút, CSS sẽ ép nó dễ hơn --}}
-                                                {!! SimpleSoftwareIO\QrCode\Facades\QrCode::size(80)->generate($item['code']) !!}
-                                            </div>
-
-                                            {{-- 2. DÒNG CHỮ --}}
-                                            <div class="code-text fw-bold text-center w-100 mt-1" @style(['font-size: ' . ($fontSize ?? 10) . 'px', 'letter-spacing: 0.5px', 'word-wrap: break-word', 'line-height: 1.2'])>
-                                                {{ $item['code'] }}
-                                            </div>
-
-                                        </div>
-                                    @else
-                                        <div
-                                            class="d-flex flex-column align-items-center justify-content-center h-100 pt-1">
-                                            <div class="w-98 text-center">
-                                                {!! $generator->getBarcode($item['code'], $generator::TYPE_CODE_128, 2, 45) !!}
-                                            </div>
-                                            <div class="fw-bold mt-1 text-center w-100" @style(['font-size: ' . ($fontSize ?? 10) . 'px', 'letter-spacing: 1px', 'word-wrap: break-word'])>
-                                                {{ $item['code'] }}
-                                            </div>
-                                        </div>
-                                    @endif
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-                </div>
-            @endforeach
-        </div>
-    @endif
-    @push('styles')
-        <link rel="stylesheet" href="{{ asset('css/barcode.css') }}">
-    @endpush
-    {{-- SCRIPT: TỰ ĐỘNG BẬT CỬA SỔ IN --}}
+    {{-- Giao diện in đã được chuyển sang view tập trung (print.labels) --}}
+    
+    {{-- SCRIPT: TỰ ĐỘNG BẬT CỬA SỔ IN NẾU CẦN (Hiện tại đã bắt ở app.blade.php) --}}
     <script>
         document.addEventListener('livewire:initialized', () => {
-
-            Livewire.on('trigger-print', () => {
-                // Tăng thời gian chờ lên 800ms để đảm bảo các mã QR/Barcode (SVG) đã được trình duyệt vẽ xong 100%
-                setTimeout(() => {
-                    window.print();
-                }, 800);
-            });
 
             // Script đóng Modal Tạo nhanh
             Livewire.on('close-quick-order-modal', () => {

@@ -14,6 +14,8 @@ use App\Enums\ItemStatus;
  */
 class ScanProduct extends Component
 {
+    use \App\Livewire\Traits\WithReprinting;
+
     // Dữ liệu chung
     public $scanStatus = ''; // 'success', 'error', 'warning'
     public $message = '';
@@ -21,6 +23,7 @@ class ScanProduct extends Component
     public $orders;
 
     // BIẾN MỚI
+    public $scannedItemId = null; // Lưu lại id của tem đang hiển thị
     public $products = []; // Danh sách Model theo bộ phận
     public $selectedOrderId = '';
     public $selectedProductId = ''; // Model nhân viên chọn
@@ -90,7 +93,9 @@ class ScanProduct extends Component
         if ($item->status == ItemStatus::VERIFIED || $item->verified_at) {
             $this->scanStatus = 'warning';
             $this->message = "⚠️ Cảnh báo: Mã này ĐÃ ĐƯỢC QUÉT trước đó.";
-            $this->itemInfo = $item->properties;
+            
+            // Lấy full model ra view để load được Relationship
+            $this->itemInfo = Item::with(['product', 'color', 'order'])->find($item->id);
 
             $this->dispatch('play-warning-sound');
             if ($source == 'mobile') {
@@ -153,7 +158,9 @@ class ScanProduct extends Component
         // 5. PHẢN HỒI THÀNH CÔNG
         $this->scanStatus = 'success';
         $this->message = "✅ ĐÃ XÁC NHẬN: " . $code;
-        $this->itemInfo = $item->properties; // Hiển thị thông tin MỚI NHẤT
+        // Lấy full model ra view để load được Relationship
+        $this->itemInfo = Item::with(['product', 'color', 'order'])->find($item->id);
+        $this->scannedItemId = $item->id; // Lấy ID để có thể bấm nút In Lại
 
         $this->dispatch('play-success-sound');
 
@@ -184,6 +191,7 @@ class ScanProduct extends Component
         $this->message = '';
         $this->itemInfo = [];
         $this->lastScannedCode = null;
+        $this->scannedItemId = null;
         $this->dispatch('resume-camera');
     }
 

@@ -1,4 +1,4 @@
-<div>
+<div wire:poll.10s>
     <div class="container py-4">
         <div class="card shadow-sm">
             <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
@@ -51,6 +51,13 @@
                                         <i class="fas fa-times"></i>
                                     </span>
                                 @endif
+
+                                {{-- Giao diện Loading Spinner --}}
+                                <div wire:loading wire:target="searchCode" class="position-absolute top-50 translate-middle-y" style="right: 40px; z-index: 10;">
+                                    <div class="spinner-border spinner-border-sm text-primary" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                </div>
 
                                 {{-- Khối hiển thị danh sách gợi ý --}}
                                 @if ($showSuggestions && !empty($searchCode) && $suggestions->isNotEmpty())
@@ -154,8 +161,8 @@
                                     </td>
                                     <td>{{ $item->color->name ?? '-' }}</td>
                                     <td class="text-center">
-                                        <span class="badge {{ $item->status->badge() }}">
-                                            {{ $item->status->label() }}
+                                        <span class="badge {{ $item->status?->badge() ?? '' }}">
+                                            {{ $item->status?->label() ?? '' }}
                                         </span>
                                     </td>
                                     {{-- CỘT CHIỀU DÀI --}}
@@ -206,12 +213,15 @@
                                         <i class="fa-solid fa-location-dot me-1"></i> N/A
                                     </td>
                                     <td class="text-center">
+                                        <button wire:click="reprintItems([{{ $item->id }}])"
+                                            class="btn btn-sm btn-outline-info me-1" title="In lại tem">
+                                            <i class="fa-solid fa-print"></i>
+                                        </button>
                                         <button wire:click="edit({{ $item->id }})"
                                             class="btn btn-sm btn-outline-primary me-1" title="Sửa chi tiết">
                                             <i class="fa-solid fa-pen-to-square"></i>
                                         </button>
-                                        <button
-                                            wire:click="delete({{ $item->id }})"
+                                        <button wire:click="delete({{ $item->id }})"
                                             wire:confirm="⚠️ Bạn có chắc muốn xóa tem [{{ $item->code }}]? Hành động này không thể hoàn tác!"
                                             class="btn btn-sm btn-outline-danger" title="Xóa tem">
                                             <i class="fa-solid fa-trash"></i>

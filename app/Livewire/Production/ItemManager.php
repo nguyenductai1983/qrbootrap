@@ -5,6 +5,7 @@ namespace App\Livewire\Production;
 use App\Models\Color;
 use Livewire\Component;
 use Livewire\WithPagination;
+use App\Livewire\Traits\WithReprinting;
 use App\Models\Item;
 use App\Models\Order;
 use App\Models\Product;
@@ -13,6 +14,7 @@ use App\Models\Department;
 class ItemManager extends Component
 {
     use WithPagination;
+    use WithReprinting;
 
     // --- CÁC BIẾN BỘ LỌC ---
     public $searchCode = '';

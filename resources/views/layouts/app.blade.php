@@ -119,6 +119,15 @@
     </div>
     {{-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script> --}}
     @livewireScripts
+    <script>
+        document.addEventListener('livewire:initialized', () => {
+            Livewire.on('open-print-tab', (data) => {
+                let url = data[0]?.url || data?.url; 
+                if (url) {
+                    window.open(url, '_blank');
+                }
+            });
+        });
+    </script>
 </body>
-
 </html>

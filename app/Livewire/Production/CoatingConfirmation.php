@@ -220,7 +220,6 @@ class CoatingConfirmation extends Component
                 $remainingLength = $oldItem->length - $used;
                 $oldItem->update([
                     'length' => $remainingLength > 0 ? $remainingLength : 0,
-                    'status' => $remainingLength <= 0 ? 0 : $oldItem->status
                 ]);
             }
 
