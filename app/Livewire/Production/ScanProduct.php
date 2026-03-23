@@ -8,6 +8,7 @@ use App\Models\Order;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Product;
 use App\Enums\ItemStatus;
+use App\Models\Machine;
 
 /**
  * @method void dispatch(string $event, string $type = null, string $title = null, string $text = null)
@@ -21,7 +22,8 @@ class ScanProduct extends Component
     public $message = '';
     public $itemInfo = [];
     public $orders;
-
+    public $machines = [];
+    public $selectedMachineId = ''; // Máy đang thực hiện tráng
     // BIẾN MỚI
     public $scannedItemId = null; // Lưu lại id của tem đang hiển thị
     public $products = []; // Danh sách Model theo bộ phận
@@ -32,8 +34,10 @@ class ScanProduct extends Component
     public $scannedCodeInput = '';
     public function mount()
     {
+        /** @var \App\Models\User $user */
         $user = Auth::user();
         // Lấy đơn hàng đang chạy
+        $this->machines = $user->machines()->where('status', true)->orderBy('code')->get();
         $this->orders = Order::where('status', '>=', 1)->orderBy('id', 'desc')->get();
         if ($user->department_id) {
             $this->products = Product::whereHas('departments', function ($q) use ($user) {
@@ -92,8 +96,8 @@ class ScanProduct extends Component
         // 2. Kiểm tra đã quét chưa
         if ($item->status == ItemStatus::VERIFIED || $item->verified_at) {
             $this->scanStatus = 'warning';
-            $this->message = "⚠️ Cảnh báo: Mã này ĐÃ ĐƯỢC QUÉT trước đó.";
-            
+            $this->message = $code . " ⚠️ Cảnh báo: Mã này ĐÃ ĐƯỢC sử dụng.";
+
             // Lấy full model ra view để load được Relationship
             $this->itemInfo = Item::with(['product', 'color', 'order'])->find($item->id);
 
@@ -112,6 +116,7 @@ class ScanProduct extends Component
             'order_id' => !empty($this->selectedOrderId) ? $this->selectedOrderId : $item->order_id,
             'verified_at' => now(),
             'verified_by' => Auth::id(),
+            'machine_id' => !empty($this->selectedMachineId) ? $this->selectedMachineId : $item->machine_id,
         ];
 
         $properties = $item->properties ?? [];

@@ -43,15 +43,15 @@
         @can('products scan')
             <a href="{{ route('production.scan') }}"
                 class="list-group-item list-group-item-action py-3 ps-4 {{ request()->routeIs('production.scan') ? 'active' : '' }}"
-                title="Quét Sản Phẩm">
+                title="Quét Tem Cây Vải">
                 <i class="fa-solid fa-fw fa-barcode me-2"></i>
-                <span class="sidebar-text">Quét Sản Phẩm</span>
+                <span class="sidebar-text">Quét Tem Cây Vải</span>
             </a>
         @endcan
         @can('products scan')
             <a href="{{ route('production.coating-confirmation') }}"
                 class="list-group-item list-group-item-action py-3 ps-4 {{ request()->routeIs('production.coating-confirmation') ? 'active' : '' }}"
-                title=" Xác Nhận Tráng">
+                title="Xác Nhận Tráng">
                 <i class="fa-solid fa-fw fa-barcode me-2"></i>
                 <span class="sidebar-text">Xác Nhận Tráng</span>
             </a>

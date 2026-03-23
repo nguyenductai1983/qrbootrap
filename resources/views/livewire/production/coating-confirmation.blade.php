@@ -31,35 +31,11 @@
             @endif
             <div class="card shadow-sm border-0">
                 <div class="card-header bg-primary text-white fw-bold">
-                    <i class="fa-solid fa-barcode me-2"></i> Quét Mã Mộc (Nguyên Liệu)
+                    <i class="fa-solid fa-barcode me-2"></i> Quét Mã Vải
                 </div>
                 <div class="card-body text-center">
-                    <div class="mb-4">
-                        <label class="form-label small text-muted fw-bold">Dùng súng quét (nhấp vào đây):</label>
-                        <div class="input-group">
-                            <span class="input-group-text bg-light"><i class="fa-solid fa-keyboard"></i></span>
-                            <input type="text" wire:model="codeInput" wire:keydown.enter="addScannedItem"
-                                class="form-control form-control-lg text-center text-primary fw-bold"
-                                placeholder="Quét hoặc nhập mã..." autofocus>
-                        </div>
-                    </div>
-
-                    <div class="position-relative mb-4">
-                        <hr class="text-secondary">
-                        <span
-                            class="position-absolute top-50 start-50 translate-middle bg-white px-2 small text-muted fw-bold">HOẶC</span>
-                    </div>
-
-                    <div class="mb-3">
-                        <button type="button" class="btn btn-outline-dark btn-lg w-100 fw-bold shadow-sm"
-                            id="btn-start-camera">
-                            <i class="fa-solid fa-camera me-2"></i> Bật Camera
-                        </button>
-                    </div>
-
-                    <div id="reader" width="100%" class="shadow-sm border border-2 border-primary"
-                        style="display: none; border-radius: 8px; overflow: hidden;">
-                    </div>
+                    <x-scanner inputModel="codeInput" onEnter="addScannedItem" onScan="addScannedItem"
+                        placeholder="Quét hoặc nhập mã Vải..." buttonText="Xác nhận" />
                 </div>
             </div>
         </div>
@@ -145,9 +121,8 @@
     </div>
 
     {{-- ========================================== --}}
-    {{-- SCRIPT: TÍNH TOÁN NHANH BẰNG JS & CAMERA   --}}
+    {{-- SCRIPT: TÍNH TOÁN NHANH BẰNG JS --}}
     {{-- ========================================== --}}
-    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
     <script>
         let currentRatio = {{ $coatingRatio ?? 1.07 }};
 
@@ -193,33 +168,7 @@
                 }, 100);
             });
 
-            const btnStart = document.getElementById('btn-start-camera');
-            const readerDiv = document.getElementById('reader');
-            let html5QrcodeScanner = null;
 
-            if (btnStart) {
-                btnStart.addEventListener('click', () => {
-                    readerDiv.style.display = 'block';
-                    btnStart.style.display = 'none';
-                    html5QrcodeScanner = new Html5QrcodeScanner("reader", {
-                        fps: 10,
-                        qrbox: {
-                            width: 250,
-                            height: 250
-                        }
-                    }, false);
-                    html5QrcodeScanner.render(onScanSuccess, onScanFailure);
-                });
-            }
-
-            function onScanSuccess(decodedText, decodedResult) {
-                html5QrcodeScanner.clear();
-                readerDiv.style.display = 'none';
-                btnStart.style.display = 'block';
-                @this.call('addScannedItem', decodedText);
-            }
-
-            function onScanFailure(error) {}
 
             Livewire.on('alert', (event) => {
                 alert(event[0].message);
