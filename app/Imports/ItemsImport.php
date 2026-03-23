@@ -23,13 +23,15 @@ class ItemsImport implements ToModel, WithHeadingRow
             $props = $item->properties ?? [];
 
             // 1. Khai báo các cột CỐ ĐỊNH không được lưu vào JSON properties
-            $ignoredColumns = ['code', 'created_at'];
+            $ignoredColumns = ['code', 'created_at', 'original_length', 'length'];
 
-            // 2. (Tùy chọn) Cập nhật trường PO nếu PO lưu ở bảng Item
-            // Nếu PO nằm ở bảng khác hoặc bạn không muốn update, hãy xóa dòng này đi.
-            // if (isset($row['po'])) {
-            //     $item->po = $row['po'];
-            // }
+            // 2. Cập nhật các trường cố định
+            if (array_key_exists('original_length', $row) && !is_null($row['original_length'])) {
+                $item->original_length = is_numeric($row['original_length']) ? (float) $row['original_length'] : null;
+            }
+            if (array_key_exists('length', $row) && !is_null($row['length'])) {
+                $item->length = is_numeric($row['length']) ? (float) $row['length'] : null;
+            }
 
             // 3. Quét các cột còn lại để đưa vào properties
             foreach ($row as $key => $value) {
