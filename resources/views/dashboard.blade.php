@@ -34,14 +34,12 @@
                     </a>
                 </div>
             </div>
-
             {{-- 3. KHU VỰC TÁC VỤ SẢN XUẤT --}}
             @if (Auth::user()->can('print barcodes') || Auth::user()->can('scan products') || Auth::user()->can('view barcodes'))
-                <h4 class="fw-bold text-secondary mb-3 border-start border-4 border-primary ps-3">
+                <h4 class="fw-bold mb-3 border-start border-4 border-primary ps-3">
                     Tác Vụ Sản Xuất
                 </h4>
                 <div class="row g-4 mb-5">
-
                     {{-- Chức năng: IN TEM --}}
                     @can('print barcodes')
                         <div class="col-md-6 col-lg-3">
@@ -95,12 +93,35 @@
                                             <i class="fa-solid fa-barcode fa-2x"></i>
                                         </div>
                                     </div>
-                                    <h5 class="card-title fw-bold">Quét Sản Phẩm</h5>
-                                    <p class="card-text text-muted small mb-4">Kiểm tra thông tin và truy xuất nguồn gốc.
+                                    <h5 class="card-title fw-bold">Quét Cây Vải</h5>
+                                    <p class="card-text text-muted small mb-4">Kiểm tra thông tin và xác nhận cây vải.
                                     </p>
 
                                     <a href="{{ route('production.scan') }}"
                                         class="btn btn-outline-warning  w-100 mt-auto stretched-link">
+                                        Truy cập <i class="fas fa-arrow-right ms-1"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    @endcan
+
+                    {{-- Chức năng: XÁC NHẬN TRÁNG --}}
+                    @can('products scan')
+                        <div class="col-md-6 col-lg-3">
+                            <div class="card h-100 shadow-sm border-0 hover-card">
+                                <div class="card-body d-flex flex-column text-center p-4">
+                                    <div class="mb-3">
+                                        <div class="bg-success bg-opacity-10 text-success rounded-circle d-inline-flex p-3">
+                                            <i class="fa-solid fa-layer-group fa-2x"></i>
+                                        </div>
+                                    </div>
+                                    <h5 class="card-title fw-bold">Xác Nhận Tráng</h5>
+                                    <p class="card-text text-muted small mb-4">Ghép mã vải và khai báo mã tráng mới.
+                                    </p>
+
+                                    <a href="{{ route('production.coating-confirmation') }}"
+                                        class="btn btn-outline-success w-100 mt-auto stretched-link">
                                         Truy cập <i class="fas fa-arrow-right ms-1"></i>
                                     </a>
                                 </div>
@@ -123,7 +144,7 @@
                                     </p>
 
                                     <a href="{{ route('manager.items') }}"
-                                        class="btn btn-outline-info text-dark w-100 mt-auto stretched-link">
+                                        class="btn btn-outline-info w-100 mt-auto stretched-link">
                                         Truy cập <i class="fas fa-arrow-right ms-1"></i>
                                     </a>
                                 </div>
@@ -135,7 +156,7 @@
 
             {{-- 4. KHU VỰC QUẢN TRỊ HỆ THỐNG --}}
             @role('manager|admin')
-                <h4 class="fw-bold text-secondary mb-3 border-start border-4 border-danger ps-3">
+                <h4 class="fw-bold mb-3 border-start border-4 border-danger ps-3">
                     Quản Trị Hệ Thống
                 </h4>
 

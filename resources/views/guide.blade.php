@@ -40,10 +40,14 @@
                             data-bs-toggle="list">
                             4. Quét kiểm tra hàng
                         </a>
+                        <a href="#section-coating" class="list-group-item list-group-item-action fw-bold"
+                            data-bs-toggle="list">
+                            5. Xác nhận tráng
+                        </a>
                         @role('admin')
                             <a href="#section-admin" class="list-group-item list-group-item-action fw-bold text-danger"
                                 data-bs-toggle="list">
-                                5. Dành cho Quản lý
+                                6. Dành cho Quản lý
                             </a>
                         @endrole
                     </div>
@@ -184,11 +188,34 @@
                             </div>
                         </div>
 
+                        <div class="tab-pane fade" id="section-coating">
+                            <div class="card shadow-sm border-0 mb-4">
+                                <div class="card-header  py-3">
+                                    <h5 class="fw-bold text-success m-0"><i class="fa-solid fa-layer-group me-2"></i>5. Xác
+                                        nhận tráng</h5>
+                                </div>
+                                <div class="card-body">
+                                    <p>Sử dụng khi bạn cần ghép nhiều cây Mộc thành một cây Tráng mới.</p>
+                                    <ol>
+                                        <li class="mb-2">Vào mục <strong>Xác Nhận Tráng</strong> trên bảng điều khiển hoặc menu.</li>
+                                        <li class="mb-2">Chọn <strong>Thành phẩm</strong> và <strong>Máy thực hiện</strong>.</li>
+                                        <li class="mb-2">Quét lần lượt các mã tem Mộc. Có thể dùng súng quét, nhập tay, hoặc dùng nút Bật Camera.</li>
+                                        <li class="mb-2">Nhập số mét xuất dùng tương ứng cho từng cây Mộc đã quét.</li>
+                                        <li class="mb-2">Ở mục <strong>Thành phẩm đầu ra</strong>, nhập chiều dài thực tế thu được của cây Tráng. Hệ thống sẽ tự tính tỉ lệ.</li>
+                                        <li>Nhấn nút <strong>XÁC NHẬN TẠO MÃ & IN TEM</strong>. Một mã sản phẩm Mới sẽ tự động được sinh ra và gửi tín hiệu In.</li>
+                                    </ol>
+                                    <div class="alert alert-secondary small mt-3">
+                                        <i class="fa-solid fa-lightbulb text-warning me-1"></i> <strong>Lưu ý:</strong> Đảm bảo <strong>Độ dài xuất dùng</strong> không vượt quá độ dài hiện tại của cây mộc. Nếu nhập dư, hệ thống sẽ cảnh báo đỏ.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         @role('admin')
                             <div class="tab-pane fade" id="section-admin">
                                 <div class="card shadow-sm border-0 mb-4 border-danger">
                                     <div class="card-header bg-danger text-white py-3">
-                                        <h5 class="fw-bold m-0"><i class="fa-solid fa-user-gear me-2"></i>5. Dành cho Quản
+                                        <h5 class="fw-bold m-0"><i class="fa-solid fa-user-gear me-2"></i>6. Dành cho Quản
                                             Trị Viên</h5>
                                     </div>
                                     <div class="card-body">

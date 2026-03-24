@@ -5,7 +5,7 @@
         </div>
         <div class="card-body position-relative"> {{-- Thêm position-relative vào đây --}}
             {{-- 🌟 LỚP MÀN MỜ BẢO VỆ CHỐNG CLICK NHANH 🌟 --}}
-            <div wire:loading class="position-absolute w-100 h-100 top-0 start-0 bg-white"
+            <div wire:loading class="position-absolute w-100 h-100 top-0 start-0"
                 style="opacity: 0.6; z-index: 10; cursor: not-allowed;">
                 {{-- Có thể thêm icon xoay xoay ở giữa cho sinh động (Tùy chọn) --}}
                 <div class="position-absolute top-50 start-50 translate-middle">
@@ -64,19 +64,25 @@
                 {{-- CỘT PHẢI: NHẬP THÔNG TIN CHI TIẾT --}}
                 <div class="col-md-8">
                     <div class="row g-1">
-                        <div class="col-12 mb-3 bg-light p-2 rounded border border-info">
-                            <label class="form-label fw-bold text-primary mb-1"><i class="fa-solid fa-sliders me-1"></i>Ý nghĩa của Cột đầu tiên (Cột 1) trong Excel là gì?</label>
+                        <div class="col-12 mb-3 p-2 rounded border border-info">
+                            <label class="form-label fw-bold text-primary mb-1"><i
+                                    class="fa-solid fa-sliders me-1"></i>Ý nghĩa của Cột đầu tiên (Cột 1) trong Excel là
+                                gì?</label>
                             <div class="d-flex gap-3">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" wire:model="col0Mode" value="quantity" id="modeQty">
+                                    <input class="form-check-input" type="radio" wire:model="col0Mode"
+                                        value="quantity" id="modeQty">
                                     <label class="form-check-label cursor-pointer" for="modeQty">
-                                        <strong>Số lượng tem</strong> <small class="text-muted">(Sẽ tạo N tem liên tiếp)</small>
+                                        <strong>Số lượng tem</strong> <small class="text-muted">(Sẽ tạo N tem liên
+                                            tiếp)</small>
                                     </label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" wire:model="col0Mode" value="sequence" id="modeSeq">
+                                    <input class="form-check-input" type="radio" wire:model="col0Mode"
+                                        value="sequence" id="modeSeq">
                                     <label class="form-check-label cursor-pointer" for="modeSeq">
-                                        <strong>Số thứ tự tem</strong> <small class="text-muted">(Sẽ tạo chính xác tem có số thứ tự này)</small>
+                                        <strong>Số thứ tự tem</strong> <small class="text-muted">(Sẽ tạo chính xác tem
+                                            có số thứ tự này)</small>
                                     </label>
                                 </div>
                             </div>
@@ -87,7 +93,8 @@
                                 <i class="fa-solid fa-file-excel text-success me-1"></i>Dán Dữ Liệu Từ Excel
                             </label>
                             <p class="small text-muted mb-2">
-                                Copy từ các cột Excel theo thứ tự: <strong>Cột 1 (Số lượng hoặc Số TT), Mã Đơn Hàng, Màu, Loại,
+                                Copy từ các cột Excel theo thứ tự: <strong>Cột 1 (Số lượng hoặc Số TT), Mã Đơn Hàng,
+                                    Màu, Loại,
                                     Khổ, Loại Nhựa, GSM, Chiều dài, Số máy</strong>
                             </p>
                             <textarea wire:model="excelData" id="excelData" class="form-control" rows="5"
@@ -239,7 +246,7 @@
         </div>
     </div>
     {{-- Giao diện in đã được chuyển sang view tập trung (print.labels) --}}
-    
+
     {{-- SCRIPT: TỰ ĐỘNG BẬT CỬA SỔ IN NẾU CẦN (Hiện tại đã bắt ở app.blade.php) --}}
     <script>
         document.addEventListener('livewire:initialized', () => {

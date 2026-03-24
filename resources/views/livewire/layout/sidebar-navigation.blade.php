@@ -56,14 +56,6 @@
                 <span class="sidebar-text">Xác Nhận Tráng</span>
             </a>
         @endcan
-        @can('view barcodes')
-            <a href="{{ route('production.list') }}"
-                class="list-group-item list-group-item-action py-3 ps-4 {{ request()->routeIs('production.list') ? 'active' : '' }}"
-                title="Danh Sách Tem">
-                <i class="fa-solid fa-fw fa-list-check me-2"></i>
-                <span class="sidebar-text">Danh Sách Tem</span>
-            </a>
-        @endcan
         @role('manager|admin')
             @can('product manager')
                 {{-- MỚI: Dropdown Quản lý Dữ liệu Sản xuất (Orders & products) --}}
