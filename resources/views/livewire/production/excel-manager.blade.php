@@ -1,4 +1,11 @@
-<div class="container py-4">
+<div class="container-fluid py-4 position-relative">
+    <!-- OVERLAY LOADING TO BỰ CHỐNG CLICK NHẦM -->
+    <div wire:loading.flex class="position-absolute w-100 h-100 top-0 start-0 z-3 flex-column justify-content-center align-items-center" 
+         style="background: transparent;">
+        <div class="spinner-border text-primary" style="width: 4rem; height: 4rem; border-width: 0.35em;" role="status"></div>
+        <h4 class="mt-3 fw-bold text-primary">Đang xử lý, vui lòng đợi...</h4>
+    </div>
+
     <div class="row g-4">
 
         <div class="col-md-6">
@@ -11,15 +18,32 @@
                         <label class="form-label">Chọn Đơn Hàng (PO)</label>
                         <select wire:model="selectedOrderId" class="form-select">
                             <option value="">-- Chọn PO --</option>
-                            @foreach($orders as $o) <option value="{{ $o->id }}">{{ $o->code }}</option> @endforeach
+                            @foreach ($orders as $o)
+                                <option value="{{ $o->id }}">{{ $o->code }}</option>
+                            @endforeach
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Chọn Model Vải</label>
-                        <select wire:model="selectedModelId" class="form-select">
-                            <option value="">-- Chọn Model --</option>
-                            @foreach($models as $m) <option value="{{ $m->id }}">{{ $m->code }} - {{ $m->name }}</option> @endforeach
+                        <label class="form-label">Chọn Sản Phẩm <span class="text-danger">*</span></label>
+                        <select wire:model="selectedProductId"
+                            class="form-select @error('selectedProductId') is-invalid @enderror">
+                            <option value="">-- Chọn Sản Phẩm --</option>
+                            @foreach ($products as $p)
+                                <option value="{{ $p->id }}">{{ $p->code }} - {{ $p->name }}</option>
+                            @endforeach
                         </select>
+                        @error('selectedProductId')
+                            <span class="text-danger small"><i
+                                    class="fa-solid fa-triangle-exclamation me-1"></i>{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Từ ngày</label>
+                        <input type="date" wire:model="fromDate" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Đến ngày</label>
+                        <input type="date" wire:model="toDate" class="form-control">
                     </div>
                     <button wire:click="export" class="btn btn-outline-success w-100">
                         <i class="fa-solid fa-download me-2"></i> Tải file Excel mẫu
@@ -37,19 +61,20 @@
                     <div class="mb-3">
                         <label class="form-label">Chọn file Excel đã điền số liệu</label>
                         <input type="file" wire:model="fileUpload" class="form-control">
-                        @error('fileUpload') <span class="text-danger small">{{ $message }}</span> @enderror
+                        @error('fileUpload')
+                            <span class="text-danger small">{{ $message }}</span>
+                        @enderror
                     </div>
 
-                    <div wire:loading wire:target="import" class="text-primary mb-2">
-                        <div class="spinner-border spinner-border-sm"></div> Đang xử lý import...
-                    </div>
+
 
                     <button wire:click="import" class="btn btn-primary w-100" {{ !$fileUpload ? 'disabled' : '' }}>
                         <i class="fa-solid fa-upload me-2"></i> Cập nhật vào hệ thống
                     </button>
 
                     @if (session()->has('message'))
-                        <div class="alert alert-success mt-3"><i class="fa-solid fa-check"></i> {{ session('message') }}</div>
+                        <div class="alert alert-success mt-3"><i class="fa-solid fa-check"></i> {{ session('message') }}
+                        </div>
                     @endif
                     @if (session()->has('error'))
                         <div class="alert alert-danger mt-3">{{ session('error') }}</div>

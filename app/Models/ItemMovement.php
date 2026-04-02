@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Enums\MovementAction;
 // nhật kí hoạt động của item
 class ItemMovement extends Model
 {
@@ -12,13 +13,18 @@ class ItemMovement extends Model
     public $timestamps = false; // Chỉ cần created_at
 
     protected $fillable = [
-        'item_id',         // ID của cây vải đó
-        'action_type',     // Hành động (Ví dụ: MOVE, COATING_UPDATE)
-        'from_location_id', // Từ kho nào
-        'to_location_id',  // Đến kho nào
-        'user_id',         // Ai làm
-        'note',            // Ghi chú thêm
+        'item_id',
+        'action_type',
+        'from_location_id',
+        'to_location_id',
+        'user_id',
+        'note',
         'created_at'
+    ];
+
+    protected $casts = [
+        'action_type' => MovementAction::class,
+        'created_at'  => 'datetime',
     ];
 
     public function item()

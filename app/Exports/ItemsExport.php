@@ -19,17 +19,28 @@ class ItemsExport implements FromCollection, WithHeadings, WithMapping, ShouldAu
      * @param  \Illuminate\Support\Collection|string  $itemsOrOrderId  Either a ready-made collection or an order ID
      * @param  int|null  $modelId  Product ID — required when $itemsOrOrderId is an order ID
      */
-    public function __construct($itemsOrOrderId, $modelId = null)
+    public function __construct($orderId = null, $productId = null, $fromDate = null, $toDate = null)
     {
-        if ($modelId !== null) {
-            // Called from ExcelManager with two IDs → query internally
-            $this->items = Item::with(['order', 'product', 'color'])
-                ->where('order_id', $itemsOrOrderId)
-                ->where('product_id', $modelId)
-                ->get();
-        } else {
+        if ($orderId instanceof \Illuminate\Support\Collection) {
             // Called from ItemManager with a ready-made collection
-            $this->items = $itemsOrOrderId;
+            $this->items = $orderId;
+        } else {
+            // Called from ExcelManager with IDs → query internally
+            $query = Item::with(['order', 'product', 'color']);
+
+            if ($orderId !== null && $orderId !== '') {
+                $query->where('order_id', $orderId);
+            }
+
+            if ($productId !== null && $productId !== '') {
+                $query->where('product_id', $productId);
+            }
+
+            if ($fromDate !== null && $fromDate !== '' && $toDate !== null && $toDate !== '') {
+                $query->whereBetween('created_at', [$fromDate . ' 00:00:00', $toDate . ' 23:59:59']);
+            }
+
+            $this->items = $query->get();
         }
 
         $keys = [];
@@ -55,8 +66,11 @@ class ItemsExport implements FromCollection, WithHeadings, WithMapping, ShouldAu
     {
         $headings = [
             'code',
+            'created_at',
             'original_length',
             'length',
+            'gsm',
+            'weight',
         ];
 
         foreach ($this->dynamicKeys as $key) {
@@ -75,6 +89,9 @@ class ItemsExport implements FromCollection, WithHeadings, WithMapping, ShouldAu
             $item->code,
             $item->original_length,
             $item->length,
+            $item->gsm,
+            $item->weight,
+            $item->created_at ? $item->created_at->format('Y-m-d H:i:s') : '',
         ];
 
         foreach ($this->dynamicKeys as $key) {

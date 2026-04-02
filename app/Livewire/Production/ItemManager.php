@@ -10,7 +10,9 @@ use App\Models\Item;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\Department;
+use Livewire\Attributes\Title;
 
+#[Title('Danh sách mã code')]
 class ItemManager extends Component
 {
     use WithPagination;

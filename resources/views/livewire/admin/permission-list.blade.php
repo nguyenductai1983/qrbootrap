@@ -1,11 +1,18 @@
 {{-- resources/views/livewire/permission-list.blade.php --}}
-<div>
+<div class="position-relative">
+    <!-- OVERLAY LOADING -->
+    <div wire:loading.flex class="position-absolute w-100 h-100 top-0 start-0 z-3 flex-column justify-content-center align-items-center" 
+         style="background: transparent;">
+        <div class="spinner-border text-primary" style="width: 4rem; height: 4rem; border-width: 0.35em;" role="status"></div>
+        <h4 class="mt-3 fw-bold text-primary">Đang xử lý, vui lòng đợi...</h4>
+    </div>
+
     <div class="card shadow-sm">
         <div class="card-body">
 
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h3 class="h5 card-title">{{ __('Quản lý Quyền hạn') }}</h3>
-                @can('permissions create')
+                @can('permissions.create')
                     <a href="{{ route('permissions.create') }}" class="btn btn-primary">
                         {{ __('Thêm Quyền hạn Mới') }}
                     </a>
@@ -60,7 +67,6 @@
                 <table class="table table-hover table-striped">
                     <thead>
                         <tr>
-                            <th scope="col">ID</th>
                             <th scope="col">{{ __('Tên Quyền hạn') }}</th>
                             <th scope="col">{{ __('Số lượng Vai trò') }}</th>
                             <th scope="col">{{ __('Ngày tạo') }}</th>
@@ -70,20 +76,20 @@
                     <tbody>
                         @forelse ($permissions as $permission)
                             <tr>
-                                <td>{{ $permission->id }}</td>
                                 <td>{{ $permission->name }}</td>
                                 <td>{{ $permission->roles_count }}</td>
                                 <td>{{ $permission->created_at->format('d/m/Y H:i') }}</td>
                                 <td>
-                                    @can('permissions edit')
+                                    @can('permissions.edit')
                                         <a href="{{ route('permissions.edit', $permission) }}"
                                             class="btn btn-sm btn-info me-2">
                                             {{ __('Sửa') }}
                                         </a>
                                     @endcan
-                                    @can('permissions delete')
-                                        <button wire:click="deletePermission({{ $permission->id }})"
-                                            onclick="return confirm('Bạn có chắc chắn muốn xóa quyền hạn này không?');"
+                                    @can('permissions.delete')
+                                        <button 
+                                            wire:confirm="{{ __('Bạn có chắc chắn muốn xóa quyền hạn này không?') }}"
+                                            wire:click="deletePermission({{ $permission->id }})"
                                             class="btn btn-sm btn-danger" @if ($permission->roles_count > 0) disabled @endif>
                                             {{ __('Xóa') }}
                                         </button>
@@ -92,7 +98,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="text-center text-muted">
+                                <td colspan="4" class="text-center text-muted">
                                     {{ __('Không tìm thấy quyền hạn nào.') }}
                                 </td>
                             </tr>

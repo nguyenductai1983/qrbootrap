@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Item;
+use App\Models\Location;
 
 class PrintController extends Controller
 {
@@ -34,5 +35,56 @@ class PrintController extends Controller
         $fontSize = (int) $request->query('size', 10);
 
         return view('print.labels', compact('items', 'format', 'cols', 'rows', 'fontSize'));
+    }
+
+    /**
+     * In QR / Barcode cho các Vị Trí Kho (Location)
+     * Dán lên cột/kệ trong kho thực tế
+     */
+    public function printLocations(Request $request)
+    {
+        $idsString = $request->query('ids', '');
+        if (empty($idsString)) {
+            return back()->with('error', 'Không tìm thấy vị trí hợp lệ để in.');
+        }
+
+        $ids = explode(',', $idsString);
+        $locations = Location::whereIn('id', $ids)->get();
+
+        if ($locations->isEmpty()) {
+            return back()->with('error', 'Không tìm thấy thông tin vị trí trong hệ thống.');
+        }
+
+        $format   = $request->query('format', 'QR');
+        $cols     = (int) $request->query('cols', 3);
+        $rows     = (int) $request->query('rows', 4);
+        $fontSize = (int) $request->query('fontSize', 10);
+
+        return view('print.location-labels', compact('locations', 'format', 'cols', 'rows', 'fontSize'));
+    }
+
+    /**
+     * In nhãn Code Text (chỉ mã vị trí dạng văn bản, không QR/Barcode)
+     * Dùng để dán thẻ code lên kệ/hàng trong kho
+     */
+    public function printLocationCodes(Request $request)
+    {
+        $idsString = $request->query('ids', '');
+        if (empty($idsString)) {
+            return back()->with('error', 'Không tìm thấy vị trí hợp lệ để in.');
+        }
+
+        $ids = explode(',', $idsString);
+        $locations = Location::whereIn('id', $ids)->get();
+
+        if ($locations->isEmpty()) {
+            return back()->with('error', 'Không tìm thấy thông tin vị trí trong hệ thống.');
+        }
+
+        $cols     = (int) $request->query('cols', 3);
+        $rows     = (int) $request->query('rows', 8);
+        $fontSize = (int) $request->query('fontSize', 12);
+
+        return view('print.location-code-labels', compact('locations', 'cols', 'rows', 'fontSize'));
     }
 }

@@ -15,6 +15,15 @@
                 </div>
 
                 <div class="mb-3">
+                    <label for="username" class="form-label">Username</label>
+                    <input wire:model="username" type="text" id="username"
+                           class="form-control @error('username') is-invalid @enderror" required>
+                    @error('username')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="mb-3">
                     <label for="email" class="form-label">Email</label>
                     <input wire:model="email" type="email" id="email"
                            class="form-control @error('email') is-invalid @enderror" required>

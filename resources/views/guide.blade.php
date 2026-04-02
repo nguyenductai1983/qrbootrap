@@ -44,10 +44,18 @@
                             data-bs-toggle="list">
                             5. Xác nhận tráng
                         </a>
+                        <a href="#section-warehouse" class="list-group-item list-group-item-action fw-bold text-success"
+                            data-bs-toggle="list">
+                            6. Nhập Kho & Vị Trí
+                        </a>
+                        <a href="#section-printstation" class="list-group-item list-group-item-action fw-bold text-info"
+                            data-bs-toggle="list">
+                            7. Trạm In Kiosk
+                        </a>
                         @role('admin')
                             <a href="#section-admin" class="list-group-item list-group-item-action fw-bold text-danger"
                                 data-bs-toggle="list">
-                                6. Dành cho Quản lý
+                                8. Dành cho Quản lý
                             </a>
                         @endrole
                     </div>
@@ -102,10 +110,17 @@
                                                     <li class="mb-2">Trên menu trái, chọn mục <br><strong><i
                                                                 class="fa-solid fa-print text-muted"></i> In Tem Mã
                                                             Vạch</strong> (hoặc <strong>In Tem Excel</strong>).</li>
-                                                    <li class="mb-2">Cột bên trái: Chọn <strong>Sản phẩm</strong> và <strong>Loại Tem</strong>.</li>
-                                                    <li class="mb-2">Cột bên phải: Chọn ý nghĩa cột đầu tiên (<strong>Số lượng tem</strong> hoặc <strong>Số thứ tự tem</strong>).</li>
-                                                    <li class="mb-2">Copy dữ liệu từ Excel và dán vào ô nội dung. <br><small class="text-muted">(Thứ tự cột: Cột 1, Mã Đơn Hàng, Màu, Loại, Khổ, Loại Nhựa, GSM, Chiều dài, Số máy)</small></li>
-                                                    <li class="mb-2">Tùy chỉnh <strong>Định dạng mã in</strong> (QR Code/Barcode) và các thông số khác.</li>
+                                                    <li class="mb-2">Cột bên trái: Chọn <strong>Sản phẩm</strong> và
+                                                        <strong>Loại Tem</strong>.</li>
+                                                    <li class="mb-2">Cột bên phải: Chọn ý nghĩa cột đầu tiên
+                                                        (<strong>Số lượng tem</strong> hoặc <strong>Số thứ tự
+                                                            tem</strong>).</li>
+                                                    <li class="mb-2">Copy dữ liệu từ Excel và dán vào ô nội dung.
+                                                        <br><small class="text-muted">(Thứ tự cột: Cột 1, Mã Đơn Hàng,
+                                                            Màu, Loại, Khổ, Loại Nhựa, GSM, Chiều dài, Số máy)</small>
+                                                    </li>
+                                                    <li class="mb-2">Tùy chỉnh <strong>Định dạng mã in</strong> (QR
+                                                        Code/Barcode) và các thông số khác.</li>
                                                     <li>Nhấn nút <strong>Tạo Mới & In Ngay</strong>.</li>
                                                 </ol>
                                             </div>
@@ -170,7 +185,8 @@
                         <div class="tab-pane fade" id="section-scan">
                             <div class="card shadow-sm border-0 mb-4">
                                 <div class="card-header  py-3">
-                                    <h5 class="fw-bold text-warning m-0"><i class="fa-solid fa-barcode me-2"></i>4. Quét
+                                    <h5 class="fw-bold text-warning m-0"><i class="fa-solid fa-barcode me-2"></i>4.
+                                        Quét
                                         kiểm tra hàng</h5>
                                 </div>
                                 <div class="card-body">
@@ -191,21 +207,118 @@
                         <div class="tab-pane fade" id="section-coating">
                             <div class="card shadow-sm border-0 mb-4">
                                 <div class="card-header  py-3">
-                                    <h5 class="fw-bold text-success m-0"><i class="fa-solid fa-layer-group me-2"></i>5. Xác
+                                    <h5 class="fw-bold text-success m-0"><i
+                                            class="fa-solid fa-layer-group me-2"></i>5. Xác
                                         nhận tráng</h5>
                                 </div>
                                 <div class="card-body">
                                     <p>Sử dụng khi bạn cần ghép nhiều cây Mộc thành một cây Tráng mới.</p>
                                     <ol>
-                                        <li class="mb-2">Vào mục <strong>Xác Nhận Tráng</strong> trên bảng điều khiển hoặc menu.</li>
-                                        <li class="mb-2">Chọn <strong>Thành phẩm</strong> và <strong>Máy thực hiện</strong>.</li>
-                                        <li class="mb-2">Quét lần lượt các mã tem Mộc. Có thể dùng súng quét, nhập tay, hoặc dùng nút Bật Camera.</li>
-                                        <li class="mb-2">Nhập số mét xuất dùng tương ứng cho từng cây Mộc đã quét.</li>
-                                        <li class="mb-2">Ở mục <strong>Thành phẩm đầu ra</strong>, nhập chiều dài thực tế thu được của cây Tráng. Hệ thống sẽ tự tính tỉ lệ.</li>
-                                        <li>Nhấn nút <strong>XÁC NHẬN TẠO MÃ & IN TEM</strong>. Một mã sản phẩm Mới sẽ tự động được sinh ra và gửi tín hiệu In.</li>
+                                        <li class="mb-2">Vào mục <strong>Xác Nhận Tráng</strong> trên bảng điều khiển
+                                            hoặc menu.</li>
+                                        <li class="mb-2">Chọn <strong>Thành phẩm</strong> và <strong>Máy thực
+                                                hiện</strong>.</li>
+                                        <li class="mb-2">Quét lần lượt các mã tem Mộc. Có thể dùng súng quét, nhập
+                                            tay, hoặc dùng nút Bật Camera.</li>
+                                        <li class="mb-2">Nhập số mét xuất dùng tương ứng cho từng cây Mộc đã quét.
+                                        </li>
+                                        <li class="mb-2">Ở mục <strong>Thành phẩm đầu ra</strong>, nhập chiều dài
+                                            thực tế thu được của cây Tráng. Hệ thống sẽ tự tính tỉ lệ.</li>
+                                        <li>Nhấn nút <strong>XÁC NHẬN TẠO MÃ & IN TEM</strong>. Một mã sản phẩm Mới sẽ
+                                            tự động được sinh ra và gửi tín hiệu In.</li>
                                     </ol>
                                     <div class="alert alert-secondary small mt-3">
-                                        <i class="fa-solid fa-lightbulb text-warning me-1"></i> <strong>Lưu ý:</strong> Đảm bảo <strong>Độ dài xuất dùng</strong> không vượt quá độ dài hiện tại của cây mộc. Nếu nhập dư, hệ thống sẽ cảnh báo đỏ.
+                                        <i class="fa-solid fa-lightbulb text-warning me-1"></i> <strong>Lưu ý:</strong>
+                                        Đảm bảo <strong>Độ dài xuất dùng</strong> không vượt quá độ dài hiện tại của cây
+                                        mộc. Nếu nhập dư, hệ thống sẽ cảnh báo đỏ.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- SECTION: NHẬP KHO --}}
+                        <div class="tab-pane fade" id="section-warehouse">
+                            <div class="card shadow-sm border-0 mb-4">
+                                <div class="card-header py-3">
+                                    <h5 class="fw-bold text-success m-0"><i class="fa-solid fa-warehouse me-2"></i>6.
+                                        Nhập Kho &amp; Quản Lý Vị Trí</h5>
+                                </div>
+                                <div class="card-body">
+                                    <p>Chức năng kho giúp theo dõi hàng hóa bán thành phẩm theo vị trí thực tế trong
+                                        kho.</p>
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <div class="border rounded p-3 h-100">
+                                                <h6 class="fw-bold">Nhập kho đơn giản (Không vị trí):</h6>
+                                                <ol class="ps-3 mb-0">
+                                                    <li class="mb-2">Vào menu <strong>Nhập Kho</strong>, chọn chế độ
+                                                        <span class="badge bg-secondary">Nhập Tạm</span>.</li>
+                                                    <li class="mb-2">Quét lần lượt mã cây vải cần nhập kho.</li>
+                                                    <li>Hệ thống sẽ ghi nhận và cập nhật trạng thái người dùng nhao.
+                                                    </li>
+                                                </ol>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="border rounded p-3 h-100">
+                                                <h6 class="fw-bold">Nhập kho có vị trí:</h6>
+                                                <ol class="ps-3 mb-0">
+                                                    <li class="mb-2">Chọn chế độ <span class="badge bg-success">Nhập
+                                                            + Vị Trí</span>.</li>
+                                                    <li class="mb-2">Quét mã QR <strong>kệ hàng</strong> trước để
+                                                        chọn vị trí.</li>
+                                                    <li>Tiếp tục quét các mã cây vải. Mỗi cây sẽ tự gán vào kệ đó.</li>
+                                                </ol>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="alert alert-info small mt-3">
+                                        <i class="fa-solid fa-circle-info me-1"></i> Admin có thể vào <strong>Quản Lý
+                                            Vị Trí Kho</strong> để thêm/sửa kệ, và xuất báo cáo tồn kho Excel bất kỳ lúc
+                                        nào.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- SECTION: TRẠM IN --}}
+                        <div class="tab-pane fade" id="section-printstation">
+                            <div class="card shadow-sm border-0 mb-4">
+                                <div class="card-header py-3">
+                                    <h5 class="fw-bold text-info m-0"><i class="fa-solid fa-print me-2"></i>7. Trạm In
+                                        Kiosk (Tự Động)</h5>
+                                </div>
+                                <div class="card-body">
+                                    <p>Hệ thống in tự động cho phép máy tính Kiosk nhận lệnh in thông qua mạng nội bộ và
+                                        tự in không cần bấm gì thêm.</p>
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <div class="border rounded p-3 h-100">
+                                                <h6 class="fw-bold">Thiết lập trạm in (Admin):</h6>
+                                                <ol class="ps-3 mb-0">
+                                                    <li class="mb-2">Vào <strong>Quản Lý Trạm In</strong>, tạo mới
+                                                        trạm với mã (code) dậy nhớ.</li>
+                                                    <li class="mb-2">Vào <strong>Phân Công Trạm In</strong>, gán trạm
+                                                        cho đúng nhân viên.</li>
+                                                    <li>Nhân viên mở trang vơi tham số --kiosk-printing <a
+                                                            href="{{ route('production.print-station') }}"
+                                                            target="_blank"><strong>Print Station</strong></a> trên máy
+                                                        Kiosk và để yên.</li>
+                                                </ol>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="border rounded p-3 h-100">
+                                                <h6 class="fw-bold text-info">Quy trình in tự động:</h6>
+                                                <ol class="ps-3 mb-0 small">
+                                                    <li class="mb-2">Nhân viên thực hiện <strong>Xác Nhận
+                                                            Tráng</strong> ở máy tính khác.</li>
+                                                    <li class="mb-2">Hệ thống gửi tín hiệu qua mạng đến đúng trạm in
+                                                        được phân công.</li>
+                                                    <li>Máy Kiosk tự in tem không cần ai bấm gì.</li>
+                                                </ol>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

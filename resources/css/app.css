@@ -63,6 +63,13 @@ body {
     display: flex;
 }
 
+/* Cho phép thead sticky hoạt động trên desktop bằng cách bỏ chặn overflow */
+@media (min-width: 992px) {
+    body, #wrapper {
+        overflow-x: visible;
+    }
+}
+
 /* Base styles for sidebar and content wrapper */
 #sidebar-wrapper {
     width: 250px;
@@ -119,9 +126,9 @@ body {
 }
 
 #page-content-wrapper {
-    min-width: 100vw;
+    width: 100%;
     flex-grow: 1;
-    transition: margin 0.25s ease-out, min-width 0.25s ease-out;
+    transition: margin 0.25s ease-out, width 0.25s ease-out;
     margin-left: 0;
 }
 
@@ -211,7 +218,7 @@ body {
     }
 
     #page-content-wrapper {
-        min-width: calc(100vw - 250px);
+        width: calc(100% - 250px);
         margin-left: 250px;
     }
 
@@ -222,7 +229,7 @@ body {
     }
 
     #wrapper.toggled #page-content-wrapper {
-        min-width: calc(100vw - 60px);
+        width: calc(100% - 60px);
         margin-left: 60px;
     }
 
@@ -286,7 +293,7 @@ body {
     }
 
     #page-content-wrapper {
-        min-width: 100vw;
+        width: 100%;
         margin-left: 0;
     }
 
@@ -341,5 +348,71 @@ body {
 
     #sidebar-wrapper .collapse.show {
         display: block !important;
+    }
+}
+
+/* --- BẢNG THÀNH DẠNG CARD TRÊN ĐIỆN THOẠI (< 768px) --- */
+@media (max-width: 767.98px) {
+    .table-card thead {
+        display: none;
+    }
+    
+    .table-card tbody,
+    .table-card tr,
+    .table-card td {
+        display: block;
+        width: 100%;
+    }
+    
+    .table-card tr {
+        margin-bottom: 1rem;
+        background-color: var(--bs-body-bg);
+        border: 1px solid var(--sidebar-border);
+        border-radius: 0.5rem;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        overflow: hidden;
+    }
+    
+    .table-card td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        text-align: right;
+        border-bottom: 1px solid rgba(0,0,0,0.05);
+        padding: 0.75rem 1rem;
+    }
+    
+    /* Ghi đè các class text-center cũ của Bootstrap */
+    .table-card td.text-center {
+        text-align: right !important;
+    }
+    
+    .table-card td:last-child {
+        border-bottom: 0;
+        justify-content: center; /* Căn giữa cho nút bấm ở cuối cùng */
+    }
+    
+    /* Tạo nhãn giả từ thuộc tính data-label */
+    .table-card td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        text-align: left;
+        padding-right: 1rem;
+        flex-shrink: 0;
+        color: var(--sidebar-color);
+        width: 35%;
+    }
+    
+    /* Xử lý riêng các thẻ <ul> hoặc nội dung phức tạp */
+    .table-card td ul {
+        text-align: right;
+        margin-bottom: 0;
+        padding-left: 0;
+        list-style: none;
+    }
+    
+    /* Cột Hành động: bỏ luôn chữ "Hành động" cho dễ nhìn, nới rộng nút bấm */
+    .table-card td[data-label="Hành động"]::before {
+        display: none; 
     }
 }

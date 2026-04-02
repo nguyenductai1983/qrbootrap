@@ -10,10 +10,14 @@ use App\Models\Department; // <-- Import Department model
 use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Role; // <-- Import Role model
 use Spatie\Permission\Models\Permission; // <-- Import Permission model
+use Livewire\Attributes\Title;
+
+#[Title('Quản lý Người dùng')]
 class UserForm extends Component
 {
     public $user;
     public $name;
+    public $username;
     public $email;
     public $password;
     public $password_confirmation;
@@ -34,6 +38,7 @@ class UserForm extends Component
         if ($userId) {
             $this->user = User::findOrFail($userId);
             $this->name = $this->user->name;
+            $this->username = $this->user->username;
             $this->email = $this->user->email;
             $this->role = $this->user->role; // Giữ lại nếu bạn vẫn dùng cột 'role'
             $this->department_id = $this->user->department_id;
@@ -52,6 +57,12 @@ class UserForm extends Component
     {
         return [
             'name' => ['required', 'string', 'max:255'],
+            'username' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('users')->ignore($this->user->id),
+            ],
             'email' => [
                 'required',
                 'string',
@@ -85,6 +96,7 @@ class UserForm extends Component
         }
 
         $this->user->name = $this->name;
+        $this->user->username = $this->username;
         $this->user->email = $this->email;
         $this->user->department_id = $this->department_id;
 

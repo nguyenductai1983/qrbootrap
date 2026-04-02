@@ -11,7 +11,7 @@
             {{-- 1. THÔNG BÁO NẾU KHÔNG CÓ QUYỀN GÌ --}}
             <div class="mb-4">
                 @if (Auth::user()->roles->isEmpty() && Auth::user()->permissions->isEmpty())
-                    <div class="alert alert-warning shadow-sm border-0">
+                    <div class="alert alert-warning shadow-sm border-2">
                         <h5 class="fw-bold"><i class="fa-solid fa-triangle-exclamation"></i> Tài khoản chưa được phân
                             quyền!</h5>
                         <p class="mb-0">Vui lòng liên hệ quản trị viên để được cấp quyền truy cập các chức năng.</p>
@@ -19,31 +19,56 @@
                 @endif
             </div>
 
-            {{-- 2. BANNER HƯỚNG DẪN SỬ DỤNG (MỚI THÊM) --}}
-            {{-- Thiết kế dạng banner ngang, màu xanh gradient nổi bật --}}
-            <div class="card shadow-sm border-0 bg-primary bg-gradient text-white mb-5">
-                <div class="card-body p-4 d-flex flex-column flex-md-row justify-content-between align-items-center">
-                    <div class="mb-3 mb-md-0">
-                        <h4 class="fw-bold"><i class="fa-solid fa-book-open me-2"></i> Hướng Dẫn Sử Dụng Hệ Thống</h4>
-                        <p class="mb-0 text-white-50">Xem tài liệu chi tiết cách in tem, nhập liệu Excel và quy trình
-                            quét mã.</p>
+
+            {{-- 3. BANNER BIỂU ĐỒ & BÁO CÁO --}}
+            @role('admin|manager')
+                <div class="card shadow-sm border-0 mb-5"
+                    style="background: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);">
+                    <div
+                        class="card-body p-4 d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
+                        <div class="text-white">
+                            <h4 class="fw-bold mb-1">
+                                <i class="fa-solid fa-chart-line me-2"></i>Báo Cáo &amp; Phân Tích
+                            </h4>
+                            <p class="mb-0 text-white-50">Xem biểu đồ sản xuất, tráng vải, tồn kho và hiệu suất toàn hệ
+                                thống theo thời gian thực.</p>
+                        </div>
+                        <div class="d-flex gap-2 flex-shrink-0">
+                            <a href="{{ route('analytics') }}" class="btn btn-light fw-bold shadow-sm px-4 hover-scale">
+                                <i class="fa-solid fa-arrow-up-right-from-square me-2 text-primary"></i>Xem Biểu Đồ
+                            </a>
+                        </div>
                     </div>
-                    <a href="{{ route('guide') }}"
-                        class="btn btn-light text-primary fw-bold shadow-sm px-4 py-2 hover-scale">
-                        <i class="fa-regular fa-circle-question me-2"></i> Xem Hướng Dẫn
-                    </a>
                 </div>
-            </div>
+            @else
+                <div class="card shadow-sm border-2 border-warning border-opacity-50 mb-5">
+                    <div class="card-body p-3 d-flex align-items-center gap-3">
+                        <div class="bg-warning bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                            style="width:48px;height:48px;">
+                            <i class="fa-solid fa-chart-bar fa-lg text-warning"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h6 class="fw-bold mb-0">Biểu Đồ Hoạt Động Của Bạn</h6>
+                            <small class="text-muted">Xem thống kê các thao tác bạn đã thực hiện (sản xuất, tráng,
+                                kho...).</small>
+                        </div>
+                        <a href="{{ route('analytics') }}" class="btn btn-warning btn-sm fw-bold flex-shrink-0">
+                            <i class="fa-solid fa-chart-line me-1"></i>Xem Biểu Đồ
+                        </a>
+                    </div>
+                </div>
+            @endrole
+
             {{-- 3. KHU VỰC TÁC VỤ SẢN XUẤT --}}
-            @if (Auth::user()->can('print barcodes') || Auth::user()->can('scan products') || Auth::user()->can('view barcodes'))
+            @if (Auth::user()->can('barcodes.print') || Auth::user()->can('scan products') || Auth::user()->can('barcodes.view'))
                 <h4 class="fw-bold mb-3 border-start border-4 border-primary ps-3">
                     Tác Vụ Sản Xuất
                 </h4>
                 <div class="row g-4 mb-5">
                     {{-- Chức năng: IN TEM --}}
-                    @can('print barcodes')
+                    @can('barcodes.print')
                         <div class="col-md-6 col-lg-3">
-                            <div class="card h-100 shadow-sm border-0 hover-card">
+                            <div class="card h-100 shadow-sm border-2 hover-card">
                                 <div class="card-body d-flex flex-column text-center p-4">
                                     <div class="mb-3">
                                         <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-inline-flex p-3">
@@ -64,7 +89,7 @@
 
                         {{-- Chức năng: EXCEL --}}
                         <div class="col-md-6 col-lg-3">
-                            <div class="card h-100 shadow-sm border-0 hover-card">
+                            <div class="card h-100 shadow-sm border-2 hover-card">
                                 <div class="card-body d-flex flex-column text-center p-4">
                                     <div class="mb-3">
                                         <div class="bg-success bg-opacity-10 text-success rounded-circle d-inline-flex p-3">
@@ -84,9 +109,9 @@
                     @endcan
 
                     {{-- Chức năng: QUÉT TEM --}}
-                    @can('products scan')
+                    @can('products.scan')
                         <div class="col-md-6 col-lg-3">
-                            <div class="card h-100 shadow-sm border-0 hover-card">
+                            <div class="card h-100 shadow-sm border-2 hover-card">
                                 <div class="card-body d-flex flex-column text-center p-4">
                                     <div class="mb-3">
                                         <div class="bg-warning bg-opacity-10 rounded-circle d-inline-flex p-3">
@@ -107,9 +132,9 @@
                     @endcan
 
                     {{-- Chức năng: XÁC NHẬN TRÁNG --}}
-                    @can('products scan')
+                    @can('products.scan')
                         <div class="col-md-6 col-lg-3">
-                            <div class="card h-100 shadow-sm border-0 hover-card">
+                            <div class="card h-100 shadow-sm border-2 hover-card">
                                 <div class="card-body d-flex flex-column text-center p-4">
                                     <div class="mb-3">
                                         <div class="bg-success bg-opacity-10 text-success rounded-circle d-inline-flex p-3">
@@ -130,9 +155,9 @@
                     @endcan
 
                     {{-- Chức năng: DANH SÁCH TEM --}}
-                    @can('items view')
+                    @can('items.view')
                         <div class="col-md-6 col-lg-3">
-                            <div class="card h-100 shadow-sm border-0 hover-card">
+                            <div class="card h-100 shadow-sm border-2 hover-card">
                                 <div class="card-body d-flex flex-column text-center p-4">
                                     <div class="mb-3">
                                         <div class="bg-info bg-opacity-10 text-info rounded-circle d-inline-flex p-3">
@@ -166,7 +191,7 @@
                 <div class="row g-4 mb-4">
                     {{-- Đơn Hàng --}}
                     <div class="col-md-6 col-lg-3">
-                        <div class="card h-100 shadow-sm border-0 hover-card">
+                        <div class="card h-100 shadow-sm border-2 hover-card">
                             <div class="card-body p-3 d-flex align-items-center">
                                 <div class="bg-secondary bg-opacity-10 text-secondary p-3 rounded me-3">
                                     <i class="fa-solid fa-file-invoice fa-xl"></i>
@@ -183,7 +208,7 @@
 
                     {{-- Model Sản Phẩm --}}
                     <div class="col-md-6 col-lg-3">
-                        <div class="card h-100 shadow-sm border-0 hover-card">
+                        <div class="card h-100 shadow-sm border-2 hover-card">
                             <div class="card-body p-3 d-flex align-items-center">
                                 <div class="bg-secondary bg-opacity-10 text-secondary p-3 rounded me-3">
                                     <i class="fa-solid fa-layer-group fa-xl"></i>
@@ -198,7 +223,7 @@
                         </div>
                     </div>
                     <div class="col-md-6 col-lg-3">
-                        <div class="card h-100 shadow-sm border-0 hover-card">
+                        <div class="card h-100 shadow-sm border-2 hover-card">
                             <div class="card-body p-3 d-flex align-items-center">
                                 <div class="bg-secondary bg-opacity-10 text-secondary p-3 rounded me-3">
                                     <i class="fa-solid fa-tags fa-xl"></i>
@@ -213,7 +238,7 @@
                         </div>
                     </div>
                     <div class="col-md-6 col-lg-3">
-                        <div class="card h-100 shadow-sm border-0 hover-card">
+                        <div class="card h-100 shadow-sm border-2 hover-card">
                             <div class="card-body p-3 d-flex align-items-center">
                                 <div class="bg-secondary bg-opacity-10 text-secondary p-3 rounded me-3">
                                     <i class="fa-solid fa-tags fa-xl"></i>
@@ -229,13 +254,13 @@
                     </div>
                 </div>
 
-                {{-- Nhóm Máy Móc --}}
+                {{-- Nhóm Máy Móc & Trạm In --}}
                 <h6 class="text-muted fw-bold text-uppercase small mb-3 mt-4"><i class="fa-solid fa-gears me-1"></i> Máy
-                    Móc</h6>
+                    Móc &amp; Trạm In</h6>
                 <div class="row g-4 mb-4">
                     {{-- Quản lý Máy --}}
                     <div class="col-md-6 col-lg-3">
-                        <div class="card h-100 shadow-sm border-0 hover-card">
+                        <div class="card h-100 shadow-sm border-2 hover-card">
                             <div class="card-body p-3 d-flex align-items-center">
                                 <div class="bg-warning bg-opacity-10 text-warning p-3 rounded me-3">
                                     <i class="fa-solid fa-gears fa-xl"></i>
@@ -252,7 +277,7 @@
 
                     {{-- Phân Công Máy --}}
                     <div class="col-md-6 col-lg-3">
-                        <div class="card h-100 shadow-sm border-0 hover-card">
+                        <div class="card h-100 shadow-sm border-2 hover-card">
                             <div class="card-body p-3 d-flex align-items-center">
                                 <div class="bg-warning bg-opacity-10 text-warning p-3 rounded me-3">
                                     <i class="fa-solid fa-user-gear fa-xl"></i>
@@ -266,6 +291,91 @@
                             </div>
                         </div>
                     </div>
+
+                    {{-- Trạm In --}}
+                    <div class="col-md-6 col-lg-3">
+                        <div class="card h-100 shadow-sm border-2 hover-card">
+                            <div class="card-body p-3 d-flex align-items-center">
+                                <div class="bg-info bg-opacity-10 text-info p-3 rounded me-3">
+                                    <i class="fa-solid fa-print fa-xl"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="fw-bold mb-0">Trạm In</h6>
+                                    <small class="text-muted">Quản lý máy in & Kiosk</small>
+                                </div>
+                                <a href="{{ route('manager.print-stations') }}" class="stretched-link text-info"><i
+                                        class="fas fa-chevron-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Phân Công Trạm In --}}
+                    <div class="col-md-6 col-lg-3">
+                        <div class="card h-100 shadow-sm border-2 hover-card">
+                            <div class="card-body p-3 d-flex align-items-center">
+                                <div class="bg-info bg-opacity-10 text-info p-3 rounded me-3">
+                                    <i class="fa-solid fa-user-check fa-xl"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="fw-bold mb-0">Phân Công Trạm In</h6>
+                                    <small class="text-muted">Gán trạm in cho nhân viên</small>
+                                </div>
+                                <a href="{{ route('manager.user-print-stations') }}" class="stretched-link text-info"><i
+                                        class="fas fa-chevron-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Nhóm Kho --}}
+                <h6 class="text-muted fw-bold text-uppercase small mb-3 mt-4"><i class="fa-solid fa-warehouse me-1"></i>
+                    Kho Hàng</h6>
+                <div class="row g-4 mb-4">
+                    <div class="col-md-6 col-lg-3">
+                        <div class="card h-100 shadow-sm border-2 hover-card">
+                            <div class="card-body p-3 d-flex align-items-center">
+                                <div class="bg-success bg-opacity-10 text-success p-3 rounded me-3">
+                                    <i class="fa-solid fa-warehouse"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="fw-bold mb-0">Nhập Kho</h6>
+                                    <small class="text-muted">Quét mã nhập & gán vị trí</small>
+                                </div>
+                                <a href="{{ route('warehouse.scan') }}" class="stretched-link text-success"><i
+                                        class="fas fa-chevron-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        <div class="card h-100 shadow-sm border-2 hover-card">
+                            <div class="card-body p-3 d-flex align-items-center">
+                                <div class="bg-success bg-opacity-10 text-success p-3 rounded me-3">
+                                    <i class="fa-solid fa-map-location-dot fa-xl"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="fw-bold mb-0">Vị Trí Kho</h6>
+                                    <small class="text-muted">Quản lý kệ & vị trí</small>
+                                </div>
+                                <a href="{{ route('warehouse.locations') }}" class="stretched-link text-success"><i
+                                        class="fas fa-chevron-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        <div class="card h-100 shadow-sm border-2 hover-card">
+                            <div class="card-body p-3 d-flex align-items-center">
+                                <div class="bg-success bg-opacity-10 text-success p-3 rounded me-3">
+                                    <i class="fa-solid fa-file-excel fa-xl"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="fw-bold mb-0">Báo Cáo Kho</h6>
+                                    <small class="text-muted">Xuất Excel tồn kho</small>
+                                </div>
+                                <a href="{{ route('warehouse.reports') }}" class="stretched-link text-success"><i
+                                        class="fas fa-chevron-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             @endrole
             @role('admin')
@@ -275,7 +385,7 @@
                 <div class="row g-4">
                     {{-- User --}}
                     <div class="col-md-6 col-lg-3">
-                        <div class="card h-100 shadow-sm border-0 hover-card">
+                        <div class="card h-100 shadow-sm border-2 hover-card">
                             <div class="card-body p-3 d-flex align-items-center">
                                 <div class="bg-danger bg-opacity-10 text-danger p-3 rounded me-3">
                                     <i class="fa-solid fa-users fa-xl"></i>
@@ -292,7 +402,7 @@
 
                     {{-- Phòng Ban --}}
                     <div class="col-md-6 col-lg-3">
-                        <div class="card h-100 shadow-sm border-0 hover-card">
+                        <div class="card h-100 shadow-sm border-2 hover-card">
                             <div class="card-body p-3 d-flex align-items-center">
                                 <div class="bg-danger bg-opacity-10 text-danger p-3 rounded me-3">
                                     <i class="fa-regular fa-building fa-xl"></i>
@@ -309,7 +419,7 @@
 
                     {{-- Vai Trò --}}
                     <div class="col-md-6 col-lg-3">
-                        <div class="card h-100 shadow-sm border-0 hover-card">
+                        <div class="card h-100 shadow-sm border-2 hover-card">
                             <div class="card-body p-3 d-flex align-items-center">
                                 <div class="bg-danger bg-opacity-10 text-danger p-3 rounded me-3">
                                     <i class="fa-solid fa-users-gear fa-xl"></i>
@@ -326,7 +436,7 @@
 
                     {{-- Quyền Hạn --}}
                     <div class="col-md-6 col-lg-3">
-                        <div class="card h-100 shadow-sm border-0 hover-card">
+                        <div class="card h-100 shadow-sm border-2 hover-card">
                             <div class="card-body p-3 d-flex align-items-center">
                                 <div class="bg-danger bg-opacity-10 text-danger p-3 rounded me-3">
                                     <i class="fa-solid fa-key fa-xl"></i>
@@ -342,6 +452,21 @@
                     </div>
                 </div>
             @endrole
+
+            {{-- BANNER HƯỚNG DẪN SỬ DỤNG --}}
+            <div class="card shadow-sm border-2 bg-primary bg-gradient text-white mt-5">
+                <div class="card-body p-4 d-flex flex-column flex-md-row justify-content-between align-items-center">
+                    <div class="mb-3 mb-md-0">
+                        <h4 class="fw-bold"><i class="fa-solid fa-book-open me-2"></i> Hướng Dẫn Sử Dụng Hệ Thống</h4>
+                        <p class="mb-0 text-white-50">Xem tài liệu chi tiết cách in tem, nhập liệu Excel và quy trình
+                            quét mã.</p>
+                    </div>
+                    <a href="{{ route('guide') }}"
+                        class="btn btn-light text-primary fw-bold shadow-sm px-4 py-2 hover-scale">
+                        <i class="fa-regular fa-circle-question me-2"></i> Xem Hướng Dẫn
+                    </a>
+                </div>
+            </div>
 
         </div>
     </div>

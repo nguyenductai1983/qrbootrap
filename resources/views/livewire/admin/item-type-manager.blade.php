@@ -1,4 +1,11 @@
-<div class="container py-4">
+<div class="container-fluid py-4 position-relative">
+    <!-- OVERLAY LOADING -->
+    <div wire:loading.flex class="position-absolute w-100 h-100 top-0 start-0 z-3 flex-column justify-content-center align-items-center" 
+         style="background: transparent;">
+        <div class="spinner-border text-primary" style="width: 4rem; height: 4rem; border-width: 0.35em;" role="status"></div>
+        <h4 class="mt-3 fw-bold text-primary">Đang xử lý, vui lòng đợi...</h4>
+    </div>
+
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h4 class="fw-bold text-primary"><i class="fa-solid fa-tags me-2"></i>Quản Lý Loại Tem</h4>
         <button wire:click="resetInput" data-bs-toggle="modal" data-bs-target="#typeModal" class="btn btn-primary">
@@ -18,7 +25,8 @@
             <input type="text" wire:model.live="searchTerm" class="form-control mb-3"
                 placeholder="Tìm kiếm mã hoặc tên loại...">
 
-            <table class="table table-hover align-middle">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
                 <thead class="table">
                     <tr>
                         <th>Mã Loại (Prefix)</th>
@@ -49,6 +57,7 @@
                     @endforeach
                 </tbody>
             </table>
+            </div>
             {{ $types->links() }}
         </div>
     </div>
@@ -84,7 +93,10 @@
                         </div>
                         <div class="text-end">
                             <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Đóng</button>
-                            <button type="submit" class="btn btn-primary">{{ $isEditMode ? 'Lưu Thay Đổi' : 'Tạo Mới' }}</button>
+                            <button type="submit" class="btn btn-primary" wire:loading.attr="disabled" wire:target="store update">
+                                <span wire:loading.remove wire:target="store update">{{ $isEditMode ? 'Lưu Thay Đổi' : 'Tạo Mới' }}</span>
+                                <span wire:loading wire:target="store update"><span class="spinner-border spinner-border-sm me-1"></span> Đang lưu...</span>
+                            </button>
                         </div>
                     </form>
                 </div>

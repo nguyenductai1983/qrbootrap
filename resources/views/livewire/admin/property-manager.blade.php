@@ -1,4 +1,11 @@
-<div class="container py-4">
+<div class="container-fluid py-4 position-relative">
+    <!-- OVERLAY LOADING -->
+    <div wire:loading.flex class="position-absolute w-100 h-100 top-0 start-0 z-3 flex-column justify-content-center align-items-center" 
+         style="background: transparent;">
+        <div class="spinner-border text-info" style="width: 4rem; height: 4rem; border-width: 0.35em;" role="status"></div>
+        <h4 class="mt-3 fw-bold text-info">Đang xử lý, vui lòng đợi...</h4>
+    </div>
+
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h4 class="fw-bold text-info"><i class="fa-solid fa-tags me-2"></i>Quản Lý Thuộc Tính Động</h4>
         <button wire:click="resetInput" data-bs-toggle="modal" data-bs-target="#propertyModal"
@@ -24,58 +31,60 @@
             <input type="text" wire:model.live="searchTerm" class="form-control mb-3"
                 placeholder="Tìm kiếm mã hoặc tên thuộc tính...">
 
-            <table class="table table-hover align-middle">
-                <thead class="table">
-                    <tr>
-                        <th class="text-center">Thứ tự</th>
-                        <th>Mã (Code)</th>
-                        <th>Mã (Code) Usage</th>
-                        <th>Tên Hiển Thị</th>
-                        <th>Kiểu Dữ Liệu</th>
-                        <th class="text-center">Bắt buộc</th>
-                        <th class="text-center">Trạng thái</th>
-                        <th class="text-end">Hành Động</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($properties as $prop)
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table">
                         <tr>
-                            <td class="text-center fw-bold">{{ $prop->sort_order }}</td>
-                            <td class="fw-bold text-primary">{{ $prop->code }}</td>
-                            <td class="fw-bold text-secondary">{{ $prop->code_usage ? 'Có' : 'Không' }}</td>
-                            <td>{{ $prop->name }}</td>
-                            <td>
-                                @if ($prop->type == 'text')
-                                    <span class="badge bg-secondary">Văn bản</span>
-                                @elseif($prop->type == 'number')
-                                    <span class="badge bg-primary">Số</span>
-                                @else
-                                    <span class="badge bg-success">Dropdown (Chọn)</span>
-                                @endif
-                            </td>
-                            <td class="text-center">
-                                {!! $prop->is_required ? '<i class="fa-solid fa-check text-danger"></i>' : '-' !!}
-                            </td>
-                            <td class="text-center">
-                                {!! $prop->is_active
-                                    ? '<span class="badge bg-success">Hoạt động</span>'
-                                    : '<span class="badge bg-danger">Đang tắt</span>' !!}
-                            </td>
-                            <td class="text-end">
-                                <button wire:click="edit({{ $prop->id }})"
-                                    class="btn btn-sm btn-outline-primary me-1" data-bs-toggle="modal"
-                                    data-bs-target="#propertyModal">
-                                    <i class="fa-solid fa-pen"></i>
-                                </button>
-                                <button wire:confirm="Xóa thuộc tính sẽ làm mất cấu hình hiển thị. Bạn chắc chứ?"
-                                    wire:click="delete({{ $prop->id }})" class="btn btn-sm btn-outline-danger">
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
-                            </td>
+                            <th class="text-center">Thứ tự</th>
+                            <th>Mã (Code)</th>
+                            <th>Mã (Code) Usage</th>
+                            <th>Tên Hiển Thị</th>
+                            <th>Kiểu Dữ Liệu</th>
+                            <th class="text-center">Bắt buộc</th>
+                            <th class="text-center">Trạng thái</th>
+                            <th class="text-end">Hành Động</th>
                         </tr>
-                    @endforeach
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @foreach ($properties as $prop)
+                            <tr>
+                                <td class="text-center fw-bold">{{ $prop->sort_order }}</td>
+                                <td class="fw-bold text-primary">{{ $prop->code }}</td>
+                                <td class="fw-bold text-secondary">{{ $prop->code_usage ? 'Có' : 'Không' }}</td>
+                                <td>{{ $prop->name }}</td>
+                                <td>
+                                    @if ($prop->type == 'text')
+                                        <span class="badge bg-secondary">Văn bản</span>
+                                    @elseif($prop->type == 'number')
+                                        <span class="badge bg-primary">Số</span>
+                                    @else
+                                        <span class="badge bg-success">Dropdown (Chọn)</span>
+                                    @endif
+                                </td>
+                                <td class="text-center">
+                                    {!! $prop->is_required ? '<i class="fa-solid fa-check text-danger"></i>' : '-' !!}
+                                </td>
+                                <td class="text-center">
+                                    {!! $prop->is_active
+                                        ? '<span class="badge bg-success">Hoạt động</span>'
+                                        : '<span class="badge bg-danger">Đang tắt</span>' !!}
+                                </td>
+                                <td class="text-end">
+                                    <button wire:click="edit({{ $prop->id }})"
+                                        class="btn btn-sm btn-outline-primary me-1" data-bs-toggle="modal"
+                                        data-bs-target="#propertyModal">
+                                        <i class="fa-solid fa-pen"></i>
+                                    </button>
+                                    <button wire:confirm="Xóa thuộc tính sẽ làm mất cấu hình hiển thị. Bạn chắc chứ?"
+                                        wire:click="delete({{ $prop->id }})" class="btn btn-sm btn-outline-danger">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
             {{ $properties->links() }}
         </div>
     </div>
@@ -97,7 +106,8 @@
                                     <label class="form-check-label fw-bold" for="isCode">Sử dụng làm
                                         Barcode/QR</label>
                                     <small class="d-block text-muted">
-                                        Nếu tắt, người dùng vẫn phải nhập và ghi nhận nhưng nội dung này sẽ không xuất hiện trong
+                                        Nếu tắt, người dùng vẫn phải nhập và ghi nhận nhưng nội dung này sẽ không xuất
+                                        hiện trong
                                         chuỗi mã vạch.</small>
                                 </div>
                             </div>
@@ -157,7 +167,7 @@
 
                         {{-- Chỉ hiện ô nhập Tùy chọn nếu Type là Select --}}
                         @if ($type === 'select')
-                            <div class="mb-3 p-3 bg-light border rounded">
+                            <div class="mb-3 p-3 border rounded">
                                 <label class="form-label fw-bold text-success">Danh sách Tùy chọn (Ngăn cách bằng dấu
                                     phẩy)</label>
                                 <textarea wire:model="options" class="form-control" rows="2" placeholder="VD: Đỏ, Xanh Lá, Vàng, Đen"></textarea>
@@ -200,7 +210,7 @@
                                 <div class="col-12 mt-2">
                                     <label class="form-label fw-bold text-warning">Chọn các mã hàng (Model) áp
                                         dụng:</label>
-                                    <div class="card p-3 bg-light" style="max-height: 200px; overflow-y: auto;">
+                                    <div class="card p-3" style="max-height: 200px; overflow-y: auto;">
                                         <div class="row">
                                             @foreach ($allProducts as $product)
                                                 <div class="col-md-4">

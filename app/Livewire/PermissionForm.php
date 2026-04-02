@@ -5,7 +5,9 @@ namespace App\Livewire;
 use Spatie\Permission\Models\Permission;
 use Livewire\Component;
 use Illuminate\Validation\Rule;
+use Livewire\Attributes\Title;
 
+#[Title('Quản lý Quyền hạn')]
 class PermissionForm extends Component
 {
     public $permission;

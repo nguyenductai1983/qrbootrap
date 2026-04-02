@@ -1,5 +1,12 @@
 <div>
-    <div class="container py-4">
+    <div class="container-fluid py-4 position-relative">
+        <!-- OVERLAY LOADING -->
+        <div wire:loading.flex class="position-absolute w-100 h-100 top-0 start-0 z-3 flex-column justify-content-center align-items-center" 
+             style="background: transparent;">
+            <div class="spinner-border text-primary" style="width: 4rem; height: 4rem; border-width: 0.35em;" role="status"></div>
+            <h4 class="mt-3 fw-bold text-primary">Đang xử lý, vui lòng đợi...</h4>
+        </div>
+
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h4 class="fw-bold text-primary"><i class="fa-solid fa-layer-group me-2"></i>Quản lý Danh mục
             </h4>
@@ -127,10 +134,11 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                        <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk me-1"></i>
-                            Lưu
-                            lại</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <button type="submit" class="btn btn-primary" wire:loading.attr="disabled" wire:target="save">
+                            <span wire:loading.remove wire:target="save"><i class="fa-solid fa-floppy-disk me-1"></i> Lưu lại</span>
+                            <span wire:loading wire:target="save"><span class="spinner-border spinner-border-sm me-1"></span> Đang lưu...</span>
+                        </button>
                     </div>
                 </form>
             </div>

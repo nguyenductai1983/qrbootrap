@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>In Tem Nhãn - Hệ Thống QR</title>
     <!-- CSS Bootstrap cơ bản -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
     <!-- File CSS in mã vạch của hệ thống -->
     <link rel="stylesheet" href="{{ asset('css/barcode.css') }}">
     <style>

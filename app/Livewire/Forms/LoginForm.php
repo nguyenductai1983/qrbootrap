@@ -13,8 +13,8 @@ use Livewire\Form;
 use  App\Models\User;
 class LoginForm extends Form
 {
-    #[Validate('required|string|email')]
-    public string $email = '';
+    #[Validate('required|string')]
+    public string $login_id = '';
 
     #[Validate('required|string')]
     public string $password = '';
@@ -45,19 +45,22 @@ class LoginForm extends Form
     {
         $this->ensureIsNotRateLimited();
 
-        // 1. Tìm kiếm User trong Database theo Email người dùng nhập
-        $user = User::where('email', $this->email)->first();
+        // 1. Phân biệt người dùng nhập email hay username
+        $field = filter_var($this->login_id, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
 
-        // 2. KỊCH BẢN 1: Nếu không tìm thấy Email trong hệ thống
+        // 2. Tìm kiếm User trong Database theo field
+        $user = User::where($field, $this->login_id)->first();
+
+        // 3. KỊCH BẢN 1: Nếu không tìm thấy User trong hệ thống
         if (! $user) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
-                'form.email' => 'Email này chưa được đăng ký trong hệ thống.',
+                'form.login_id' => 'Email hoặc Username này chưa được đăng ký trong hệ thống.',
             ]);
         }
 
-        // 3. KỊCH BẢN 2: Đã tìm thấy Email, nhưng check Mật khẩu bị sai
+        // 4. KỊCH BẢN 2: Đã tìm thấy Email, nhưng check Mật khẩu bị sai
         if (! Hash::check($this->password, $user->password)) {
            RateLimiter::hit($this->throttleKey());
 
@@ -86,7 +89,7 @@ class LoginForm extends Form
         $seconds = RateLimiter::availableIn($this->throttleKey());
 
         throw ValidationException::withMessages([
-            'form.email' => trans('auth.throttle', [
+            'form.login_id' => trans('auth.throttle', [
                 'seconds' => $seconds,
                 'minutes' => ceil($seconds / 60),
             ]),
@@ -98,6 +101,6 @@ class LoginForm extends Form
      */
     protected function throttleKey(): string
     {
-        return Str::transliterate(Str::lower($this->email) . '|' . request()->ip());
+        return Str::transliterate(Str::lower($this->login_id) . '|' . request()->ip());
     }
 }

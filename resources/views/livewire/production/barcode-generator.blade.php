@@ -202,10 +202,28 @@
                         </div>
                     </div>
                     <div class="row g-1">
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <label class="form-label small fw-bold" for="length"><i
-                                    class="fa-solid fa-ruler-combined"></i>Chiều dài</label>
-                            <input wire:model="length" type="number" class="form-control" id="length">
+                                    class="fa-solid fa-ruler-combined me-1"></i>Chiều dài</label>
+                            <input wire:model="length" type="number" step="0.01" class="form-control" id="length">
+                            @error('length') <span class="text-danger small">{{ $message }}</span> @enderror
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label small fw-bold" for="gsm"><i
+                                    class="fa-solid fa-weight-scale me-1"></i>Định lượng (gsm)</label>
+                            <input wire:model="gsm" type="number" step="0.01" class="form-control" id="gsm">
+                            @error('gsm') <span class="text-danger small">{{ $message }}</span> @enderror
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label small fw-bold" for="weight"><i
+                                    class="fa-solid fa-scale-balanced me-1"></i>Trọng lượng</label>
+                            <input wire:model="weight" type="number" step="0.01" class="form-control" id="weight">
+                            @error('weight') <span class="text-danger small">{{ $message }}</span> @enderror
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label small fw-bold" for="notes"><i
+                                    class="fa-regular fa-note-sticky me-1"></i>Ghi chú</label>
+                            <input wire:model="notes" type="text" class="form-control" id="notes">
                         </div>
                     </div>
                     {{-- Các trường nhập liệu chi tiết --}}

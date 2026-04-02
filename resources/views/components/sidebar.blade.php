@@ -15,7 +15,7 @@
             <i class="fas fa-tachometer-alt me-2"></i>
             <span class="sidebar-text">Dashboard</span>
         </a>
-        @can('view users')
+        @can('users.view')
             <a href="{{ route('qrcodes.index') }}" class="list-group-item list-group-item-action py-3 ps-4  ">
                 <i class="fa-solid fa-qrcode"></i>
                 <span class="sidebar-text">QR Code List</span>
@@ -57,7 +57,7 @@
             </div>
         @endrole
         {{-- Menu cho khối Sản xuất / Thống kê --}}
-        @can('print barcodes')
+        @can('barcodes.print')
             <a href="{{ route('production.barcode-generator') }}"
                 class="list-group-item list-group-item-action py-3 ps-4 {{ request()->routeIs('production.barcode-generator') ? 'active' : '' }}">
                 <i class="fa-solid fa-print me-2"></i>

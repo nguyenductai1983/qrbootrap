@@ -9,7 +9,7 @@
 <div class="scanner-wrapper">
     {{-- 1. GIAO DIỆN PC / SÚNG QUÉT BÀN PHÍM --}}
     <div class="d-none d-md-block mb-4">
-        <div class="alert alert-info py-2 small d-flex justify-content-between align-items-center">
+        <div class="alert alert-info small d-flex justify-content-between align-items-center">
             <span><i class="fa-solid fa-keyboard me-1"></i> Chế độ nhập liệu / Máy quét rời</span>
             <button type="button" class="btn btn-sm btn-outline-primary bg-white btn-toggle-cam-pc"
                 onclick="toggleCameraDesktop(this, '{{ $onScan }}')">

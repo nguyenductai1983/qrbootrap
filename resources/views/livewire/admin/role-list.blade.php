@@ -1,11 +1,18 @@
 {{-- resources/views/livewire/role-list.blade.php --}}
-<div>
+<div class="position-relative">
+    <!-- OVERLAY LOADING -->
+    <div wire:loading.flex class="position-absolute w-100 h-100 top-0 start-0 z-3 flex-column justify-content-center align-items-center" 
+         style="background: transparent;">
+        <div class="spinner-border text-primary" style="width: 4rem; height: 4rem; border-width: 0.35em;" role="status"></div>
+        <h4 class="mt-3 fw-bold text-primary">Đang xử lý, vui lòng đợi...</h4>
+    </div>
+
     <div class="card shadow-sm">
         <div class="card-body">
 
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h3 class="h5 card-title">{{ __('Quản lý Vai trò') }}</h3>
-                @can('roles create')
+                @can('roles.create')
                     <a href="{{ route('roles.create') }}" class="btn btn-primary">
                         {{ __('Thêm Vai trò Mới') }}
                     </a>
@@ -35,7 +42,6 @@
                 <table class="table table-hover table-striped">
                     <thead>
                         <tr>
-                            <th scope="col">ID</th>
                             <th scope="col">{{ __('Tên Vai trò') }}</th>
                             <th scope="col">{{ __('Số lượng Người dùng') }}</th>
                             <th scope="col">{{ __('Ngày tạo') }}</th>
@@ -45,19 +51,19 @@
                     <tbody>
                         @forelse ($roles as $role)
                             <tr>
-                                <td>{{ $role->id }}</td>
                                 <td>{{ $role->name }}</td>
                                 <td>{{ $role->users_count }}</td>
                                 <td>{{ $role->created_at->format('d/m/Y H:i') }}</td>
                                 <td>
-                                    @can('roles edit')
+                                    @can('roles.edit')
                                         <a href="{{ route('roles.edit', $role) }}" class="btn btn-sm btn-info me-2">
                                             {{ __('Sửa') }}
                                         </a>
                                     @endcan
-                                    @can('roles delete')
-                                        <button wire:click="deleteRole({{ $role->id }})"
-                                            onclick="return confirm('Bạn có chắc chắn muốn xóa vai trò này không?');"
+                                    @can('roles.delete')
+                                        <button 
+                                            wire:confirm="{{ __('Bạn có chắc chắn muốn xóa vai trò này không?') }}"
+                                            wire:click="deleteRole({{ $role->id }})"
                                             class="btn btn-sm btn-danger" @if ($role->name === 'admin' || $role->users_count > 0) disabled @endif>
                                             {{ __('Xóa') }}
                                         </button>
@@ -66,7 +72,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="text-center text-muted">
+                                <td colspan="4" class="text-center text-muted">
                                     {{ __('Không tìm thấy vai trò nào.') }}
                                 </td>
                             </tr>

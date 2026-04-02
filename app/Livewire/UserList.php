@@ -6,7 +6,9 @@ use Livewire\Component;
 use App\Models\User;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\Title;
 
+#[Title('Quản lý Người dùng')]
 class UserList extends Component
 {
     use WithPagination;
@@ -22,7 +24,7 @@ class UserList extends Component
         // Kiểm tra quyền
         /** @var \App\Models\User $user */
         $user = Auth::user();
-        if (!$user || !$user->can('users delete')) {
+        if (!$user || !$user->can('users.delete')) {
             session()->flash('error', 'Bạn không có quyền xóa người dùng!');
             return;
         }

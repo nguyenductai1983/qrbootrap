@@ -6,7 +6,9 @@ use App\Models\Department;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\Title;
 
+#[Title('Quản lý Phòng ban')]
 class DepartmentList extends Component
 {
     use WithPagination;
@@ -22,7 +24,7 @@ class DepartmentList extends Component
     {
         /** @var \App\Models\User $user */
         $user = Auth::user();
-        if (!$user->can('departments delete')) {
+        if (!$user->can('departments.delete')) {
             session()->flash('error', 'Bạn không có quyền xóa phòng ban!');
             return;
         }

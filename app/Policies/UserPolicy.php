@@ -19,21 +19,21 @@ class UserPolicy
     }
     public function viewAny(User $user): Response
     {
-        return $user->hasPermissionTo('roles view')
+        return $user->hasPermissionTo('roles.view')
                     ? Response::allow()
                     : Response::deny('Bạn không có quyền xem danh sách vai trò.');
     }
 
     public function view(User $user, Role $role): Response
     {
-        return $user->hasPermissionTo('roles view')
+        return $user->hasPermissionTo('roles.view')
                     ? Response::allow()
                     : Response::deny('Bạn không có quyền xem vai trò này.');
     }
 
     public function create(User $user): Response
     {
-        return $user->hasPermissionTo('roles create')
+        return $user->hasPermissionTo('roles.create')
                     ? Response::allow()
                     : Response::deny('Bạn không có quyền tạo vai trò mới.');
     }
@@ -44,7 +44,7 @@ class UserPolicy
         if ($role->name === 'admin' && !$user->hasRole('admin')) {
              return Response::deny('Bạn không có quyền chỉnh sửa vai trò Admin.');
         }
-        return $user->hasPermissionTo('edit roles')
+        return $user->hasPermissionTo('roles.edit')
                     ? Response::allow()
                     : Response::deny('Bạn không có quyền cập nhật vai trò này.');
     }
@@ -55,7 +55,7 @@ class UserPolicy
         if ($role->name === 'admin' || $role->users()->count() > 0) {
             return Response::deny('Không thể xóa vai trò này.');
         }
-        return $user->hasPermissionTo('roles delete')
+        return $user->hasPermissionTo('roles.delete')
                     ? Response::allow()
                     : Response::deny('Bạn không có quyền xóa vai trò này.');
     }

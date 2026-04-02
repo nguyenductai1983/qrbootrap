@@ -7,7 +7,9 @@ use Spatie\Permission\Models\Permission;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\WithoutUrlPagination;
+use Livewire\Attributes\Title;
 
+#[Title('Quản lý Quyền hạn')]
 class PermissionList extends Component
 {
     use WithPagination, WithoutUrlPagination;
@@ -25,7 +27,7 @@ class PermissionList extends Component
         // Kiểm tra quyền
         /** @var \App\Models\User $user */
         $user = Auth::user();
-        if (!$user->can('permissions delete')) {
+        if (!$user->can('permissions.delete')) {
             session()->flash('error', 'Bạn không có quyền xóa quyền hạn!');
             return;
         }

@@ -6,7 +6,9 @@ use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission; // Import Permission model
 use Livewire\Component;
 use Illuminate\Validation\Rule;
+use Livewire\Attributes\Title;
 
+#[Title('Quản lý Vai trò')]
 class RoleForm extends Component
 {
     public $role;

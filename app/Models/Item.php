@@ -28,13 +28,19 @@ class Item extends Model
         'width_id',
         'original_length',
         'length',
+        'gsm',
+        'weight',
+        'notes',
+        'warehoused_by',
+        'warehoused_at',
 
     ];
 
     protected $casts = [
-        'properties' => 'array', // Lưu màu, khổ, trọng lượng
-        'verified_at' => 'datetime',
-        'status' => ItemStatus::class,
+        'properties'   => 'array',
+        'verified_at'  => 'datetime',
+        'warehoused_at' => 'datetime',
+        'status'       => ItemStatus::class,
     ];
 
     // --- Quan hệ cơ bản ---
@@ -56,6 +62,12 @@ class Item extends Model
     {
         // Người quét/Xác nhận (verified_by)
         return $this->belongsTo(User::class, 'verified_by');
+    }
+
+    public function warehouser()
+    {
+        // Người nhập kho
+        return $this->belongsTo(User::class, 'warehoused_by');
     }
     // --- Quan hệ Phả hệ (Genealogy) ---
 

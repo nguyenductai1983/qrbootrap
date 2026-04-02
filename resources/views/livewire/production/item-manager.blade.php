@@ -1,27 +1,40 @@
 <div wire:poll.10s>
-    <div class="container py-4">
+    <div class="container-fluid py-4">
         <div class="card shadow-sm">
-            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                <h5 class="mb-0"><i class="fa-solid fa-tags me-2"></i>Quản lý Kho Tem (Items)</h5>
-                <div class="d-flex align-items-center gap-2">
-                    <div class="input-group input-group-sm" style="width: auto;">
-                        <span class="input-group-text bg-light text-dark fw-bold border-0">Từ ngày</span>
-                        <input type="date" wire:model.live="fromDate" class="form-control border-0">
+            <div class="card-header bg-primary text-white py-3">
+                <div class="row align-items-center g-3">
+                    <div class="col-12 col-md-auto me-auto text-center text-md-start">
+                        <h5 class="mb-0"><i class="fa-solid fa-tags me-2"></i>Quản lý Kho Tem (Items)</h5>
                     </div>
-                    <div class="input-group input-group-sm" style="width: auto;">
-                        <span class="input-group-text bg-light text-dark fw-bold border-0">Đến ngày</span>
-                        <input type="date" wire:model.live="toDate" class="form-control border-0">
+                    <div class="col-6 col-md-auto">
+                        {{-- <div class="d-flex flex-column flex-sm-row align-items-stretch gap-2"> --}}
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-textfw-bold border-0">Từ ngày</span>
+                            <input type="date" wire:model.live="fromDate" class="form-control border-0">
+                        </div>
                     </div>
-                    <button wire:click="exportExcel"
-                        class="btn btn-sm btn-light text-primary fw-bold shadow-sm text-nowrap"
-                        style="min-width: 120px;" wire:loading.attr="disabled">
-                        <span wire:loading.remove wire:target="exportExcel">
-                            <i class="fa-solid fa-file-excel me-1 text-success"></i> Xuất Excel
-                        </span>
-                        <span wire:loading wire:target="exportExcel">
-                            <i class="fa-solid fa-spinner fa-spin me-1"></i> Đang xuất...
-                        </span>
-                    </button>
+                    <div class="col-6 col-md-auto">
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-textfw-bold border-0">Đến ngày</span>
+                            <input type="date" wire:model.live="toDate" class="form-control border-0">
+                        </div>
+
+                        {{-- </div> --}}
+                    </div>
+                    <div class="col-12 col-md-auto">
+                        <div class="d-flex flex-column flex-sm-row align-items-stretch gap-2">
+                            <button wire:click="exportExcel"
+                                class="btn btn-sm text-primary bg-warning fw-bold shadow-sm text-nowrap"
+                                wire:loading.attr="disabled">
+                                <span wire:loading.remove wire:target="exportExcel">
+                                    <i class="fa-solid fa-file-excel me-1 text-success"></i> Xuất Excel
+                                </span>
+                                <span wire:loading wire:target="exportExcel">
+                                    <i class="fa-solid fa-spinner fa-spin me-1"></i> Đang xuất...
+                                </span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="card-body">
@@ -53,7 +66,9 @@
                                 @endif
 
                                 {{-- Giao diện Loading Spinner --}}
-                                <div wire:loading wire:target="searchCode" class="position-absolute top-50 translate-middle-y" style="right: 40px; z-index: 10;">
+                                <div wire:loading wire:target="searchCode"
+                                    class="position-absolute top-50 translate-middle-y"
+                                    style="right: 40px; z-index: 10;">
                                     <div class="spinner-border spinner-border-sm text-primary" role="status">
                                         <span class="visually-hidden">Loading...</span>
                                     </div>
@@ -82,7 +97,7 @@
                     </div>
                 </div>
                 <div class="row g-3 ">
-                    <div class="col-md-3">
+                    <div class="col-md-3 col-6">
                         <label class="form-label small fw-bold" for="filterOrderId">Lọc theo Đơn hàng:</label>
                         <select wire:model.live="filterOrderId" class="form-select" id="filterOrderId">
                             <option value="">-- Tất cả đơn hàng --</option>
@@ -92,7 +107,7 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-3 col-6">
                         <label class="form-label small fw-bold" for="filterDepartmentId">Lọc theo Xưởng:</label>
                         <select wire:model.live="filterDepartmentId" class="form-select" id="filterDepartmentId">
                             <option value="">-- Tất cả xưởng --</option>
@@ -102,7 +117,7 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-3 col-6">
                         <label class="form-label small fw-bold" for="filterProductId">Lọc theo Sản phẩm:</label>
                         <select wire:model.live="filterProductId" class="form-select" id="filterProductId">
                             <option value="">-- Tất cả sản phẩm --</option>
@@ -112,7 +127,7 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-3 col-6">
                         <label class="form-label small fw-bold" for="filterColorId">Lọc theo Màu:</label>
                         <select wire:model.live="filterColorId" class="form-select" id="filterColorId">
                             <option value="">-- Tất cả màu --</option>
@@ -133,10 +148,11 @@
                 @endif
 
                 {{-- BẢNG DỮ LIỆU --}}
-                <div class="table-responsive">
-                    <table class="table table-hover table-bordered align-middle">
-                        <thead class="table text-center">
+                <div class="mt-3" style="overflow: visible;">
+                    <table class="table table-hover table-bordered align-middle mb-0 table-card">
+                        <thead class="sticky-top shadow-sm text-center" style="z-index: 10;">
                             <tr>
+                                <th>#</th>
                                 <th>Mã Tem</th>
                                 <th>Đơn hàng</th>
                                 <th>Sản phẩm</th>
@@ -152,21 +168,24 @@
                         <tbody>
                             @forelse ($items as $item)
                                 <tr>
-                                    <td class="fw-bold text-primary">{{ $item->code }}</td>
-                                    <td class="text-center">{{ $item->order->code ?? '-' }}</td>
-                                    <td>{{ $item->product->name ?? '-' }} - {{ $item->department->name ?? '-' }}
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td class="fw-bold text-primary" data-label="Mã Tem">{{ $item->code }}</td>
+                                    <td class="text-center" data-label="Đơn hàng">{{ $item->order->code ?? '-' }}
+                                    </td>
+                                    <td data-label="Sản phẩm">{{ $item->product->name ?? '-' }} -
+                                        {{ $item->department->name ?? '-' }}
                                         <br>
                                         <span
                                             class="badge bg-secondary rounded-pill">{{ $item->creator->name ?? '-' }}</span>
                                     </td>
-                                    <td>{{ $item->color->name ?? '-' }}</td>
-                                    <td class="text-center">
+                                    <td data-label="Màu">{{ $item->color->name ?? '-' }}</td>
+                                    <td class="text-center" data-label="Trạng thái">
                                         <span class="badge {{ $item->status?->badge() ?? '' }}">
                                             {{ $item->status?->label() ?? '' }}
                                         </span>
                                     </td>
                                     {{-- CỘT CHIỀU DÀI --}}
-                                    <td class="text-center text-nowrap">
+                                    <td class="text-center text-nowrap" data-label="Chiều dài">
                                         @if ($item->original_length || $item->length)
                                             <div class="small">Gốc: <span
                                                     class="fw-bold">{{ (float) $item->original_length }}m</span></div>
@@ -179,7 +198,7 @@
                                     </td>
 
                                     {{-- CỘT NGUỒN GỐC (PHẢ HỆ) --}}
-                                    <td>
+                                    <td data-label="Nguồn gốc">
                                         @if ($item->parents->isNotEmpty())
                                             <ul class="mb-0 ps-3 text-nowrap" style="font-size: 0.85rem;">
                                                 @foreach ($item->parents as $parent)
@@ -192,10 +211,10 @@
                                                 @endforeach
                                             </ul>
                                         @else
-                                            <span class="badge bg-light text-secondary border">Nguyên bản</span>
+                                            <span class="badge text-secondary border">Nguyên bản</span>
                                         @endif
                                     </td>
-                                    <td>
+                                    <td data-label="Chi tiết">
                                         {{-- Hiển thị tóm tắt properties ra ngoài --}}
                                         @if (is_array($item->properties))
                                             <ul class="mb-0 ps-3" style="font-size: 0.85rem;">
@@ -208,11 +227,11 @@
                                             </ul>
                                         @endif
                                     </td>
-                                    <td class="text-center text-muted">
+                                    <td class="text-center text-muted" data-label="Vị trí">
                                         {{-- Sắp tới: {{ $item->currentLocation->name ?? 'Chưa định vị' }} --}}
                                         <i class="fa-solid fa-location-dot me-1"></i> N/A
                                     </td>
-                                    <td class="text-center">
+                                    <td class="text-center" data-label="Hành động">
                                         <button wire:click="reprintItems([{{ $item->id }}])"
                                             class="btn btn-sm btn-outline-info me-1" title="In lại tem">
                                             <i class="fa-solid fa-print"></i>

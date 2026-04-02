@@ -1,4 +1,11 @@
-<div>
+<div class="position-relative">
+    <!-- OVERLAY LOADING -->
+    <div wire:loading.flex wire:target="confirmCoating,addScannedItem,removeItem" class="position-absolute w-100 h-100 top-0 start-0 z-3 flex-column justify-content-center align-items-center" 
+         style="background: transparent;">
+        <div class="spinner-border text-success" style="width: 4rem; height: 4rem; border-width: 0.35em;" role="status"></div>
+        <h4 class="mt-3 fw-bold text-success">Đang xử lý, vui lòng đợi...</h4>
+    </div>
+
     <div class="row g-3">
         {{-- KHU VỰC QUÉT MÃ VẠCH / CAMERA --}}
         <div class="col-md-5">
@@ -23,15 +30,34 @@
                     </option>
                 @endforeach
             </select>
+
+            <label class="small text-muted fw-bold mt-2" for="printerMac">
+                <i class="fa-solid fa-print me-1"></i>Chọn Trạm In
+            </label>
+            <select wire:model="printerMac" id="printerMac"
+                class="form-select form-select-sm border-info fw-bold text-info mb-3">
+                @if (count($printStations) === 0)
+                    <option value="">-- Không có Trạm In --</option>
+                @endif
+                @foreach ($printStations as $station)
+                    <option value="{{ $station->code }}">[{{ $station->code }}] {{ $station->name }}</option>
+                @endforeach
+            </select>
             @if (count($machines) === 0)
                 <div class="alert alert-warning py-1 px-2 small mb-2">
                     <i class="fa-solid fa-triangle-exclamation me-1"></i>
-                    Bạn chưa được phân công máy nào. Liên hệ Admin để được gán máy.
+                    Bạn chưa được phân công máy nào. Liên hệ Admin.
+                </div>
+            @endif
+            @if (count($printStations) === 0)
+                <div class="alert alert-warning py-1 px-2 small mb-2">
+                    <i class="fa-solid fa-triangle-exclamation me-1"></i>
+                    Bạn chưa được gán Trạm In. Liên hệ Admin.
                 </div>
             @endif
             <div class="card shadow-sm border-0">
                 <div class="card-header bg-primary text-white fw-bold">
-                    <i class="fa-solid fa-barcode me-2"></i> Quét Mã Vải
+                    <i class="fa-solid fa-barcode"></i> Quét Mã Vải
                 </div>
                 <div class="card-body text-center">
                     <x-scanner inputModel="codeInput" onEnter="addScannedItem" onScan="addScannedItem"
@@ -67,19 +93,18 @@
                                             <i class="fa-solid fa-times"></i> Xóa
                                         </button>
                                     </div>
-                                    <div class="row align-items-center bg-light p-2 rounded">
+                                    <div class="row align-items-center p-2 rounded">
                                         <div class="col-5 small text-muted">
-                                            Tồn kho: <b class="text-dark fs-6">{{ (float) $item['length'] }} m</b>
+                                            Tồn: <b class="fs-6">{{ (float) $item['length'] }} m</b>
                                         </div>
                                         <div class="col-7">
                                             <div class="input-group input-group-sm shadow-sm">
-                                                <span class="input-group-text bg-white fw-bold text-primary">Xuất
-                                                    dùng:</span>
+                                                <span class="input-group-text fw-bold text-primary">Dùng:</span>
                                                 <input type="number" step="0.1" max="{{ $item['length'] }}"
                                                     wire:model="usedLengths.{{ $item['id'] }}"
                                                     class="form-control text-end fw-bold input-used-length"
                                                     oninput="calculateFromUsed()" placeholder="0.0">
-                                                <span class="input-group-text bg-white">m</span>
+                                                <span class="input-group-text">m</span>
                                             </div>
                                         </div>
                                     </div>
@@ -92,8 +117,7 @@
                         <div class="d-flex justify-content-between align-items-end mb-3 mt-4">
                             <h6 class="fw-bold text-success text-uppercase mb-0"><i
                                     class="fa-solid fa-check-double me-1"></i> Thành phẩm đầu ra:</h6>
-                            <span class="badge bg-light text-secondary border shadow-sm"
-                                title="Tỉ lệ: Tổng mộc / Thành phẩm">
+                            <span class="badge text-secondary border shadow-sm" title="Tỉ lệ: Tổng mộc / Thành phẩm">
                                 <i class="fa-solid fa-robot text-info"></i> Tỉ lệ hao hụt: <span id="ratio-display"
                                     class="text-primary fw-bold">{{ number_format($coatingRatio ?? 1.07, 3) }}</span>
                             </span>
@@ -107,12 +131,18 @@
                                     oninput="calculateFromNew(this.value)"
                                     class="form-control form-control-lg text-end fw-bold text-success fs-4"
                                     placeholder="0.0">
-                                <span class="input-group-text bg-white fw-bold fs-5 text-success">mét (m)</span>
+                                <span class="input-group-text fw-bold fs-5 text-success">mét (m)</span>
                             </div>
                         </div>
 
-                        <button wire:click="confirmCoating" class="btn btn-success btn-lg w-100 fw-bold shadow">
-                            <i class="fa-solid fa-print me-2"></i> XÁC NHẬN TẠO MÃ & IN TEM
+                        <button wire:click="confirmCoating" class="btn btn-success btn-lg w-100 fw-bold shadow"
+                            wire:loading.attr="disabled" wire:target="confirmCoating">
+                            <span wire:loading.remove wire:target="confirmCoating">
+                                <i class="fa-solid fa-print me-2"></i> XÁC NHẬN TẠO MÃ &amp; IN TEM
+                            </span>
+                            <span wire:loading wire:target="confirmCoating">
+                                <span class="spinner-border spinner-border-sm me-2"></span> Đang tạo mã và in tem...
+                            </span>
                         </button>
                     @endif
                 </div>
@@ -171,7 +201,16 @@
 
 
             Livewire.on('alert', (event) => {
-                alert(event[0].message);
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Thông báo',
+                    text: event[0].message,
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: true,
+                    timer: 5000,
+                    timerProgressBar: true,
+                });
             });
         });
     </script>

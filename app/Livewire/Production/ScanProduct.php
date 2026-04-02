@@ -9,7 +9,9 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Product;
 use App\Enums\ItemStatus;
 use App\Models\Machine;
+use Livewire\Attributes\Title;
 
+#[Title('Xác nhận Cây Vải')]
 /**
  * @method void dispatch(string $event, string $type = null, string $title = null, string $text = null)
  */

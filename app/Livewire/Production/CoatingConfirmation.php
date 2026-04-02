@@ -10,7 +10,10 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Enums\ActionType;
 use App\Models\Product;
+use Livewire\Attributes\Title;
+use App\Events\PrintBarcodeRequested;
 
+#[Title('Xác nhận Tráng Ghép')]
 class CoatingConfirmation extends Component
 {
     public $codeInput = '';
@@ -22,6 +25,9 @@ class CoatingConfirmation extends Component
     public $selectedProductId = ''; // Model nhân viên chọn
     public $selectedMachineId = ''; // Máy đang thực hiện tráng
     public $machines = [];          // Danh sách máy được gán cho user này
+    public $printStations = [];     // Danh sách trạm in được gán cho user
+    public $printerMac = ''; // Máy in mặc định
+
     public function mount()
     {
         /** @var \App\Models\User $user */
@@ -37,17 +43,32 @@ class CoatingConfirmation extends Component
         }
         $this->coatingRatio = cache()->get('coating_ratio_' . Auth::id(), 1.07);
 
-        // Lấy danh sách máy được phân công cho user (có status=true)
+        // Lấy danh sách máy và trạm in được phân công
         $this->machines = $user->machines()->where('status', true)->orderBy('code')->get();
+        $this->printStations = $user->printStations()->where('status', true)->orderBy('code')->get();
 
-        // Gán mã thành phẩm mặc định là kết quả đầu tiên của danh sách products
-        if (!empty($this->products) && count($this->products) > 0) {
+        $cachedPrinterMac = cache()->get('printer_mac_' . Auth::id());
+        $cachedProductId = cache()->get('selected_product_id_' . Auth::id());
+        $cachedMachineId = cache()->get('selected_machine_id_' . Auth::id());
+
+        if ($cachedPrinterMac && collect($this->printStations)->contains('code', $cachedPrinterMac)) {
+            $this->printerMac = $cachedPrinterMac;
+        } elseif (count($this->printStations) > 0) {
+            $this->printerMac = collect($this->printStations)->first()->code;
+        }
+
+        // Gán mã thành phẩm mặc định (Ưu tiên Cache -> Phần tử đầu)
+        if ($cachedProductId && collect($this->products)->contains('id', $cachedProductId)) {
+            $this->selectedProductId = $cachedProductId;
+        } elseif (!empty($this->products) && count($this->products) > 0) {
             $firstProduct = is_array($this->products) ? $this->products[0] : $this->products->first();
             $this->selectedProductId = $firstProduct->id;
         }
 
-        // Gán máy mặc định nếu chỉ có 1 máy
-        if (count($this->machines) === 1) {
+        // Gán máy thực hiện mặc định (Ưu tiên Cache -> Nếu chỉ có 1 máy)
+        if ($cachedMachineId && collect($this->machines)->contains('id', $cachedMachineId)) {
+            $this->selectedMachineId = $cachedMachineId;
+        } elseif (count($this->machines) === 1) {
             $this->selectedMachineId = collect($this->machines)->first()->id;
         }
     }
@@ -97,6 +118,10 @@ class CoatingConfirmation extends Component
     public function confirmCoating()
     {
         // 1. VALIDATE ĐẦU VÀO
+        if (empty($this->printerMac)) {
+            $this->dispatch('alert', ['type' => 'error', 'message' => 'Vui lòng chọn trạm in phát hành tem trước khi xác nhận!']);
+            return;
+        }
         if (empty($this->scannedItems)) {
             $this->dispatch('alert', ['type' => 'error', 'message' => 'Vui lòng quét ít nhất 1 cây vải!']);
             return;
@@ -212,7 +237,7 @@ class CoatingConfirmation extends Component
                 $coatedItem->parents()->attach($oldItem->id, [
                     'action_type' => ActionType::COATING->value,
                     'used_length' => $used,
-                    'created_by' => Auth::id(),
+                    'user_id' => Auth::id(),
                     'created_at' => now(),
                 ]);
 
@@ -225,6 +250,14 @@ class CoatingConfirmation extends Component
 
             // 7. HOÀN TẤT
             DB::commit();
+
+            // Lưu cài đặt vào bộ nhớ đệm cho lần thao tác tiếp theo
+            cache()->forever('printer_mac_' . Auth::id(), $this->printerMac);
+            cache()->forever('selected_product_id_' . Auth::id(), $this->selectedProductId);
+            cache()->forever('selected_machine_id_' . Auth::id(), $this->selectedMachineId);
+
+            // 🌟 BẮN LỆNH IN QUA WEBSOCKET (Truyền cây Tráng vừa tạo và Trạm in đang chọn)
+            broadcast(new PrintBarcodeRequested($coatedItem, $this->printerMac));
             $this->resetForm();
             $this->dispatch('alert', ['type' => 'success', 'message' => 'Đã tráng xong! Mã tem mới: ' . $finalCode]);
         } catch (\Exception $e) {

@@ -25,23 +25,30 @@ use App\Livewire\Production\ItemManager;
 use App\Livewire\Admin\CategoryManager;
 use App\Livewire\Admin\MachineManager;
 use App\Livewire\Admin\UserMachineAssignment;
+use App\Livewire\Warehouse\LocationManager;
 use App\Livewire\Production\CoatingConfirmation;
+use App\Livewire\Warehouse\ScanToLocation;
+use App\Livewire\Admin\PrintStationManager;
+use App\Livewire\Admin\UserPrintStationAssignment;
+use App\Livewire\Warehouse\ReportManager;
+use App\Livewire\Dashboard\AnalyticsDashboard;
+use App\Http\Controllers\PrintController;
 //Role::withoutGlobalScopes()->get(); // Lấy tất cả vai trò mà không áp dụng bất kỳ global scope nào
 Route::view('/', 'welcome');
-
-Route::view('dashboard', 'dashboard')
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
-
 Route::view('profile', 'profile')
     ->middleware(['auth'])
     ->name('profile');
-Route::view('/huong-dan', 'guide')->middleware(['auth'])->name('guide');
+Route::view('/guide', 'guide')->middleware(['auth'])->name('guide');
 require __DIR__ . '/auth.php';
 Route::get('/test-500', function () {
     abort(500, 'đang thử lỗi 500'); // Lệnh ép hệ thống quăng lỗi 500
 });
+
 Route::middleware(['auth', 'verified'])->group(function () {
+    Route::view('dashboard', 'dashboard')
+        ->name('dashboard');
+    // Trang Báo Cáo & Phân Tích — có quyền xem bất kỳ loại nào
+    Route::get('/analytics', AnalyticsDashboard::class)->name('analytics');
 
     // ==========================================
     // 1. NHÓM ADMIN (Tiền tố: /admin/...)
@@ -51,35 +58,36 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // --- Quản lý Users ---
         Route::prefix('users')->name('users.')->group(function () {
             Route::get('/', UserList::class)->name('index')->middleware('role:admin');
-            Route::get('/create', UserForm::class)->name('create')->middleware('permission:users create');
-            Route::get('/{userId}/edit', UserForm::class)->name('edit')->middleware('permission:users edit');
+            Route::get('/create', UserForm::class)->name('create')->middleware('permission:users.create');
+            Route::get('/{userId}/edit', UserForm::class)->name('edit')->middleware('permission:users.edit');
         });
 
         // --- Quản lý Departments ---
         Route::prefix('departments')->name('departments.')->group(function () {
-            Route::get('/', DepartmentList::class)->name('index')->middleware('permission:departments view');
-            Route::get('/create', DepartmentForm::class)->name('create')->middleware('permission:departments create');
-            Route::get('/{departmentId}/edit', DepartmentForm::class)->name('edit')->middleware('permission:departments edit');
+            Route::get('/', DepartmentList::class)->name('index')->middleware('permission:departments.view');
+            Route::get('/create', DepartmentForm::class)->name('create')->middleware('permission:departments.create');
+            Route::get('/{departmentId}/edit', DepartmentForm::class)->name('edit')->middleware('permission:departments.edit');
         });
 
         // --- Quản lý Roles ---
         Route::prefix('roles')->name('roles.')->group(function () {
-            Route::get('/', RoleList::class)->name('index')->middleware('permission:roles view');
-            Route::get('/create', RoleForm::class)->name('create')->middleware('permission:roles create');
-            Route::get('/{roleId}/edit', RoleForm::class)->name('edit')->middleware('permission:roles edit');
+            Route::get('/', RoleList::class)->name('index')->middleware('permission:roles.view');
+            Route::get('/create', RoleForm::class)->name('create')->middleware('permission:roles.create');
+            Route::get('/{roleId}/edit', RoleForm::class)->name('edit')->middleware('permission:roles.edit');
         });
 
         // --- Quản lý Permissions ---
         Route::prefix('permissions')->name('permissions.')->group(function () {
-            Route::get('/', PermissionList::class)->name('index')->middleware('permission:permissions view');
-            Route::get('/create', PermissionForm::class)->name('create')->middleware('permission:permissions create');
-            Route::get('/{permissionId}/edit', PermissionForm::class)->name('edit')->middleware('permission:permissions edit');
+            Route::get('/', PermissionList::class)->name('index')->middleware('permission:permissions.view');
+            Route::get('/create', PermissionForm::class)->name('create')->middleware('permission:permissions.create');
+            Route::get('/{permissionId}/edit', PermissionForm::class)->name('edit')->middleware('permission:permissions.edit');
         });
 
         // --- Các danh mục Admin khác ---
 
     });
-    Route::middleware(['permission:product manager'])->prefix('manager')->group(function () {
+
+    Route::middleware(['permission:manager'])->prefix('manager')->group(function () {
         Route::get('/orders', OrderManager::class)->name('manager.orders');
         Route::get('/products', ProductManager::class)->name('manager.products');
         Route::get('/properties', PropertyManager::class)->name('manager.properties');
@@ -88,23 +96,50 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/categories', CategoryManager::class)->name('manager.categories');
         Route::get('/machines', MachineManager::class)->name('manager.machines');
         Route::get('/user-machines', UserMachineAssignment::class)->name('manager.user-machines');
+        Route::get('/print-stations', PrintStationManager::class)->name('manager.print-stations');
+        Route::get('/user-print-stations', UserPrintStationAssignment::class)->name('manager.user-print-stations');
     });
     // ==========================================
     // 2. NHÓM PRODUCTION (Sản xuất)
     // ==========================================
     // Ví dụ: Bọc tất cả các route in tem, quét tem vào chung 1 quyền "manage production"
     // Nếu các route này dùng chung 1 quyền, đây là cách bạn bọc middleware cho cả group:   
-    Route::middleware(['permission:print barcodes'])->group(function () {
+    Route::middleware(['permission:products.print'])->group(function () {
         Route::get('/production/barcode-generator-excel', BarcodeGeneratorExcel::class)->name('production.barcode-generator-excel');
         Route::get('/production/barcode-generator', BarcodeGenerator::class)->name('production.barcode-generator');
+        Route::get('/print-station/{station_id?}', function ($station_id = '01') {
+            return view('production.print-station', compact('station_id'));
+        })->name('production.print-station');
     });
     // Các route production khác không dùng chung middleware trên
-    Route::prefix('production')->name('production.')->group(function () {
-        Route::get('/scan-mobile', ScanProduct::class)->name('scan'); // Đã gộp tiền tố URL
-        Route::get('/excel-manager', ExcelManager::class)->name('excel-manager');
+
+    Route::middleware(['permission:products.scan'])->group(function () {
+        Route::prefix('production')->name('production.')->group(function () {
+            Route::get('/scan-mobile', ScanProduct::class)->name('scan'); // Đã gộp tiền tố URL
+            Route::get('/excel-manager', ExcelManager::class)->name('excel-manager');
+        });
     });
-    Route::get('/production/coating-confirmation', CoatingConfirmation::class)->name('production.coating-confirmation');
-    
+
+    Route::middleware(['permission:coating.scan'])->group(function () {
+        Route::prefix('production')->name('production.')->group(function () {
+            Route::get('/coating-confirmation', CoatingConfirmation::class)->name('coating-confirmation');
+        });
+    });
+    // ==========================================
+    // 3. NHÓM KHO (Warehouse)
+    // ==========================================
+    Route::middleware('permission:warehouse.scan')
+        ->prefix('warehouse')
+        ->name('warehouse.')
+        ->group(function () {
+            Route::get('/scan-to-location', ScanToLocation::class)->name('scan-to-location');
+            Route::get('/locations', LocationManager::class)->name('locations');
+            Route::get('/reports', ReportManager::class)->name('reports');
+            Route::get('/scan', ScanToLocation::class)->name('scan');
+        });
+
     // --- Tính Năng In Ấn Tập Trung (DRY Reprint) ---
-    Route::get('/print-labels', [\App\Http\Controllers\PrintController::class, 'printLabels'])->name('print.labels')->middleware('permission:print barcodes');
+    Route::get('/print-labels', [PrintController::class, 'printLabels'])->name('print.labels')->middleware('permission:manager');
+    Route::get('/print-locations', [PrintController::class, 'printLocations'])->name('locations.print')->middleware('permission:manager');
+    Route::get('/print-location-codes', [PrintController::class, 'printLocationCodes'])->name('locations.print-code')->middleware('permission:manager');
 });

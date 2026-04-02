@@ -20,7 +20,9 @@ class ItemGenealogy extends Model
         'child_item_id',  // 🌟 ID cây Tráng (Thành phẩm mới sinh ra)
         'action_type',    // Hành động tạo ra mối quan hệ này (Ví dụ: COATING, CUTTING)
         'user_id',        // Ai làm
-        'created_at'
+        'used_length',    // Chiều dài đã sử dụng
+        'created_at',
+        'created_by',
     ];
     public function item()
     {

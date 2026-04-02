@@ -63,3 +63,13 @@ public function up()
         $table->unsignedBigInteger('to_location_id')->nullable()->change();
     });
 }
+php artisan make:migration add_gsm_weight_notes_to_items_table --table=items
+
+php artisan install:broadcasting
+composer require pusher/pusher-php-server
+composer require laravel/reverb
+php artisan reverb:start
+php artisan queue:restart
+php artisan queue:work
+npm install --save-dev laravel-echo pusher-js
+npm audit fix

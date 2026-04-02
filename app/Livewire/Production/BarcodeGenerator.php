@@ -20,11 +20,12 @@ use App\Models\Specification;
 use App\Models\Color;
 use App\Models\PlasticType;
 use App\Models\Width;
+use Livewire\Attributes\Title;
 
+#[Title('Phát hành Tem & Barcode Cây Vải')]
 class BarcodeGenerator extends Component
 {
     use WithPagination;
-
     // Cấu hình
     public $type = ''; // Bỏ giá trị 'RM' mặc định đi
     public $itemTypes = []; // Danh sách loại tem để hiện lên select box
@@ -50,6 +51,9 @@ class BarcodeGenerator extends Component
     public $newOrderCustomer = '';
     public $newOrderTotal = 1;
     public $length;
+    public $gsm;
+    public $weight;
+    public $notes;
     public function mount()
     {
         /** @var \App\Models\User $user */ // <-- Đã thêm dòng fix lỗi IDE
@@ -214,6 +218,9 @@ class BarcodeGenerator extends Component
             'selectedSpec' => 'required',
             'selectedPlastic' => 'required',
             'length' => 'required|numeric|min:0.1',
+            'gsm' => 'nullable|numeric',
+            'weight' => 'nullable|numeric',
+            'notes' => 'nullable|string',
         ];
 
         // Định nghĩa các câu báo lỗi bằng tiếng Việt cho các trường cố định
@@ -227,6 +234,8 @@ class BarcodeGenerator extends Component
             'length.required' => 'Vui lòng nhập chiều dài.',
             'length.numeric' => 'Chiều dài phải là số.',
             'length.min' => 'Chiều dài tối thiểu là 0.1.',
+            'gsm.numeric' => 'Định lượng (gsm) phải là số.',
+            'weight.numeric' => 'Trọng lượng phải là số.',
         ];
 
         // 2. 🌟 QUÉT THUỘC TÍNH ĐỘNG: Nếu is_required = true thì thêm vào mảng Rules 🌟
@@ -279,9 +288,13 @@ class BarcodeGenerator extends Component
 
         for ($i = 0; $i < $this->quantity; $i++) {
 
-            // Lấy itemData và loại bỏ các trường không cần thiết trước khi lưu vào properties
-            $propertiesToSave = $this->itemData;
-            unset($propertiesToSave['ORDER_CODE']); // Xóa ORDER_CODE vì đã có order_id riêng biệt
+            // CHỈ lưu các trường thuộc tính động thực sự vào cột properties, loại bỏ các biến hệ thống (như PRODUCT_ID, PRODUCT_NAME)
+            $propertiesToSave = [];
+            foreach ($this->dynamicProperties as $prop) {
+                if (isset($this->itemData[$prop->code])) {
+                    $propertiesToSave[$prop->code] = $this->itemData[$prop->code];
+                }
+            }
 
             // 1. TẠO ITEM VỚI MÃ TẠM (Để lấy được ID từ Database)
             $item = Item::create([
@@ -299,6 +312,9 @@ class BarcodeGenerator extends Component
                 'product_id' => !empty($this->itemData['PRODUCT_ID']) ? $this->itemData['PRODUCT_ID'] : null,
                 'original_length' => $this->length ? (float) $this->length : null,
                 'length'          => $this->length ? (float) $this->length : null,
+                'gsm'             => is_numeric($this->gsm) ? (float) $this->gsm : null,
+                'weight'          => is_numeric($this->weight) ? (float) $this->weight : null,
+                'notes'           => $this->notes ? trim($this->notes) : null,
             ]);
             // 2. SINH MÃ CHÍNH THỨC DỰA TRÊN ID VỪA CÓ
             // Sử dụng str_pad 6 số để mã đẹp và đều (VD: ID 5 -> ...000005)
@@ -346,9 +362,12 @@ class BarcodeGenerator extends Component
             $printInfo = $this->itemData;
             $printInfo['type'] = $this->type; // <-- Bổ sung thêm type vào thông tin in mới
             $printInfo['PO'] = $orderCode ?? ''; // <-- Bổ sung thêm PO vào thông tin in mới
-            $printInfo['PRODUCT_NAME'] = $this->itemData['PRODUCT_NAME'] ?? ''; // <-- Bổ sung thêm PRODUCT_NAME vào thông tin in mới
-            $printInfo['COLOR_NAME'] = Color::find($this->selectedColor)->name ?? ''; // <-- Bổ sung thêm COLOR_NAME vào thông tin in mới
+            $printInfo['PRODUCT_NAME'] = $this->itemData['PRODUCT_NAME'] ?? '';
+            $printInfo['COLOR_NAME'] = Color::find($this->selectedColor)->name ?? '';
             $printInfo['LENGTH'] = $this->length;
+            $printInfo['GSM'] = $this->gsm;
+            $printInfo['WEIGHT'] = $this->weight;
+            $printInfo['NOTES'] = $this->notes;
             $this->generatedItems[] = [
                 'code' => $realCode,
                 'info' => $printInfo

@@ -21,6 +21,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'username',
         'email',
         'password',
         'department_id', // <-- Thay thế 'department' bằng 'department_id'
@@ -48,10 +49,6 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
-    public function qrScans()
-    {
-        return $this->hasMany(QrScan::class);
-    }
 
     public function isAdmin()
     {
@@ -67,5 +64,10 @@ class User extends Authenticatable
     public function department()
     {
         return $this->belongsTo(Department::class);
+    }
+
+    public function printStations()
+    {
+        return $this->belongsToMany(PrintStation::class);
     }
 }

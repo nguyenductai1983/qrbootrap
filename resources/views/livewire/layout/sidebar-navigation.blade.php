@@ -19,52 +19,97 @@
 
     <div class="list-group list-group-flush">
         {{-- 1. DASHBOARD --}}
-        <a href="/dashboard" class="list-group-item list-group-item-action py-3 ps-4" title="Bảng điều khiển">
-            <i class="fas fa-fw fa-tachometer-alt me-2"></i>
+        <a href="/dashboard" class="list-group-item list-group-item-action py-3 ps-4 {{ request()->is('dashboard') ? 'active' : '' }}" title="Bảng điều khiển">
+            <i class="fas fa-fw fa-tachometer-alt text-primary me-2"></i>
             <span class="sidebar-text">Bảng điều khiển</span>
+        </a>
+
+        {{-- 2. BIỂU ĐỒ & BÁO CÁO (tất cả user) --}}
+        <a href="{{ route('analytics') }}"
+            class="list-group-item list-group-item-action py-3 ps-4 {{ request()->routeIs('analytics') ? 'active' : '' }}"
+            title="Biểu Đồ & Báo Cáo">
+            <i class="fa-solid fa-fw fa-chart-line text-warning me-2"></i>
+            <span class="sidebar-text">Biểu Đồ &amp; Báo Cáo</span>
         </a>
 
         {{-- 2. NHÓM TÍNH NĂNG SẢN XUẤT (Production) --}}
 
-        @can('print barcodes')
+        @can('products.print')
             <a href="{{ route('production.barcode-generator-excel') }}" title="In Tem Excel"
                 class="list-group-item list-group-item-action py-3 ps-4 {{ request()->routeIs('production.barcode-generator-excel') ? 'active' : '' }}">
-                <i class="fa-solid fa-fw fa-print me-2"></i>
+                <i class="fa-solid fa-fw fa-print text-info me-2"></i>
                 <span class="sidebar-text">In Tem Cây Vải</span>
             </a>
             {{-- MỚI: Menu Quản lý Excel (Export/Import số liệu) --}}
             <a href="{{ route('production.excel-manager') }}" title="Quản lý Excel"
                 class="list-group-item list-group-item-action py-3 ps-4 {{ request()->routeIs('production.excel-manager') ? 'active' : '' }}">
-                <i class="fa-solid fa-fw fa-file-excel me-2"></i>
-                <span class="sidebar-text">Nhập/Xuất Excel</span>
+                <i class="fa-solid fa-fw fa-file-excel text-success me-2"></i>
+                <span class="sidebar-text">Cập nhật Vải(Excel)</span>
             </a>
         @endcan
 
-        @can('products scan')
+        @can('products.scan')
             <a href="{{ route('production.scan') }}"
                 class="list-group-item list-group-item-action py-3 ps-4 {{ request()->routeIs('production.scan') ? 'active' : '' }}"
-                title="Quét Tem Cây Vải">
-                <i class="fa-solid fa-fw fa-barcode me-2"></i>
-                <span class="sidebar-text">Quét Tem Cây Vải</span>
+                title="Sản xuất Vải">
+                <i class="fa-solid fa-fw fa-barcode text-primary me-2"></i>
+                <span class="sidebar-text">Sản xuất Vải</span>
             </a>
         @endcan
-        @can('products scan')
+        @can('coating.scan')
             <a href="{{ route('production.coating-confirmation') }}"
                 class="list-group-item list-group-item-action py-3 ps-4 {{ request()->routeIs('production.coating-confirmation') ? 'active' : '' }}"
                 title="Xác Nhận Tráng">
-                <i class="fa-solid fa-fw fa-barcode me-2"></i>
+                <i class="fa-solid fa-fw fa-barcode text-warning me-2"></i>
                 <span class="sidebar-text">Xác Nhận Tráng</span>
             </a>
         @endcan
+        @can('warehouse.scan')
+            <div class="list-group-item py-3 ps-4 pe-2 d-flex justify-content-between align-items-center sidebar-dropdown-toggle"
+                data-bs-toggle="collapse" href="#warehouseSubmenu" role="button"
+                aria-expanded="{{ request()->routeIs('warehouse.*') ? 'true' : 'false' }}" aria-controls="warehouseSubmenu"
+                title="Quản lý Kho">
+                <div>
+                    <i class="fa-solid fa-fw fa-warehouse text-primary me-2"></i> {{-- Icon kho hàng --}}
+                    <span class="sidebar-text" title="Kho">Kho</span>
+                </div>
+                <i class="fas fa-fw fa-chevron-down sidebar-arrow"></i>
+            </div>
+
+            <div class="collapse {{ request()->routeIs('warehouse.*') ? 'show' : '' }}" id="warehouseSubmenu"
+                data-bs-parent="#sidebar-wrapper">
+                <a href="{{ route('warehouse.scan-to-location') }}"
+                    class="list-group-item list-group-item-action py-2 ps-5 d-flex align-items-center {{ request()->routeIs('warehouse.scan-to-location') ? 'active' : '' }}"
+                    title="Nhập Kho">
+                    <i class="fa-solid fa-fw fa-barcode text-success me-2"></i>
+                    <span class="sidebar-text">Nhập Kho</span>
+                </a>
+
+                <a href="{{ route('warehouse.locations') }}"
+                    class="list-group-item list-group-item-action py-2 ps-5 d-flex align-items-center {{ request()->routeIs('warehouse.locations') ? 'active' : '' }}"
+                    title="Quản lý Vị trí">
+                    <i class="fa-solid fa-fw fa-location-dot text-danger me-2"></i>
+                    <span class="sidebar-text">Quản lý Vị trí</span>
+                </a>
+
+                <a href="{{ route('warehouse.reports') }}"
+                    class="list-group-item list-group-item-action py-2 ps-5 d-flex align-items-center {{ request()->routeIs('warehouse.reports') ? 'active' : '' }}"
+                    title="Báo Cáo Tồn Kho">
+                    <i class="fa-solid fa-fw fa-file-excel text-success me-2"></i>
+                    <span class="sidebar-text">Báo Cáo Tồn Kho</span>
+                </a>
+            </div>
+        @endcan
+
         @role('manager|admin')
-            @can('product manager')
+            @can('manager')
                 {{-- MỚI: Dropdown Quản lý Dữ liệu Sản xuất (Orders & products) --}}
                 <div class="list-group-item py-3 ps-4 pe-2 d-flex justify-content-between align-items-center sidebar-dropdown-toggle"
                     data-bs-toggle="collapse" href="#productionConfigSubmenu" role="button"
                     aria-expanded="{{ request()->routeIs('manager.orders') || request()->routeIs('manager.products') ? 'true' : 'false' }}"
                     aria-controls="productionConfigSubmenu" title="Quản lý Dữ liệu Sản xuất">
                     <div>
-                        <i class="fa-solid fa-fw fa-boxes-stacked me-2"></i> {{-- Icon kho hàng/dữ liệu --}}
+                        <i class="fa-solid fa-fw fa-boxes-stacked text-primary me-2"></i> {{-- Icon kho hàng/dữ liệu --}}
                         <span class="sidebar-text" title="Dữ liệu Sản xuất">Cài đặt Sản xuất</span>
                     </div>
                     <i class="fas fa-fw fa-chevron-down sidebar-arrow"></i>
@@ -76,61 +121,69 @@
                     {{-- 🌟 THÊM d-flex align-items-center --}}
                     <a href="{{ route('manager.orders') }}" title="Đơn hàng (PO)"
                         class="list-group-item list-group-item-action py-2 ps-5 d-flex align-items-center {{ request()->routeIs('manager.orders') ? 'active' : '' }}">
-                        <i class="fa-solid fa-fw fa-file-invoice me-2"></i> {{-- 🌟 THÊM fa-fw --}}
+                        <i class="fa-solid fa-fw fa-file-invoice text-info me-2"></i> {{-- 🌟 THÊM fa-fw --}}
                         <span class="sidebar-text">Đơn hàng (PO)</span>
                     </a>
 
                     {{-- Link Sản Phẩm --}}
                     <a href="{{ route('manager.products') }}" title="Sản phẩm"
                         class="list-group-item list-group-item-action py-2 ps-5 d-flex align-items-center {{ request()->routeIs('manager.products') ? 'active' : '' }}">
-                        <i class="fa-brands fa-fw fa-product-hunt me-2"></i>
+                        <i class="fa-brands fa-fw fa-product-hunt text-primary me-2"></i>
                         <span class="sidebar-text">Sản phẩm</span>
                     </a>
                     <a href="{{ route('manager.item-types') }}" title="Loại tem (Prefix)"
                         class="list-group-item list-group-item-action py-2 ps-5 d-flex align-items-center {{ request()->routeIs('manager.item-types') ? 'active' : '' }}">
-                        <i class="fa-solid fa-fw fa-layer-group me-2"></i>
+                        <i class="fa-solid fa-fw fa-layer-group text-secondary me-2"></i>
                         <span class="sidebar-text">Loại Tem (Prefix)</span>
                     </a>
                     <a href="{{ route('manager.categories') }}" title="Danh mục sản phẩm"
                         class="list-group-item list-group-item-action py-2 ps-5 d-flex align-items-center {{ request()->routeIs('manager.categories') ? 'active' : '' }}">
-                        <i class="fa-solid fa-fw fa-list me-2"></i>
+                        <i class="fa-solid fa-fw fa-list text-success me-2"></i>
                         <span class="sidebar-text">Danh mục</span>
                     </a>
                     <a href="{{ route('manager.properties') }}" title="Thuộc tính sản phẩm"
                         class="list-group-item list-group-item-action py-2 ps-5 d-flex align-items-center {{ request()->routeIs('manager.properties') ? 'active' : '' }}">
-                        <i class="fa-solid fa-fw fa-tags me-2"></i>
+                        <i class="fa-solid fa-fw fa-tags text-warning me-2"></i>
                         <span class="sidebar-text">Thuộc Tính </span>
                     </a>
                     <a href="{{ route('manager.items') }}" title="Code đã tạo (Items)"
                         class="list-group-item list-group-item-action py-2 ps-5 d-flex align-items-center {{ request()->routeIs('manager.items') ? 'active' : '' }}">
-                        <i class="fa-solid fa-fw fa-code me-2"></i>
+                        <i class="fa-solid fa-fw fa-code text-dark me-2"></i>
                         <span class="sidebar-text">Code đã tạo (Items)</span>
                     </a>
                     <a href="{{ route('manager.machines') }}" title="Quản lý Máy Móc"
                         class="list-group-item list-group-item-action py-2 ps-5 d-flex align-items-center {{ request()->routeIs('manager.machines') ? 'active' : '' }}">
-                        <i class="fa-solid fa-fw fa-gears me-2"></i>
+                        <i class="fa-solid fa-fw fa-gears text-secondary me-2"></i>
                         <span class="sidebar-text">Máy Móc</span>
                     </a>
                     <a href="{{ route('manager.user-machines') }}" title="Phân Công Máy"
                         class="list-group-item list-group-item-action py-2 ps-5 d-flex align-items-center {{ request()->routeIs('manager.user-machines') ? 'active' : '' }}">
-                        <i class="fa-solid fa-fw fa-user-gear me-2"></i>
+                        <i class="fa-solid fa-fw fa-user-gear text-primary me-2"></i>
                         <span class="sidebar-text">Phân Công Máy</span>
                     </a>
-
+                    <a href="{{ route('manager.print-stations') }}" title="Trạm In"
+                        class="list-group-item list-group-item-action py-2 ps-5 d-flex align-items-center {{ request()->routeIs('manager.print-stations') ? 'active' : '' }}">
+                        <i class="fa-solid fa-fw fa-print text-info me-2"></i>
+                        <span class="sidebar-text">Trạm In</span>
+                    </a>
+                    <a href="{{ route('manager.user-print-stations') }}" title="Phân Công Trạm In"
+                        class="list-group-item list-group-item-action py-2 ps-5 d-flex align-items-center {{ request()->routeIs('manager.user-print-stations') ? 'active' : '' }}">
+                        <i class="fa-solid fa-fw fa-user-tag text-success me-2"></i>
+                        <span class="sidebar-text">Phân Công Trạm In</span>
+                    </a>
                 </div>
             @endcan
         @endrole
         {{-- 3. NHÓM QUẢN TRỊ (ADMIN ONLY) --}}
         @role('admin')
             {{-- MỚI: --}}
-
             {{-- Dropdown Quản lý Người dùng (Cũ) --}}
             <div class="list-group-item py-3 ps-4 pe-2 d-flex justify-content-between align-items-center sidebar-dropdown-toggle"
                 data-bs-toggle="collapse" href="#userSubmenu" role="button"
                 aria-expanded="{{ isset($menu) && str_contains($menu, 'admin') ? 'true' : 'false' }}"
                 aria-controls="userSubmenu" title="Quản lý Người dùng">
                 <div>
-                    <i class="fa-solid fa-fw fa-user-shield me-2"></i>
+                    <i class="fa-solid fa-fw fa-user-shield text-danger me-2"></i>
                     <span class="sidebar-text" title="Quản lý Người dùng">Quản lý Người dùng</span>
                 </div>
                 <i class="fas fa-fw fa-chevron-down sidebar-arrow"></i>
@@ -140,23 +193,23 @@
                 data-bs-parent="#sidebar-wrapper">
                 <a href="{{ route('users.index') }}" title="Danh sách User"
                     class="list-group-item list-group-item-action py-2 ps-5 d-flex align-items-center {{ isset($menu) && str_contains($menu, 'user') ? 'active' : '' }}">
-                    <i class="fa-solid fa-fw fa-users me-2"></i>
+                    <i class="fa-solid fa-fw fa-users text-primary me-2"></i>
                     <span class="sidebar-text">Danh sách User</span>
                 </a>
 
                 <a href="{{ route('departments.index') }}" title="Phòng ban"
                     class="list-group-item list-group-item-action py-2 ps-5 d-flex align-items-center {{ isset($menu) && str_contains($menu, 'departments') ? 'active' : '' }}">
-                    <i class="fa-regular fa-fw fa-building me-2"></i> {{-- 🌟 Sửa lại icon này --}}
+                    <i class="fa-regular fa-fw fa-building text-info me-2"></i> {{-- 🌟 Sửa lại icon này --}}
                     <span class="sidebar-text">Phòng ban</span>
                 </a>
                 <a href="{{ route('roles.index') }}" title="Vai trò"
                     class="list-group-item list-group-item-action py-2 ps-5 d-flex align-items-center {{ isset($menu) && str_contains($menu, 'roles') ? 'active' : '' }}">
-                    <i class="fa-solid fa-fw fa-users-gear me-2"></i>
+                    <i class="fa-solid fa-fw fa-users-gear text-warning me-2"></i>
                     <span class="sidebar-text">Vai trò</span>
                 </a>
                 <a href="{{ route('permissions.index') }}" title="Phân quyền"
                     class="list-group-item list-group-item-action py-2 ps-5 d-flex align-items-center {{ isset($menu) && str_contains($menu, 'permissions') ? 'active' : '' }}">
-                    <i class="fa-solid fa-fw fa-key me-2"></i>
+                    <i class="fa-solid fa-fw fa-key text-danger me-2"></i>
                     <span class="sidebar-text">Phân quyền</span>
                 </a>
             </div>

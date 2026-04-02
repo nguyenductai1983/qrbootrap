@@ -33,12 +33,12 @@ new #[Layout('layouts.guest')] class extends Component {
     <form wire:submit="login">
         @csrf
 
-        {{-- Email --}}
+        {{-- Email hoặc Username --}}
         <div class="mb-3">
-            <label for="email" class="form-label fw-semibold">{{ __('Email') }}</label>
-            <input wire:model="form.email" id="email" class="form-control form-control-lg" type="email" name="email"
-                value="{{ old('email') }}" required autofocus placeholder="name@example.com" />
-            <x-input-error :messages="$errors->get('form.email')" class="mt-1 text-danger small" />
+            <label for="login_id" class="form-label fw-semibold">Email hoặc Username</label>
+            <input wire:model="form.login_id" id="login_id" class="form-control form-control-lg" type="text" name="login_id"
+                value="{{ old('email') }}" required autofocus placeholder="Nhập email hoặc username" />
+            <x-input-error :messages="$errors->get('form.login_id')" class="mt-1 text-danger small" />
         </div>
 
         {{-- Password --}}

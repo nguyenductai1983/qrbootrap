@@ -7,7 +7,9 @@ use Spatie\Permission\Models\Role;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\User;
+use Livewire\Attributes\Title;
 
+#[Title('Quản lý Vai trò')]
 class RoleList extends Component
 {
     use WithPagination;
@@ -24,7 +26,7 @@ class RoleList extends Component
         // Kiểm tra quyền
         /** @var User $user */
         $user = Auth::user();
-        if (!$user->can('roles delete')) {
+        if (!$user->can('roles.delete')) {
             session()->flash('error', 'Bạn không có quyền xóa vai trò!');
             return;
         }

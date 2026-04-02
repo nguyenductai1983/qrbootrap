@@ -20,7 +20,9 @@ use App\Models\PlasticType;
 use Illuminate\Database\QueryException;
 use Livewire\Attributes\Renderless;
 use App\Services\ItemCodeService;
+use Livewire\Attributes\Title;
 
+#[Title('Phát hành Tem & Barcode Cây Vải')]
 class BarcodeGeneratorExcel extends Component
 {
     use WithPagination;
@@ -153,7 +155,7 @@ class BarcodeGeneratorExcel extends Component
             if (trim($line) === '') continue;
 
             $cols = preg_split('/\s+/', trim($line));
-            $cols = array_pad($cols, 9, '');
+            $cols = array_pad($cols, 11, '');
 
             $inputCol0    = (int) trim($cols[0]); // số thứ tự
             $quantity     = ($this->col0Mode === 'sequence') ? 1 : $inputCol0; // số lượng
@@ -165,6 +167,14 @@ class BarcodeGeneratorExcel extends Component
             $gsm          = trim($cols[6]); // định lượng
             $length       = trim($cols[7]); // chiều dài
             $machineNum   = trim($cols[8]); // mã máy
+            $weight       = trim($cols[9]); // trọng lượng
+            
+            // Xử lý ghi chú có thể chứa khoảng trắng (từ cột 10 trở đi)
+            $notes = '';
+            if (count($cols) > 10) {
+                $notes = trim(implode(' ', array_slice($cols, 10)));
+            }
+
             //nếu không có số lượng thì số lượng = 1
             if ($quantity < 1) $quantity = 1;
 
@@ -198,11 +208,11 @@ class BarcodeGeneratorExcel extends Component
                         /** @var \App\Models\User $user */
                         $user = Auth::user();
                         $userDeptId = $user->department_id;
-
+                        $userDeptCode = $user->department->code;
                         $machine = Machine::firstOrCreate(
                             ['code' => strtoupper($machineNum)],
                             [
-                                'name'          => 'Máy ' . strtoupper($machineNum),
+                                'name'          => $userDeptCode . strtoupper($machineNum),
                                 'department_id' => $userDeptId,
                                 'status'        => true,
                             ]
@@ -241,6 +251,9 @@ class BarcodeGeneratorExcel extends Component
                         'length'           => $numericLength,
                         'department_id'    => $currentUser->department_id,
                         'machine_id'       => $machineId,
+                        'gsm'              => is_numeric($gsm) ? (float) $gsm : null,
+                        'weight'           => is_numeric($weight) ? (float) $weight : null,
+                        'notes'            => $notes,
                     ]);
 
                     $newItemIds[] = $itemRecord->id;

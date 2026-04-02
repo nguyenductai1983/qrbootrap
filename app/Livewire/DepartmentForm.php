@@ -6,7 +6,9 @@ use App\Models\Department;
 use App\Models\Product; // Import Product model
 use Livewire\Component;
 use Illuminate\Validation\Rule;
+use Livewire\Attributes\Title;
 
+#[Title('Quản lý Phòng ban')]
 class DepartmentForm extends Component
 {
     public $department; // Biến để lưu trữ đối tượng Department khi chỉnh sửa
@@ -14,7 +16,7 @@ class DepartmentForm extends Component
     public $code;
     public $selectedProducts = []; // Biến lưu các sản phẩm được trọn
     public $allProducts; // Danh sách tất cả sản phẩm
-    
+
     public function mount($departmentId = null)
     {
         $this->allProducts = Product::orderBy('name')->get();

@@ -11,6 +11,7 @@ use Livewire\Volt\Component;
 new #[Layout('layouts.guest')] class extends Component
 {
     public string $name = '';
+    public string $username = '';
     public string $email = '';
     public string $password = '';
     public string $password_confirmation = '';
@@ -22,6 +23,7 @@ new #[Layout('layouts.guest')] class extends Component
     {
         $validated = $this->validate([
             'name' => ['required', 'string', 'max:255'],
+            'username' => ['required', 'string', 'max:255', 'unique:'.User::class],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'string', 'confirmed', Rules\Password::defaults()],
         ]);
@@ -49,6 +51,14 @@ new #[Layout('layouts.guest')] class extends Component
             <input wire:model="name" id="name" class="form-control form-control-lg" type="text" name="name"
                 required autofocus autocomplete="name" placeholder="Ví dụ: Nguyễn Văn A" />
             @error('name') <div class="text-danger mt-1 small">{{ $message }}</div> @enderror
+        </div>
+
+        {{-- Username --}}
+        <div class="mb-3">
+            <label for="username" class="form-label fw-semibold">Username</label>
+            <input wire:model="username" id="username" class="form-control form-control-lg" type="text" name="username"
+                required autocomplete="username" placeholder="Ví dụ: nguyen.van.a" />
+            @error('username') <div class="text-danger mt-1 small">{{ $message }}</div> @enderror
         </div>
 
         {{-- Email --}}

@@ -1,4 +1,5 @@
 import './bootstrap';
+import './echo'; 
 import * as bootstrap from 'bootstrap'; // Import toàn bộ Bootstrap JS
 window.bootstrap = bootstrap;
 document.addEventListener('livewire:navigated', function () {
