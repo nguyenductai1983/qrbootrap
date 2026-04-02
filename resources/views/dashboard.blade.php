@@ -60,13 +60,13 @@
             @endrole
 
             {{-- 3. KHU VỰC TÁC VỤ SẢN XUẤT --}}
-            @if (Auth::user()->can('barcodes.print') || Auth::user()->can('scan products') || Auth::user()->can('barcodes.view'))
+            @if (Auth::user()->can('products.print') || Auth::user()->can('scan products') || Auth::user()->can('products.view'))
                 <h4 class="fw-bold mb-3 border-start border-4 border-primary ps-3">
                     Tác Vụ Sản Xuất
                 </h4>
                 <div class="row g-4 mb-5">
                     {{-- Chức năng: IN TEM --}}
-                    @can('barcodes.print')
+                    @can('products.print')
                         <div class="col-md-6 col-lg-3">
                             <div class="card h-100 shadow-sm border-2 hover-card">
                                 <div class="card-body d-flex flex-column text-center p-4">

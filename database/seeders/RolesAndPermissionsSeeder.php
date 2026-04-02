@@ -50,9 +50,7 @@ class RolesAndPermissionsSeeder extends Seeder
         Permission::firstOrCreate(['name' => 'items.edit']);    // Sửa tem
         Permission::firstOrCreate(['name' => 'items.delete']);  // Xóa tem
 
-        // Quyền sản xuất
-        Permission::firstOrCreate(['name' => 'barcodes.print']); // In tem mã vạch (dùng trong dashboard @can)
-        Permission::firstOrCreate(['name' => 'barcodes.view']);  // Xem danh sách tem (dùng trong dashboard @can)
+        // Quyền sản xuất       
         Permission::firstOrCreate(['name' => 'products.print']); // Truy cập trang in tem (route middleware)
         Permission::firstOrCreate(['name' => 'products.scan']);  // Quét sản phẩm
         Permission::firstOrCreate(['name' => 'coating.scan']);   // Xác nhận tráng
@@ -81,8 +79,6 @@ class RolesAndPermissionsSeeder extends Seeder
             'departments.edit',
             'departments.delete',
             'manager',
-            'barcodes.print',
-            'barcodes.view',
             'products.print',
             'products.scan',
             'coating.scan',
@@ -98,8 +94,6 @@ class RolesAndPermissionsSeeder extends Seeder
 
         // Products: in tem, quét, xem danh sách
         $productsRole->syncPermissions([
-            'barcodes.print',
-            'barcodes.view',
             'products.print',
             'products.scan',
             'items.view',

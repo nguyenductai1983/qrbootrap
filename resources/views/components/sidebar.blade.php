@@ -57,7 +57,7 @@
             </div>
         @endrole
         {{-- Menu cho khối Sản xuất / Thống kê --}}
-        @can('barcodes.print')
+        @can('products.print')
             <a href="{{ route('production.barcode-generator') }}"
                 class="list-group-item list-group-item-action py-3 ps-4 {{ request()->routeIs('production.barcode-generator') ? 'active' : '' }}">
                 <i class="fa-solid fa-print me-2"></i>
