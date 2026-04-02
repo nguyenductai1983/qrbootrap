@@ -9,13 +9,14 @@ window.initWebSocket = function() {
         window.Echo = new Echo({
             broadcaster: 'reverb',
             key: import.meta.env.VITE_REVERB_APP_KEY,
-            wsHost: import.meta.env.VITE_REVERB_HOST,
-            wsPort: import.meta.env.VITE_REVERB_PORT ?? 80,
-            wssPort: import.meta.env.VITE_REVERB_PORT ?? 443,
+            // Thay vì dùng VITE_REVERB_HOST (thường bị dính 127.0.0.1 khi build ở local), ta linh động theo URL đang chạy
+            wsHost: window.location.hostname,
+            wsPort: import.meta.env.VITE_REVERB_PORT ?? 8080,
+            wssPort: import.meta.env.VITE_REVERB_PORT ?? 8080,
             forceTLS: (import.meta.env.VITE_REVERB_SCHEME ?? 'https') === 'https',
             enabledTransports: ['ws', 'wss'],
         });
-        console.log('Khởi tạo kết nối Echo/Reverb thành công!');
+        console.log('Khởi tạo kết nối Echo/Reverb thành công, kết nối tới: ' + window.location.hostname);
     }
 };
 

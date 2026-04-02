@@ -73,3 +73,36 @@ php artisan queue:restart
 php artisan queue:work
 npm install --save-dev laravel-echo pusher-js
 npm audit fix
+# 1. Cài đặt kho lưu trữ EPEL (nếu chưa có) và Supervisor
+sudo dnf install epel-release -y
+sudo dnf install supervisor -y
+
+# 2. Khởi động và cho phép Supervisor tự bật khi server khởi động lại
+sudo systemctl enable supervisord --now
+sudo nano /etc/supervisord.d/reverb.ini
+[program:reverb]
+process_name=%(program_name)s
+# Thay /var/www/qrbootrap bằng đường dẫn THỰC TẾ tới thư mục Laravel của bạn
+command=php /var/www/qrbootrap/artisan reverb:start
+
+# Tự động chạy khi Supervisor bật
+autostart=true
+
+# Tự động khởi động lại nếu Reverb bị crash (lỗi)
+autorestart=true
+
+# Thay bằng user đang quản lý thư mục web của bạn (vd: nginx, apache, root, hoặc tài khoản cpanel...)
+user=root
+
+# Lưu log (nhật ký) để dễ tìm lỗi
+redirect_stderr=true
+stdout_logfile=/var/www/qrbootrap/storage/logs/reverb.log
+# Đọc file cấu hình mới
+sudo supervisorctl reread
+
+# Cập nhật hệ thống
+sudo supervisorctl update
+
+# Bật Reverb
+sudo supervisorctl start reverb
+sudo supervisorctl status
