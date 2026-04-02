@@ -101,6 +101,16 @@
             </div>
         @endcan
 
+        {{-- MỚI THÊM: Kho mã Code/Tem (Sử dụng chung cho các bộ phận) --}}
+        @can('items.view')
+            <a href="{{ route('manager.items') }}"
+                class="list-group-item list-group-item-action py-3 ps-4 {{ request()->routeIs('manager.items') ? 'active' : '' }}"
+                title="Kho Mã Tem">
+                <i class="fa-solid fa-fw fa-tags text-dark me-2"></i>
+                <span class="sidebar-text">Kho Mã Tem (Items)</span>
+            </a>
+        @endcan
+
         @role('manager|admin')
             @can('manager')
                 {{-- MỚI: Dropdown Quản lý Dữ liệu Sản xuất (Orders & products) --}}
@@ -146,11 +156,7 @@
                         <i class="fa-solid fa-fw fa-tags text-warning me-2"></i>
                         <span class="sidebar-text">Thuộc Tính </span>
                     </a>
-                    <a href="{{ route('manager.items') }}" title="Code đã tạo (Items)"
-                        class="list-group-item list-group-item-action py-2 ps-5 d-flex align-items-center {{ request()->routeIs('manager.items') ? 'active' : '' }}">
-                        <i class="fa-solid fa-fw fa-code text-dark me-2"></i>
-                        <span class="sidebar-text">Code đã tạo (Items)</span>
-                    </a>
+
                     <a href="{{ route('manager.machines') }}" title="Quản lý Máy Móc"
                         class="list-group-item list-group-item-action py-2 ps-5 d-flex align-items-center {{ request()->routeIs('manager.machines') ? 'active' : '' }}">
                         <i class="fa-solid fa-fw fa-gears text-secondary me-2"></i>

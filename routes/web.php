@@ -92,13 +92,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/products', ProductManager::class)->name('manager.products');
         Route::get('/properties', PropertyManager::class)->name('manager.properties');
         Route::get('/item-types', ItemTypeManager::class)->name('manager.item-types');
-        Route::get('/items', ItemManager::class)->name('manager.items');
         Route::get('/categories', CategoryManager::class)->name('manager.categories');
         Route::get('/machines', MachineManager::class)->name('manager.machines');
         Route::get('/user-machines', UserMachineAssignment::class)->name('manager.user-machines');
         Route::get('/print-stations', PrintStationManager::class)->name('manager.print-stations');
         Route::get('/user-print-stations', UserPrintStationAssignment::class)->name('manager.user-print-stations');
     });
+    
+    // Tách riêng quản lý Items để các bộ phận khác (có quyền items.view) truy cập được
+    Route::middleware(['permission:items.view'])->prefix('manager')->group(function () {
+        Route::get('/items', ItemManager::class)->name('manager.items');
+    });
+
     // ==========================================
     // 2. NHÓM PRODUCTION (Sản xuất)
     // ==========================================

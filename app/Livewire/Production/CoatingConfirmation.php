@@ -20,13 +20,14 @@ class CoatingConfirmation extends Component
     public $scannedItems = [];
     public $usedLengths = [];
     public $newLength = '';
-    public $coatingRatio = 1.07;
+    public $coatingRatio = 1.0;
     public $products = [];
     public $selectedProductId = ''; // Model nhân viên chọn
     public $selectedMachineId = ''; // Máy đang thực hiện tráng
     public $machines = [];          // Danh sách máy được gán cho user này
     public $printStations = [];     // Danh sách trạm in được gán cho user
     public $printerMac = ''; // Máy in mặc định
+    public $manualPrintRequired = null; // Trạng thái chứa mã khi chưa in
 
     public function mount()
     {
@@ -90,6 +91,8 @@ class CoatingConfirmation extends Component
             return;
         }
 
+        $this->manualPrintRequired = null; // Tắt thông báo in tay khi bắt đầu quét mới
+
         // Tùy chọn: Chặn quét cây đã tráng (Nếu type của bạn Mộc = 1, Tráng = 2)
         // if ($item->type == 2) {
         //     $this->dispatch('alert', ['type' => 'error', 'message' => 'Mã này là Vải Tráng, không thể tráng tiếp!']);
@@ -118,10 +121,6 @@ class CoatingConfirmation extends Component
     public function confirmCoating()
     {
         // 1. VALIDATE ĐẦU VÀO
-        if (empty($this->printerMac)) {
-            $this->dispatch('alert', ['type' => 'error', 'message' => 'Vui lòng chọn trạm in phát hành tem trước khi xác nhận!']);
-            return;
-        }
         if (empty($this->scannedItems)) {
             $this->dispatch('alert', ['type' => 'error', 'message' => 'Vui lòng quét ít nhất 1 cây vải!']);
             return;
@@ -256,11 +255,29 @@ class CoatingConfirmation extends Component
             cache()->forever('selected_product_id_' . Auth::id(), $this->selectedProductId);
             cache()->forever('selected_machine_id_' . Auth::id(), $this->selectedMachineId);
 
-            // 🌟 BẮN LỆNH IN QUA WEBSOCKET (Truyền cây Tráng vừa tạo và Trạm in đang chọn)
-            broadcast(new PrintBarcodeRequested($coatedItem, $this->printerMac));
+            // 🌟 BẮN LỆNH IN QUA WEBSOCKET (Nếu có chọn trạm in)
+            if (!empty($this->printerMac)) {
+                broadcast(new PrintBarcodeRequested($coatedItem, $this->printerMac));
+                $successMsg = 'Đã tráng xong và gửi lệnh in! Mã tem mới: ' . $finalCode;
+                $this->manualPrintRequired = null;
+            } else {
+                $successMsg = 'Đã tráng xong nhưng chưa in (Không chọn trạm in)! Mã tem mới: ' . $finalCode;
+                // Lưu lại mã để hiển thị lên màn hình cho nhân viên mang đi in tay
+                $this->manualPrintRequired = [
+                    'code' => $finalCode,
+                    'length' => (float) $this->newLength,
+                    'time' => now()->format('d/m/Y H:i:s'),
+                ];
+            }
+
             $this->resetForm();
-            $this->dispatch('alert', ['type' => 'success', 'message' => 'Đã tráng xong! Mã tem mới: ' . $finalCode]);
-        } catch (\Exception $e) {
+            $this->dispatch('alert', ['type' => 'success', 'message' => $successMsg]);
+            // $this->dispatch('manual-print-alert', [
+            //     'code' => $finalCode,
+            //     'length' => (float) $this->newLength,
+            //     'time' => now()->format('d/m/Y H:i:s'),
+            // ]);
+        } catch (\Throwable $e) {
             DB::rollBack();
             $this->dispatch('alert', ['type' => 'error', 'message' => 'Lỗi hệ thống: ' . $e->getMessage()]);
         }
@@ -272,6 +289,11 @@ class CoatingConfirmation extends Component
         $this->usedLengths = [];
         $this->newLength = '';
         $this->codeInput = '';
+    }
+
+    public function clearManualPrint()
+    {
+        $this->manualPrintRequired = null;
     }
 
     public function render()

@@ -8,6 +8,29 @@
         <h4 class="mt-3 fw-bold text-success">Đang xử lý, vui lòng đợi...</h4>
     </div>
 
+    @if ($manualPrintRequired)
+        <div class="alert shadow-sm border-2 border-warning mb-4 position-relative" style="background-color:#fffdf5">
+            <button wire:click="clearManualPrint" class="btn-close position-absolute top-0 end-0 m-2"
+                aria-label="Close"></button>
+            <div class="text-center py-2">
+                <i class="fa-solid fa-triangle-exclamation text-warning fa-3x mb-2"></i>
+                <h4 class="fw-bold text-dark text-uppercase">Tạo mã thành công nhưng Chưa In!</h4>
+                <p class="text-secondary mb-3">Bạn không chọn trạm in, vui lòng chụp màn hình hoặc ghi lại thông tin bên
+                    dưới để đem đi lấy tem:</p>
+                <div class="d-inline-block border border-primary border-2 p-3 rounded bg-white shadow-sm">
+                    <div class="fs-1 fw-bold text-primary px-3">{{ $manualPrintRequired['code'] }}</div>
+                    <hr class="my-2 border-primary opacity-25">
+                    <div class="row text-muted small fw-bold">
+                        <div class="col-6 text-end border-end"><i class="fa-solid fa-ruler-horizontal"></i>
+                            {{ $manualPrintRequired['length'] }}m</div>
+                        <div class="col-6 text-start"><i class="fa-solid fa-clock"></i>
+                            {{ $manualPrintRequired['time'] }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
+
     <div class="row g-3">
         {{-- KHU VỰC QUÉT MÃ VẠCH / CAMERA --}}
         <div class="col-md-5">
@@ -200,11 +223,28 @@
                 }, 100);
             });
 
+            //     Livewire.on('manual-print-alert', (event) => {
+            //         Swal.fire({
+            //             icon: 'warning',
+            //             title: 'CHƯA CÓ LỆNH IN!',
+            //             html: `
+        //     <div style="text-align:center;">
+        //         <p>Bạn không chọn trạm in, hãy chụp ảnh màn hình này lại:</p>
+        //         <div style="border:2px solid #007bff; padding:15px; background:#f8f9fa;">
+        //             <h2 style="color:#007bff; font-weight:bold;">${event[0].code}</h2>
+        //             <p style="margin:5px 0;">Dài: <b>${event[0].length}m</b> | Tạo lúc: ${event[0].time}</p>
+        //         </div>
+        //     </div>
+        // `,
+            //             confirmButtonText: 'Đã chụp',
+            //             allowOutsideClick: false // Bắt buộc phải bấm OK mới được tắt
+            //         });
+            //     });
 
 
             Livewire.on('alert', (event) => {
                 Swal.fire({
-                    icon: 'warning',
+                    icon: event[0].type ?? 'info',
                     title: 'Thông báo',
                     text: event[0].message,
                     toast: true,

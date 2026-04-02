@@ -46,6 +46,7 @@ class RolesAndPermissionsSeeder extends Seeder
 
         // Quyền quản lý Tem/Item
         Permission::firstOrCreate(['name' => 'items.view']);    // Xem danh sách tem
+        Permission::firstOrCreate(['name' => 'view_all_departments']);// Xem toàn bộ dữ liệu (Tem, Dashboard) của tất cả bộ phận
         Permission::firstOrCreate(['name' => 'items.create']);  // Tạo tem mới
         Permission::firstOrCreate(['name' => 'items.edit']);    // Sửa tem
         Permission::firstOrCreate(['name' => 'items.delete']);  // Xóa tem
@@ -60,7 +61,7 @@ class RolesAndPermissionsSeeder extends Seeder
         Permission::firstOrCreate(['name' => 'warehouse.location']); // Quản lý vị trí kho
         Permission::firstOrCreate(['name' => 'warehouse.report']); // Quản lý vị trí kho
         // Quyền báo cáo / phân tích (Dashboard)
-        Permission::firstOrCreate(['name' => 'analytics.view_all']);  // Xem toàn bộ dữ liệu hệ thống (nếu ko có thì chỉ xem cá nhân)
+        // Permission::firstOrCreate(['name' => 'analytics.view_all']);  // Đã gộp vào view_all_departments
 
         // 2. Tạo Roles và gán Permissions
         $adminRole    = Role::firstOrCreate(['name' => 'admin']);
@@ -83,13 +84,13 @@ class RolesAndPermissionsSeeder extends Seeder
             'products.scan',
             'coating.scan',
             'items.view',
+            'view_all_departments',
             'items.create',
             'items.edit',
             'items.delete',
             'warehouse.scan',
             'warehouse.location',
             'warehouse.report',
-            'analytics.view_all',
         ]);
 
         // Products: in tem, quét, xem danh sách
@@ -105,11 +106,13 @@ class RolesAndPermissionsSeeder extends Seeder
             'warehouse.location',
             'warehouse.report',
             'items.view',
+            'view_all_departments',
         ]);
 
         // Coating: xác nhận tráng
         $CoatingRole->syncPermissions([
             'coating.scan',
+            'items.view',
         ]);
         // 3. Gán Role cho một người dùng cụ thể (ví dụ: người dùng đầu tiên)       
         $user = User::firstOrCreate(

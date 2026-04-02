@@ -11,6 +11,7 @@ use App\Models\Order;
 use App\Models\Product;
 use App\Models\Department;
 use Livewire\Attributes\Title;
+use Illuminate\Support\Facades\Auth;
 
 #[Title('Danh sách mã code')]
 class ItemManager extends Component

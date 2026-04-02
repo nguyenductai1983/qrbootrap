@@ -42,7 +42,7 @@ class AnalyticsDashboard extends Component
         $user = Auth::user();
 
         // Check explicit feature permission for viewing system analytics
-        $this->isManagerView = $user->can('analytics.view_all');
+        $this->isManagerView = $user->can('view_all_departments') || $user->hasRole('admin');
 
         $this->tabs      = $this->buildTabs();
         $this->activeTab = $this->tabs[0]['slug'] ?? 'overview';
@@ -160,13 +160,12 @@ class AnalyticsDashboard extends Component
 
     // ─── Helper: áp dụng filter user nếu không phải manager ─
     /**
-     * Áp dụng scope lọc theo user nếu không phải admin/manager.
-     * $field: tên cột chứa user_id trong bảng đang query.
+     * Tự động áp dụng scope thông qua whereHas('item') cho các bảng không có department_id
      */
-    private function applyUserScope($query, string $field = 'created_by')
+    private function applyUserScope($query)
     {
         if (!$this->isManagerView) {
-            $query->where($field, Auth::id());
+            $query->whereHas('item');
         }
         return $query;
     }
@@ -178,27 +177,24 @@ class AnalyticsDashboard extends Component
         $prevFrom = $from->copy()->subDays((int) $this->period);
         $userId   = Auth::id();
 
-        // Tem đã tạo (theo người tạo nếu user thường)
+        // Tem đã tạo
         $qCreated = Item::where('created_at', '>=', $from);
-        if (!$this->isManagerView) $qCreated->where('created_by', $userId);
         $totalCreated = $qCreated->count();
 
         $qPrevCreated = Item::whereBetween('created_at', [$prevFrom, $from]);
-        if (!$this->isManagerView) $qPrevCreated->where('created_by', $userId);
         $prevCreated = $qPrevCreated->count();
 
-        // Đang trong kho (toàn hệ thống ngay cả với user thường — đây là tổng kho)
-        $totalInWarehouse = $this->isManagerView
-            ? Item::where('status', ItemStatus::IN_WAREHOUSE)->count()
-            : Item::where('status', ItemStatus::IN_WAREHOUSE)->where('warehoused_by', $userId)->count();
+        // Đang trong kho (toàn hệ thống hoặc theo department)
+        // Lưu ý: với Item, Global Scope đã tự động lọc theo department_id rồi.
+        $totalInWarehouse = Item::where('status', ItemStatus::IN_WAREHOUSE)->count();
 
-        // Ca tráng (theo user_id trong item_genealogies)
+        // Ca tráng (liên quan đến ItemGenealogy, cần dùng whereHas)
         $qCoating = ItemGenealogy::where('created_at', '>=', $from);
-        if (!$this->isManagerView) $qCoating->where('user_id', $userId);
+        $this->applyUserScope($qCoating);
         $coatingCount = $qCoating->distinct('child_item_id')->count();
 
         $qPrevCoating = ItemGenealogy::whereBetween('created_at', [$prevFrom, $from]);
-        if (!$this->isManagerView) $qPrevCoating->where('user_id', $userId);
+        $this->applyUserScope($qPrevCoating);
         $prevCoating = $qPrevCoating->distinct('child_item_id')->count();
 
         // Nhân viên hoạt động (chỉ admin/manager mới thấy KPI này)
@@ -206,15 +202,14 @@ class AnalyticsDashboard extends Component
             ? ItemMovement::where('created_at', '>=', $from)->distinct('user_id')->count('user_id')
             : null;
 
-        // Tổng chiều dài (theo người tạo nếu user thường)
+        // Tổng chiều dài
         $qLength = Item::where('created_at', '>=', $from);
-        if (!$this->isManagerView) $qLength->where('created_by', $userId);
         $totalLength = $qLength->sum('original_length');
 
         $kpis = [
             [
                 'slug'    => 'production',
-                'title'   => $this->isManagerView ? 'Tem Đã Tạo' : 'Tem Do Tôi Tạo',
+                'title'   => $this->isManagerView ? 'Tem Đã Tạo' : 'Tem Của Bộ Phận',
                 'value'   => number_format($totalCreated),
                 'icon'    => 'fa-solid fa-tags',
                 'color'   => 'primary',
@@ -224,7 +219,7 @@ class AnalyticsDashboard extends Component
             ],
             [
                 'slug'    => 'warehouse',
-                'title'   => $this->isManagerView ? 'Đang Trong Kho' : 'Do Tôi Nhập Kho',
+                'title'   => $this->isManagerView ? 'Đang Trong Kho' : 'Kho Bộ Phận',
                 'value'   => number_format($totalInWarehouse),
                 'icon'    => 'fa-solid fa-warehouse',
                 'color'   => 'success',
@@ -234,7 +229,7 @@ class AnalyticsDashboard extends Component
             ],
             [
                 'slug'    => 'coating',
-                'title'   => $this->isManagerView ? 'Ca Tráng' : 'Ca Tráng Của Tôi',
+                'title'   => $this->isManagerView ? 'Ca Tráng' : 'Ca Tráng Bộ Phận',
                 'value'   => number_format($coatingCount),
                 'icon'    => 'fa-solid fa-layer-group',
                 'color'   => 'warning',
@@ -254,7 +249,7 @@ class AnalyticsDashboard extends Component
             ],
             [
                 'slug'    => 'production',
-                'title'   => $this->isManagerView ? 'Tổng Chiều Dài' : 'Chiều Dài Do Tôi Tạo',
+                'title'   => $this->isManagerView ? 'Tổng Chiều Dài' : 'Chiều Dài Bộ Phận',
                 'value'   => number_format($totalLength, 1),
                 'icon'    => 'fa-solid fa-ruler',
                 'color'   => 'secondary',
@@ -283,10 +278,6 @@ class AnalyticsDashboard extends Component
         $query = Item::selectRaw('DATE(created_at) as day, COUNT(*) as total')
             ->where('created_at', '>=', $from);
 
-        if (!$this->isManagerView) {
-            $query->where('created_by', Auth::id());
-        }
-
         $rows = $query->groupBy('day')->orderBy('day')->pluck('total', 'day');
 
         [$labels, $data] = $this->fillDays($rows);
@@ -301,10 +292,6 @@ class AnalyticsDashboard extends Component
         $query = Item::selectRaw('product_id, COUNT(*) as total')
             ->where('created_at', '>=', $from)
             ->whereNotNull('product_id');
-
-        if (!$this->isManagerView) {
-            $query->where('created_by', Auth::id());
-        }
 
         $rows = $query->groupBy('product_id')->orderByDesc('total')->limit(8)
             ->with('product:id,code,name')->get();
@@ -321,10 +308,6 @@ class AnalyticsDashboard extends Component
     {
         $query = Item::selectRaw('status, COUNT(*) as total');
 
-        if (!$this->isManagerView) {
-            $query->where('created_by', Auth::id());
-        }
-
         $rows = $query->groupBy('status')->pluck('total', 'status');
 
         $this->statusDistJson = json_encode([
@@ -339,10 +322,6 @@ class AnalyticsDashboard extends Component
         $query = Item::selectRaw('current_location_id, COUNT(*) as total')
             ->where('status', ItemStatus::IN_WAREHOUSE)
             ->whereNotNull('current_location_id');
-
-        if (!$this->isManagerView) {
-            $query->where('warehoused_by', Auth::id());
-        }
 
         $rows = $query->groupBy('current_location_id')->orderByDesc('total')->limit(10)
             ->with('location:id,code,name')->get();
@@ -360,10 +339,8 @@ class AnalyticsDashboard extends Component
 
         $query = ItemGenealogy::selectRaw('DATE(created_at) as day, COUNT(DISTINCT child_item_id) as total')
             ->where('created_at', '>=', $from);
-
-        if (!$this->isManagerView) {
-            $query->where('user_id', Auth::id());
-        }
+        
+        $this->applyUserScope($query);
 
         $rows = $query->groupBy('day')->orderBy('day')->pluck('total', 'day');
 
@@ -378,10 +355,8 @@ class AnalyticsDashboard extends Component
 
         $query = ItemMovement::selectRaw('DATE(created_at) as day, action_type, COUNT(*) as total')
             ->where('created_at', '>=', $from);
-
-        if (!$this->isManagerView) {
-            $query->where('user_id', Auth::id());
-        }
+        
+        $this->applyUserScope($query);
 
         $rows = $query->groupBy('day', 'action_type')->orderBy('day')
             ->get()->groupBy('action_type');
