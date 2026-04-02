@@ -19,7 +19,9 @@
 
     <div class="list-group list-group-flush">
         {{-- 1. DASHBOARD --}}
-        <a href="/dashboard" class="list-group-item list-group-item-action py-3 ps-4 {{ request()->is('dashboard') ? 'active' : '' }}" title="Bảng điều khiển">
+        <a href="/dashboard"
+            class="list-group-item list-group-item-action py-3 ps-4 {{ request()->is('dashboard') ? 'active' : '' }}"
+            title="Bảng điều khiển">
             <i class="fas fa-fw fa-tachometer-alt text-primary me-2"></i>
             <span class="sidebar-text">Bảng điều khiển</span>
         </a>
@@ -64,6 +66,15 @@
                 <span class="sidebar-text">Xác Nhận Tráng</span>
             </a>
         @endcan
+        {{-- MỚI THÊM: Kho mã Code/Tem (Sử dụng chung cho các bộ phận) --}}
+        @can('items.view')
+            <a href="{{ route('manager.items') }}"
+                class="list-group-item list-group-item-action py-3 ps-4 {{ request()->routeIs('manager.items') ? 'active' : '' }}"
+                title="Kho Mã Tem">
+                <i class="fa-solid fa-fw fa-tags text-dark me-2"></i>
+                <span class="sidebar-text">Kho Mã Tem (Items)</span>
+            </a>
+        @endcan
         @can('warehouse.scan')
             <div class="list-group-item py-3 ps-4 pe-2 d-flex justify-content-between align-items-center sidebar-dropdown-toggle"
                 data-bs-toggle="collapse" href="#warehouseSubmenu" role="button"
@@ -101,15 +112,7 @@
             </div>
         @endcan
 
-        {{-- MỚI THÊM: Kho mã Code/Tem (Sử dụng chung cho các bộ phận) --}}
-        @can('items.view')
-            <a href="{{ route('manager.items') }}"
-                class="list-group-item list-group-item-action py-3 ps-4 {{ request()->routeIs('manager.items') ? 'active' : '' }}"
-                title="Kho Mã Tem">
-                <i class="fa-solid fa-fw fa-tags text-dark me-2"></i>
-                <span class="sidebar-text">Kho Mã Tem (Items)</span>
-            </a>
-        @endcan
+
 
         @role('manager|admin')
             @can('manager')
