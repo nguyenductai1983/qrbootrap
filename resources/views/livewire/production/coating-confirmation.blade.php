@@ -1,8 +1,10 @@
 <div class="position-relative">
     <!-- OVERLAY LOADING -->
-    <div wire:loading.flex wire:target="confirmCoating,addScannedItem,removeItem" class="position-absolute w-100 h-100 top-0 start-0 z-3 flex-column justify-content-center align-items-center" 
-         style="background: transparent;">
-        <div class="spinner-border text-success" style="width: 4rem; height: 4rem; border-width: 0.35em;" role="status"></div>
+    <div wire:loading.flex wire:target="confirmCoating,addScannedItem,removeItem"
+        class="position-absolute w-100 h-100 top-0 start-0 z-3 flex-column justify-content-center align-items-center"
+        style="background: transparent;">
+        <div class="spinner-border text-success" style="width: 4rem; height: 4rem; border-width: 0.35em;" role="status">
+        </div>
         <h4 class="mt-3 fw-bold text-success">Đang xử lý, vui lòng đợi...</h4>
     </div>
 
@@ -94,10 +96,10 @@
                                         </button>
                                     </div>
                                     <div class="row align-items-center p-2 rounded">
-                                        <div class="col-5 small text-muted">
+                                        <div class="col-12 col-md-5 small text-muted">
                                             Tồn: <b class="fs-6">{{ (float) $item['length'] }} m</b>
                                         </div>
-                                        <div class="col-7">
+                                        <div class="col-12 col-md-7">
                                             <div class="input-group input-group-sm shadow-sm">
                                                 <span class="input-group-text fw-bold text-primary">Dùng:</span>
                                                 <input type="number" step="0.1" max="{{ $item['length'] }}"

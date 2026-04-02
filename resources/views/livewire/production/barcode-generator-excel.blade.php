@@ -106,7 +106,7 @@
                     </div>
                     <div class="row g-1 mt-3 rounded border">
 
-                        <div class="col-5 col-offset-1">
+                        <div class="col-12 col-md-5 col-offset-1">
                             {{-- 4. Tùy chọn Định dạng In (MỚI) --}}
                             <span class="form-label fw-bold small text-uppercase text-muted ms-1 mb-2">Định dạng mã
                                 in</span>
@@ -131,22 +131,22 @@
 
                         </div>
                         {{-- 5. Số tem / Hàng (Khổ giấy in) --}}
-                        <div class="col-2">
+                        <div class="col-4 col-md-2">
                             <label class="form-label fw-bold" for="printColumns">Số tem 1 dòng</label>
                             <input wire:model="printColumns" type="number" class="form-control" min="1"
                                 id="printColumns">
                             <small class="text-muted">Số tem trên 1 hàng</small>
                         </div>
                         {{-- 6. Số hàng giấy in --}}
-                        <div class="col-2">
+                        <div class="col-4 col-md-2">
                             <label class="form-label fw-bold" for="rowsPerPage">Số hàng giấy in</label>
                             <input wire:model="rowsPerPage" type="number" class="form-control" min="1"
                                 id="rowsPerPage">
                             <small class="text-muted">Số hàng trên 1 tờ giấy</small>
                         </div>
                         {{-- 7. Cỡ chữ --}}
-                        <div class="col-2">
-                            <label class="form-label fw-bold" for="fontSize">Cỡ chữ</label>
+                        <div class="col-4 col-md-2">
+                            <label class="form-label fw-bold" for="fontSize">Cỡ chữ in dưới code</label>
                             <div class="mb-3">
                                 <input wire:model="fontSize" type="number" class="form-control" min="3"
                                     id="fontSize">

@@ -97,7 +97,7 @@
                     </div>
                 </div>
                 <div class="row g-3 ">
-                    <div class="col-md-3 col-6">
+                    <div class="col-md-3 col-12">
                         <label class="form-label small fw-bold" for="filterOrderId">Lọc theo Đơn hàng:</label>
                         <select wire:model.live="filterOrderId" class="form-select" id="filterOrderId">
                             <option value="">-- Tất cả đơn hàng --</option>
@@ -107,7 +107,7 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-md-3 col-6">
+                    <div class="col-md-3 col-12">
                         <label class="form-label small fw-bold" for="filterDepartmentId">Lọc theo Xưởng:</label>
                         <select wire:model.live="filterDepartmentId" class="form-select" id="filterDepartmentId">
                             <option value="">-- Tất cả xưởng --</option>
@@ -117,7 +117,7 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-md-3 col-6">
+                    <div class="col-md-3 col-12">
                         <label class="form-label small fw-bold" for="filterProductId">Lọc theo Sản phẩm:</label>
                         <select wire:model.live="filterProductId" class="form-select" id="filterProductId">
                             <option value="">-- Tất cả sản phẩm --</option>
@@ -127,7 +127,7 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-md-3 col-6">
+                    <div class="col-md-3 col-12">
                         <label class="form-label small fw-bold" for="filterColorId">Lọc theo Màu:</label>
                         <select wire:model.live="filterColorId" class="form-select" id="filterColorId">
                             <option value="">-- Tất cả màu --</option>
@@ -148,7 +148,7 @@
                 @endif
 
                 {{-- BẢNG DỮ LIỆU --}}
-                <div class="mt-3" style="overflow: visible;">
+                <div class="mt-3 table-responsive">
                     <table class="table table-hover table-bordered align-middle mb-0 table-card">
                         <thead class="sticky-top shadow-sm text-center" style="z-index: 10;">
                             <tr>
