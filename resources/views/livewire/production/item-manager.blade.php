@@ -169,7 +169,7 @@
                             @forelse ($items as $item)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td class="fw-bold text-primary" data-label="Mã Tem">{{ $item->code }}</td>
+                                    <td class="fw-bold text-primary text-break" data-label="Mã Tem">{{ $item->code }}</td>
                                     <td class="text-center" data-label="Đơn hàng">{{ $item->order->code ?? '-' }}
                                     </td>
                                     <td data-label="Sản phẩm">{{ $item->product->name ?? '-' }} -
@@ -185,7 +185,7 @@
                                         </span>
                                     </td>
                                     {{-- CỘT CHIỀU DÀI --}}
-                                    <td class="text-center text-nowrap" data-label="Chiều dài">
+                                    <td class="text-center text-wrap" data-label="Chiều dài">
                                         @if ($item->original_length || $item->length)
                                             <div class="small">Gốc: <span
                                                     class="fw-bold">{{ (float) $item->original_length }}m</span></div>
@@ -200,7 +200,7 @@
                                     {{-- CỘT NGUỒN GỐC (PHẢ HỆ) --}}
                                     <td data-label="Nguồn gốc">
                                         @if ($item->parents->isNotEmpty())
-                                            <ul class="mb-0 ps-3 text-nowrap" style="font-size: 0.85rem;">
+                                            <ul class="mb-0 ps-3 text-wrap text-break" style="font-size: 0.85rem;">
                                                 @foreach ($item->parents as $parent)
                                                     <li>
                                                         <span
