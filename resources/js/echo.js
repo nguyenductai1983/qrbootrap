@@ -4,19 +4,27 @@ import Pusher from 'pusher-js';
 window.Pusher = Pusher;
 
 // Đóng gói việc khởi tạo Echo vào một hàm để thiết lập theo nhu cầu
-window.initWebSocket = function() {
+window.initWebSocket = function () {
     if (!window.Echo) {
+        // Tự động kiểm tra xem web đang chạy http hay https
+        const isSecure = window.location.protocol === 'https:';
+
         window.Echo = new Echo({
             broadcaster: 'reverb',
             key: import.meta.env.VITE_REVERB_APP_KEY,
-            // Thay vì dùng VITE_REVERB_HOST (thường bị dính 127.0.0.1 khi build ở local), ta linh động theo URL đang chạy
             wsHost: window.location.hostname,
-            wsPort: import.meta.env.VITE_REVERB_PORT ?? 8080,
-            wssPort: import.meta.env.VITE_REVERB_PORT ?? 8080,
-            forceTLS: (import.meta.env.VITE_REVERB_SCHEME ?? 'https') === 'https',
+
+            // 🌟 CHỐT CỨNG CỔNG CHUẨN CỦA WEB, KHÔNG DÙNG 8080 Ở FRONTEND NỮA
+            wsPort: 80,
+            wssPort: 443,
+
+            // 🌟 BẬT BẢO MẬT DỰA VÀO URL HIỆN TẠI
+            forceTLS: isSecure,
+
             enabledTransports: ['ws', 'wss'],
         });
-        console.log('Khởi tạo kết nối Echo/Reverb thành công, kết nối tới: ' + window.location.hostname);
+
+        console.log('Khởi tạo kết nối Echo/Reverb thành công, kết nối tới: ' + window.location.hostname + (isSecure ? ' (Bảo mật WSS)' : ' (WS)'));
     }
 };
 
