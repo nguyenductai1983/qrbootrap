@@ -59,9 +59,10 @@ class WarehouseItemsExport implements FromCollection, WithHeadings, WithMapping,
             if (is_array($properties)) {
                 foreach (array_keys($properties) as $key) {
                     // Loại bỏ các cột legacy đã được tách thành cột riêng trong Database hoặc các biến hệ thống
-                    if (!in_array(strtoupper($key), ['ORDER_ID', 'PRODUCT_ID', 'PRODUCT', 'PRODUCT_NAME', 'ORDER_CODE', 'PO', 'GSM', 'WEIGHT', 'NOTES', 'GHI_CHU'])) {
-                        $keys[$key] = true;
-                    }
+                    // if (!in_array(strtoupper($key), ['ORDER_ID', 'PRODUCT_ID', 'PRODUCT', 'PRODUCT_NAME', 'ORDER_CODE', 'PO', 'GSM', 'WEIGHT', 'NOTES', 'GHI_CHU'])) {
+                    //     $keys[$key] = true;
+                    // }
+                    $keys[$key] = true;
                 }
             }
         }

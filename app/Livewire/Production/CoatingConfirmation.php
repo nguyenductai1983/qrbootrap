@@ -101,7 +101,7 @@ class CoatingConfirmation extends Component
 
         if (!collect($this->scannedItems)->contains('id', $item->id)) {
             $this->scannedItems[] = $item;
-            $this->usedLengths[$item->id] = $item->length;
+            $this->usedLengths[$item->id] = 0;
 
             // Bắn tín hiệu để JS tự động tính lại số mét Thành phẩm
             $this->dispatch('update-calculations');

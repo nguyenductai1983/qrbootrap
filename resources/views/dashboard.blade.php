@@ -177,7 +177,56 @@
                     </div>
                 @endcan
             </div>
-
+            {{-- Nhóm Kho --}}
+            <h6 class="text-muted fw-bold text-uppercase small mb-3 mt-4"><i class="fa-solid fa-warehouse me-1"></i>
+                Kho Hàng</h6>
+            <div class="row g-4 mb-4">
+                <div class="col-md-6 col-lg-3">
+                    <div class="card h-100 shadow-sm border-2 hover-card">
+                        <div class="card-body p-3 d-flex align-items-center">
+                            <div class="bg-success bg-opacity-10 text-success p-3 rounded me-3">
+                                <i class="fa-solid fa-warehouse"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h6 class="fw-bold mb-0">Nhập Kho</h6>
+                                <small class="text-muted">Quét mã nhập & gán vị trí</small>
+                            </div>
+                            <a href="{{ route('warehouse.scan') }}" class="stretched-link text-success"><i
+                                    class="fas fa-chevron-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="card h-100 shadow-sm border-2 hover-card">
+                        <div class="card-body p-3 d-flex align-items-center">
+                            <div class="bg-success bg-opacity-10 text-success p-3 rounded me-3">
+                                <i class="fa-solid fa-map-location-dot fa-xl"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h6 class="fw-bold mb-0">Vị Trí Kho</h6>
+                                <small class="text-muted">Quản lý kệ & vị trí</small>
+                            </div>
+                            <a href="{{ route('warehouse.locations') }}" class="stretched-link text-success"><i
+                                    class="fas fa-chevron-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="card h-100 shadow-sm border-2 hover-card">
+                        <div class="card-body p-3 d-flex align-items-center">
+                            <div class="bg-success bg-opacity-10 text-success p-3 rounded me-3">
+                                <i class="fa-solid fa-file-excel fa-xl"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h6 class="fw-bold mb-0">Báo Cáo Kho</h6>
+                                <small class="text-muted">Xuất Excel tồn kho</small>
+                            </div>
+                            <a href="{{ route('warehouse.reports') }}" class="stretched-link text-success"><i
+                                    class="fas fa-chevron-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             {{-- 4. KHU VỰC QUẢN TRỊ HỆ THỐNG --}}
             @role('manager|admin')
@@ -186,7 +235,8 @@
                 </h4>
 
                 {{-- Nhóm Dữ liệu --}}
-                <h6 class="text-muted fw-bold text-uppercase small mb-3 mt-4"><i class="fa-solid fa-database me-1"></i> Cấu
+                <h6 class="text-muted fw-bold text-uppercase small mb-3 mt-4"><i class="fa-solid fa-database me-1"></i>
+                    Cấu
                     hình Dữ liệu</h6>
                 <div class="row g-4 mb-4">
                     {{-- Đơn Hàng --}}
@@ -321,57 +371,6 @@
                                     <small class="text-muted">Gán trạm in cho nhân viên</small>
                                 </div>
                                 <a href="{{ route('manager.user-print-stations') }}" class="stretched-link text-info"><i
-                                        class="fas fa-chevron-right"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {{-- Nhóm Kho --}}
-                <h6 class="text-muted fw-bold text-uppercase small mb-3 mt-4"><i class="fa-solid fa-warehouse me-1"></i>
-                    Kho Hàng</h6>
-                <div class="row g-4 mb-4">
-                    <div class="col-md-6 col-lg-3">
-                        <div class="card h-100 shadow-sm border-2 hover-card">
-                            <div class="card-body p-3 d-flex align-items-center">
-                                <div class="bg-success bg-opacity-10 text-success p-3 rounded me-3">
-                                    <i class="fa-solid fa-warehouse"></i>
-                                </div>
-                                <div class="flex-grow-1">
-                                    <h6 class="fw-bold mb-0">Nhập Kho</h6>
-                                    <small class="text-muted">Quét mã nhập & gán vị trí</small>
-                                </div>
-                                <a href="{{ route('warehouse.scan') }}" class="stretched-link text-success"><i
-                                        class="fas fa-chevron-right"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-lg-3">
-                        <div class="card h-100 shadow-sm border-2 hover-card">
-                            <div class="card-body p-3 d-flex align-items-center">
-                                <div class="bg-success bg-opacity-10 text-success p-3 rounded me-3">
-                                    <i class="fa-solid fa-map-location-dot fa-xl"></i>
-                                </div>
-                                <div class="flex-grow-1">
-                                    <h6 class="fw-bold mb-0">Vị Trí Kho</h6>
-                                    <small class="text-muted">Quản lý kệ & vị trí</small>
-                                </div>
-                                <a href="{{ route('warehouse.locations') }}" class="stretched-link text-success"><i
-                                        class="fas fa-chevron-right"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-lg-3">
-                        <div class="card h-100 shadow-sm border-2 hover-card">
-                            <div class="card-body p-3 d-flex align-items-center">
-                                <div class="bg-success bg-opacity-10 text-success p-3 rounded me-3">
-                                    <i class="fa-solid fa-file-excel fa-xl"></i>
-                                </div>
-                                <div class="flex-grow-1">
-                                    <h6 class="fw-bold mb-0">Báo Cáo Kho</h6>
-                                    <small class="text-muted">Xuất Excel tồn kho</small>
-                                </div>
-                                <a href="{{ route('warehouse.reports') }}" class="stretched-link text-success"><i
                                         class="fas fa-chevron-right"></i></a>
                             </div>
                         </div>

@@ -107,11 +107,6 @@ class ScanToLocation extends Component
     /** MODE 1: Nhập tạm — không cần vị trí */
     private function handleTemp(Item $item): void
     {
-        if ($item->status === ItemStatus::NONE) {
-            $this->error("⛔ Cây vải chưa được xác nhận sản xuất! Không thể nhập kho.");
-            $this->itemInfo = $item;
-            return;
-        }
 
         if ($item->status === ItemStatus::IN_WAREHOUSE) {
             $loc = optional($item->location)->code ?? 'chưa xác định';
@@ -166,16 +161,17 @@ class ScanToLocation extends Component
         $item->update([
             'current_location_id' => $this->currentLocationId,
         ]);
-
-        ItemMovement::create([
-            'item_id'          => $item->id,
-            'action_type'      => MovementAction::CONFIRM_LOCATION->value,
-            'from_location_id' => $oldLocationId,
-            'to_location_id'   => $this->currentLocationId,
-            'user_id'          => Auth::id(),
-            'note'             => 'Xác nhận / Cập nhật vị trí trong kho',
-            'created_at'       => now(),
-        ]);
+        if ($oldLocationId != $this->currentLocationId) {
+            ItemMovement::create([
+                'item_id'          => $item->id,
+                'action_type'      => MovementAction::CONFIRM_LOCATION->value,
+                'from_location_id' => $oldLocationId,
+                'to_location_id'   => $this->currentLocationId,
+                'user_id'          => Auth::id(),
+                'note'             => 'Xác nhận / Cập nhật vị trí trong kho',
+                'created_at'       => now(),
+            ]);
+        }
 
         $item->refresh()->load(['product', 'color', 'order', 'location']);
         $this->addToSession($item);
@@ -198,16 +194,17 @@ class ScanToLocation extends Component
             'warehoused_by'      => Auth::id(),
             'warehoused_at'      => now(),
         ]);
-
-        ItemMovement::create([
-            'item_id'          => $item->id,
-            'action_type'      => MovementAction::IN_WAREHOUSE->value,
-            'from_location_id' => $oldLocationId,
-            'to_location_id'   => $locationId,
-            'user_id'          => Auth::id(),
-            'note'             => $note,
-            'created_at'       => now(),
-        ]);
+        if ($oldLocationId != $locationId) {
+            ItemMovement::create([
+                'item_id'          => $item->id,
+                'action_type'      => MovementAction::IN_WAREHOUSE->value,
+                'from_location_id' => $oldLocationId,
+                'to_location_id'   => $locationId,
+                'user_id'          => Auth::id(),
+                'note'             => $note,
+                'created_at'       => now(),
+            ]);
+        }
 
         $item->refresh()->load(['product', 'color', 'order', 'location']);
         $this->addToSession($item);

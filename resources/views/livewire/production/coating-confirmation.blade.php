@@ -7,39 +7,6 @@
         </div>
         <h4 class="mt-3 fw-bold text-success">Đang xử lý, vui lòng đợi...</h4>
     </div>
-
-    @if ($manualPrintRequired)
-        @php
-            $type = $manualPrintRequired['type'] ?? 'warning';
-            $borderClass =
-                $type === 'success' ? 'border-success' : ($type === 'error' ? 'border-danger' : 'border-warning');
-            $bgClass = $type === 'success' ? '#f0fdf4' : ($type === 'error' ? '#fef2f2' : '#fffdf5');
-            $iconClass = $manualPrintRequired['icon'] ?? 'fa-solid fa-triangle-exclamation text-warning';
-        @endphp
-        <div class="alert shadow-sm border-2 {{ $borderClass }} mb-4 position-relative"
-            style="background-color:{{ $bgClass }}">
-            <button wire:click="clearManualPrint" class="btn-close position-absolute top-0 end-0 m-2"
-                aria-label="Close"></button>
-            <div class="text-center py-2">
-                <i class="{{ $iconClass }} fa-3x mb-2"></i>
-                <h4 class="fw-bold text-dark text-uppercase">{{ $manualPrintRequired['header'] }}</h4>
-                <p class="text-secondary mb-3">
-                    {{ $manualPrintRequired['content'] }}
-                </p>
-                <div class="d-inline-block border border-primary border-2 p-3 rounded bg-white shadow-sm">
-                    <div class="fs-1 fw-bold text-primary px-3">{{ $manualPrintRequired['code'] }}</div>
-                    <hr class="my-2 border-primary opacity-25">
-                    <div class="row text-muted small fw-bold">
-                        <div class="col-6 text-end border-end"><i class="fa-solid fa-ruler-horizontal"></i>
-                            {{ $manualPrintRequired['length'] }}m</div>
-                        <div class="col-6 text-start"><i class="fa-solid fa-clock"></i>
-                            {{ $manualPrintRequired['time'] }}</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    @endif
-
     <div class="row g-3">
         {{-- KHU VỰC QUÉT MÃ VẠCH / CAMERA --}}
         <div class="col-md-5">
@@ -132,22 +99,26 @@
                                             Tồn: <b class="fs-6">{{ (float) $item['length'] }} m</b>
                                         </div>
                                         <div class="col-12 col-md-7">
-                                            <div class="input-group input-group-sm shadow-sm">
-                                                <span class="input-group-text fw-bold text-primary">Dùng:</span>
+                                        </div>
+                                    </div>
+                                    <div class="row align-items-center p-2 rounded">
+                                        <div class="col-12 col-md-12">
+                                            <label class="form-label small text-muted fw-bold">Dùng (m):</label>
+                                            <div class="input-group">
                                                 <input type="number" step="0.1" max="{{ $item['length'] }}"
+                                                    data-item-id="{{ $item['id'] }}"
                                                     wire:model="usedLengths.{{ $item['id'] }}"
                                                     class="form-control form-control-lg text-end fw-bold input-used-length fs-4"
                                                     oninput="calculateFromUsed()" placeholder="0.0">
-                                                <span class="input-group-text">m</span>
+                                                <button class="btn btn-sm btn-outline-primary" type="button"
+                                                    onclick="setUsedLength({{ $item['id'] }}, {{ $item['length'] }})">Dùng
+                                                    hết</button>
                                             </div>
                                         </div>
                                     </div>
                                 </li>
                             @endforeach
                         </ul>
-
-                        <hr class="text-secondary opacity-25">
-
                         <div class="d-flex justify-content-between align-items-end mb-3 mt-4">
                             <h6 class="fw-bold text-success text-uppercase mb-0"><i
                                     class="fa-solid fa-check-double me-1"></i> Thành phẩm đầu ra:</h6>
@@ -156,19 +127,17 @@
                                     class="text-primary fw-bold">{{ number_format($coatingRatio ?? 1.07, 3) }}</span>
                             </span>
                         </div>
-
                         <div class="mb-4">
                             <label class="form-label small text-muted fw-bold">Nhập chiều dài cây tráng thực tế thu
                                 được:</label>
                             <div class="input-group shadow-sm">
                                 <input type="number" step="0.1" wire:model="newLength" id="input-new-length"
                                     oninput="calculateFromNew(this.value)"
-                                    class="form-control form-control-lg text-end fw-bold text-success fs-4"
+                                    class="form-control form-control text-end fw-bold text-success fs-4"
                                     placeholder="0.0">
                                 <span class="input-group-text fw-bold fs-5 text-success">mét (m)</span>
                             </div>
                         </div>
-
                         <button wire:click="confirmCoating" class="btn btn-success btn-lg w-100 fw-bold shadow"
                             wire:loading.attr="disabled" wire:target="confirmCoating">
                             <span wire:loading.remove wire:target="confirmCoating">
@@ -179,6 +148,49 @@
                             </span>
                         </button>
                     @endif
+                    {{-- bắt đầu đoạn thông báo --}}
+                    @if ($manualPrintRequired)
+                        @php
+                            $type = $manualPrintRequired['type'] ?? 'warning';
+                            $borderClass =
+                                $type === 'success'
+                                    ? 'border-success'
+                                    : ($type === 'error'
+                                        ? 'border-danger'
+                                        : 'border-warning');
+                            $bgClass = $type === 'success' ? 'LightGreen' : ($type === 'error' ? 'Salmon' : 'Tomato');
+                            $iconClass =
+                                $manualPrintRequired['icon'] ?? 'fa-solid fa-triangle-exclamation text-warning';
+                        @endphp
+                        <div class="alert shadow-sm border-2 {{ $borderClass }} position-relative"
+                            style="background-color:{{ $bgClass }}">
+                            <button wire:click="clearManualPrint" class="btn-close position-absolute top-0 end-0 m-2"
+                                aria-label="Close"></button>
+                            <div class="text-center">
+                                <div class="d-flex justify-content-center align-items-center">
+                                    <i class="{{ $iconClass }} fa-3x"></i>
+                                    <h4 class="fw-bold text-uppercase">{{ $manualPrintRequired['header'] }}
+                                    </h4>
+                                </div>
+                                <p>
+                                    {{ $manualPrintRequired['content'] }}
+                                </p>
+                                <div class="d-inline-block border border-primary border-2 rounded shadow-sm">
+                                    <div class="fs-1 fw-bold text-primary px-3">{{ $manualPrintRequired['code'] }}
+                                    </div>
+                                    <hr class="border-primary opacity-25">
+                                    <div class="row small fw-bold">
+                                        <div class="col-auto text-end border-end"><i
+                                                class="fa-solid fa-ruler-horizontal"></i>
+                                            {{ $manualPrintRequired['length'] }}m</div>
+                                        <div class="col-auto text-start"><i class="fa-solid fa-clock"></i>
+                                            {{ $manualPrintRequired['time'] }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+                    {{-- kết thúc đoạn thông báo --}}
                 </div>
             </div>
         </div>
@@ -189,6 +201,22 @@
     {{-- ========================================== --}}
     <script>
         let currentRatio = {{ $coatingRatio ?? 1.07 }};
+        window.getUsedLength = function(itemId) {
+            return document.querySelector(`.input-used-length[data-item-id="${itemId}"]`).value;
+        }
+
+        window.setUsedLength = function(itemId, maxLength) {
+            let input = document.querySelector(`.input-used-length[data-item-id="${itemId}"]`);
+            if (input) {
+                input.value = maxLength;
+                input.dispatchEvent(new Event('input', {
+                    bubbles: true
+                }));
+                if (typeof window.calculateFromUsed === 'function') {
+                    window.calculateFromUsed();
+                }
+            }
+        };
 
         window.calculateFromUsed = function() {
             let totalUsed = 0;
@@ -203,7 +231,9 @@
                 newLenInput.value = newLen;
                 newLenInput.dispatchEvent(new Event('input'));
             } else if (totalUsed === 0) {
-                document.getElementById('input-new-length').value = '';
+                let newLenInput = document.getElementById('input-new-length');
+                newLenInput.value = '';
+                newLenInput.dispatchEvent(new Event('input'));
             }
         };
 
