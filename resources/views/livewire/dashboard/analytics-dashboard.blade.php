@@ -2,66 +2,78 @@
 
     {{-- ═══ HEADER ═══════════════════════════════════════ --}}
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h4 class="fw-bold mb-0">
-                <i class="fa-solid fa-chart-line text-primary me-2"></i>Báo Cáo &amp; Phân Tích
-            </h4>
-            <small class="text-muted">Dữ liệu thực từ hệ thống · cập nhật mỗi lần tải trang</small>
-        </div>
-        {{-- Bộ lọc thời gian --}}
-        <div class="d-flex align-items-center gap-2">
-            <span class="text-muted small me-1">Khoảng thời gian:</span>
-            <div class="btn-group" role="group">
-                <button wire:click="$set('period','7')"
-                    class="btn btn-sm {{ $period === '7' ? 'btn-primary' : 'btn-outline-secondary' }}">
-                    7 ngày
-                </button>
-                <button wire:click="$set('period','30')"
-                    class="btn btn-sm {{ $period === '30' ? 'btn-primary' : 'btn-outline-secondary' }}">
-                    30 ngày
-                </button>
-                <button wire:click="$set('period','90')"
-                    class="btn btn-sm {{ $period === '90' ? 'btn-primary' : 'btn-outline-secondary' }}">
-                    90 ngày
-                </button>
+        <div class="row">
+            <div class="col-md-8 col-12">
+                <div>
+                    <h4 class="fw-bold mb-0">
+                        <i class="fa-solid fa-chart-line text-primary me-2"></i>Báo Cáo &amp; Phân Tích
+                    </h4>
+                    <small class="text-muted">Dữ liệu thực từ hệ thống · cập nhật mỗi lần tải trang</small>
+                </div>
             </div>
-            {{-- Loading indicator --}}
-            <span wire:loading class="spinner-border spinner-border-sm text-primary" role="status"></span>
+            <div class="col-md-4 col-12">
+                {{-- Bộ lọc thời gian --}}
+
+                <span class="text-muted small me-1">Khoảng thời gian:</span>
+                <div class="btn-group" role="group">
+                    <button wire:click="$set('period','7')"
+                        class="btn btn-sm {{ $period === '7' ? 'btn-primary' : 'btn-outline-secondary' }}">
+                        7 ngày
+                    </button>
+                    <button wire:click="$set('period','30')"
+                        class="btn btn-sm {{ $period === '30' ? 'btn-primary' : 'btn-outline-secondary' }}">
+                        30 ngày
+                    </button>
+                    <button wire:click="$set('period','90')"
+                        class="btn btn-sm {{ $period === '90' ? 'btn-primary' : 'btn-outline-secondary' }}">
+                        90 ngày
+                    </button>
+                </div>
+                {{-- Loading indicator --}}
+                <span wire:loading class="spinner-border spinner-border-sm text-primary" role="status"></span>
+            </div>
+
         </div>
+
+
     </div>
 
     {{-- ═══ BANNER PHÂN QUYỀN XEM ════════════════════ --}}
     @if ($isManagerView)
-        <div class="alert alert-info border-0 d-flex align-items-center gap-3 mb-4 shadow-sm"
+        <div class="alert alert-info border-0 d-flex flex-column flex-md-row align-items-start align-items-md-center gap-3 mb-4 shadow-sm"
             style="border-left: 4px solid #0dcaf0 !important;">
-            <div class="bg-info bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
-                style="width:44px;height:44px;">
-                <i class="fa-solid fa-globe text-info"></i>
-            </div>
-            <div>
-                <div class="fw-bold text-info-emphasis">Chế độ: Toàn Bộ Hệ Thống</div>
-                <div class="small">Bạn đang xem dữ liệu của <strong>tất cả nhân viên</strong> trong hệ thống.
+            <div class="d-flex align-items-center gap-3 flex-grow-1">
+                <div class="bg-info bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                    style="width:44px;height:44px;">
+                    <i class="fa-solid fa-globe text-info"></i>
+                </div>
+                <div>
+                    <div class="fw-bold text-info-emphasis">Chế độ: Toàn Bộ Hệ Thống</div>
+                    <div class="small">Bạn đang xem dữ liệu của <strong>tất cả nhân viên</strong> trong hệ thống.
+                    </div>
                 </div>
             </div>
-            <div class="ms-auto">
+            <div class="ms-md-auto w-100 w-md-auto text-start text-md-end">
                 <span class="badge bg-info text-white rounded-pill px-3 py-2">
                     <i class="fa-solid fa-shield-halved me-1"></i>Admin / Manager
                 </span>
             </div>
         </div>
     @else
-        <div class="alert alert-warning border-0 d-flex align-items-center gap-3 mb-4 shadow-sm"
+        <div class="alert alert-warning border-0 d-flex flex-column flex-md-row align-items-start align-items-md-center gap-3 mb-4 shadow-sm"
             style="border-left: 4px solid #ffc107 !important;">
-            <div class="bg-warning bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
-                style="width:44px;height:44px;">
-                <i class="fa-solid fa-user text-warning"></i>
+            <div class="d-flex align-items-center gap-3 flex-grow-1">
+                <div class="bg-warning bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                    style="width:44px;height:44px;">
+                    <i class="fa-solid fa-user text-warning"></i>
+                </div>
+                <div>
+                    <div class="fw-bold text-warning-emphasis">Chế độ: Dữ Liệu Cá Nhân</div>
+                    <div class="small">Bạn chỉ đang xem <strong>dữ liệu do chính bạn thực hiện</strong>. Liên hệ
+                        quản lý để xem báo cáo toàn hệ thống.</div>
+                </div>
             </div>
-            <div>
-                <div class="fw-bold text-warning-emphasis">Chế độ: Dữ Liệu Cá Nhân</div>
-                <div class="small">Bạn chỉ đang xem <strong>dữ liệu do chính bạn thực hiện</strong>. Liên hệ
-                    quản lý để xem báo cáo toàn hệ thống.</div>
-            </div>
-            <div class="ms-auto">
+            <div class="ms-md-auto w-100 w-md-auto text-start text-md-end">
                 <span class="badge bg-warning text-dark rounded-pill px-3 py-2">
                     <i class="fa-solid fa-user-clock me-1"></i>Cá Nhân
                 </span>
