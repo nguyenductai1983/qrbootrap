@@ -9,14 +9,23 @@
     </div>
 
     @if ($manualPrintRequired)
-        <div class="alert shadow-sm border-2 border-warning mb-4 position-relative" style="background-color:#fffdf5">
+        @php
+            $type = $manualPrintRequired['type'] ?? 'warning';
+            $borderClass =
+                $type === 'success' ? 'border-success' : ($type === 'error' ? 'border-danger' : 'border-warning');
+            $bgClass = $type === 'success' ? '#f0fdf4' : ($type === 'error' ? '#fef2f2' : '#fffdf5');
+            $iconClass = $manualPrintRequired['icon'] ?? 'fa-solid fa-triangle-exclamation text-warning';
+        @endphp
+        <div class="alert shadow-sm border-2 {{ $borderClass }} mb-4 position-relative"
+            style="background-color:{{ $bgClass }}">
             <button wire:click="clearManualPrint" class="btn-close position-absolute top-0 end-0 m-2"
                 aria-label="Close"></button>
             <div class="text-center py-2">
-                <i class="fa-solid fa-triangle-exclamation text-warning fa-3x mb-2"></i>
-                <h4 class="fw-bold text-dark text-uppercase">Tạo mã thành công nhưng Chưa In!</h4>
-                <p class="text-secondary mb-3">Bạn không chọn trạm in, vui lòng chụp màn hình hoặc ghi lại thông tin bên
-                    dưới để đem đi lấy tem:</p>
+                <i class="{{ $iconClass }} fa-3x mb-2"></i>
+                <h4 class="fw-bold text-dark text-uppercase">{{ $manualPrintRequired['header'] }}</h4>
+                <p class="text-secondary mb-3">
+                    {{ $manualPrintRequired['content'] }}
+                </p>
                 <div class="d-inline-block border border-primary border-2 p-3 rounded bg-white shadow-sm">
                     <div class="fs-1 fw-bold text-primary px-3">{{ $manualPrintRequired['code'] }}</div>
                     <hr class="my-2 border-primary opacity-25">
@@ -127,7 +136,7 @@
                                                 <span class="input-group-text fw-bold text-primary">Dùng:</span>
                                                 <input type="number" step="0.1" max="{{ $item['length'] }}"
                                                     wire:model="usedLengths.{{ $item['id'] }}"
-                                                    class="form-control text-end fw-bold input-used-length"
+                                                    class="form-control form-control-lg text-end fw-bold input-used-length fs-4"
                                                     oninput="calculateFromUsed()" placeholder="0.0">
                                                 <span class="input-group-text">m</span>
                                             </div>

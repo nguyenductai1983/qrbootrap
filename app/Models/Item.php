@@ -5,11 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Enums\ItemStatus;
-use App\Traits\ScopedByDepartment;
 
 class Item extends Model
 {
-    use HasFactory, ScopedByDepartment;
+    use HasFactory;
     protected $fillable = [
         'code',
         'type',

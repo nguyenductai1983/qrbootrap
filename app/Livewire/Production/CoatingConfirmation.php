@@ -257,17 +257,34 @@ class CoatingConfirmation extends Component
 
             // 🌟 BẮN LỆNH IN QUA WEBSOCKET (Nếu có chọn trạm in)
             if (!empty($this->printerMac)) {
-                broadcast(new PrintBarcodeRequested($coatedItem, $this->printerMac));
-                $successMsg = 'Đã tráng xong và gửi lệnh in! Mã tem mới: ' . $finalCode;
-                $this->manualPrintRequired = null;
+                try {
+                    broadcast(new PrintBarcodeRequested($coatedItem, $this->printerMac));
+                    $successMsg = 'Đã tráng xong và gửi lệnh in! Mã tem mới: ' . $finalCode;
+                    $this->setManualPrintState(
+                        'success',
+                        'Đã tráng xong và gửi lệnh in!',
+                        'Đã gửi lệnh in thành công! Vui lòng kiểm tra máy in.',
+                        $finalCode
+                    );
+                } catch (\Throwable $e) {
+                    \Illuminate\Support\Facades\Log::error('Lỗi broadcast gửi lệnh in: ' . $e->getMessage());
+                    $successMsg = 'Đã tráng xong nhưng lỗi gửi lệnh in!';
+                    $this->setManualPrintState(
+                        'error',
+                        'Tạo mã thành công nhưng Chưa In Được!',
+                        'Lỗi kết nối máy in/hệ thống. Vui lòng liên hệ quản trị. Hãy chụp màn hình hoặc ghi lại thông tin này để in bù:',
+                        $finalCode
+                    );
+                }
             } else {
                 $successMsg = 'Đã tráng xong nhưng chưa in (Không chọn trạm in)! Mã tem mới: ' . $finalCode;
                 // Lưu lại mã để hiển thị lên màn hình cho nhân viên mang đi in tay
-                $this->manualPrintRequired = [
-                    'code' => $finalCode,
-                    'length' => (float) $this->newLength,
-                    'time' => now()->format('d/m/Y H:i:s'),
-                ];
+                $this->setManualPrintState(
+                    'warning',
+                    'Đã tráng xong nhưng chưa in (Không chọn trạm in)!',
+                    'Bạn không chọn trạm in, vui lòng chụp màn hình hoặc ghi lại thông tin bên dưới để đem đi lấy tem:',
+                    $finalCode
+                );
             }
 
             $this->resetForm();
@@ -294,6 +311,25 @@ class CoatingConfirmation extends Component
     public function clearManualPrint()
     {
         $this->manualPrintRequired = null;
+    }
+
+    private function setManualPrintState($type, $header, $content, $code)
+    {
+        $icons = [
+            'success' => 'fa-solid fa-circle-check text-success',
+            'error'   => 'fa-solid fa-circle-xmark text-danger',
+            'warning' => 'fa-solid fa-triangle-exclamation text-warning',
+        ];
+
+        $this->manualPrintRequired = [
+            'type'    => $type,
+            'icon'    => $icons[$type] ?? $icons['warning'],
+            'header'  => $header,
+            'content' => $content,
+            'code'    => $code,
+            'length'  => (float) $this->newLength,
+            'time'    => now()->format('d/m/Y H:i:s'),
+        ];
     }
 
     public function render()

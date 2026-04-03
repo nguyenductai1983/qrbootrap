@@ -111,7 +111,8 @@
                                                                 class="fa-solid fa-print text-muted"></i> In Tem Mã
                                                             Vạch</strong> (hoặc <strong>In Tem Excel</strong>).</li>
                                                     <li class="mb-2">Cột bên trái: Chọn <strong>Sản phẩm</strong> và
-                                                        <strong>Loại Tem</strong>.</li>
+                                                        <strong>Loại Tem</strong>.
+                                                    </li>
                                                     <li class="mb-2">Cột bên phải: Chọn ý nghĩa cột đầu tiên
                                                         (<strong>Số lượng tem</strong> hoặc <strong>Số thứ tự
                                                             tem</strong>).</li>
@@ -252,7 +253,8 @@
                                                 <h6 class="fw-bold">Nhập kho đơn giản (Không vị trí):</h6>
                                                 <ol class="ps-3 mb-0">
                                                     <li class="mb-2">Vào menu <strong>Nhập Kho</strong>, chọn chế độ
-                                                        <span class="badge bg-secondary">Nhập Tạm</span>.</li>
+                                                        <span class="badge bg-secondary">Nhập Tạm</span>.
+                                                    </li>
                                                     <li class="mb-2">Quét lần lượt mã cây vải cần nhập kho.</li>
                                                     <li>Hệ thống sẽ ghi nhận và cập nhật trạng thái người dùng nhao.
                                                     </li>
@@ -300,10 +302,11 @@
                                                         trạm với mã (code) dậy nhớ.</li>
                                                     <li class="mb-2">Vào <strong>Phân Công Trạm In</strong>, gán trạm
                                                         cho đúng nhân viên.</li>
-                                                    <li>Nhân viên mở trang vơi tham số --kiosk-printing <a
+                                                    <li>Nhân viên mở trình duyệt với tham số --kiosk-printing <a
                                                             href="{{ route('production.print-station') }}"
                                                             target="_blank"><strong>Print Station</strong></a> trên máy
                                                         Kiosk và để yên.</li>
+                                                    <li> Các máy in khác khai báo /01 /02 /03 ...</li>
                                                 </ol>
                                             </div>
                                         </div>

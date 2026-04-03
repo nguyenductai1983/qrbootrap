@@ -130,9 +130,14 @@ class ItemManager extends Component
             return;
         }
 
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
         $query = Item::with(['order', 'product', 'color'])
             ->whereDate('created_at', '>=', $this->fromDate)
             ->whereDate('created_at', '<=', $this->toDate)
+            ->when(!$user->hasRole('admin') && !$user->can('view_all_departments'), function ($q) use ($user) {
+                $q->where('department_id', $user->department_id);
+            })
             ->when($this->searchCode, function ($q) {
                 $q->where('code', 'like', '%' . $this->searchCode . '%');
             })
@@ -160,7 +165,12 @@ class ItemManager extends Component
     {
         $this->js("console.log('Danh sách mã code')");
         // Query cơ bản kèm theo Relationship để tránh N+1 Query
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
         $query = Item::with(['order', 'product', 'color', 'parents'])
+            ->when(!$user->hasRole('admin') && !$user->can('view_all_departments'), function ($q) use ($user) {
+                $q->where('department_id', $user->department_id);
+            })
             ->when($this->searchCode, function ($q) {
                 $q->where('code', 'like', '%' . $this->searchCode . '%');
             })

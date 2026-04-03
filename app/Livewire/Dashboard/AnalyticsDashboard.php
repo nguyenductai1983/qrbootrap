@@ -162,10 +162,17 @@ class AnalyticsDashboard extends Component
     /**
      * Tự động áp dụng scope thông qua whereHas('item') cho các bảng không có department_id
      */
-    private function applyUserScope($query)
+    private function applyUserScope($query, $isItemQuery = false)
     {
         if (!$this->isManagerView) {
-            $query->whereHas('item');
+            $departmentId = Auth::user()->department_id;
+            if ($isItemQuery) {
+                $query->where('department_id', $departmentId);
+            } else {
+                $query->whereHas('item', function ($q) use ($departmentId) {
+                    $q->where('department_id', $departmentId);
+                });
+            }
         }
         return $query;
     }
@@ -179,14 +186,17 @@ class AnalyticsDashboard extends Component
 
         // Tem đã tạo
         $qCreated = Item::where('created_at', '>=', $from);
+        $this->applyUserScope($qCreated, true);
         $totalCreated = $qCreated->count();
 
         $qPrevCreated = Item::whereBetween('created_at', [$prevFrom, $from]);
+        $this->applyUserScope($qPrevCreated, true);
         $prevCreated = $qPrevCreated->count();
 
         // Đang trong kho (toàn hệ thống hoặc theo department)
-        // Lưu ý: với Item, Global Scope đã tự động lọc theo department_id rồi.
-        $totalInWarehouse = Item::where('status', ItemStatus::IN_WAREHOUSE)->count();
+        $qInWarehouse = Item::where('status', ItemStatus::IN_WAREHOUSE);
+        $this->applyUserScope($qInWarehouse, true);
+        $totalInWarehouse = $qInWarehouse->count();
 
         // Ca tráng (liên quan đến ItemGenealogy, cần dùng whereHas)
         $qCoating = ItemGenealogy::where('created_at', '>=', $from);
@@ -204,6 +214,7 @@ class AnalyticsDashboard extends Component
 
         // Tổng chiều dài
         $qLength = Item::where('created_at', '>=', $from);
+        $this->applyUserScope($qLength, true);
         $totalLength = $qLength->sum('original_length');
 
         $kpis = [
@@ -277,6 +288,7 @@ class AnalyticsDashboard extends Component
 
         $query = Item::selectRaw('DATE(created_at) as day, COUNT(*) as total')
             ->where('created_at', '>=', $from);
+        $this->applyUserScope($query, true);
 
         $rows = $query->groupBy('day')->orderBy('day')->pluck('total', 'day');
 
@@ -292,6 +304,7 @@ class AnalyticsDashboard extends Component
         $query = Item::selectRaw('product_id, COUNT(*) as total')
             ->where('created_at', '>=', $from)
             ->whereNotNull('product_id');
+        $this->applyUserScope($query, true);
 
         $rows = $query->groupBy('product_id')->orderByDesc('total')->limit(8)
             ->with('product:id,code,name')->get();
@@ -307,6 +320,7 @@ class AnalyticsDashboard extends Component
     private function loadStatusDist(): void
     {
         $query = Item::selectRaw('status, COUNT(*) as total');
+        $this->applyUserScope($query, true);
 
         $rows = $query->groupBy('status')->pluck('total', 'status');
 
@@ -322,6 +336,7 @@ class AnalyticsDashboard extends Component
         $query = Item::selectRaw('current_location_id, COUNT(*) as total')
             ->where('status', ItemStatus::IN_WAREHOUSE)
             ->whereNotNull('current_location_id');
+        $this->applyUserScope($query, true);
 
         $rows = $query->groupBy('current_location_id')->orderByDesc('total')->limit(10)
             ->with('location:id,code,name')->get();
