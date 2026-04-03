@@ -8,7 +8,7 @@ use Livewire\Component;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Title;
 
-#[Title('Quản lý Phòng ban')]
+#[Title('Quản lý Bộ phận')]
 class DepartmentForm extends Component
 {
     public $department; // Biến để lưu trữ đối tượng Department khi chỉnh sửa
@@ -38,7 +38,7 @@ class DepartmentForm extends Component
                 'required',
                 'string',
                 'max:255',
-                // Quy tắc unique name, bỏ qua tên của phòng ban hiện tại khi chỉnh sửa
+                // Quy tắc unique name, bỏ qua tên của Bộ phận hiện tại khi chỉnh sửa
                 Rule::unique('departments')->ignore($this->department->id),
             ],
             'selectedProducts' => ['nullable', 'array'],
@@ -51,20 +51,20 @@ class DepartmentForm extends Component
         $this->validate();
 
         $this->department->name = $this->name;
-        $this->department->code = $this->code; // Lưu mã phòng ban
+        $this->department->code = $this->code; // Lưu mã Bộ phận
         $this->department->save();
 
         // Đồng bộ danh sách sản phẩm
         $this->department->products()->sync($this->selectedProducts);
 
-        session()->flash('success', 'Phòng ban đã được ' . ($this->department->wasRecentlyCreated ? 'tạo' : 'cập nhật') . ' thành công!');
+        session()->flash('success', 'Bộ phận đã được ' . ($this->department->wasRecentlyCreated ? 'tạo' : 'cập nhật') . ' thành công!');
 
         return redirect()->route('departments.index');
     }
 
     public function render()
     {
-        $title = $this->department->exists ? 'Chỉnh sửa Phòng ban' : 'Tạo Phòng ban Mới';
+        $title = $this->department->exists ? 'Chỉnh sửa Bộ phận' : 'Tạo Bộ phận Mới';
         return view('livewire.admin.department-form', compact('title'));
     }
 }

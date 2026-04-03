@@ -8,7 +8,7 @@ use Illuminate\Auth\Access\Response;
 
 class DepartmentPolicy
 {
-     public function before(User $user, string $ability): bool|null
+    public function before(User $user, string $ability): bool|null
     {
         if ($user->hasRole('admin')) { // Sử dụng Spatie hasRole
             return true;
@@ -21,44 +21,44 @@ class DepartmentPolicy
     public function viewAny(User $user): Response
     {
         return $user->hasPermissionTo('departments.view')
-                    ? Response::allow()
-                    : Response::deny('Bạn không có quyền xem danh sách phòng ban.');
+            ? Response::allow()
+            : Response::deny('Bạn không có quyền xem danh sách Bộ phận.');
     }
 
     public function view(User $user, Department $department): Response
     {
         return $user->hasPermissionTo('departments.view')
-                    ? Response::allow()
-                    : Response::deny('Bạn không có quyền xem phòng ban này.');
+            ? Response::allow()
+            : Response::deny('Bạn không có quyền xem Bộ phận này.');
     }
 
     public function create(User $user): Response
     {
         return $user->hasPermissionTo('departments.create')
-                    ? Response::allow()
-                    : Response::deny('Bạn không có quyền tạo phòng ban mới.');
+            ? Response::allow()
+            : Response::deny('Bạn không có quyền tạo Bộ phận mới.');
     }
 
     public function update(User $user, Department $department): Response
     {
-        // Không cho phép chỉnh sửa phòng ban 'admin' trừ khi bạn là admin và không tự hạ cấp
+        // Không cho phép chỉnh sửa Bộ phận 'admin' trừ khi bạn là admin và không tự hạ cấp
         if ($department->name === 'admin' && !$user->hasRole('admin')) {
-             return Response::deny('Bạn không có quyền chỉnh sửa phòng ban Admin.');
+            return Response::deny('Bạn không có quyền chỉnh sửa Bộ phận Admin.');
         }
         return $user->hasPermissionTo('departments.edit')
-                    ? Response::allow()
-                    : Response::deny('Bạn không có quyền cập nhật phòng ban này.');
+            ? Response::allow()
+            : Response::deny('Bạn không có quyền cập nhật Bộ phận này.');
     }
 
     public function delete(User $user, Department $department): Response
     {
-        // Không cho phép xóa phòng ban 'admin' hoặc nếu có người dùng đang giữ phòng ban này
+        // Không cho phép xóa Bộ phận 'admin' hoặc nếu có người dùng đang giữ Bộ phận này
         if ($department->name === 'admin' || $department->users()->count() > 0) {
-            return Response::deny('Không thể xóa phòng ban này.');
+            return Response::deny('Không thể xóa Bộ phận này.');
         }
         return $user->hasPermissionTo('departments.delete')
-                    ? Response::allow()
-                    : Response::deny('Bạn không có quyền xóa phòng ban này.');
+            ? Response::allow()
+            : Response::deny('Bạn không có quyền xóa Bộ phận này.');
     }
 
     /**

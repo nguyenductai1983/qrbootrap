@@ -400,7 +400,7 @@
                         </div>
                     </div>
 
-                    {{-- Phòng Ban --}}
+                    {{-- Bộ phận --}}
                     <div class="col-md-6 col-lg-3">
                         <div class="card h-100 shadow-sm border-2 hover-card">
                             <div class="card-body p-3 d-flex align-items-center">
@@ -408,7 +408,7 @@
                                     <i class="fa-regular fa-building fa-xl"></i>
                                 </div>
                                 <div class="flex-grow-1">
-                                    <h6 class="fw-bold mb-0">Phòng Ban</h6>
+                                    <h6 class="fw-bold mb-0">Bộ phận</h6>
                                     <small class="text-muted">Cơ cấu tổ chức</small>
                                 </div>
                                 <a href="{{ route('departments.index') }}" class="stretched-link text-danger"><i

@@ -1,9 +1,11 @@
 {{-- resources/views/livewire/user-list.blade.php --}}
 <div class="position-relative">
     <!-- OVERLAY LOADING -->
-    <div wire:loading.flex class="position-absolute w-100 h-100 top-0 start-0 z-3 flex-column justify-content-center align-items-center" 
-         style="background: transparent;">
-        <div class="spinner-border text-primary" style="width: 4rem; height: 4rem; border-width: 0.35em;" role="status"></div>
+    <div wire:loading.flex
+        class="position-absolute w-100 h-100 top-0 start-0 z-3 flex-column justify-content-center align-items-center"
+        style="background: transparent;">
+        <div class="spinner-border text-primary" style="width: 4rem; height: 4rem; border-width: 0.35em;" role="status">
+        </div>
         <h4 class="mt-3 fw-bold text-primary">Đang xử lý, vui lòng đợi...</h4>
     </div>
 
@@ -44,7 +46,7 @@
                             <th scope="col">{{ __('Tên') }}</th>
                             <th scope="col">Email</th>
                             <th scope="col">{{ __('Vai trò') }}</th>
-                            <th scope="col">{{ __('Phòng ban') }}</th>
+                            <th scope="col">{{ __('Bộ phận') }}</th>
                             <th scope="col">{{ __('Hành động') }}</th>
                         </tr>
                     </thead>
@@ -67,10 +69,9 @@
                                         </a>
                                     @endcan
                                     @can('users.delete')
-                                        <button 
-                                            wire:confirm="{{ __('Bạn có chắc chắn muốn xóa người dùng này không?') }}"
-                                            wire:click="deleteUser({{ $user->id }})"
-                                            class="btn btn-sm btn-danger" @if(auth()->id() === $user->id) disabled @endif>
+                                        <button wire:confirm="{{ __('Bạn có chắc chắn muốn xóa người dùng này không?') }}"
+                                            wire:click="deleteUser({{ $user->id }})" class="btn btn-sm btn-danger"
+                                            @if (auth()->id() === $user->id) disabled @endif>
                                             {{ __('Xóa') }}
                                         </button>
                                     @endcan

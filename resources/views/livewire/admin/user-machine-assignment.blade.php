@@ -1,8 +1,10 @@
 <div class="container-fluid py-4 position-relative">
     <!-- OVERLAY LOADING TO BỰ CHỐNG CLICK NHẦM -->
-    <div wire:loading.flex class="position-absolute w-100 h-100 top-0 start-0 flex-column justify-content-center align-items-center" 
-         style="background: transparent; z-index: 1050;">
-        <div class="spinner-border text-warning" style="width: 4rem; height: 4rem; border-width: 0.35em;" role="status"></div>
+    <div wire:loading.flex
+        class="position-absolute w-100 h-100 top-0 start-0 flex-column justify-content-center align-items-center"
+        style="background: transparent; z-index: 1050;">
+        <div class="spinner-border text-warning" style="width: 4rem; height: 4rem; border-width: 0.35em;" role="status">
+        </div>
         <h4 class="mt-3 fw-bold text-warning">Đang xử lý, vui lòng đợi...</h4>
     </div>
 
@@ -68,12 +70,14 @@
                             </div>
                         </div>
 
-                        <button wire:click="saveAssignment" class="btn btn-warning w-100" wire:loading.attr="disabled" wire:target="saveAssignment">
+                        <button wire:click="saveAssignment" class="btn btn-warning w-100" wire:loading.attr="disabled"
+                            wire:target="saveAssignment">
                             <span wire:loading.remove wire:target="saveAssignment">
                                 <i class="fa-solid fa-floppy-disk me-1"></i> Lưu Phân Công
                             </span>
                             <span wire:loading wire:target="saveAssignment">
-                                <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                <span class="spinner-border spinner-border-sm me-2" role="status"
+                                    aria-hidden="true"></span>
                                 Đang lưu...
                             </span>
                         </button>
@@ -102,7 +106,7 @@
                             <thead>
                                 <tr>
                                     <th>Nhân Viên</th>
-                                    <th>Phòng Ban</th>
+                                    <th>Bộ phận</th>
                                     <th>Các Máy Được Giao</th>
                                 </tr>
                             </thead>

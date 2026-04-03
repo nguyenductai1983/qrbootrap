@@ -46,7 +46,7 @@ class ScanProduct extends Component
                 $q->where('departments.id', $user->department_id);
             })->get();
         } else {
-            // Nếu user không thuộc phòng ban nào, hoặc là Admin -> Lấy hết (hoặc rỗng tùy logic)
+            // Nếu user không thuộc Bộ phận nào, hoặc là Admin -> Lấy hết (hoặc rỗng tùy logic)
             // Ở đây mình lấy hết để dễ test, bạn có thể để [] nếu muốn chặt chẽ
             $this->products = Product::all();
         }

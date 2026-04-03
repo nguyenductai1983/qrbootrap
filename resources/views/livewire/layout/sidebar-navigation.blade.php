@@ -206,10 +206,10 @@
                     <span class="sidebar-text">Danh sách User</span>
                 </a>
 
-                <a href="{{ route('departments.index') }}" title="Phòng ban"
+                <a href="{{ route('departments.index') }}" title="Bộ phận"
                     class="list-group-item list-group-item-action py-2 ps-5 d-flex align-items-center {{ isset($menu) && str_contains($menu, 'departments') ? 'active' : '' }}">
                     <i class="fa-regular fa-fw fa-building text-info me-2"></i> {{-- 🌟 Sửa lại icon này --}}
-                    <span class="sidebar-text">Phòng ban</span>
+                    <span class="sidebar-text">Bộ phận</span>
                 </a>
                 <a href="{{ route('roles.index') }}" title="Vai trò"
                     class="list-group-item list-group-item-action py-2 ps-5 d-flex align-items-center {{ isset($menu) && str_contains($menu, 'roles') ? 'active' : '' }}">

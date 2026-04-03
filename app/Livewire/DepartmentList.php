@@ -8,7 +8,7 @@ use Livewire\WithPagination;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Title;
 
-#[Title('Quản lý Phòng ban')]
+#[Title('Quản lý Bộ phận')]
 class DepartmentList extends Component
 {
     use WithPagination;
@@ -25,22 +25,22 @@ class DepartmentList extends Component
         /** @var \App\Models\User $user */
         $user = Auth::user();
         if (!$user->can('departments.delete')) {
-            session()->flash('error', 'Bạn không có quyền xóa phòng ban!');
+            session()->flash('error', 'Bạn không có quyền xóa Bộ phận!');
             return;
         }
         $department = Department::find($departmentId);
 
         if ($department) {
-            // Kiểm tra xem có người dùng nào thuộc phòng ban này không
+            // Kiểm tra xem có người dùng nào thuộc Bộ phận này không
             if ($department->users()->count() > 0) {
-                session()->flash('error', 'Không thể xóa phòng ban này vì có người dùng thuộc về nó.');
+                session()->flash('error', 'Không thể xóa Bộ phận này vì có người dùng thuộc về nó.');
                 return;
             }
 
             $department->delete();
-            session()->flash('success', 'Phòng ban đã được xóa thành công!');
+            session()->flash('success', 'Bộ phận đã được xóa thành công!');
         } else {
-            session()->flash('error', 'Không tìm thấy phòng ban để xóa.');
+            session()->flash('error', 'Không tìm thấy Bộ phận để xóa.');
         }
     }
 

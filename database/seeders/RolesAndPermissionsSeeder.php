@@ -22,7 +22,7 @@ class RolesAndPermissionsSeeder extends Seeder
         Permission::firstOrCreate(['name' => 'users.delete']);
         Permission::firstOrCreate(['name' => 'users.assign_roles']);
 
-        // Quyền quản lý phòng ban
+        // Quyền quản lý Bộ phận
         Permission::firstOrCreate(['name' => 'departments.view']);
         Permission::firstOrCreate(['name' => 'departments.create']);
         Permission::firstOrCreate(['name' => 'departments.edit']);
@@ -46,7 +46,7 @@ class RolesAndPermissionsSeeder extends Seeder
 
         // Quyền quản lý Tem/Item
         Permission::firstOrCreate(['name' => 'items.view']);    // Xem danh sách tem
-        Permission::firstOrCreate(['name' => 'view_all_departments']);// Xem toàn bộ dữ liệu (Tem, Dashboard) của tất cả bộ phận
+        Permission::firstOrCreate(['name' => 'view_all_departments']); // Xem toàn bộ dữ liệu (Tem, Dashboard) của tất cả bộ phận
         Permission::firstOrCreate(['name' => 'items.create']);  // Tạo tem mới
         Permission::firstOrCreate(['name' => 'items.edit']);    // Sửa tem
         Permission::firstOrCreate(['name' => 'items.delete']);  // Xóa tem

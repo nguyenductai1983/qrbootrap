@@ -64,7 +64,7 @@ class BarcodeGeneratorExcel extends Component
         $this->itemData['PRODUCT'] = '';
         $this->itemData['PRODUCT_NAME'] = '';
 
-        // Tự động lấy danh sách sản phẩm theo phòng ban của User
+        // Tự động lấy danh sách sản phẩm theo Bộ phận của User
         if ($user->department) {
             $this->availableProducts = $user->department->products;
 
@@ -168,7 +168,7 @@ class BarcodeGeneratorExcel extends Component
             $length       = trim($cols[7]); // chiều dài
             $machineNum   = trim($cols[8]); // mã máy
             $weight       = trim($cols[9]); // trọng lượng
-            
+
             // Xử lý ghi chú có thể chứa khoảng trắng (từ cột 10 trở đi)
             $notes = '';
             if (count($cols) > 10) {

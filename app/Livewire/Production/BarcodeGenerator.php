@@ -164,7 +164,7 @@ class BarcodeGenerator extends Component
     // #[On('product-list-changed')] // Lắng nghe sự kiện
     // public function refreshProductList()
     // {
-    //     // Chạy lại logic load sản phẩm theo phòng ban đang chọn
+    //     // Chạy lại logic load sản phẩm theo Bộ phận đang chọn
     //     $this->loadProductsByDepartment();
 
     //     // Hoặc bạn có thể thêm hiệu ứng thông báo Toast ở đây

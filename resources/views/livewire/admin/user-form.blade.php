@@ -8,7 +8,7 @@
                 <div class="mb-3">
                     <label for="name" class="form-label">{{ __('Tên') }}</label>
                     <input wire:model="name" type="text" id="name"
-                           class="form-control @error('name') is-invalid @enderror" required>
+                        class="form-control @error('name') is-invalid @enderror" required>
                     @error('name')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -17,7 +17,7 @@
                 <div class="mb-3">
                     <label for="username" class="form-label">Username</label>
                     <input wire:model="username" type="text" id="username"
-                           class="form-control @error('username') is-invalid @enderror" required>
+                        class="form-control @error('username') is-invalid @enderror" required>
                     @error('username')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -26,7 +26,7 @@
                 <div class="mb-3">
                     <label for="email" class="form-label">Email</label>
                     <input wire:model="email" type="email" id="email"
-                           class="form-control @error('email') is-invalid @enderror" required>
+                        class="form-control @error('email') is-invalid @enderror" required>
                     @error('email')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -35,8 +35,8 @@
                 <div class="mb-3">
                     <label for="password" class="form-label">{{ __('Mật khẩu') }}</label>
                     <input wire:model="password" type="password" id="password"
-                           class="form-control @error('password') is-invalid @enderror"
-                           @if($user->exists) placeholder="Để trống nếu không muốn thay đổi" @else required @endif>
+                        class="form-control @error('password') is-invalid @enderror"
+                        @if ($user->exists) placeholder="Để trống nếu không muốn thay đổi" @else required @endif>
                     @error('password')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -45,18 +45,19 @@
                 <div class="mb-3">
                     <label for="password_confirmation" class="form-label">{{ __('Xác nhận Mật khẩu') }}</label>
                     <input wire:model="password_confirmation" type="password" id="password_confirmation"
-                           class="form-control @error('password_confirmation') is-invalid @enderror"
-                           @if($user->exists) placeholder="Để trống nếu không muốn thay đổi" @else required @endif autocomplete="new-password">
+                        class="form-control @error('password_confirmation') is-invalid @enderror"
+                        @if ($user->exists) placeholder="Để trống nếu không muốn thay đổi" @else required @endif
+                        autocomplete="new-password">
                     @error('password_confirmation')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
                 <div class="mb-3">
-                    <label for="department_id" class="form-label">{{ __('Phòng ban') }}</label>
+                    <label for="department_id" class="form-label">{{ __('Bộ phận') }}</label>
                     <select wire:model="department_id" id="department_id"
-                            class="form-select @error('department_id') is-invalid @enderror">
-                        <option value="">{{ __('Chọn phòng ban') }}</option>
-                        @foreach($departments as $department)
+                        class="form-select @error('department_id') is-invalid @enderror">
+                        <option value="">{{ __('Chọn Bộ phận') }}</option>
+                        @foreach ($departments as $department)
                             <option value="{{ $department->id }}">{{ $department->name }}</option>
                         @endforeach
                     </select>
@@ -69,11 +70,12 @@
                 <div class="mb-3">
                     <label class="form-label">{{ __('Gán Vai trò') }}</label>
                     <div class="row">
-                        @foreach($allRoles as $roleOption)
+                        @foreach ($allRoles as $roleOption)
                             <div class="col-md-4 col-sm-6 col-12">
                                 <div class="form-check">
-                                    <input wire:model="selectedRoles" class="form-check-input" type="checkbox" value="{{ $roleOption->name }}" id="role-{{ $roleOption->id }}"
-                                           @if($user->id === auth()->id() && $roleOption->name === 'admin') disabled @endif> {{-- Không cho tự gỡ admin --}}
+                                    <input wire:model="selectedRoles" class="form-check-input" type="checkbox"
+                                        value="{{ $roleOption->name }}" id="role-{{ $roleOption->id }}"
+                                        @if ($user->id === auth()->id() && $roleOption->name === 'admin') disabled @endif> {{-- Không cho tự gỡ admin --}}
                                     <label class="form-check-label" for="role-{{ $roleOption->id }}">
                                         {{ $roleOption->name }}
                                     </label>
@@ -93,10 +95,12 @@
                 <div class="mb-3">
                     <label class="form-label">{{ __('Cấp Quyền Trực Tiếp') }}</label>
                     <div class="row">
-                        @foreach($allPermissions as $permissionOption)
+                        @foreach ($allPermissions as $permissionOption)
                             <div class="col-md-4 col-sm-6 col-12">
                                 <div class="form-check">
-                                    <input wire:model="selectedPermissions" class="form-check-input" type="checkbox" value="{{ $permissionOption->name }}" id="permission-{{ $permissionOption->id }}">
+                                    <input wire:model="selectedPermissions" class="form-check-input" type="checkbox"
+                                        value="{{ $permissionOption->name }}"
+                                        id="permission-{{ $permissionOption->id }}">
                                     <label class="form-check-label" for="permission-{{ $permissionOption->id }}">
                                         {{ $permissionOption->name }}
                                     </label>

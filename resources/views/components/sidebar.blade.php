@@ -43,7 +43,7 @@
                 <a href="{{ route('departments.index') }}"
                     class="list-group-item list-group-item-action py-2 ps-5 bg-secondary ">
                     <i class="fa-solid fa-user-group"></i>
-                    <span class="sidebar-text">Phòng ban</span>
+                    <span class="sidebar-text">Bộ phận</span>
                 </a>
                 <a href="{{ route('roles.index') }}" class="list-group-item list-group-item-action py-2 ps-5 bg-secondary ">
                     <i class="fa-solid fa-users-gear"></i>
@@ -67,7 +67,7 @@
         {{-- @can('admin')
             <a href="{{ route('departments.index') }}" class="list-group-item list-group-item-action py-3 ps-4 ">
                <i class="fa-solid fa-user-group"></i>
-                <span class="sidebar-text">Phòng ban</span>
+                <span class="sidebar-text">Bộ phận</span>
             </a>
         @endcan --}}
     </div>

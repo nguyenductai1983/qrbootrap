@@ -11,7 +11,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // 1. Chạy Seeder Phòng ban trước (vì User cần Department ID)
+        // 1. Chạy Seeder Bộ phận trước (vì User cần Department ID)
         $this->call(DepartmentSeeder::class);
         // 2. Chạy Seeder Quyền và Vai trò
         $this->call(RolesAndPermissionsSeeder::class);

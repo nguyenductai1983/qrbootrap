@@ -24,7 +24,7 @@ class UserForm extends Component
     public $role;
     public $department_id; // <-- Thay đổi thành department_id
     public $selectedRoles = []; // <-- Mảng để lưu các vai trò được chọn
-    public $departments; // <-- Biến để lưu danh sách phòng ban
+    public $departments; // <-- Biến để lưu danh sách Bộ phận
     public $allRoles; // <-- Biến để lưu tất cả các vai trò
 
     public $selectedPermissions = []; // <-- Mảng để lưu các quyền cấp trực tiếp
