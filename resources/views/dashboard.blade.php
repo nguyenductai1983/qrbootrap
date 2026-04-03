@@ -60,124 +60,124 @@
             @endrole
 
             {{-- 3. KHU VỰC TÁC VỤ SẢN XUẤT --}}
-            @if (Auth::user()->can('products.print') || Auth::user()->can('scan products') || Auth::user()->can('products.view'))
-                <h4 class="fw-bold mb-3 border-start border-4 border-primary ps-3">
-                    Tác Vụ Sản Xuất
-                </h4>
-                <div class="row g-4 mb-5">
-                    {{-- Chức năng: IN TEM --}}
-                    @can('products.print')
-                        <div class="col-md-6 col-lg-3">
-                            <div class="card h-100 shadow-sm border-2 hover-card">
-                                <div class="card-body d-flex flex-column text-center p-4">
-                                    <div class="mb-3">
-                                        <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-inline-flex p-3">
-                                            <i class="fa-solid fa-print fa-2x"></i>
-                                        </div>
-                                    </div>
-                                    <h5 class="card-title fw-bold">In Tem Mã Vạch</h5>
-                                    <p class="card-text text-muted small mb-4">Tạo và in tem QR/Barcode cho sản phẩm mới.
-                                    </p>
 
-                                    <a href="{{ route('production.barcode-generator-excel') }}"
-                                        class="btn btn-outline-primary w-100 mt-auto stretched-link">
-                                        Truy cập <i class="fas fa-arrow-right ms-1"></i>
-                                    </a>
+            <h4 class="fw-bold mb-3 border-start border-4 border-primary ps-3">
+                Tác Vụ Sản Xuất
+            </h4>
+            <div class="row g-4 mb-5">
+                {{-- Chức năng: IN TEM --}}
+                @can('products.print')
+                    <div class="col-md-6 col-lg-3">
+                        <div class="card h-100 shadow-sm border-2 hover-card">
+                            <div class="card-body d-flex flex-column text-center p-4">
+                                <div class="mb-3">
+                                    <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-inline-flex p-3">
+                                        <i class="fa-solid fa-print fa-2x"></i>
+                                    </div>
                                 </div>
+                                <h5 class="card-title fw-bold">In Tem Mã Vạch</h5>
+                                <p class="card-text text-muted small mb-4">Tạo và in tem QR/Barcode cho sản phẩm mới.
+                                </p>
+
+                                <a href="{{ route('production.barcode-generator-excel') }}"
+                                    class="btn btn-outline-primary w-100 mt-auto stretched-link">
+                                    Truy cập <i class="fas fa-arrow-right ms-1"></i>
+                                </a>
                             </div>
                         </div>
+                    </div>
 
-                        {{-- Chức năng: EXCEL --}}
-                        <div class="col-md-6 col-lg-3">
-                            <div class="card h-100 shadow-sm border-2 hover-card">
-                                <div class="card-body d-flex flex-column text-center p-4">
-                                    <div class="mb-3">
-                                        <div class="bg-success bg-opacity-10 text-success rounded-circle d-inline-flex p-3">
-                                            <i class="fa-solid fa-file-excel fa-2x"></i>
-                                        </div>
+                    {{-- Chức năng: EXCEL --}}
+                    <div class="col-md-6 col-lg-3">
+                        <div class="card h-100 shadow-sm border-2 hover-card">
+                            <div class="card-body d-flex flex-column text-center p-4">
+                                <div class="mb-3">
+                                    <div class="bg-success bg-opacity-10 text-success rounded-circle d-inline-flex p-3">
+                                        <i class="fa-solid fa-file-excel fa-2x"></i>
                                     </div>
-                                    <h5 class="card-title fw-bold">Nhập/Xuất Excel</h5>
-                                    <p class="card-text text-muted small mb-4">Cập nhật dữ liệu hàng loạt từ file Excel.</p>
-
-                                    <a href="{{ route('production.excel-manager') }}"
-                                        class="btn btn-outline-success w-100 mt-auto stretched-link">
-                                        Truy cập <i class="fas fa-arrow-right ms-1"></i>
-                                    </a>
                                 </div>
+                                <h5 class="card-title fw-bold">Nhập/Xuất Excel</h5>
+                                <p class="card-text text-muted small mb-4">Cập nhật dữ liệu hàng loạt từ file Excel.</p>
+
+                                <a href="{{ route('production.excel-manager') }}"
+                                    class="btn btn-outline-success w-100 mt-auto stretched-link">
+                                    Truy cập <i class="fas fa-arrow-right ms-1"></i>
+                                </a>
                             </div>
                         </div>
-                    @endcan
+                    </div>
+                @endcan
 
-                    {{-- Chức năng: QUÉT TEM --}}
-                    @can('products.scan')
-                        <div class="col-md-6 col-lg-3">
-                            <div class="card h-100 shadow-sm border-2 hover-card">
-                                <div class="card-body d-flex flex-column text-center p-4">
-                                    <div class="mb-3">
-                                        <div class="bg-warning bg-opacity-10 rounded-circle d-inline-flex p-3">
-                                            <i class="fa-solid fa-barcode fa-2x"></i>
-                                        </div>
+                {{-- Chức năng: QUÉT TEM --}}
+                @can('products.scan')
+                    <div class="col-md-6 col-lg-3">
+                        <div class="card h-100 shadow-sm border-2 hover-card">
+                            <div class="card-body d-flex flex-column text-center p-4">
+                                <div class="mb-3">
+                                    <div class="bg-warning bg-opacity-10 rounded-circle d-inline-flex p-3">
+                                        <i class="fa-solid fa-barcode fa-2x"></i>
                                     </div>
-                                    <h5 class="card-title fw-bold">Quét Cây Vải</h5>
-                                    <p class="card-text text-muted small mb-4">Kiểm tra thông tin và xác nhận cây vải.
-                                    </p>
-
-                                    <a href="{{ route('production.scan') }}"
-                                        class="btn btn-outline-warning  w-100 mt-auto stretched-link">
-                                        Truy cập <i class="fas fa-arrow-right ms-1"></i>
-                                    </a>
                                 </div>
+                                <h5 class="card-title fw-bold">Quét Cây Vải</h5>
+                                <p class="card-text text-muted small mb-4">Kiểm tra thông tin và xác nhận cây vải.
+                                </p>
+
+                                <a href="{{ route('production.scan') }}"
+                                    class="btn btn-outline-warning  w-100 mt-auto stretched-link">
+                                    Truy cập <i class="fas fa-arrow-right ms-1"></i>
+                                </a>
                             </div>
                         </div>
-                    @endcan
+                    </div>
+                @endcan
 
-                    {{-- Chức năng: XÁC NHẬN TRÁNG --}}
-                    @can('coating.scan')
-                        <div class="col-md-6 col-lg-3">
-                            <div class="card h-100 shadow-sm border-2 hover-card">
-                                <div class="card-body d-flex flex-column text-center p-4">
-                                    <div class="mb-3">
-                                        <div class="bg-success bg-opacity-10 text-success rounded-circle d-inline-flex p-3">
-                                            <i class="fa-solid fa-layer-group fa-2x"></i>
-                                        </div>
+                {{-- Chức năng: XÁC NHẬN TRÁNG --}}
+                @can('coating.scan')
+                    <div class="col-md-6 col-lg-3">
+                        <div class="card h-100 shadow-sm border-2 hover-card">
+                            <div class="card-body d-flex flex-column text-center p-4">
+                                <div class="mb-3">
+                                    <div class="bg-success bg-opacity-10 text-success rounded-circle d-inline-flex p-3">
+                                        <i class="fa-solid fa-layer-group fa-2x"></i>
                                     </div>
-                                    <h5 class="card-title fw-bold">Xác Nhận Tráng</h5>
-                                    <p class="card-text text-muted small mb-4">Ghép mã vải và khai báo mã tráng mới.
-                                    </p>
-
-                                    <a href="{{ route('production.coating-confirmation') }}"
-                                        class="btn btn-outline-success w-100 mt-auto stretched-link">
-                                        Truy cập <i class="fas fa-arrow-right ms-1"></i>
-                                    </a>
                                 </div>
+                                <h5 class="card-title fw-bold">Xác Nhận Tráng</h5>
+                                <p class="card-text text-muted small mb-4">Ghép mã vải và khai báo mã tráng mới.
+                                </p>
+
+                                <a href="{{ route('production.coating-confirmation') }}"
+                                    class="btn btn-outline-success w-100 mt-auto stretched-link">
+                                    Truy cập <i class="fas fa-arrow-right ms-1"></i>
+                                </a>
                             </div>
                         </div>
-                    @endcan
+                    </div>
+                @endcan
 
-                    {{-- Chức năng: DANH SÁCH TEM --}}
-                    @can('items.view')
-                        <div class="col-md-6 col-lg-3">
-                            <div class="card h-100 shadow-sm border-2 hover-card">
-                                <div class="card-body d-flex flex-column text-center p-4">
-                                    <div class="mb-3">
-                                        <div class="bg-info bg-opacity-10 text-info rounded-circle d-inline-flex p-3">
-                                            <i class="fa-solid fa-list-check fa-2x"></i>
-                                        </div>
+                {{-- Chức năng: DANH SÁCH TEM --}}
+                @can('items.view')
+                    <div class="col-md-6 col-lg-3">
+                        <div class="card h-100 shadow-sm border-2 hover-card">
+                            <div class="card-body d-flex flex-column text-center p-4">
+                                <div class="mb-3">
+                                    <div class="bg-info bg-opacity-10 text-info rounded-circle d-inline-flex p-3">
+                                        <i class="fa-solid fa-list-check fa-2x"></i>
                                     </div>
-                                    <h5 class="card-title fw-bold">Danh Sách Sản Phẩm</h5>
-                                    <p class="card-text text-muted small mb-4">Xem lịch sử và quản lý danh sách tem đã tạo.
-                                    </p>
-
-                                    <a href="{{ route('manager.items') }}"
-                                        class="btn btn-outline-info w-100 mt-auto stretched-link">
-                                        Truy cập <i class="fas fa-arrow-right ms-1"></i>
-                                    </a>
                                 </div>
+                                <h5 class="card-title fw-bold">Danh Sách Sản Phẩm</h5>
+                                <p class="card-text text-muted small mb-4">Xem lịch sử và quản lý danh sách tem đã tạo.
+                                </p>
+
+                                <a href="{{ route('manager.items') }}"
+                                    class="btn btn-outline-info w-100 mt-auto stretched-link">
+                                    Truy cập <i class="fas fa-arrow-right ms-1"></i>
+                                </a>
                             </div>
                         </div>
-                    @endcan
-                </div>
-            @endif
+                    </div>
+                @endcan
+            </div>
+
 
             {{-- 4. KHU VỰC QUẢN TRỊ HỆ THỐNG --}}
             @role('manager|admin')
