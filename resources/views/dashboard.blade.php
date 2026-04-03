@@ -132,7 +132,7 @@
                     @endcan
 
                     {{-- Chức năng: XÁC NHẬN TRÁNG --}}
-                    @can('products.scan')
+                    @can('coating.scan')
                         <div class="col-md-6 col-lg-3">
                             <div class="card h-100 shadow-sm border-2 hover-card">
                                 <div class="card-body d-flex flex-column text-center p-4">
