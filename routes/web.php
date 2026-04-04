@@ -43,7 +43,29 @@ require __DIR__ . '/auth.php';
 Route::get('/test-500', function () {
     abort(500, 'đang thử lỗi 500'); // Lệnh ép hệ thống quăng lỗi 500
 });
+// File: routes/web.php
 
+Route::get('/test-print', function () {
+    $data = [
+        'Path' => 'C:\\Labels\\TemBarCode.btw', // Đảm bảo đường dẫn này có thật trên máy C#
+        'Data' => [
+            'MaSP' => 'ABC-123',
+            'TenSP' => 'Sản phẩm thử nghiệm'
+        ]
+    ];
+
+    // Truyền đúng Key mà C# đang nghe
+    event(new \App\Events\PrintLabelEvent('station_001_secret', $data));
+
+    return 'Đã bắn lệnh in tới trạm station_001_secret!';
+});
+Route::get('/print-stationvb/{key}', function ($key) {
+    // if ($key !== config('app.print_station_key')) {
+    if ($key !== 'your_reverb_key') {
+        abort(403); // Từ chối nếu Key sai
+    }
+    // Logic kết nối WebSocket ở đây...
+});
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::view('dashboard', 'dashboard')
         ->name('dashboard');
@@ -98,7 +120,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/print-stations', PrintStationManager::class)->name('manager.print-stations');
         Route::get('/user-print-stations', UserPrintStationAssignment::class)->name('manager.user-print-stations');
     });
-    
+
     // Tách riêng quản lý Items để các bộ phận khác (có quyền items.view) truy cập được
     Route::middleware(['permission:items.view'])->prefix('manager')->group(function () {
         Route::get('/items', ItemManager::class)->name('manager.items');

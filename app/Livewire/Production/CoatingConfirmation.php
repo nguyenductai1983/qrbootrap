@@ -12,6 +12,7 @@ use App\Enums\ActionType;
 use App\Models\Product;
 use Livewire\Attributes\Title;
 use App\Events\PrintBarcodeRequested;
+use App\Events\PrintLabelEvent;
 
 #[Title('Xác nhận Tráng Ghép')]
 class CoatingConfirmation extends Component
@@ -331,7 +332,19 @@ class CoatingConfirmation extends Component
             'time'    => now()->format('d/m/Y H:i:s'),
         ];
     }
+    public function printtest()
+    {
+        $printData = [
+            'Path' => 'C:\\Labels\\Barcode_Template.btw',
+            'Data' => [
+                'MaSP' => 'PRO-999',
+                'TenSP' => 'Sản phẩm thử nghiệm'
+            ]
+        ];
 
+        // Gửi tới trạm in có key tương ứng
+        event(new PrintLabelEvent('station_001_secret', $printData));
+    }
     public function render()
     {
         return view('livewire.production.coating-confirmation');

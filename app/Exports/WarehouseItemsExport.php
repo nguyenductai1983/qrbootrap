@@ -35,7 +35,7 @@ class WarehouseItemsExport implements FromCollection, WithHeadings, WithMapping,
             'warehouser'
         ])
             ->where(function ($q) {
-                $q->where('status', ItemStatus::IN_WAREHOUSE->value)
+                $q->where('warehoused_by', '!=', null)
                     ->orWhereNotNull('current_location_id');
             });
 
