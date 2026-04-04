@@ -31,6 +31,7 @@ use App\Livewire\Warehouse\ScanToLocation;
 use App\Livewire\Admin\PrintStationManager;
 use App\Livewire\Admin\UserPrintStationAssignment;
 use App\Livewire\Warehouse\ReportManager;
+use App\Livewire\Warehouse\WarehouseInboundList;
 use App\Livewire\Dashboard\AnalyticsDashboard;
 use App\Http\Controllers\PrintController;
 //Role::withoutGlobalScopes()->get(); // Lấy tất cả vai trò mà không áp dụng bất kỳ global scope nào
@@ -163,6 +164,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/locations', LocationManager::class)->name('locations');
             Route::get('/reports', ReportManager::class)->name('reports');
             Route::get('/scan', ScanToLocation::class)->name('scan');
+            Route::get('/inbound-list', WarehouseInboundList::class)->name('inbound-list');
         });
 
     // --- Tính Năng In Ấn Tập Trung (DRY Reprint) ---

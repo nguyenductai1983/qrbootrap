@@ -96,6 +96,13 @@
                     <span class="sidebar-text">Nhập Kho</span>
                 </a>
 
+                <a href="{{ route('warehouse.inbound-list') }}"
+                    class="list-group-item list-group-item-action py-2 ps-5 d-flex align-items-center {{ request()->routeIs('warehouse.inbound-list') ? 'active' : '' }}"
+                    title="Danh Sách Nhập Kho">
+                    <i class="fa-solid fa-fw fa-list-check text-primary me-2"></i>
+                    <span class="sidebar-text">Danh Sách Nhập Kho</span>
+                </a>
+
                 <a href="{{ route('warehouse.locations') }}"
                     class="list-group-item list-group-item-action py-2 ps-5 d-flex align-items-center {{ request()->routeIs('warehouse.locations') ? 'active' : '' }}"
                     title="Quản lý Vị trí">
@@ -111,6 +118,7 @@
                 </a>
             </div>
         @endcan
+
 
 
 

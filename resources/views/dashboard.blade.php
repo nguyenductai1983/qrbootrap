@@ -199,6 +199,21 @@
                 <div class="col-md-6 col-lg-3">
                     <div class="card h-100 shadow-sm border-2 hover-card">
                         <div class="card-body p-3 d-flex align-items-center">
+                            <div class="bg-primary bg-opacity-10 text-primary p-3 rounded me-3">
+                                <i class="fa-solid fa-list-check fa-xl"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h6 class="fw-bold mb-0">Danh Sách Nhập Kho</h6>
+                                <small class="text-muted">Xem lịch sử nhập kho</small>
+                            </div>
+                            <a href="{{ route('warehouse.inbound-list') }}" class="stretched-link text-primary"><i
+                                    class="fas fa-chevron-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="card h-100 shadow-sm border-2 hover-card">
+                        <div class="card-body p-3 d-flex align-items-center">
                             <div class="bg-success bg-opacity-10 text-success p-3 rounded me-3">
                                 <i class="fa-solid fa-map-location-dot fa-xl"></i>
                             </div>
@@ -226,6 +241,7 @@
                         </div>
                     </div>
                 </div>
+
             </div>
 
             {{-- 4. KHU VỰC QUẢN TRỊ HỆ THỐNG --}}

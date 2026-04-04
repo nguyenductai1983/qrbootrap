@@ -415,4 +415,10 @@ body {
     .table-card td[data-label="Hành động"]::before {
         display: none; 
     }
+
+    /* Cho phép badge mã barcode/monospace tự xuống dòng trên mobile */
+    .table-card td .font-monospace {
+        white-space: normal;
+        word-break: break-all;
+    }
 }
