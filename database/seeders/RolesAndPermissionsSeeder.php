@@ -43,6 +43,7 @@ class RolesAndPermissionsSeeder extends Seeder
 
         // Quyền truy cập Manager (menu quản lý)
         Permission::firstOrCreate(['name' => 'manager']);
+        Permission::firstOrCreate(['name' => 'print']);
 
         // Quyền quản lý Tem/Item
         Permission::firstOrCreate(['name' => 'items.view']);    // Xem danh sách tem
@@ -80,6 +81,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'departments.edit',
             'departments.delete',
             'manager',
+            'print',
             'products.print',
             'products.scan',
             'coating.scan',
@@ -95,6 +97,7 @@ class RolesAndPermissionsSeeder extends Seeder
 
         // Products: in tem, quét, xem danh sách
         $productsRole->syncPermissions([
+            'print',
             'products.print',
             'products.scan',
             'items.view',
@@ -102,6 +105,7 @@ class RolesAndPermissionsSeeder extends Seeder
 
         // Warehouse: nhập kho, xem vị trí, xem báo cáo
         $warehouseRole->syncPermissions([
+            'print',
             'warehouse.scan',
             'warehouse.location',
             'warehouse.report',
@@ -111,6 +115,7 @@ class RolesAndPermissionsSeeder extends Seeder
 
         // Coating: xác nhận tráng
         $CoatingRole->syncPermissions([
+            'print',
             'coating.scan',
             'items.view',
         ]);
@@ -122,6 +127,7 @@ class RolesAndPermissionsSeeder extends Seeder
                 'name' => 'Admin',
                 'password' => Hash::make('12345678'), // Đặt mật khẩu
                 'department_id' => 1, // Gán vào phòng IT (ID 1) nếu muốn
+                'is_admin' => true,
             ]
         );
         $user = User::first(); // Lấy người dùng đầu tiên
@@ -136,6 +142,7 @@ class RolesAndPermissionsSeeder extends Seeder
                 'name' => 'tien',
                 'password' => Hash::make('12345678'), // Đặt mật khẩu
                 'department_id' => 1, // Gán vào phòng IT (ID 1) nếu muốn
+                'is_admin' => true,
             ]
         );
         // Gán quyền Admin cho user này 1

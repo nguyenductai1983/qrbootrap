@@ -1,8 +1,10 @@
 <div class="container-fluid py-4 position-relative">
     <!-- OVERLAY LOADING TO BỰ CHỐNG CLICK NHẦM -->
-    <div wire:loading.flex class="position-absolute w-100 h-100 top-0 start-0 z-3 flex-column justify-content-center align-items-center" 
-         style="background: transparent;">
-        <div class="spinner-border text-primary" style="width: 4rem; height: 4rem; border-width: 0.35em;" role="status"></div>
+    <div wire:loading.flex
+        class="position-absolute w-100 h-100 top-0 start-0 z-3 flex-column justify-content-center align-items-center"
+        style="background: transparent;">
+        <div class="spinner-border text-primary" style="width: 4rem; height: 4rem; border-width: 0.35em;" role="status">
+        </div>
         <h4 class="mt-3 fw-bold text-primary">Đang xử lý, vui lòng đợi...</h4>
     </div>
 
@@ -11,7 +13,8 @@
         <div class="col-md-8">
             <div class="card h-100 shadow-sm border-success">
                 <div class="card-header bg-success text-white">
-                    <h5 class="mb-0"><i class="fa-solid fa-file-excel me-2"></i>Báo Cáo Tồn Kho Kho Bán Thành Phẩm</h5>
+                    <h5 class="mb-0"><i class="fa-solid fa-file-excel me-2"></i>Xuất báo cáo kho Kho Bán Thành Phẩm
+                    </h5>
                 </div>
                 <div class="card-body">
                     <p class="text-muted mb-4">Chọn các bộ lọc bên dưới để tải file số liệu báo cáo xuất Excel chính xác

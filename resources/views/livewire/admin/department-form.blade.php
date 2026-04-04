@@ -24,6 +24,14 @@
                     @enderror
                 </div>
 
+                <div class="mb-3 form-check">
+                    <input wire:model="is_warehouse" type="checkbox" class="form-check-input" id="is_warehouse">
+                    <label class="form-check-label" for="is_warehouse">{{ __('Đây là khâu Kho (Warehouse)') }}</label>
+                    @error('is_warehouse')
+                        <div class="text-danger mt-1 small">{{ $message }}</div>
+                    @enderror
+                </div>
+
                 {{-- <-- Trường gán Sản phẩm --> --}}
                 <div class="mb-3">
                     <label class="form-label">{{ __('Sản phẩm phụ trách') }}</label>

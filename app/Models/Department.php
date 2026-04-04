@@ -8,7 +8,11 @@ class Department extends Model
 {
     use HasFactory;
 
-   protected $fillable = ['name', 'code']; // Cho phép lưu Code
+   protected $fillable = ['name', 'code', 'is_warehouse']; // Cho phép lưu Code, Cờ đánh dấu Kho
+
+   protected $casts = [
+       'is_warehouse' => 'boolean',
+   ];
     // Định nghĩa mối quan hệ một-nhiều với User
     public function users()
     {

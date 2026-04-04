@@ -135,7 +135,7 @@ class ItemManager extends Component
         $query = Item::with(['order', 'product', 'color'])
             ->whereDate('created_at', '>=', $this->fromDate)
             ->whereDate('created_at', '<=', $this->toDate)
-            ->when(!$user->hasRole('admin') && !$user->can('view_all_departments'), function ($q) use ($user) {
+            ->when(!$user->canViewAllDepartments(), function ($q) use ($user) {
                 $q->where('department_id', $user->department_id);
             })
             ->when($this->searchCode, function ($q) {
@@ -168,7 +168,7 @@ class ItemManager extends Component
         /** @var \App\Models\User $user */
         $user = Auth::user();
         $query = Item::with(['order', 'product', 'color', 'parents'])
-            ->when(!$user->hasRole('admin') && !$user->can('view_all_departments'), function ($q) use ($user) {
+            ->when(!$user->canViewAllDepartments(), function ($q) use ($user) {
                 $q->where('department_id', $user->department_id);
             })
             ->when($this->searchCode, function ($q) {

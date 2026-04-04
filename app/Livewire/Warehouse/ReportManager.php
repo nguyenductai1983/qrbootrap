@@ -8,7 +8,7 @@ use App\Exports\WarehouseItemsExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Livewire\Attributes\Title;
 
-#[Title('Báo Cáo Tồn Kho')]
+#[Title('Xuất báo cáo kho')]
 class ReportManager extends Component
 {
     public $models;

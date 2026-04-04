@@ -25,6 +25,7 @@ class User extends Authenticatable
         'email',
         'password',
         'department_id', // <-- Thay thế 'department' bằng 'department_id'
+        'is_admin',
     ];
 
     /**
@@ -47,12 +48,18 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_admin' => 'boolean',
         ];
     }
 
     public function isAdmin()
     {
-        return $this->hasRole('admin'); // Kiểm tra vai trò 'admin' bằng Spatie
+        return $this->is_admin || $this->hasRole('admin'); // Kiểm tra boolean cứng HOẶC vai trò 'admin' bằng Spatie
+    }
+
+    public function canViewAllDepartments()
+    {
+        return $this->isAdmin() || $this->can('view_all_departments');
     }
 
     public function machines()

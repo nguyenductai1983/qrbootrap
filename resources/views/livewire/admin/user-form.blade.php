@@ -66,6 +66,14 @@
                     @enderror
                 </div>
 
+                <div class="mb-3 form-check">
+                    <input wire:model="is_admin" type="checkbox" class="form-check-input" id="is_admin">
+                    <label class="form-check-label text-danger fw-bold" for="is_admin">{{ __('Quyền Quản Trị Hệ Thống (is_admin)') }}</label>
+                    @error('is_admin')
+                        <div class="text-danger mt-1 small">{{ $message }}</div>
+                    @enderror
+                </div>
+
                 {{-- <-- Trường gán Vai trò (từ Spatie) --> --}}
                 <div class="mb-3">
                     <label class="form-label">{{ __('Gán Vai trò') }}</label>

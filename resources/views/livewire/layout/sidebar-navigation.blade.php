@@ -89,6 +89,13 @@
 
             <div class="collapse {{ request()->routeIs('warehouse.*') ? 'show' : '' }}" id="warehouseSubmenu"
                 data-bs-parent="#sidebar-wrapper">
+                <a href="{{ route('warehouse.dashboard') }}"
+                    class="list-group-item list-group-item-action py-2 ps-5 d-flex align-items-center {{ request()->routeIs('warehouse.dashboard') ? 'active' : '' }}"
+                    title="Bảng Điều Khiển">
+                    <i class="fa-solid fa-fw fa-gauge-high text-warning me-2"></i>
+                    <span class="sidebar-text">Bảng Điều Khiển</span>
+                </a>
+
                 <a href="{{ route('warehouse.scan-to-location') }}"
                     class="list-group-item list-group-item-action py-2 ps-5 d-flex align-items-center {{ request()->routeIs('warehouse.scan-to-location') ? 'active' : '' }}"
                     title="Nhập Kho">
@@ -112,9 +119,9 @@
 
                 <a href="{{ route('warehouse.reports') }}"
                     class="list-group-item list-group-item-action py-2 ps-5 d-flex align-items-center {{ request()->routeIs('warehouse.reports') ? 'active' : '' }}"
-                    title="Báo Cáo Tồn Kho">
+                    title="Xuất báo cáo kho">
                     <i class="fa-solid fa-fw fa-file-excel text-success me-2"></i>
-                    <span class="sidebar-text">Báo Cáo Tồn Kho</span>
+                    <span class="sidebar-text">Xuất báo cáo kho</span>
                 </a>
             </div>
         @endcan

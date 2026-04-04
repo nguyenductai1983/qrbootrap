@@ -276,7 +276,8 @@
                                     </div>
                                     <div class="alert alert-info small mt-3">
                                         <i class="fa-solid fa-circle-info me-1"></i> Admin có thể vào <strong>Quản Lý
-                                            Vị Trí Kho</strong> để thêm/sửa kệ, và xuất báo cáo tồn kho Excel bất kỳ lúc
+                                            Vị Trí Kho</strong> để thêm/sửa kệ, và xuất Xuất báo cáo kho Excel bất kỳ
+                                        lúc
                                         nào.
                                     </div>
                                 </div>

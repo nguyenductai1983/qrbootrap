@@ -32,6 +32,7 @@ use App\Livewire\Admin\PrintStationManager;
 use App\Livewire\Admin\UserPrintStationAssignment;
 use App\Livewire\Warehouse\ReportManager;
 use App\Livewire\Warehouse\WarehouseInboundList;
+use App\Livewire\Warehouse\WarehouseDashboard;
 use App\Livewire\Dashboard\AnalyticsDashboard;
 use App\Http\Controllers\PrintController;
 //Role::withoutGlobalScopes()->get(); // Lấy tất cả vai trò mà không áp dụng bất kỳ global scope nào
@@ -165,10 +166,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/reports', ReportManager::class)->name('reports');
             Route::get('/scan', ScanToLocation::class)->name('scan');
             Route::get('/inbound-list', WarehouseInboundList::class)->name('inbound-list');
+            Route::get('/dashboard', WarehouseDashboard::class)->name('dashboard');
         });
 
     // --- Tính Năng In Ấn Tập Trung (DRY Reprint) ---
-    Route::get('/print-labels', [PrintController::class, 'printLabels'])->name('print.labels')->middleware('permission:manager');
-    Route::get('/print-locations', [PrintController::class, 'printLocations'])->name('locations.print')->middleware('permission:manager');
-    Route::get('/print-location-codes', [PrintController::class, 'printLocationCodes'])->name('locations.print-code')->middleware('permission:manager');
+    Route::get('/print-labels', [PrintController::class, 'printLabels'])->name('print.labels')->middleware('permission:print');
+    Route::get('/print-locations', [PrintController::class, 'printLocations'])->name('locations.print')->middleware('permission:print');
+    Route::get('/print-location-codes', [PrintController::class, 'printLocationCodes'])->name('locations.print-code')->middleware('permission:print');
 });

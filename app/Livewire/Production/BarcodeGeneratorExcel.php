@@ -197,9 +197,7 @@ class BarcodeGeneratorExcel extends Component
             $no = ($this->col0Mode === 'sequence') ? $inputCol0 - 1 : 0;
             for ($i = 0; $i < $quantity; $i++) {
                 $no++;
-                $propertiesToSave = [
-                    'GSM' => $gsm,
-                ];
+                $propertiesToSave = [];
                 $propParts = array_filter([$gsm, $length]);
                 try {
                     // 🌟 Tìm hoặc tạo Machine theo mã máy từ Excel

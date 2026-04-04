@@ -18,7 +18,6 @@ class DepartmentSeeder extends Seeder
         Department::create(['name' => 'Tráng', 'code' => 'T']); //4
         Department::create(['name' => 'Cắt', 'code' => 'C']); //5
         Department::create(['name' => 'May', 'code' => 'M']); //6      
-        Department::create(['name' => 'Kho', 'code' => 'K']); //7
-
+        Department::create(['name' => 'Kho', 'code' => 'K', 'is_warehouse' => true]); //7
     }
 }
