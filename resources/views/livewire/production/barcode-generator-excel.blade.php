@@ -45,7 +45,7 @@
                         <select wire:model="type" class="form-select text-primary fw-bold" id="type">
                             @if (count($itemTypes) > 0)
                                 @foreach ($itemTypes as $t)
-                                    <option value="{{ $t->code }}">{{ $t->code }} - {{ $t->name }}
+                                    <option value={{ $t->id }}>{{ $t->code }} - {{ $t->name }}
                                     </option>
                                 @endforeach
                             @else
@@ -124,7 +124,7 @@
                                     <input class="form-check-input" type="radio" wire:model="printFormat"
                                         value="BARCODE" id="fmtBar">
                                     <label class="form-check-label fw-bold cursor-pointer" for="fmtBar">
-                                        <i class="fa-solid fa-barcode text-primary me-1"></i> Barcode 1D
+                                        <i class="fa-solid fa-barcode text-primary me-1"></i> Barcode
                                     </label>
                                 </div>
                             </div>
@@ -142,11 +142,11 @@
                             <label class="form-label fw-bold" for="rowsPerPage">Số hàng giấy in</label>
                             <input wire:model="rowsPerPage" type="number" class="form-control" min="1"
                                 id="rowsPerPage">
-                            <small class="text-muted">Số hàng trên 1 tờ giấy</small>
+                            <small class="text-muted">Số hàng trên giấy</small>
                         </div>
                         {{-- 7. Cỡ chữ --}}
                         <div class="col-4 col-md-2">
-                            <label class="form-label fw-bold" for="fontSize">Cỡ chữ in dưới code</label>
+                            <label class="form-label fw-bold" for="fontSize">Cỡ chữ Code</label>
                             <div class="mb-3">
                                 <input wire:model="fontSize" type="number" class="form-control" min="3"
                                     id="fontSize">

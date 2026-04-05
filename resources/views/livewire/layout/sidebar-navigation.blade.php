@@ -1,22 +1,20 @@
 {{-- sidebar-navigation.blade.php --}}
 <div class="border-right" id="sidebar-wrapper">
     {{-- Thêm position-relative và justify-content-center vào thẻ cha --}}
-    <div class="sidebar-heading position-relative d-flex justify-content-center align-items-center py-3">
+    <div class="sidebar-heading position-relative d-flex d-lg-flex justify-content-lg-center align-items-center">
 
         {{-- Logo lúc này sẽ tự động nằm ngay chính giữa --}}
         <div style="width: 100px;">
-            <a href="/dashboard" class="text-reset text-decoration-none"> <x-mh-logo-icon
-                    class="fill-current w-100 h-auto" /></a>
+            <a href="/dashboard" class="text-reset text-decoration-none">
+                <x-mh-logo-icon class="fill-current d-lg-w-100 w-50 h-auto" /></a>
         </div>
 
         {{-- Nút đóng sidebar cho mobile được neo tuyệt đối (absolute) sang bên phải --}}
-        <button class="btn btn-link d-block d-lg-none position-absolute end-0 top-50 translate-middle-y me-2"
-            id="sidebarClose" aria-label="Close sidebar">
-            <i class="fas fa-times text-dark"></i>
+        <button class="btn btn-link sidebar-close-btn d-block d-lg-none position-absolute end-0 top-50 translate-middle-y me-2"
+            aria-label="Close sidebar">
+            <i class="fas fa-times"></i> Close
         </button>
-
     </div>
-
     <div class="list-group list-group-flush">
         {{-- 1. DASHBOARD --}}
         <a href="/dashboard"
@@ -239,4 +237,9 @@
             </div>
         @endrole
     </div>
+    <a href="#"
+        class="sidebar-close-btn list-group-item list-group-item-action py-2 ps-5 d-flex align-items-center d-lg-none">
+        <i class="fas fa-fw fa-times text-danger me-2"></i>
+        <span class="sidebar-text">Đóng Menu</span>
+    </a>
 </div>

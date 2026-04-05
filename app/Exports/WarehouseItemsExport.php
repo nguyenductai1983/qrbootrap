@@ -126,7 +126,7 @@ class WarehouseItemsExport implements FromCollection, WithHeadings, WithMapping,
             $item->department ? $item->department->code : '',
             $item->location ? $item->location->code : '',
             $item->type,
-            $item->verified_by ? $item->verified_by->name : '',
+            $item->verifier ? $item->verifier->name : '',
             $item->product ? $item->product->code : '',
         ];
 

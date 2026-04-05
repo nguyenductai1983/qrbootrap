@@ -126,4 +126,8 @@ class Item extends Model
     {
         return $this->belongsTo(Machine::class, 'machine_id');
     }
+    public function itemType()
+    {
+        return $this->belongsTo(ItemType::class, 'type');
+    }
 }

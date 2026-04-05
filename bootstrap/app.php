@@ -6,20 +6,20 @@ use Illuminate\Foundation\Configuration\Middleware;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
-        web: __DIR__.'/../routes/web.php',
-        commands: __DIR__.'/../routes/console.php',
-        channels: __DIR__.'/../routes/channels.php',
-        api: __DIR__.'/../routes/api.php',
+        web: __DIR__ . '/../routes/web.php',
+        commands: __DIR__ . '/../routes/console.php',
+        channels: __DIR__ . '/../routes/channels.php',
+        api: __DIR__ . '/../routes/api.php',
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-         // Đây là nơi bạn định nghĩa middleware toàn cục (global middleware)
+        // Đây là nơi bạn định nghĩa middleware toàn cục (global middleware)
         // $middleware->web(append: [
         //     \App\Http\Middleware\TrustProxies::class,
         // ]);
 
         // Đây là nơi bạn định nghĩa các route middleware
-       $middleware->alias([
+        $middleware->alias([
             // <-- Thêm các alias middleware của Spatie vào đây -->
             'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
             'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
@@ -28,4 +28,10 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
-    })->create();
+    })
+    ->withMiddleware(function (Middleware $middleware) {
+        $middleware->validateCsrfTokens(except: [
+            '/printstatusvb', // Ngoại lệ cho máy in
+        ]);
+    })
+    ->create();

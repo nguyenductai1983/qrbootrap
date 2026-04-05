@@ -43,7 +43,7 @@
                         <select wire:model="type" class="form-select text-primary fw-bold" id="type">
                             @if (count($itemTypes) > 0)
                                 @foreach ($itemTypes as $t)
-                                    <option value="{{ $t->code }}">{{ $t->code }} - {{ $t->name }}
+                                    <option value="{{ $t->id }}">{{ $t->code }} - {{ $t->name }}
                                     </option>
                                 @endforeach
                             @else
@@ -137,9 +137,10 @@
                         <div class="col-md-4">
                             <label class="form-label fw-bold" for="quantity"><i
                                     class="fa-solid fa-arrow-up-9-1"></i>Số
-                                lượng tem</label>
+                                lượng</label>
                             <input wire:model="quantity" type="number" class="form-control" min="1"
-                                id="quantity" max="100">
+                                id="quantity" max="1000">
+
                         </div>
                         {{-- Chọn Đơn Hàng --}}
                         <div class="col-md-4">
@@ -205,20 +206,29 @@
                         <div class="col-md-3">
                             <label class="form-label small fw-bold" for="length"><i
                                     class="fa-solid fa-ruler-combined me-1"></i>Chiều dài</label>
-                            <input wire:model="length" type="number" step="0.01" class="form-control" id="length">
-                            @error('length') <span class="text-danger small">{{ $message }}</span> @enderror
+                            <input wire:model="length" type="number" step="0.01" class="form-control"
+                                id="length">
+                            @error('length')
+                                <span class="text-danger small">{{ $message }}</span>
+                            @enderror
                         </div>
                         <div class="col-md-3">
                             <label class="form-label small fw-bold" for="gsm"><i
                                     class="fa-solid fa-weight-scale me-1"></i>Định lượng (gsm)</label>
-                            <input wire:model="gsm" type="number" step="0.01" class="form-control" id="gsm">
-                            @error('gsm') <span class="text-danger small">{{ $message }}</span> @enderror
+                            <input wire:model="gsm" type="number" step="0.01" class="form-control"
+                                id="gsm">
+                            @error('gsm')
+                                <span class="text-danger small">{{ $message }}</span>
+                            @enderror
                         </div>
                         <div class="col-md-3">
                             <label class="form-label small fw-bold" for="weight"><i
                                     class="fa-solid fa-scale-balanced me-1"></i>Trọng lượng</label>
-                            <input wire:model="weight" type="number" step="0.01" class="form-control" id="weight">
-                            @error('weight') <span class="text-danger small">{{ $message }}</span> @enderror
+                            <input wire:model="weight" type="number" step="0.01" class="form-control"
+                                id="weight">
+                            @error('weight')
+                                <span class="text-danger small">{{ $message }}</span>
+                            @enderror
                         </div>
                         <div class="col-md-3">
                             <label class="form-label small fw-bold" for="notes"><i
@@ -301,6 +311,13 @@
                     </div>
                 </div>
             </div>
+            {{-- Hiển thị thông báo lỗi thuần Laravel/Livewire --}}
+            @if (session()->has('error'))
+                <div class="alert alert-danger mt-3 d-flex align-items-center shadow-sm">
+                    <i class="fa-solid fa-triangle-exclamation me-2 text-danger"></i>
+                    <strong>{{ session('error') }}</strong>
+                </div>
+            @endif
             <div class="card shadow-sm d-print-none">
                 {{-- Tách card-header và d-flex ra bằng 1 dấu khoảng trắng --}}
                 {{-- <div class="card-header d-flex justify-content-between align-items-center"> --}}
@@ -376,6 +393,7 @@
             </div>
         </div>
     </div>
+
     {{-- kết thúc vùng không in  --}}
     {{-- KHU VỰC IN TEM (ẨN TRÊN MÀN HÌNH, CHỈ HIỆN KHI IN) --}}
     @if (count($generatedItems) > 0)

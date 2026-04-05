@@ -34,7 +34,7 @@ use App\Livewire\Warehouse\ReportManager;
 use App\Livewire\Warehouse\WarehouseInboundList;
 use App\Livewire\Warehouse\WarehouseDashboard;
 use App\Livewire\Dashboard\AnalyticsDashboard;
-use App\Http\Controllers\PrintController;
+use App\Http\Controllers\Print\PrintController;
 //Role::withoutGlobalScopes()->get(); // Lấy tất cả vai trò mà không áp dụng bất kỳ global scope nào
 Route::view('/', 'welcome');
 Route::view('profile', 'profile')
@@ -49,10 +49,10 @@ Route::get('/test-500', function () {
 
 Route::get('/test-print', function () {
     $data = [
-        'Path' => 'C:\\Labels\\TemBarCode.btw', // Đảm bảo đường dẫn này có thật trên máy C#
+        'Path' => 'Mau01', // Đảm bảo đường dẫn này có thật trên máy C#
         'Data' => [
-            'MaSP' => 'ABC-123',
-            'TenSP' => 'Sản phẩm thử nghiệm'
+            'MaSP' => 'H053HFA1 WE S 1165 PP 208 2009 001',
+            'TenSP' => 'Sản phẩm 01'
         ]
     ];
 
@@ -60,6 +60,26 @@ Route::get('/test-print', function () {
     event(new \App\Events\PrintLabelEvent('station_001_secret', $data));
 
     return 'Đã bắn lệnh in tới trạm station_001_secret!';
+});
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+
+Route::post('/printstatusvb', function (Request $request) {
+    // 1. Lấy toàn bộ dữ liệu C# gửi lên
+    $data = $request->all();
+
+    // 2. GHI VÀO LOG ĐỂ DEBUG
+    Log::info('--- NHẬN THÔNG TIN TỪ MÁY IN C# ---');
+    Log::info('Dữ liệu thô:', $data);
+
+    // Bạn có thể xử lý logic tại đây (ví dụ: cập nhật database)
+    // $order = Order::where('code', $data['order_id'])->update(['printed' => true]);
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Laravel đã nhận được thông tin!'
+    ]);
 });
 Route::get('/print-stationvb/{key}', function ($key) {
     // if ($key !== config('app.print_station_key')) {

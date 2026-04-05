@@ -1,11 +1,10 @@
 import './bootstrap';
-import './echo'; 
+import './echo';
 import * as bootstrap from 'bootstrap'; // Import toàn bộ Bootstrap JS
 window.bootstrap = bootstrap;
 document.addEventListener('livewire:navigated', function () {
     // --- 1. KHAI BÁO BIẾN ---
     const sidebarToggle = document.getElementById('sidebarToggle');
-    const sidebarClose = document.getElementById('sidebarClose');
     const wrapper = document.getElementById('wrapper');
     // Lấy tất cả các nút menu có khả năng sổ xuống (Menu cha)
     const dropdownToggles = document.querySelectorAll('.sidebar-dropdown-toggle');
@@ -41,15 +40,16 @@ document.addEventListener('livewire:navigated', function () {
     }
     // Gọi hàm này ngay khi trang vừa tải xong để Icon khớp với bộ nhớ Local Storage
 
-    // Tương tự cho nút đóng trên Mobile
-    if (sidebarClose && wrapper) {
-        sidebarClose.addEventListener('click', function (e) {
+    // Tương tự cho các nút đóng trên Mobile (dùng event delegation để tránh mất listener khi Livewire re-render)
+    document.addEventListener('click', function (e) {
+        const btn = e.target.closest('.sidebar-close-btn');
+        if (btn && wrapper) {
             e.preventDefault();
             wrapper.classList.remove('toggled');
             document.cookie = "sidebarState=expanded; path=/; max-age=31536000";
-            updateToggleIcon(); // Thêm dòng này để cập nhật lại icon nếu cần
-        });
-    }
+            updateToggleIcon();
+        }
+    });
 
     // --- TỰ ĐÓNG SIDEBAR TRÊN MOBILE KHI BẤM VÀO MENU ITEM ---
     // Lắng nghe click trên tất cả các link (<a>) bên trong sidebar

@@ -29,7 +29,8 @@ class BarcodeGeneratorExcel extends Component
     use \App\Livewire\Traits\WithReprinting;
 
     // Cấu hình
-    public $type = '';
+    public $type = 0;
+    /** @var \Illuminate\Database\Eloquent\Collection<int, \App\Models\ItemType> */
     public $itemTypes = [];
     public $availableProducts = [];
     // Dữ liệu nhập liệu
@@ -56,8 +57,8 @@ class BarcodeGeneratorExcel extends Component
         // Lấy danh sách Loại tem đang Active
         $this->itemTypes = ItemType::where('is_active', true)->get();
 
-        if (count($this->itemTypes) > 1) {
-            $this->type = $this->itemTypes[1]->code;
+        if (count($this->itemTypes) > 0) {
+            $this->type = $this->itemTypes[0]->id;
         }
 
         $this->itemData['PRODUCT_ID'] = '';
@@ -198,7 +199,6 @@ class BarcodeGeneratorExcel extends Component
             for ($i = 0; $i < $quantity; $i++) {
                 $no++;
                 $propertiesToSave = [];
-                $propParts = array_filter([$gsm, $length]);
                 try {
                     // 🌟 Tìm hoặc tạo Machine theo mã máy từ Excel
                     $machineId = null;
@@ -225,7 +225,8 @@ class BarcodeGeneratorExcel extends Component
                         $specCode,
                         $widthCode,
                         $plasticCode,
-                        $propParts, // <--- Lúc trước bạn truyền riêng lẻ $gsm, $length, giờ bạn truyền nguyên mảng $propParts mà vòng lặp for phía trên của bạn đã tạo ra.
+                        $gsm,
+                        $length,
                         $no
                     );
 
@@ -236,7 +237,7 @@ class BarcodeGeneratorExcel extends Component
 
                     $itemRecord = Item::create([
                         'code'         => $realCode,
-                        'type'         => $this->type,
+                        'type'         => (int) $this->type,
                         'properties'   => $propertiesToSave,
                         'created_by'   => Auth::id(),
                         'color_id'         => $colorId,

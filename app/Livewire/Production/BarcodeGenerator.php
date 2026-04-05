@@ -21,6 +21,8 @@ use App\Models\Color;
 use App\Models\PlasticType;
 use App\Models\Width;
 use Livewire\Attributes\Title;
+use App\Services\ItemCodeService;
+use Illuminate\Database\QueryException;
 
 #[Title('Phát hành Tem & Barcode Cây Vải')]
 class BarcodeGenerator extends Component
@@ -74,7 +76,7 @@ class BarcodeGenerator extends Component
         $this->itemTypes = ItemType::where('is_active', true)->get();
 
         if (count($this->itemTypes) > 1) {
-            $this->type = $this->itemTypes[1]->code;
+            $this->type = $this->itemTypes[0]->id;
         }
 
         // Lấy danh sách Đơn hàng đang chạy
@@ -255,6 +257,8 @@ class BarcodeGenerator extends Component
         $orderCode = $this->itemData['ORDER_CODE'] ?? null;
         $orderId = null;
         $quantity = $this->quantity;
+        $start = 1;
+        $endnumber = $quantity;
         if ($orderCode) {
             // 1. Dùng firstOrNew thay vì firstOrCreate
             $order = Order::firstOrNew(
@@ -265,6 +269,8 @@ class BarcodeGenerator extends Component
             // 2. Xử lý logic cộng dồn
             // Nếu là Order mới, $order->total sẽ là null, ta dùng toán tử ?? 0 để ép nó về 0 rồi cộng với $quantity.
             // Nếu là Order cũ, nó lấy total cũ cộng thêm $quantity.
+            $start = $order->total + 1;
+            $endnumber = $start + $quantity;
             $order->total = ($order->total ?? 0) + $quantity;
 
             // 3. Tiến hành lưu vào Database (Lúc này mới thực sự chạy lệnh INSERT hoặc UPDATE)
@@ -282,11 +288,12 @@ class BarcodeGenerator extends Component
         $colorCode = Color::find($this->selectedColor)?->code ?? '';
         $specCode = Specification::find($this->selectedSpec)?->code ?? '';
         $plasticCode = PlasticType::find($this->selectedPlastic)?->code ?? '';
-        $prefix = $orderCode . ' '  . $colorCode . ' ' . $specCode . ' ' . $widthCode . ' ' . $plasticCode;
+        $gsm = $this->gsm;
+        $length = $this->length;
         // Mã đơn hang + Mã khổ + Mã màu + Mã quy cách + Mã loại nhựa
         // Các thuộc tính động: GSM, Độ dài, trọng lượng, v.v... và sẽ  ID được tự động ghép vào cuối cùng để đảm bảo tính duy nhất
 
-        for ($i = 0; $i < $this->quantity; $i++) {
+        for ($i = $start; $i < $endnumber; $i++) {
 
             // CHỈ lưu các trường thuộc tính động thực sự vào cột properties, loại bỏ các biến hệ thống (như PRODUCT_ID, PRODUCT_NAME)
             $propertiesToSave = [];
@@ -295,83 +302,87 @@ class BarcodeGenerator extends Component
                     $propertiesToSave[$prop->code] = $this->itemData[$prop->code];
                 }
             }
+            try {
+                $realCode = ItemCodeService::generateStandardCode(
+                    $orderCode,
+                    $colorCode,
+                    $specCode,
+                    $widthCode,
+                    $plasticCode,
+                    $gsm,
+                    $length,
+                    $i
+                );
+                // 1. TẠO ITEM VỚI MÃ TẠM (Để lấy được ID từ Database)
+                $item = Item::create([
+                    'code' => $realCode, // Mã tạm ngẫu nhiên để không bị lỗi trùng
+                    'type' => $this->type,
+                    'status' => 1,
+                    'properties' => $propertiesToSave,
+                    'created_by' => Auth::id(),
+                    'color_id'         => $this->selectedColor ?: null,
+                    'specification_id' => $this->selectedSpec ?: null,
+                    'plastic_type_id'  => $this->selectedPlastic ?: null,
+                    'width_id'         => $this->selectedWidth ?: null,
+                    // Map thêm các cột khóa ngoại nếu bạn đã tạo trong DB
+                    'order_id' => !empty($this->itemData['ORDER_ID']) ? $this->itemData['ORDER_ID'] : null,
+                    'product_id' => !empty($this->itemData['PRODUCT_ID']) ? $this->itemData['PRODUCT_ID'] : null,
+                    'original_length' => $this->length ? (float) $this->length : null,
+                    'length'          => $this->length ? (float) $this->length : null,
+                    'gsm'             => is_numeric($this->gsm) ? (float) $this->gsm : null,
+                    'weight'          => is_numeric($this->weight) ? (float) $this->weight : null,
+                    'notes'           => $this->notes ? trim($this->notes) : null,
+                ]);
+                // 2. SINH MÃ CHÍNH THỨC DỰA TRÊN ID VỪA CÓ
+                // Sử dụng str_pad 6 số để mã đẹp và đều (VD: ID 5 -> ...000005)
+                // Nếu ID của bạn lớn, nó sẽ tự giãn ra, không bị cắt
+                // Thêm thuộc tính động vào item
+                // 1. Tạo một mảng trống để chứa các cụm thuộc tính
+                $propParts = [];
 
-            // 1. TẠO ITEM VỚI MÃ TẠM (Để lấy được ID từ Database)
-            $item = Item::create([
-                'code' => (string) Str::uuid(), // Mã tạm ngẫu nhiên để không bị lỗi trùng
-                'type' => $this->type,
-                'status' => 1,
-                'properties' => $propertiesToSave,
-                'created_by' => Auth::id(),
-                'color_id'         => $this->selectedColor ?: null,
-                'specification_id' => $this->selectedSpec ?: null,
-                'plastic_type_id'  => $this->selectedPlastic ?: null,
-                'width_id'         => $this->selectedWidth ?: null,
-                // Map thêm các cột khóa ngoại nếu bạn đã tạo trong DB
-                'order_id' => !empty($this->itemData['ORDER_ID']) ? $this->itemData['ORDER_ID'] : null,
-                'product_id' => !empty($this->itemData['PRODUCT_ID']) ? $this->itemData['PRODUCT_ID'] : null,
-                'original_length' => $this->length ? (float) $this->length : null,
-                'length'          => $this->length ? (float) $this->length : null,
-                'gsm'             => is_numeric($this->gsm) ? (float) $this->gsm : null,
-                'weight'          => is_numeric($this->weight) ? (float) $this->weight : null,
-                'notes'           => $this->notes ? trim($this->notes) : null,
-            ]);
-            // 2. SINH MÃ CHÍNH THỨC DỰA TRÊN ID VỪA CÓ
-            // Sử dụng str_pad 6 số để mã đẹp và đều (VD: ID 5 -> ...000005)
-            // Nếu ID của bạn lớn, nó sẽ tự giãn ra, không bị cắt
-            // Thêm thuộc tính động vào item
-            // 1. Tạo một mảng trống để chứa các cụm thuộc tính
-            $propParts = [];
+                foreach ($this->dynamicProperties as $prop) {
+                    if (isset($this->itemData[$prop->code]) && $this->itemData[$prop->code] !== '') {
+                        if ($prop->is_code) {
+                            $part = ''; // Biến tạm chứa chuỗi của riêng thuộc tính này
 
-            foreach ($this->dynamicProperties as $prop) {
-                if (isset($this->itemData[$prop->code]) && $this->itemData[$prop->code] !== '') {
-                    if ($prop->is_code) {
-                        $part = ''; // Biến tạm chứa chuỗi của riêng thuộc tính này
+                            // Nếu admin bật code_usage -> Nối Code (VD: "GSM ")
+                            if ($prop->code_usage == 1) {
+                                $part .= $prop->code;
+                            }
 
-                        // Nếu admin bật code_usage -> Nối Code (VD: "GSM ")
-                        if ($prop->code_usage == 1) {
-                            $part .= $prop->code;
+                            // Nối thêm Value và Unit (VD: "165" + "g" -> "165g")
+                            $part .= $this->itemData[$prop->code] . ($prop->unit ?? '');
+
+                            // Đẩy cụm hoàn chỉnh (VD: "GSM 165g" hoặc chỉ "165g") vào mảng
+                            $propParts[] = trim($part);
                         }
-
-                        // Nối thêm Value và Unit (VD: "165" + "g" -> "165g")
-                        $part .= $this->itemData[$prop->code] . ($prop->unit ?? '');
-
-                        // Đẩy cụm hoàn chỉnh (VD: "GSM 165g" hoặc chỉ "165g") vào mảng
-                        $propParts[] = trim($part);
                     }
                 }
+
+                // 2. Dùng implode để ghép mảng lại bằng khoảng trắng
+                // Lệnh này tự động ráp: "cụm 1" + " " + "cụm 2" + " " + "cụm 3" (Không bị dư ở cuối)
+                // 4. Đưa vào danh sách in
+                $printInfo = $this->itemData;
+                $printInfo['type'] = $this->type; // <-- Bổ sung thêm type vào thông tin in mới
+                $printInfo['PO'] = $orderCode ?? ''; // <-- Bổ sung thêm PO vào thông tin in mới
+                $printInfo['PRODUCT_NAME'] = $this->itemData['PRODUCT_NAME'] ?? '';
+                $printInfo['COLOR_NAME'] = Color::find($this->selectedColor)->name ?? '';
+                $printInfo['LENGTH'] = $this->length;
+                $printInfo['GSM'] = $this->gsm;
+                $printInfo['WEIGHT'] = $this->weight;
+                $printInfo['NOTES'] = $this->notes;
+                $this->generatedItems[] = [
+                    'code' => $realCode,
+                    'info' => $printInfo
+                ];
+            } catch (QueryException $e) {
+                if ($e->errorInfo[1] == 1062) {
+                    session()->flash('error', "Lỗi: Mã tem '{$realCode}' đã tồn tại trong hệ thống! Vui lòng kiểm tra lại dữ liệu đầu vào.");
+                    return;
+                }
+                session()->flash('error', 'Lỗi hệ thống Database: ' . $e->getMessage());
+                return;
             }
-
-            // 2. Dùng implode để ghép mảng lại bằng khoảng trắng
-            // Lệnh này tự động ráp: "cụm 1" + " " + "cụm 2" + " " + "cụm 3" (Không bị dư ở cuối)
-            $code_properties = '';
-            if (count($propParts) > 0) {
-                // Thêm 1 khoảng trắng ở đầu và 1 ở cuối để cách ly với Prefix và Số thứ tự (ID)
-                $code_properties = ' ' . implode(' ', $propParts) . ' ';
-            } else {
-                // Nếu không có thuộc tính nào, chỉ cần 1 khoảng trắng để cách ly Prefix và ID
-                $code_properties = ' ';
-            }
-
-            // 3. Ghép mã cuối cùng (Ví dụ: K1800 WE ONG/MANH 000005)
-            $realCode = strtoupper($prefix . $code_properties . str_pad($item->id, 3, '0', STR_PAD_LEFT));
-            // 3. CẬP NHẬT LẠI MÃ THẬT
-            $item->update(['code' => $realCode]);
-
-            // 4. Đưa vào danh sách in
-            $printInfo = $this->itemData;
-            $printInfo['type'] = $this->type; // <-- Bổ sung thêm type vào thông tin in mới
-            $printInfo['PO'] = $orderCode ?? ''; // <-- Bổ sung thêm PO vào thông tin in mới
-            $printInfo['PRODUCT_NAME'] = $this->itemData['PRODUCT_NAME'] ?? '';
-            $printInfo['COLOR_NAME'] = Color::find($this->selectedColor)->name ?? '';
-            $printInfo['LENGTH'] = $this->length;
-            $printInfo['GSM'] = $this->gsm;
-            $printInfo['WEIGHT'] = $this->weight;
-            $printInfo['NOTES'] = $this->notes;
-            $this->generatedItems[] = [
-                'code' => $realCode,
-                'info' => $printInfo
-            ];
         }
         session()->flash('message', 'Đã tạo thành công ' . count($this->generatedItems) . ' tem.');
         // --- QUAN TRỌNG: THÊM DÒNG NÀY ĐỂ TỰ ĐỘNG BẬT CỬA SỔ IN ---
