@@ -10,7 +10,8 @@
         </div>
 
         {{-- Nút đóng sidebar cho mobile được neo tuyệt đối (absolute) sang bên phải --}}
-        <button class="btn btn-link sidebar-close-btn d-block d-lg-none position-absolute end-0 top-50 translate-middle-y me-2"
+        <button
+            class="btn btn-link sidebar-close-btn d-block d-lg-none position-absolute end-0 top-50 translate-middle-y me-2"
             aria-label="Close sidebar">
             <i class="fas fa-times"></i> Close
         </button>
@@ -31,30 +32,47 @@
             <i class="fa-solid fa-fw fa-chart-line text-warning me-2"></i>
             <span class="sidebar-text">Biểu Đồ &amp; Báo Cáo</span>
         </a>
-
-        {{-- 2. NHÓM TÍNH NĂNG SẢN XUẤT (Production) --}}
-
-        @can('products.print')
-            <a href="{{ route('production.barcode-generator-excel') }}" title="In Tem Excel"
-                class="list-group-item list-group-item-action py-3 ps-4 {{ request()->routeIs('production.barcode-generator-excel') ? 'active' : '' }}">
-                <i class="fa-solid fa-fw fa-print text-info me-2"></i>
-                <span class="sidebar-text">In Tem Cây Vải</span>
-            </a>
-            {{-- MỚI: Menu Quản lý Excel (Export/Import số liệu) --}}
-            <a href="{{ route('production.excel-manager') }}" title="Quản lý Excel"
-                class="list-group-item list-group-item-action py-3 ps-4 {{ request()->routeIs('production.excel-manager') ? 'active' : '' }}">
-                <i class="fa-solid fa-fw fa-file-excel text-success me-2"></i>
-                <span class="sidebar-text">Cập nhật Vải(Excel)</span>
+        @can('items.view')
+            <a href="{{ route('manager.items') }}"
+                class="list-group-item list-group-item-action py-3 ps-4 {{ request()->routeIs('manager.items') ? 'active' : '' }}"
+                title="Kho Mã Tem">
+                <i class="fa-solid fa-fw fa-tags text-dark me-2"></i>
+                <span class="sidebar-text">Mã Tem (Items)</span>
             </a>
         @endcan
+        {{-- 2. NHÓM TÍNH NĂNG SẢN XUẤT (Production) --}}
+        @can('products')
+            <div class="list-group-item py-3 ps-4 pe-2 d-flex justify-content-between align-items-center sidebar-dropdown-toggle"
+                data-bs-toggle="collapse" href="#productsSubmenu" role="button"
+                aria-expanded="{{ request()->routeIs('products.*') ? 'true' : 'false' }}" aria-controls="productsSubmenu"
+                title="Quản lý Vải">
+                <div>
+                    <i class="fa-solid fa-fw fa-industry text-primary me-2"></i> {{-- Icon sản xuất --}}
+                    <span class="sidebar-text" title="Vải">Vải</span>
+                </div>
+                <i class="fas fa-fw fa-chevron-down sidebar-arrow"></i>
+            </div>
+            <div class="collapse {{ request()->routeIs('products.*') ? 'show' : '' }}" id="productsSubmenu"
+                data-bs-parent="#sidebar-wrapper">
+                <a href="{{ route('production.barcode-generator-excel') }}" title="In Tem Excel"
+                    class="list-group-item list-group-item-action  py-2 ps-5  {{ request()->routeIs('production.barcode-generator-excel') ? 'active' : '' }}">
+                    <i class="fa-solid fa-fw fa-print text-info me-2"></i>
+                    <span class="sidebar-text">In Tem Cây Vải</span>
+                </a>
+                {{-- MỚI: Menu Quản lý Excel (Export/Import số liệu) --}}
+                <a href="{{ route('production.excel-manager') }}" title="Quản lý Excel"
+                    class="list-group-item list-group-item-action py-2 ps-5  {{ request()->routeIs('production.excel-manager') ? 'active' : '' }}">
+                    <i class="fa-solid fa-fw fa-file-excel text-success me-2"></i>
+                    <span class="sidebar-text">Cập nhật Vải(Excel)</span>
+                </a>
 
-        @can('products.scan')
-            <a href="{{ route('production.scan') }}"
-                class="list-group-item list-group-item-action py-3 ps-4 {{ request()->routeIs('production.scan') ? 'active' : '' }}"
-                title="Sản xuất Vải">
-                <i class="fa-solid fa-fw fa-barcode text-primary me-2"></i>
-                <span class="sidebar-text">Sản xuất Vải</span>
-            </a>
+                <a href="{{ route('production.scan') }}"
+                    class="list-group-item list-group-item-action py-2 ps-5  {{ request()->routeIs('production.scan') ? 'active' : '' }}"
+                    title="Dán Tem Vải">
+                    <i class="fa-solid fa-fw fa-barcode text-primary me-2"></i>
+                    <span class="sidebar-text">Dán Tem Vải</span>
+                </a>
+            </div>
         @endcan
         @can('coating.scan')
             <a href="{{ route('production.coating-confirmation') }}"
@@ -65,14 +83,7 @@
             </a>
         @endcan
         {{-- MỚI THÊM: Kho mã Code/Tem (Sử dụng chung cho các bộ phận) --}}
-        @can('items.view')
-            <a href="{{ route('manager.items') }}"
-                class="list-group-item list-group-item-action py-3 ps-4 {{ request()->routeIs('manager.items') ? 'active' : '' }}"
-                title="Kho Mã Tem">
-                <i class="fa-solid fa-fw fa-tags text-dark me-2"></i>
-                <span class="sidebar-text">Kho Mã Tem (Items)</span>
-            </a>
-        @endcan
+
         @can('warehouse.scan')
             <div class="list-group-item py-3 ps-4 pe-2 d-flex justify-content-between align-items-center sidebar-dropdown-toggle"
                 data-bs-toggle="collapse" href="#warehouseSubmenu" role="button"
@@ -123,10 +134,6 @@
                 </a>
             </div>
         @endcan
-
-
-
-
         @role('manager|admin')
             @can('manager')
                 {{-- MỚI: Dropdown Quản lý Dữ liệu Sản xuất (Orders & products) --}}
@@ -192,6 +199,16 @@
                         class="list-group-item list-group-item-action py-2 ps-5 d-flex align-items-center {{ request()->routeIs('manager.user-print-stations') ? 'active' : '' }}">
                         <i class="fa-solid fa-fw fa-user-tag text-success me-2"></i>
                         <span class="sidebar-text">Phân Công Trạm In</span>
+                    </a>
+                    <a href="{{ route('manager.scale-stations') }}" title="Trạm Cân"
+                        class="list-group-item list-group-item-action py-2 ps-5 d-flex align-items-center {{ request()->routeIs('manager.scale-stations') ? 'active' : '' }}">
+                        <i class="fa-solid fa-fw fa-weight-scale text-warning me-2"></i>
+                        <span class="sidebar-text">Trạm Cân</span>
+                    </a>
+                    <a href="{{ route('manager.user-scale-stations') }}" title="Phân Công Trạm Cân"
+                        class="list-group-item list-group-item-action py-2 ps-5 d-flex align-items-center {{ request()->routeIs('manager.user-scale-stations') ? 'active' : '' }}">
+                        <i class="fa-solid fa-fw fa-user-check text-info me-2"></i>
+                        <span class="sidebar-text">Phân Công Trạm Cân</span>
                     </a>
                 </div>
             @endcan

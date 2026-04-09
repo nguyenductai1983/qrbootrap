@@ -125,7 +125,7 @@
                                     <span class="badge bg-secondary">{{ $item->specification->code }}</span>
                                 @endif
                                 @if ($item->width)
-                                    <span class="badge bg-light text-dark border">{{ $item->width->code }}</span>
+                                    <span class="badge bg-light text-dark border">{{ $item->width }} m</span>
                                 @endif
                             </div>
                         </td>

@@ -27,7 +27,7 @@ window.initWebSocket = function () {
     }
 };
 
-// --- CHỈ BẬT TỰ ĐỘNG WEBSOCKET KHI ĐANG Ở TRANG TRẠM IN ---
-if (window.location.pathname.includes('/print-station')) {
+// --- CHỈ BẬT TỰ ĐỘNG WEBSOCKET KHI ĐANG Ở TRANG TRẠM IN (KIOSK) ---
+if (window.location.pathname.startsWith('/print-station')) {
     window.initWebSocket();
 }

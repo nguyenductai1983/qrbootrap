@@ -79,7 +79,116 @@
                     color: #000 !important;
                     box-shadow: 0 .25rem .5rem rgba(0, 0, 0, .15);
                 }
+
+                /* Scale weight display */
+                .scale-weight-display {
+                    font-size: 2.5rem;
+                    font-weight: 900;
+                    font-family: 'Courier New', monospace;
+                    letter-spacing: 2px;
+                    transition: color 0.3s ease;
+                }
+                .scale-weight-display.stable {
+                    color: var(--bs-success);
+                }
+                .scale-weight-display.unstable {
+                    color: var(--bs-warning);
+                }
+                .scale-pulse {
+                    animation: scalePulse 1.5s ease-in-out infinite;
+                }
+                @keyframes scalePulse {
+                    0%, 100% { opacity: 1; }
+                    50% { opacity: 0.5; }
+                }
             </style>
+
+            {{-- ⚖️ CÂN / TRỌNG LƯỢNG --}}
+            <div class="card shadow-sm mb-3 border-primary">
+                <div class="card-header py-2 bg-primary text-white d-flex justify-content-between align-items-center">
+                    <span class="fw-bold">
+                        <i class="fa-solid fa-weight-scale me-2"></i>Cân / Trọng Lượng
+                    </span>
+                    @if(count($scaleStations) > 0)
+                        <select wire:model.live="selectedScaleCode"
+                            class="form-select form-select-sm w-auto" style="max-width: 170px;">
+                            <option value="">-- Chọn trạm cân --</option>
+                            @foreach($scaleStations as $station)
+                                <option value="{{ $station->code }}">{{ $station->code }} – {{ $station->name }}</option>
+                            @endforeach
+                        </select>
+                    @endif
+                </div>
+                <div class="card-body py-3">
+                    <div class="row g-3 align-items-center">
+
+                        {{-- Cột TRÁI: Real-time từ WebSocket (chỉ hiện khi đã chọn trạm cân) --}}
+                        @if($selectedScaleCode)
+                            <div class="col-6 text-center border-end">
+                                <small class="text-muted d-block mb-1">
+                                    <i class="fa-solid fa-wifi me-1"></i>Từ cân điện tử
+                                </small>
+                                <div class="scale-weight-display {{ $scaleStable ? 'stable' : 'unstable' }}"
+                                    id="scaleWeightValue">
+                                    @if($scaleWeight !== null)
+                                        {{ number_format($scaleWeight, 2) }} <small class="fs-6">kg</small>
+                                    @else
+                                        <span class="text-muted scale-pulse">---.--</span>
+                                        <small class="fs-6 text-muted">kg</small>
+                                    @endif
+                                </div>
+                                <div class="mt-1">
+                                    @if($scaleWeight !== null && $scaleStable)
+                                        <span class="badge bg-success">
+                                            <i class="fa-solid fa-check me-1"></i>Ổn định
+                                        </span>
+                                    @elseif($scaleWeight !== null)
+                                        <span class="badge bg-warning text-dark">
+                                            <i class="fa-solid fa-arrows-up-down me-1"></i>Đang dao động
+                                        </span>
+                                    @else
+                                        <span class="badge bg-secondary">
+                                            <i class="fa-solid fa-plug me-1"></i>Chờ tín hiệu...
+                                        </span>
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="col-6">
+                        @else
+                            <div class="col-12">
+                        @endif
+
+                            {{-- Cột PHẢI (hoặc đầy màn hình): Nhập tay trọng lượng --}}
+                            <label class="form-label small text-muted mb-1 d-block text-center">
+                                <i class="fa-solid fa-keyboard me-1"></i>
+                                @if($selectedScaleCode)
+                                    Nhập tay (nếu cân chưa kết nối)
+                                @else
+                                    Nhập trọng lượng (kg)
+                                @endif
+                            </label>
+                            <div class="input-group input-group-lg">
+                                <input type="number"
+                                    class="form-control text-center fw-bold fs-4"
+                                    wire:model="manualWeight"
+                                    step="0.01" min="0"
+                                    placeholder="0.00"
+                                    inputmode="decimal">
+                                <span class="input-group-text fw-bold">kg</span>
+                            </div>
+                            @if($scaleWeight !== null && $selectedScaleCode)
+                                <small class="text-info mt-1 d-block text-center">
+                                    <i class="fa-solid fa-circle-info me-1"></i>
+                                    WebSocket đang cấp: <strong>{{ number_format($scaleWeight, 2) }} kg</strong>
+                                    — sẽ được ưu tiên hơn
+                                </small>
+                            @endif
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
 
             {{-- BANNER VỊ TRÍ (chỉ hiện khi mode 2 hoặc 3) --}}
             @if (in_array($mode, ['with_loc', 'confirm']))
@@ -188,6 +297,19 @@
                                     <td>{{ $itemInfo->length ?? 0 }} m</td>
                                 </tr>
                                 <tr>
+                                    <td class="text-muted">Trọng lượng:</td>
+                                    <td>
+                                        @if($itemInfo->weight)
+                                            <span class="fw-bold text-primary">{{ number_format($itemInfo->weight, 2) }} kg</span>
+                                            @if($itemInfo->weight_original && $itemInfo->weight_original != $itemInfo->weight)
+                                                <small class="text-muted ms-1">(Ban đầu: {{ number_format($itemInfo->weight_original, 2) }}kg)</small>
+                                            @endif
+                                        @else
+                                            <span class="text-muted">Chưa cân</span>
+                                        @endif
+                                    </td>
+                                </tr>
+                                <tr>
                                     <td class="text-muted">Vị trí hiện tại:</td>
                                     <td>
                                         @if ($itemInfo->location)
@@ -232,6 +354,7 @@
                                         <th>Màu</th>
                                         <th>PO</th>
                                         <th>Vị Trí</th>
+                                        <th class="text-end">Kg</th>
                                         <th class="text-end">Giờ</th>
                                     </tr>
                                 </thead>
@@ -248,6 +371,13 @@
                                                     <span class="badge bg-success">{{ $si['location_code'] }}</span>
                                                 @else
                                                     <span class="badge bg-secondary">Chưa có</span>
+                                                @endif
+                                            </td>
+                                            <td class="text-end">
+                                                @if(!empty($si['weight']))
+                                                    <span class="fw-bold">{{ number_format($si['weight'], 2) }}</span>
+                                                @else
+                                                    <span class="text-muted">-</span>
                                                 @endif
                                             </td>
                                             <td class="text-end text-muted small">{{ $si['time'] }}</td>
@@ -296,6 +426,58 @@
                     timerProgressBar: true,
                 });
             });
+
+            // ⚖️ ECHO WEBSOCKET — Lắng nghe trọng lượng từ trạm cân
+            initScaleListener();
+        });
+
+        let scaleChannel = null;
+
+        function initScaleListener() {
+            const scaleCode = @json($selectedScaleCode);
+            subscribeScale(scaleCode);
+        }
+
+        function subscribeScale(stationCode) {
+            // Hủy kênh cũ nếu có
+            if (scaleChannel) {
+                window.Echo.leave(scaleChannel);
+                scaleChannel = null;
+            }
+
+            if (!stationCode || !window.Echo) return;
+
+            scaleChannel = 'scale.' + stationCode;
+
+            window.Echo.channel(scaleChannel)
+                .listen('.ScaleWeightUpdated', (e) => {
+                    // Cập nhật hiển thị real-time trên UI
+                    const weightEl = document.getElementById('scaleWeightValue');
+                    if (weightEl) {
+                        const w = parseFloat(e.weight).toFixed(2);
+                        const stableClass = e.is_stable ? 'stable' : 'unstable';
+                        weightEl.className = 'scale-weight-display ' + stableClass;
+                        weightEl.innerHTML = w + ' <small class="fs-6">kg</small>';
+                    }
+
+                    // Gửi trọng lượng cho Livewire component
+                    @this.call('updateScaleWeight', e.weight, e.is_stable);
+                });
+        }
+
+        // Lắng nghe khi user đổi trạm cân qua dropdown (Livewire re-render)
+        document.addEventListener('livewire:navigated', () => {
+            initScaleListener();
+        });
+
+        // Theo dõi thay đổi của dropdown bằng Livewire hook
+        Livewire.hook('morph.updated', ({el}) => {
+            if (el.wire && el.wire.get) {
+                const newScale = @this.get('selectedScaleCode');
+                if (newScale !== scaleChannel?.replace('scale.', '')) {
+                    subscribeScale(newScale);
+                }
+            }
         });
     </script>
 </div>

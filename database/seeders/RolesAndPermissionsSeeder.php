@@ -53,11 +53,13 @@ class RolesAndPermissionsSeeder extends Seeder
         Permission::firstOrCreate(['name' => 'items.delete']);  // Xóa tem
 
         // Quyền sản xuất       
+        Permission::firstOrCreate(['name' => 'products']);
         Permission::firstOrCreate(['name' => 'products.print']); // Truy cập trang in tem (route middleware)
         Permission::firstOrCreate(['name' => 'products.scan']);  // Quét sản phẩm
         Permission::firstOrCreate(['name' => 'coating.scan']);   // Xác nhận tráng
 
         // Quyền kho
+        Permission::firstOrCreate(['name' => 'warehouse']);
         Permission::firstOrCreate(['name' => 'warehouse.scan']);      // Nhập kho / quét vị trí
         Permission::firstOrCreate(['name' => 'warehouse.location']); // Quản lý vị trí kho
         Permission::firstOrCreate(['name' => 'warehouse.report']); // Quản lý vị trí kho
@@ -98,6 +100,7 @@ class RolesAndPermissionsSeeder extends Seeder
         // Products: in tem, quét, xem danh sách
         $productsRole->syncPermissions([
             'print',
+            'products',
             'products.print',
             'products.scan',
             'items.view',
@@ -106,6 +109,7 @@ class RolesAndPermissionsSeeder extends Seeder
         // Warehouse: nhập kho, xem vị trí, xem báo cáo
         $warehouseRole->syncPermissions([
             'print',
+            'warehouse',
             'warehouse.scan',
             'warehouse.location',
             'warehouse.report',
@@ -121,8 +125,8 @@ class RolesAndPermissionsSeeder extends Seeder
         ]);
         // 3. Gán Role cho một người dùng cụ thể (ví dụ: người dùng đầu tiên)       
         $user = User::firstOrCreate(
-            ['email' => 'admin@qrcode.com'],
             [
+                'email' => 'admin@qrcode.com',
                 'username' => 'admin',
                 'name' => 'Admin',
                 'password' => Hash::make('12345678'), // Đặt mật khẩu
@@ -136,8 +140,8 @@ class RolesAndPermissionsSeeder extends Seeder
         }
         // Gán quyền Admin cho user này 1        
         $user = User::firstOrCreate(
-            ['email' => 'tien@qrcode.com'],
             [
+                'email' => 'tien@qrcode.com',
                 'username' => 'tien',
                 'name' => 'tien',
                 'password' => Hash::make('12345678'), // Đặt mật khẩu
@@ -145,22 +149,34 @@ class RolesAndPermissionsSeeder extends Seeder
                 'is_admin' => true,
             ]
         );
-        // Gán quyền Admin cho user này 1
+        // Gán quyền Admin cho user này 2
         $user->assignRole('admin');
         $user = User::firstOrCreate(
-            ['email' => 'khang@qrcode.com'],
             [
+                'email' => 'hiep@qrcode.com',
+                'username' => 'hiep',
+                'name' => 'hiep',
+                'password' => Hash::make('12345678'), // Đặt mật khẩu
+                'department_id' => 1, // Gán vào phòng IT (ID 1) nếu muốn
+                'is_admin' => true,
+            ]
+        );
+        // Gán quyền Admin cho user này 3
+        $user->assignRole('admin');
+        $user = User::firstOrCreate(
+            [
+                'email' => 'khang@qrcode.com',
                 'username' => 'khang',
                 'name' => 'khang',
                 'password' => Hash::make('12345678'), // Đặt mật khẩu
-                'department_id' => 1, // Gán vào phòng IT (ID 1) nếu muốn
+                'department_id' => 2, // Gán vào phòng IT (ID 1) nếu muốn
             ]
         );
         // Gán quyền quan ly cho user này 2
         $user->assignRole('manager');
         $user = User::firstOrCreate(
-            ['email' => 'vai@qrcode.com'],
             [
+                'email' => 'vai@qrcode.com',
                 'username' => 'vai',
                 'name' => 'vai',
                 'password' => Hash::make('12345678'), // Đặt mật khẩu
@@ -170,23 +186,23 @@ class RolesAndPermissionsSeeder extends Seeder
         // Gán quyền kho cho user này 3
         $user->assignRole('warehouse');
         $user = User::firstOrCreate(
-            ['email' => 'kho@qrcode.com'],
             [
+                'email' => 'kho@qrcode.com',
                 'username' => 'kho',
                 'name' => 'kho',
                 'password' => Hash::make('12345678'), // Đặt mật khẩu
-                'department_id' => 7, // Gán vào phòng IT (ID 1) nếu muốn
+                'department_id' => 6, // Gán vào phòng IT (ID 1) nếu muốn
             ]
         );
         // Gán quyền kho cho user này 4
         $user->assignRole('coating');
         $user = User::firstOrCreate(
-            ['email' => 'trang@qrcode.com'],
             [
+                'email' => 'trang@qrcode.com',
                 'username' => 'trang',
                 'name' => 'trang',
                 'password' => Hash::make('12345678'), // Đặt mật khẩu
-                'department_id' => 4, // Gán vào phòng IT (ID 1) nếu muốn
+                'department_id' => 3, // Gán vào phòng IT (ID 1) nếu muốn
             ]
         );
         // Gán quyền coating cho user này

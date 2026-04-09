@@ -77,4 +77,9 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(PrintStation::class);
     }
+
+    public function scaleStations()
+    {
+        return $this->belongsToMany(ScaleStation::class);
+    }
 }

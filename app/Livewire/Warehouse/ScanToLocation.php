@@ -6,6 +6,7 @@ use Livewire\Component;
 use App\Models\Item;
 use App\Models\Location;
 use App\Models\ItemMovement;
+use App\Models\ScaleStation;
 use App\Enums\ItemStatus;
 use App\Enums\MovementAction;
 use Illuminate\Support\Facades\Auth;
@@ -36,12 +37,66 @@ class ScanToLocation extends Component
     // Lịch sử trong phiên (tối đa 20)
     public array $sessionItems = [];
 
+    // === CÂN ĐIỆN TỬ ===
+    public $scaleStations = [];         // Danh sách trạm cân được phân quyền cho user
+    public string $selectedScaleCode = ''; // Mã trạm cân đang chọn
+    public $scaleWeight = null;         // Trọng lượng real-time từ cân (nhận qua JS dispatch)
+    public bool $scaleStable = false;   // Số cân đã ổn định chưa
+    public $manualWeight = null;        // Trọng lượng nhập tay (fallback khi không có WebSocket)
+
+    public function mount(): void
+    {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+
+        // Lấy danh sách trạm cân được gán cho user
+        $this->scaleStations = $user->scaleStations()->where('status', true)->orderBy('code')->get();
+
+        // Khôi phục lựa chọn từ cache
+        $cachedMode = cache()->get('warehouse_mode_' . Auth::id());
+        if ($cachedMode) {
+            $this->mode = $cachedMode;
+        }
+
+        $cachedScale = cache()->get('selected_scale_code_' . Auth::id());
+        if ($cachedScale && collect($this->scaleStations)->contains('code', $cachedScale)) {
+            $this->selectedScaleCode = $cachedScale;
+        } elseif (count($this->scaleStations) === 1) {
+            $this->selectedScaleCode = collect($this->scaleStations)->first()->code;
+        }
+    }
+
     // --- Tự động reset khi đổi mode (gọi bởi wire:model.live) ---
     public function updatedMode(): void
     {
         // Lưu lựa chọn để dùng lần sau
         cache()->forever('warehouse_mode_' . Auth::id(), $this->mode);
         $this->resetSession();
+    }
+
+    // --- Lưu cache khi đổi trạm cân ---
+    public function updatedSelectedScaleCode(): void
+    {
+        cache()->forever('selected_scale_code_' . Auth::id(), $this->selectedScaleCode);
+    }
+
+    // --- NHẬN TRỌNG LƯỢNG TỪ JAVASCRIPT (Echo WebSocket) ---
+    public function updateScaleWeight(float $weight, bool $isStable = false): void
+    {
+        $this->scaleWeight = $weight;
+        $this->scaleStable = $isStable;
+    }
+
+    /** Lấy trọng lượng hiệu lực: WebSocket ưu tiên > Nhập tay */
+    public function getEffectiveWeight(): ?float
+    {
+        if ($this->scaleWeight !== null && $this->scaleWeight > 0) {
+            return (float) $this->scaleWeight;
+        }
+        if ($this->manualWeight !== null && (float) $this->manualWeight > 0) {
+            return (float) $this->manualWeight;
+        }
+        return null;
     }
 
     // --- XỬ LÝ BÀN PHÍM / MÁY QUÉT ---
@@ -109,6 +164,11 @@ class ScanToLocation extends Component
     {
 
         if ($item->status === ItemStatus::IN_WAREHOUSE) {
+            // === CÂY ĐÃ NHẬP KHO — KIỂM TRA TÁI NHẬP DƯ ===
+            if ($this->getEffectiveWeight() !== null) {
+                $this->handleWeightUpdate($item);
+                return;
+            }
             $loc = optional($item->location)->code ?? 'chưa xác định';
             $this->warn("⚠️ Cây vải này ĐÃ ĐƯỢC nhập kho rồi (vị trí: $loc). Bỏ qua.");
             $this->itemInfo = $item;
@@ -133,6 +193,11 @@ class ScanToLocation extends Component
         }
 
         if ($item->status === ItemStatus::IN_WAREHOUSE) {
+            // === CÂY ĐÃ NHẬP KHO — KIỂM TRA TÁI NHẬP DƯ ===
+            if ($this->getEffectiveWeight() !== null) {
+                $this->handleWeightUpdate($item);
+                return;
+            }
             $loc = optional($item->location)->code ?? 'chưa xác định';
             $this->warn("⚠️ Cây vải này ĐÃ ĐƯỢC nhập kho rồi (vị trí: $loc).");
             $this->itemInfo = $item;
@@ -188,12 +253,23 @@ class ScanToLocation extends Component
     {
         $oldLocationId = $item->current_location_id;
 
-        $item->update([
+        // Ghi nhận trọng lượng (WebSocket hoặc nhập tay)
+        $weightData = [];
+        $effectiveWeight = $this->getEffectiveWeight();
+        if ($effectiveWeight !== null) {
+            $weightData = [
+                'weight'          => $effectiveWeight,
+                'weight_original' => $effectiveWeight,
+            ];
+        }
+
+        $item->update(array_merge([
             'status'             => ItemStatus::IN_WAREHOUSE,
             'current_location_id' => $locationId,
             'warehoused_by'      => Auth::id(),
             'warehoused_at'      => now(),
-        ]);
+        ], $weightData));
+
         if ($oldLocationId != $locationId) {
             ItemMovement::create([
                 'item_id'          => $item->id,
@@ -201,7 +277,7 @@ class ScanToLocation extends Component
                 'from_location_id' => $oldLocationId,
                 'to_location_id'   => $locationId,
                 'user_id'          => Auth::id(),
-                'note'             => $note,
+                'note'             => $note . ($effectiveWeight ? " | Cân: {$effectiveWeight}kg" : ''),
                 'created_at'       => now(),
             ]);
         }
@@ -213,9 +289,59 @@ class ScanToLocation extends Component
             ? " → [{$this->currentLocation->code}]"
             : ' (chưa có vị trí)';
 
+        $weightText = $effectiveWeight ? " | {$effectiveWeight}kg" : '';
+
         $this->scanStatus = 'success';
-        $this->message    = "✅ ĐÃ NHẬP KHO: {$item->code}{$locText}";
+        $this->message    = "✅ ĐÃ NHẬP KHO: {$item->code}{$locText}{$weightText}";
         $this->itemInfo   = $item;
+        $this->dispatch('play-success-sound');
+        $this->dispatch('focus-input');
+    }
+
+    /** XỬ LÝ CẬP NHẬT TRỌNG LƯỢNG / TÁI NHẬP DƯ */
+    private function handleWeightUpdate(Item $item): void
+    {
+        $oldWeight = (float) ($item->weight ?? 0);
+        $newWeight = (float) $this->getEffectiveWeight();
+
+        // Lần đầu cân → ghi weight_original
+        if ($item->weight_original === null) {
+            $item->weight_original = $newWeight;
+        }
+
+        $item->weight = $newWeight;
+        $item->save();
+
+        // Xác định loại hành động
+        $isSurplus = ($oldWeight > 0 && $newWeight < $oldWeight);
+        $actionType = $isSurplus
+            ? MovementAction::SURPLUS_ENTRY->value
+            : MovementAction::WEIGHT_UPDATE->value;
+
+        $note = $isSurplus
+            ? "Tái nhập dư sau SX: {$oldWeight}kg → {$newWeight}kg (giảm " . round($oldWeight - $newWeight, 2) . "kg)"
+            : "Cập nhật trọng lượng: {$newWeight}kg" . ($oldWeight > 0 ? " (trước: {$oldWeight}kg)" : '');
+
+        ItemMovement::create([
+            'item_id'     => $item->id,
+            'action_type' => $actionType,
+            'user_id'     => Auth::id(),
+            'note'        => $note,
+            'created_at'  => now(),
+        ]);
+
+        $item->refresh()->load(['product', 'color', 'order', 'location']);
+        $this->addToSession($item);
+
+        if ($isSurplus) {
+            $this->scanStatus = 'success';
+            $this->message    = "♻️ TÁI NHẬP DƯ: {$item->code} | {$oldWeight}kg → {$newWeight}kg (giảm " . round($oldWeight - $newWeight, 2) . "kg)";
+        } else {
+            $this->scanStatus = 'success';
+            $this->message    = "⚖️ ĐÃ CẬP NHẬT CÂN: {$item->code} | {$newWeight}kg";
+        }
+
+        $this->itemInfo = $item;
         $this->dispatch('play-success-sound');
         $this->dispatch('focus-input');
     }
@@ -244,6 +370,7 @@ class ScanToLocation extends Component
             'order_code'    => optional($item->order)->code,
             'location_code' => optional($item->location)->code,
             'length'        => $item->length,
+            'weight'        => $item->weight,
             'time'          => now()->format('H:i:s'),
         ]);
         $this->sessionItems = array_slice($this->sessionItems, 0, 20);

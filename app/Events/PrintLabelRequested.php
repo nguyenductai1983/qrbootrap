@@ -8,18 +8,20 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow; // 🌟 Bắt buộc p
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 use App\Models\Item;
-
-class PrintBarcodeRequested implements ShouldBroadcastNow
+// In từ xa qua trang WEB
+class PrintLabelRequested implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $item;
     public $printerMac; // (Tùy chọn) Mã của máy in hoặc trạm in
+    public $printJobId; // ID của công việc in trong database
 
-    public function __construct(Item $item, $printerMac = 'station_01')
+    public function __construct(Item $item, $printerMac = '01', $printJobId = null)
     {
         $this->item = $item;
         $this->printerMac = $printerMac;
+        $this->printJobId = $printJobId;
     }
 
     // 🌟 Xác định "Ống nước" (Channel) nào sẽ truyền dữ liệu này

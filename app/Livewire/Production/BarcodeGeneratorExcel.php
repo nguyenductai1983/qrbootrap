@@ -15,7 +15,6 @@ use App\Models\ItemType;
 use App\Enums\OrderStatus;
 use App\Models\Color;
 use App\Models\Specification;
-use App\Models\Width;
 use App\Models\PlasticType;
 use Illuminate\Database\QueryException;
 use Livewire\Attributes\Renderless;
@@ -192,7 +191,6 @@ class BarcodeGeneratorExcel extends Component
 
             $colorId   = $this->resolveAttributeId(Color::class, $colorCode);
             $specId    = $this->resolveAttributeId(Specification::class, $specCode);
-            $widthId   = $this->resolveAttributeId(Width::class, $widthCode);
             $plasticId = $this->resolveAttributeId(PlasticType::class, $plasticCode);
             //nếu col0Mode = sequence thì no = inputCol0 - 1, ngược lại thì no = 0
             $no = ($this->col0Mode === 'sequence') ? $inputCol0 - 1 : 0;
@@ -243,7 +241,8 @@ class BarcodeGeneratorExcel extends Component
                         'color_id'         => $colorId,
                         'specification_id' => $specId,
                         'plastic_type_id'  => $plasticId,
-                        'width_id'         => $widthId,
+                        'width_original'   => is_numeric($widthCode) ? (float) $widthCode : null,
+                        'width'            => is_numeric($widthCode) ? (float) $widthCode : null,
                         'order_id'         => $orderId,
                         'product_id'       => $this->itemData['PRODUCT_ID'] ?? null,
                         'original_length'  => $numericLength,

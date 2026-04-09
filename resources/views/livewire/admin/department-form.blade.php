@@ -32,6 +32,14 @@
                     @enderror
                 </div>
 
+                <div class="mb-3 form-check">
+                    <input wire:model="is_admin" type="checkbox" class="form-check-input" id="is_admin">
+                    <label class="form-check-label" for="is_admin">{{ __('Đây là bộ phận Admin (Không hiển thị trong Biểu đồ Sản xuất)') }}</label>
+                    @error('is_admin')
+                        <div class="text-danger mt-1 small">{{ $message }}</div>
+                    @enderror
+                </div>
+
                 {{-- <-- Trường gán Sản phẩm --> --}}
                 <div class="mb-3">
                     <label class="form-label">{{ __('Sản phẩm phụ trách') }}</label>

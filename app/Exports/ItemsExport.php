@@ -2,109 +2,42 @@
 
 namespace App\Exports;
 
-use Maatwebsite\Excel\Concerns\FromCollection;
-use Maatwebsite\Excel\Concerns\WithHeadings;
-use Maatwebsite\Excel\Concerns\WithMapping;
-use Maatwebsite\Excel\Concerns\ShouldAutoSize;
-use Maatwebsite\Excel\Concerns\WithStyles;
-use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
-use App\Models\Item;
+use Maatwebsite\Excel\Concerns\WithMultipleSheets;
+use App\Exports\ItemsMainSheet;
+use App\Exports\ItemsGenealogySheet;
 
-class ItemsExport implements FromCollection, WithHeadings, WithMapping, ShouldAutoSize, WithStyles
+class ItemsExport implements WithMultipleSheets
 {
     protected $items;
-    protected $dynamicKeys = [];
 
-    /**
-     * @param  \Illuminate\Support\Collection|string  $itemsOrOrderId  Either a ready-made collection or an order ID
-     * @param  int|null  $modelId  Product ID — required when $itemsOrOrderId is an order ID
-     */
     public function __construct($orderId = null, $productId = null, $fromDate = null, $toDate = null)
     {
         if ($orderId instanceof \Illuminate\Support\Collection) {
-            // Called from ItemManager with a ready-made collection
+            // Called from ItemManager with a ready-made collection (already has parents loaded)
             $this->items = $orderId;
         } else {
             // Called from ExcelManager with IDs → query internally
-            $query = Item::with(['order', 'product', 'color']);
+            $query = \App\Models\Item::with(['order', 'product', 'color', 'department', 'parents']);
 
             if ($orderId !== null && $orderId !== '') {
                 $query->where('order_id', $orderId);
             }
-
             if ($productId !== null && $productId !== '') {
                 $query->where('product_id', $productId);
             }
-
             if ($fromDate !== null && $fromDate !== '' && $toDate !== null && $toDate !== '') {
                 $query->whereBetween('created_at', [$fromDate . ' 00:00:00', $toDate . ' 23:59:59']);
             }
 
             $this->items = $query->get();
         }
-
-        $keys = [];
-        foreach ($this->items as $item) {
-            $properties = is_array($item->properties) ? $item->properties : json_decode($item->properties, true);
-            if (is_array($properties)) {
-                foreach (array_keys($properties) as $key) {
-                    if (!in_array($key, ['ORDER_ID', 'PRODUCT_ID', 'PRODUCT', 'PRODUCT_NAME'])) {
-                        $keys[$key] = true;
-                    }
-                }
-            }
-        }
-        $this->dynamicKeys = array_keys($keys);
     }
 
-    public function collection()
-    {
-        return $this->items;
-    }
-
-    public function headings(): array
-    {
-        $headings = [
-            'code',
-            'created_at',
-            'original_length',
-            'length',
-            'gsm',
-            'weight',
-        ];
-
-        foreach ($this->dynamicKeys as $key) {
-            $headings[] = $key;
-        }
-
-        return $headings;
-    }
-
-    public function map($item): array
-    {
-        $properties = is_array($item->properties) ? $item->properties : json_decode($item->properties, true);
-        $properties = is_array($properties) ? $properties : [];
-
-        $row = [
-            $item->code,
-            $item->original_length,
-            $item->length,
-            $item->gsm,
-            $item->weight,
-            $item->created_at ? $item->created_at->format('Y-m-d H:i:s') : '',
-        ];
-
-        foreach ($this->dynamicKeys as $key) {
-            $row[] = $properties[$key] ?? '';
-        }
-
-        return $row;
-    }
-
-    public function styles(Worksheet $sheet)
+    public function sheets(): array
     {
         return [
-            1 => ['font' => ['bold' => true]],
+            new ItemsMainSheet($this->items),
+            new ItemsGenealogySheet($this->items),
         ];
     }
 }

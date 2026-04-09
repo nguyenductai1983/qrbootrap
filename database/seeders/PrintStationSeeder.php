@@ -14,8 +14,13 @@ class PrintStationSeeder extends Seeder
      */
     public function run(): void
     {
-        PrintStation::create(['name' => '01', 'code' => '01']);
+        PrintStation::create(['name' => 'Web 01', 'code' => '01', 'client_type' => 'browser']);
+        PrintStation::create(['name' => '02', 'code' => '02', 'client_type' => 'app', 'station_token' => 'ov4pxg61zv6lsnqpbp3h', 'template_name' => 'Mau01']);
         $user = User::where('username', 'trang')->first(); //trang
+        if ($user) {
+            $user->printStations()->attach([1]);
+        }
+        $user = User::where('username', 'admin')->first(); //trang
         if ($user) {
             $user->printStations()->attach([1]);
         }

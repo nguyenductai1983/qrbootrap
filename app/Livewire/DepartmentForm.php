@@ -15,6 +15,7 @@ class DepartmentForm extends Component
     public $name;
     public $code;
     public $is_warehouse = false;
+    public $is_admin = false;
     public $selectedProducts = []; // Biến lưu các sản phẩm được trọn
     public $allProducts; // Danh sách tất cả sản phẩm
 
@@ -27,10 +28,12 @@ class DepartmentForm extends Component
             $this->name = $this->department->name;
             $this->code = $this->department->code;
             $this->is_warehouse = (bool) $this->department->is_warehouse;
+            $this->is_admin = (bool) $this->department->is_admin;
             $this->selectedProducts = $this->department->products->pluck('id')->toArray();
         } else {
             $this->department = new Department();
             $this->is_warehouse = false;
+            $this->is_admin = false;
         }
     }
 
@@ -45,6 +48,7 @@ class DepartmentForm extends Component
                 Rule::unique('departments')->ignore($this->department->id),
             ],
             'is_warehouse' => ['boolean'],
+            'is_admin'     => ['boolean'],
             'selectedProducts' => ['nullable', 'array'],
             'selectedProducts.*' => ['exists:products,id'],
         ];
@@ -57,6 +61,7 @@ class DepartmentForm extends Component
         $this->department->name = $this->name;
         $this->department->code = $this->code; // Lưu mã Bộ phận
         $this->department->is_warehouse = $this->is_warehouse;
+        $this->department->is_admin = $this->is_admin;
         $this->department->save();
 
         // Đồng bộ danh sách sản phẩm

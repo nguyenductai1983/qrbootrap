@@ -11,12 +11,16 @@ class PrintStationManager extends Component
     use WithPagination;
 
     public $name, $code, $status = true, $stationId;
+    public $client_type = 'browser', $station_token, $template_name;
     public $showModal = false;
 
     protected $rules = [
         'name' => 'required|string|max:255',
         'code' => 'required|string|max:255|unique:print_stations,code',
         'status' => 'boolean',
+        'client_type' => 'required|in:browser,app',
+        'station_token' => 'required_if:client_type,app|nullable|string|max:255',
+        'template_name' => 'nullable|string|max:255',
     ];
 
     public function render()
@@ -31,6 +35,9 @@ class PrintStationManager extends Component
         $this->name = '';
         $this->code = '';
         $this->status = true;
+        $this->client_type = 'browser';
+        $this->station_token = '';
+        $this->template_name = '';
         $this->stationId = null;
     }
 
@@ -59,6 +66,9 @@ class PrintStationManager extends Component
             'name' => $this->name,
             'code' => $this->code,
             'status' => $this->status,
+            'client_type' => $this->client_type,
+            'station_token' => $this->client_type === 'app' ? $this->station_token : null,
+            'template_name' => $this->client_type === 'app' ? $this->template_name : null,
         ]);
 
         session()->flash('message', $this->stationId ? 'Cập nhật thành công!' : 'Tạo mới thành công!');
@@ -72,7 +82,10 @@ class PrintStationManager extends Component
         $this->stationId = $id;
         $this->name = $station->name;
         $this->code = $station->code;
-        $this->status = $station->status;
+        $this->status = (bool) $station->status;
+        $this->client_type = $station->client_type ?: 'browser';
+        $this->station_token = $station->station_token;
+        $this->template_name = $station->template_name;
         
         $this->dispatch('show-modal');
         $this->showModal = true;

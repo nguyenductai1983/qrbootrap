@@ -6,7 +6,6 @@ use Livewire\Component;
 use App\Models\Color;
 use App\Models\Specification;
 use App\Models\PlasticType;
-use App\Models\Width;
 
 class CategoryManager extends Component
 {
@@ -39,7 +38,6 @@ class CategoryManager extends Component
             'plastic_type' => PlasticType::class,
             'specification' => Specification::class,
             'color' => Color::class,
-            'width' => Width::class,
         };
     }
 

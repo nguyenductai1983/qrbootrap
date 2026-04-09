@@ -70,6 +70,7 @@ class AnalyticsDashboard extends Component
         if (!$this->isManagerView) {
             $departmentsQuery->where('id', Auth::user()->department_id);
         }
+        $departmentsQuery->where('is_admin', false);
         $departments = $departmentsQuery->with('users')->get();
 
         $allDays = [];

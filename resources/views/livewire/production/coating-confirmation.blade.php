@@ -65,6 +65,43 @@
                         placeholder="Quét hoặc nhập mã Vải..." buttonText="Xác nhận" />
                 </div>
             </div>
+
+            {{-- Lịch sử in gần đây --}}
+            @if (isset($recentPrintJobs) && count($recentPrintJobs) > 0)
+                <div class="card shadow-sm border-0 mt-3">
+                    <div class="card-header bg-secondary text-white fw-bold">
+                        <i class="fa-solid fa-clock-rotate-left"></i> Lịch sử in gần đây
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        @foreach ($recentPrintJobs as $job)
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="fw-bold text-primary">{{ $job->item->code }}</div>
+                                    <div class="small text-muted">{{ $job->created_at->format('H:i d/m') }} -
+                                        {{ $job->printer_mac }}</div>
+                                    @if ($job->status == \App\Models\PrintJob::STATUS_SUCCESS)
+                                        <span class="badge bg-success rounded-pill"><i class="fa-solid fa-check"></i> Đã
+                                            in</span>
+                                    @elseif($job->status == \App\Models\PrintJob::STATUS_PRINTING)
+                                        <span class="badge bg-info rounded-pill"><i
+                                                class="fa-solid fa-spinner fa-spin"></i> Đang in</span>
+                                    @elseif($job->status == \App\Models\PrintJob::STATUS_FAILED)
+                                        <span class="badge bg-danger rounded-pill"><i
+                                                class="fa-solid fa-triangle-exclamation"></i> Lỗi</span>
+                                    @else
+                                        <span class="badge bg-warning text-dark rounded-pill"><i
+                                                class="fa-solid fa-clock"></i> Đang chờ</span>
+                                    @endif
+                                </div>
+                                <button wire:click="reprintJob({{ $job->id }})"
+                                    class="btn btn-sm btn-warning fw-bold shadow-sm" title="In lại mã này">
+                                    <i class="fa-solid fa-print"></i> In Lại
+                                </button>
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
         </div>
 
         {{-- KHU VỰC NHẬP SỐ LIỆU & XÁC NHẬN TRÁNG --}}
@@ -83,7 +120,7 @@
                         </div>
                     @else
                         <h6 class="fw-bold text-secondary text-uppercase mb-3"><i
-                                class="fa-solid fa-boxes-stacked me-1"></i> Mộc Đầu Vào:</h6>
+                                class="fa-solid fa-boxes-stacked me-1"></i>Đầu Vào:</h6>
                         <ul class="list-group mb-4 shadow-sm">
                             @foreach ($scannedItems as $index => $item)
                                 <li class="list-group-item border-start border-4 border-primary">
@@ -95,10 +132,11 @@
                                         </button>
                                     </div>
                                     <div class="row align-items-center p-2 rounded">
-                                        <div class="col-12 col-md-5 small text-muted">
+                                        <div class="col-6 small text-muted">
                                             Tồn: <b class="fs-6">{{ (float) $item['length'] }} m</b>
                                         </div>
-                                        <div class="col-12 col-md-7">
+                                        <div class="col-6 small text-muted text-end">
+                                            Khổ mộc: <b class="fs-6 text-primary">{{ (float) $item['width'] }}</b>
                                         </div>
                                     </div>
                                     <div class="row align-items-center p-2 rounded">
@@ -127,17 +165,170 @@
                                     class="text-primary fw-bold">{{ number_format($coatingRatio ?? 1.07, 3) }}</span>
                             </span>
                         </div>
-                        <div class="mb-4">
-                            <label class="form-label small text-muted fw-bold">Nhập chiều dài cây tráng thực tế thu
-                                được:</label>
-                            <div class="input-group shadow-sm">
-                                <input type="number" step="0.1" wire:model="newLength" id="input-new-length"
-                                    oninput="calculateFromNew(this.value)"
-                                    class="form-control form-control text-end fw-bold text-success fs-4"
-                                    placeholder="0.0">
-                                <span class="input-group-text fw-bold fs-5 text-success">mét (m)</span>
+
+                        @php
+                            $minW = $minWidth > 0 ? $minWidth : 0;
+                            $mismatchedItems = collect($scannedItems)->filter(function ($item) use ($minW) {
+                                return (float) $item['width'] > $minW;
+                            });
+                        @endphp
+                        @if ($mismatchedItems->count() > 0)
+                            <div class="alert alert-warning shadow-sm border border-warning mb-4">
+                                <div class="d-flex align-items-center mb-2">
+                                    <i class="fa-solid fa-scissors fa-2x me-3 text-warning"></i>
+                                    <div>
+                                        <h6 class="fw-bold text-dark mb-1">Phát hiện lệch khổ Mộc!</h6>
+                                        <p class="mb-0 small text-muted">Hệ thống ghi nhận có cuộn Mộc lớn hơn khổ tối
+                                            thiểu ({{ $minW }}). Trong đó:</p>
+                                    </div>
+                                </div>
+                                <ul class="mb-2">
+                                    @foreach ($mismatchedItems as $mist)
+                                        <li class="small"><b class="text-danger">{{ $mist['code'] }}</b> tước biên
+                                            dư ra <b>{{ (float) $mist['width'] - $minW }}</b> mm.</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+                        <div class="row g-2 mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label small text-muted fw-bold">Dài tráng TT thu được:</label>
+                                <div class="input-group shadow-sm">
+                                    <input type="number" step="0.1" wire:model="newLength"
+                                        id="input-new-length" oninput="calculateFromNew(this.value)"
+                                        class="form-control form-control text-end fw-bold text-success fs-4"
+                                        placeholder="0.0">
+                                    <span class="input-group-text fw-bold fs-5 text-success">mét</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small text-muted fw-bold">Chỉ số Lami (Lami =0 là không
+                                    tráng):</label>
+                                <div class="input-group shadow-sm">
+                                    <input type="number" step="0.001" wire:model="lami"
+                                        class="form-control form-control text-end fw-bold text-primary fs-4"
+                                        placeholder="0.00">
+                                </div>
                             </div>
                         </div>
+
+                        <!-- Chế độ Khổ Vải -->
+                        <div class="card shadow-sm mb-4" x-data="{
+                            mode: @entangle('cutMode'),
+                            minW: @entangle('minWidth'),
+                            trimWidth: @entangle('trimWidth'),
+                            split1: @entangle('splitWidth1'),
+                            split2: @entangle('splitWidth2'),
+                            validateTrim() {
+                                let t = parseFloat(this.trimWidth) || 0;
+                                let m = parseFloat(this.minW) || 0;
+                                if (t > m) {
+                                    this.trimWidth = m;
+                                }
+                            },
+                            validateSplit(fromMinWChange = false) {
+                                let t1 = parseFloat(this.split1) || 0;
+                                let t2 = parseFloat(this.split2) || 0;
+                                let m = parseFloat(this.minW) || 0;
+                        
+                                if ((t1 + t2) > m) {
+                                    if (fromMinWChange) {
+                                        if (t1 === t2) {
+                                            this.split1 = m / 2;
+                                            this.split2 = m / 2;
+                                        } else {
+                                            let ratio = t1 / (t1 + t2);
+                                            this.split1 = parseFloat((m * ratio).toFixed(1));
+                                            this.split2 = parseFloat((m - this.split1).toFixed(1));
+                                        }
+                                    } else {
+                                        if (t1 > m) {
+                                            this.split1 = m;
+                                            this.split2 = 0;
+                                        } else {
+                                            this.split2 = parseFloat((m - t1).toFixed(1));
+                                        }
+                                    }
+                                }
+                            },
+                            init() {
+                                this.$watch('minW', () => {
+                                    this.validateTrim();
+                                    this.validateSplit(true);
+                                });
+                                this.$watch('mode', (val) => {
+                                    let m = parseFloat(this.minW) || 0;
+                                    if (val === 'trim' && !this.trimWidth) {
+                                        this.trimWidth = m;
+                                    }
+                                    if (val === 'split' && (!this.split1 || this.split1 == 0)) {
+                                        this.split1 = m / 2;
+                                        this.split2 = m / 2;
+                                    }
+                                    this.validateTrim();
+                                    this.validateSplit(false);
+                                });
+                            }
+                        }">
+                            <div class="card-body">
+                                <label class="form-label text-muted fw-bold mb-3"><i
+                                        class="fa-solid fa-scissors me-1"></i> Tùy chọn xử lý Khổ Màng</label>
+
+                                <div class="d-flex flex-column gap-2 mb-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" x-model="mode" value="keep"
+                                            id="modeKeep">
+                                        <label class="form-check-label fw-bold" for="modeKeep">
+                                            Giữ nguyên khổ
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" x-model="mode" value="trim"
+                                            id="modeTrim">
+                                        <label class="form-check-label fw-bold" for="modeTrim">
+                                            Xén biên (Nhập khổ mới)
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" x-model="mode" value="split"
+                                            id="modeSplit">
+                                        <label class="form-check-label fw-bold" for="modeSplit">
+                                            Chia đôi (Tạo 2 cuộn mới)
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- Form thay đổi khổ -->
+                                <div x-show="mode === 'trim'" x-transition
+                                    class="mt-3 p-3 bg-white border border-warning rounded" style="display: none;">
+                                    <label class="form-label small fw-bold text-warning">Khổ sau xén (Cây mới)</label>
+                                    <input type="number" step="0.1" x-model.lazy="trimWidth"
+                                        @input="validateTrim" class="form-control fw-bold" placeholder="VD: 1500.5">
+                                </div>
+                                <div x-show="mode === 'split'" x-transition
+                                    class="mt-3 p-3 bg-white border border-info rounded row g-2"
+                                    style="display: none;">
+                                    <div class="col-6">
+                                        <label class="form-label small fw-bold text-info">Khổ cây 1</label>
+                                        <input type="number" step="0.1" x-model.lazy="split1"
+                                            @input="validateSplit" class="form-control fw-bold" placeholder="0.0">
+                                    </div>
+                                    <div class="col-6">
+                                        <label class="form-label small fw-bold text-info">Khổ cây 2</label>
+                                        <input type="number" step="0.1" x-model.lazy="split2"
+                                            @input="validateSplit" class="form-control fw-bold" placeholder="0.0">
+                                    </div>
+                                </div>
+                                <div class="form-check form-switch mt-3 pt-3 border-top border-secondary-subtle">
+                                    <input class="form-check-input" type="checkbox" role="switch"
+                                        wire:model="recoverEdgeTrim" id="switchRecover">
+                                    <label class="form-check-label fw-bold text-dark" style="cursor: pointer;"
+                                        for="switchRecover">Tự động thu hồi phần biên dư (Sinh mã Mộc mới cất kho cho
+                                        dải dư khi xén / lệch khổ)</label>
+                                </div>
+                            </div>
+                        </div>
+
                         <button wire:click="confirmCoating" class="btn btn-success btn-lg w-100 fw-bold shadow"
                             wire:loading.attr="disabled" wire:target="confirmCoating">
                             <span wire:loading.remove wire:target="confirmCoating">
@@ -200,7 +391,7 @@
     {{-- SCRIPT: TÍNH TOÁN NHANH BẰNG JS --}}
     {{-- ========================================== --}}
     <script>
-        let currentRatio = {{ $coatingRatio ?? 1.07 }};
+        let currentRatio = {{ $coatingRatio ?? 1.0 }};
         window.getUsedLength = function(itemId) {
             return document.querySelector(`.input-used-length[data-item-id="${itemId}"]`).value;
         }

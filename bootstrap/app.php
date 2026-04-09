@@ -31,7 +31,8 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->validateCsrfTokens(except: [
-            '/printstatusvb', // Ngoại lệ cho máy in
+            '/printapi/*',
+            '/api/login',
         ]);
     })
     ->create();

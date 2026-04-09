@@ -4,6 +4,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="csrf-token" content="{{ csrf_token() }}">
         <title>Trạm In - {{ strtoupper($station_id) }} - Xưởng Tráng</title>
 
         {{-- Chèn CSS & JS của Laravel (Có chứa Laravel Echo) --}}
@@ -140,82 +141,115 @@
                 // Đẩy hàm vào đợi Echo khởi tạo xong
                 const subscribeToPrinter = () => {
                     if (window.Echo) {
+                        const executePrint = (item, jobId) => {
+                            // Xóa dòng "Đang chờ lệnh"
+                            const emptyLog = document.getElementById('empty-log');
+                            if (emptyLog) emptyLog.remove();
+
+                            // Thêm dòng log mới lên đầu danh sách
+                            const logContainer = document.getElementById('print-logs');
+                            const time = new Date().toLocaleTimeString('vi-VN');
+
+                            const newItemHTML = `
+                                <li class="list-group-item bg-dark border-secondary text-white border-start border-4 border-success">
+                                    <div class="d-flex justify-content-between">
+                                        <span class="text-success fw-bold">
+                                            <i class="fa-solid fa-check-circle me-1"></i> NHẬN LỆNH LÚC ${time}
+                                        </span>
+                                    </div>
+                                    <div class="mt-2">
+                                        <b>Mã tem:</b> <span class="text-warning fs-5">${item.code}</span><br>
+                                        ${jobId ? '<span class="badge bg-info text-dark">Job ID: ' + jobId + '</span>' : ''}
+                                    </div>
+                                </li>
+                            `;
+
+                            logContainer.insertAdjacentHTML('afterbegin', newItemHTML);
+
+                            // --- THỰC THI LỆNH IN KIOSK ---
+                            const qrContainer = document.getElementById('qrcode-wrapper');
+                            qrContainer.innerHTML = ''; // Xóa ảnh QR ngầm nếu có lệnh trước đó
+
+                            // Điền thông tin biến cố vào vùng in thầm lặng
+                            if (document.getElementById('print-text')) {
+                                document.getElementById('print-text').innerText = item.code;
+                            }
+                            document.getElementById('print-length').innerText = 'Dài ' + item.length + ' m';
+
+                            // Áp dụng cấu hình cỡ chữ User vừa đặt
+                            if (confText && document.getElementById('print-text')) {
+                                document.getElementById('print-text').style.fontSize = confText.value + 'px';
+                            }
+                            if (confLength && document.getElementById('print-length')) {
+                                document.getElementById('print-length').style.fontSize = confLength.value + 'px';
+                            }
+                            const userQrSize = parseInt(confQr?.value || 120);
+
+                            // Gọi thư viện vẽ mã QR Code mới nhất
+                            new QRCode(qrContainer, {
+                                text: item.code,
+                                width: userQrSize, // Kích cỡ QR
+                                height: userQrSize,
+                                colorDark: "#000000",
+                                colorLight: "#ffffff",
+                                correctLevel: QRCode.CorrectLevel.M
+                            });
+
+                            // Đợi trình duyệt render hình ảnh QR lên DOM mất khoảng 300ms, rồi bóp cò máy in
+                            setTimeout(() => {
+                                window.print();
+                                if(jobId) {
+                                    fetch('/printer/mark-printed/' + jobId, {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+                                        }
+                                    }).then(res => res.json()).then(data => console.log('Đã cập nhật trạng thái đã in cho Job:', jobId));
+                                }
+                            }, 300);
+                        };
+
                         // Bắt tín hiệu kết nối thành công để tắt Spinner đỏ
                         window.Echo.connector.pusher.connection.bind('connected', () => {
                             const statusDiv = document.querySelector(
                                 '.card-header .d-flex.align-items-center');
                             if (statusDiv) statusDiv.innerHTML =
                                 '<span class="text-success fw-bold small"><i class="fa-solid fa-circle text-success me-1"></i> Đã kết nối với Reverb</span>';
+                            
+                            // Check jobs
+                            fetch('/printer/pending-jobs/{{ $station_id }}')
+                                .then(res => res.json())
+                                .then(data => {
+                                    if(data.success && data.jobs && data.jobs.length > 0) {
+                                        console.log('Có ' + data.jobs.length + ' lệnh in bù.');
+                                        
+                                        let currentJobIndex = 0;
+                                        const printNextJob = () => {
+                                            if (currentJobIndex >= data.jobs.length) {
+                                                console.log('Đã in xong tất cả lệnh in bù.');
+                                                return;
+                                            }
+                                            
+                                            let job = data.jobs[currentJobIndex];
+                                            currentJobIndex++;
+                                            
+                                            executePrint(job.item, job.id);
+                                            
+                                            // Gọi job tiếp theo sau 2 giây để đảm bảo DOM được thiết lập xong và tránh chồng chéo
+                                            setTimeout(printNextJob, 2000);
+                                        };
+                                        
+                                        printNextJob();
+                                    }
+                                });
                         });
 
                         window.Echo.channel('printer.{{ $station_id }}')
                             .listen('.print.command', (event) => {
                                 // Dấu chấm '.' ở trước 'print.command' là BẮT BUỘC vì ta dùng broadcastAs() trong PHP
-
-                                console.log("Đã nhận lệnh in!", event);
-
-                                // Xóa dòng "Đang chờ lệnh"
-                                const emptyLog = document.getElementById('empty-log');
-                                if (emptyLog) emptyLog.remove();
-
-                                // Thêm dòng log mới lên đầu danh sách
-                                const logContainer = document.getElementById('print-logs');
-                                const time = new Date().toLocaleTimeString('vi-VN');
-
-                                const newItemHTML = `
-                        <li class="list-group-item bg-dark border-secondary text-white border-start border-4 border-success">
-                            <div class="d-flex justify-content-between">
-                                <span class="text-success fw-bold">
-                                    <i class="fa-solid fa-check-circle me-1"></i> NHẬN LỆNH LÚC ${time}
-                                </span>
-                            </div>
-                            <div class="mt-2">
-                                <b>Mã tem:</b> <span class="text-warning fs-5">${event.item.code}</span><br>
-                            </div>
-                        </li>
-                    `;
-
-                                logContainer.insertAdjacentHTML('afterbegin', newItemHTML);
-                                //<b>Chiều dài:</b> ${event.item.length} mét
-                                // TODO: GỌI HÀM ĐẨY RA MÁY IN VẬT LÝ TẠI ĐÂY (VD: Gửi code ZPL ra máy Zebra)
-                                // executeZebraPrint(event.item.code);
-
-                                // --- THỰC THI LỆNH IN KIOSK ---
-                                const qrContainer = document.getElementById('qrcode-wrapper');
-                                qrContainer.innerHTML = ''; // Xóa ảnh QR ngầm nếu có lệnh trước đó
-
-                                // Điền thông tin biến cố vào vùng in thầm lặng
-                                if (document.getElementById('print-text')) {
-                                    document.getElementById('print-text').innerText = event.item.code;
-                                }
-                                document.getElementById('print-length').innerText = 'Dài ' + event.item.length +
-                                    ' m';
-
-                                // Áp dụng cấu hình cỡ chữ User vừa đặt
-                                if (confText && document.getElementById('print-text')) {
-                                    document.getElementById('print-text').style.fontSize = confText.value +
-                                        'px';
-                                }
-                                if (confLength && document.getElementById('print-length')) {
-                                    document.getElementById('print-length').style.fontSize = confLength.value +
-                                        'px';
-                                }
-                                const userQrSize = parseInt(confQr?.value || 120);
-
-                                // Gọi thư viện vẽ mã QR Code mới nhất
-                                new QRCode(qrContainer, {
-                                    text: event.item.code,
-                                    width: userQrSize, // Kích cỡ QR
-                                    height: userQrSize,
-                                    colorDark: "#000000",
-                                    colorLight: "#ffffff",
-                                    correctLevel: QRCode.CorrectLevel.M
-                                });
-
-                                // Đợi trình duyệt render hình ảnh QR lên DOM mất khoảng 300ms, rồi bóp cò máy in
-                                setTimeout(() => {
-                                    window.print();
-                                }, 300);
+                                console.log("Đã nhận lệnh in realtime!", event);
+                                executePrint(event.item, event.printJobId);
                             });
                     } else {
                         setTimeout(subscribeToPrinter, 100);

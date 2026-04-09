@@ -25,11 +25,14 @@ class Item extends Model
         'color_id',
         'specification_id',
         'plastic_type_id',
-        'width_id',
+        'width_original',
+        'width',
+        'lami',
         'original_length',
         'length',
         'gsm',
         'weight',
+        'weight_original',
         'notes',
         'warehoused_by',
         'warehoused_at',
@@ -79,10 +82,20 @@ class Item extends Model
             ->withPivot('action_type', 'used_length', 'created_at'); // 🌟 Thêm used_length
     }
 
+    public function allChildren()
+    {
+        return $this->children()->with(['allChildren', 'product', 'department', 'color', 'creator', 'machine']);
+    }
+
     public function parents()
     {
         return $this->belongsToMany(Item::class, 'item_genealogies', 'child_item_id', 'parent_item_id')
             ->withPivot('action_type', 'used_length', 'created_at'); // 🌟 Thêm used_length
+    }
+
+    public function allParents()
+    {
+        return $this->parents()->with(['allParents', 'product', 'department', 'color', 'creator', 'machine']);
     }
     // Lấy lịch sử di chuyển
     public function movements()
@@ -94,10 +107,7 @@ class Item extends Model
         // Chỉ định rõ khóa ngoại là 'product_model_id' vì nó không theo chuẩn tên mặc định 'product_id'
         return $this->belongsTo(Product::class, 'product_id');
     }
-    public function width()
-    {
-        return $this->belongsTo(Width::class, 'width_id');
-    }
+
     public function color()
     {
         return $this->belongsTo(Color::class, 'color_id');

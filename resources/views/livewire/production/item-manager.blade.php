@@ -27,7 +27,7 @@
                                 class="btn btn-sm text-primary bg-warning fw-bold shadow-sm text-nowrap"
                                 wire:loading.attr="disabled">
                                 <span wire:loading.remove wire:target="exportExcel">
-                                    <i class="fa-solid fa-file-excel me-1 text-success"></i> Xuất Excel
+                                    <i class="fa-solid fa-file-excel me-1 text-success"></i> Xuất Excel (kèm nguồn gốc)
                                 </span>
                                 <span wire:loading wire:target="exportExcel">
                                     <i class="fa-solid fa-spinner fa-spin me-1"></i> Đang xuất...
@@ -240,6 +240,10 @@
                                             class="btn btn-sm btn-outline-primary me-1" title="Sửa chi tiết">
                                             <i class="fa-solid fa-pen-to-square"></i>
                                         </button>
+                                        <a href="{{ route('manager.items.genealogy', $item->id) }}"
+                                            class="btn btn-sm btn-outline-secondary me-1" title="Truy xuất nguồn gốc phả hệ">
+                                            <i class="fa-solid fa-code-merge"></i>
+                                        </a>
                                         <button wire:click="delete({{ $item->id }})"
                                             wire:confirm="⚠️ Bạn có chắc muốn xóa tem [{{ $item->code }}]? Hành động này không thể hoàn tác!"
                                             class="btn btn-sm btn-outline-danger" title="Xóa tem">

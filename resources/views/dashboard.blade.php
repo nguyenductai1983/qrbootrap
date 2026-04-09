@@ -320,9 +320,9 @@
                     </div>
                 </div>
 
-                {{-- Nhóm Máy Móc & Trạm In --}}
+                {{-- Nhóm Máy Móc, Trạm In & Trạm Cân --}}
                 <h6 class="text-muted fw-bold text-uppercase small mb-3 mt-4"><i class="fa-solid fa-gears me-1"></i> Máy
-                    Móc &amp; Trạm In</h6>
+                    Móc &amp; Trạm</h6>
                 <div class="row g-4 mb-4">
                     {{-- Quản lý Máy --}}
                     <div class="col-md-6 col-lg-3">
@@ -387,6 +387,40 @@
                                     <small class="text-muted">Gán trạm in cho nhân viên</small>
                                 </div>
                                 <a href="{{ route('manager.user-print-stations') }}" class="stretched-link text-info"><i
+                                        class="fas fa-chevron-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Trạm Cân --}}
+                    <div class="col-md-6 col-lg-3">
+                        <div class="card h-100 shadow-sm border-2 hover-card">
+                            <div class="card-body p-3 d-flex align-items-center">
+                                <div class="bg-warning bg-opacity-10 text-warning p-3 rounded me-3">
+                                    <i class="fa-solid fa-weight-scale fa-xl"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="fw-bold mb-0">Trạm Cân</h6>
+                                    <small class="text-muted">Quản lý máy cân & token</small>
+                                </div>
+                                <a href="{{ route('manager.scale-stations') }}" class="stretched-link text-warning"><i
+                                        class="fas fa-chevron-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Phân Công Trạm Cân --}}
+                    <div class="col-md-6 col-lg-3">
+                        <div class="card h-100 shadow-sm border-2 hover-card">
+                            <div class="card-body p-3 d-flex align-items-center">
+                                <div class="bg-warning bg-opacity-10 text-warning p-3 rounded me-3">
+                                    <i class="fa-solid fa-user-check fa-xl"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="fw-bold mb-0">Phân Công Trạm Cân</h6>
+                                    <small class="text-muted">Gán trạm cân cho nhân viên</small>
+                                </div>
+                                <a href="{{ route('manager.user-scale-stations') }}" class="stretched-link text-warning"><i
                                         class="fas fa-chevron-right"></i></a>
                             </div>
                         </div>

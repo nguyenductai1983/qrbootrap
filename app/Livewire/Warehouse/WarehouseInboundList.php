@@ -84,7 +84,6 @@ class WarehouseInboundList extends Component
             'product',
             'color',
             'specification',
-            'width',
             'plasticType',
             'machine',
             'order',

@@ -30,11 +30,18 @@ use App\Livewire\Production\CoatingConfirmation;
 use App\Livewire\Warehouse\ScanToLocation;
 use App\Livewire\Admin\PrintStationManager;
 use App\Livewire\Admin\UserPrintStationAssignment;
+use App\Livewire\Admin\ScaleStationManager;
+use App\Livewire\Admin\UserScaleStationAssignment;
 use App\Livewire\Warehouse\ReportManager;
 use App\Livewire\Warehouse\WarehouseInboundList;
 use App\Livewire\Warehouse\WarehouseDashboard;
 use App\Livewire\Dashboard\AnalyticsDashboard;
 use App\Http\Controllers\Print\PrintController;
+use App\Http\Controllers\Print\PrintAppController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\PrinterController;
 //Role::withoutGlobalScopes()->get(); // Lấy tất cả vai trò mà không áp dụng bất kỳ global scope nào
 Route::view('/', 'welcome');
 Route::view('profile', 'profile')
@@ -42,57 +49,22 @@ Route::view('profile', 'profile')
     ->name('profile');
 Route::view('/guide', 'guide')->middleware(['auth'])->name('guide');
 require __DIR__ . '/auth.php';
-Route::get('/test-500', function () {
-    abort(500, 'đang thử lỗi 500'); // Lệnh ép hệ thống quăng lỗi 500
-});
-// File: routes/web.php
-
-Route::get('/test-print', function () {
-    $data = [
-        'Path' => 'Mau01', // Đảm bảo đường dẫn này có thật trên máy C#
-        'Data' => [
-            'MaSP' => 'H053HFA1 WE S 1165 PP 208 2009 001',
-            'TenSP' => 'Sản phẩm 01'
-        ]
-    ];
-
-    // Truyền đúng Key mà C# đang nghe
-    event(new \App\Events\PrintLabelEvent('station_001_secret', $data));
-
-    return 'Đã bắn lệnh in tới trạm station_001_secret!';
-});
-
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
-
-Route::post('/printstatusvb', function (Request $request) {
-    // 1. Lấy toàn bộ dữ liệu C# gửi lên
-    $data = $request->all();
-
-    // 2. GHI VÀO LOG ĐỂ DEBUG
-    Log::info('--- NHẬN THÔNG TIN TỪ MÁY IN C# ---');
-    Log::info('Dữ liệu thô:', $data);
-
-    // Bạn có thể xử lý logic tại đây (ví dụ: cập nhật database)
-    // $order = Order::where('code', $data['order_id'])->update(['printed' => true]);
-
-    return response()->json([
-        'success' => true,
-        'message' => 'Laravel đã nhận được thông tin!'
-    ]);
-});
-Route::get('/print-stationvb/{key}', function ($key) {
-    // if ($key !== config('app.print_station_key')) {
-    if ($key !== 'your_reverb_key') {
-        abort(403); // Từ chối nếu Key sai
-    }
-    // Logic kết nối WebSocket ở đây...
+Route::post('/api/login', [AuthController::class, 'login']);
+// Tất cả các Route liên quan đến máy in đều dùng chung 1 "chìa khóa" Sanctum
+Route::prefix('printapi')->middleware('auth:sanctum')->group(function () {
+    Route::get('/pending-jobs/{station_token}', [PrintAppController::class, 'pendingJobs']);
+    Route::post('/statusupdate', [PrintAppController::class, 'receiveStatus']);
+    Route::get('/config', [PrintAppController::class, 'getSocketConfig']);
 });
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::view('dashboard', 'dashboard')
         ->name('dashboard');
     // Trang Báo Cáo & Phân Tích — có quyền xem bất kỳ loại nào
     Route::get('/analytics', AnalyticsDashboard::class)->name('analytics');
+
+    // Các Route phục vụ máy in nội bộ xử lý in bù
+    Route::get('/printer/pending-jobs/{mac}', [PrinterController::class, 'pendingJobs']);
+    Route::post('/printer/mark-printed/{jobId}', [PrinterController::class, 'markPrinted']);
 
     // ==========================================
     // 1. NHÓM ADMIN (Tiền tố: /admin/...)
@@ -141,11 +113,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/user-machines', UserMachineAssignment::class)->name('manager.user-machines');
         Route::get('/print-stations', PrintStationManager::class)->name('manager.print-stations');
         Route::get('/user-print-stations', UserPrintStationAssignment::class)->name('manager.user-print-stations');
+        Route::get('/scale-stations', ScaleStationManager::class)->name('manager.scale-stations');
+        Route::get('/user-scale-stations', UserScaleStationAssignment::class)->name('manager.user-scale-stations');
     });
 
     // Tách riêng quản lý Items để các bộ phận khác (có quyền items.view) truy cập được
     Route::middleware(['permission:items.view'])->prefix('manager')->group(function () {
         Route::get('/items', ItemManager::class)->name('manager.items');
+        Route::get('/items/{id}/genealogy', \App\Livewire\Production\ItemGenealogyTrace::class)->name('manager.items.genealogy');
     });
 
     // ==========================================

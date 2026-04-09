@@ -19,7 +19,6 @@ use App\Enums\OrderType;
 use App\Models\Specification;
 use App\Models\Color;
 use App\Models\PlasticType;
-use App\Models\Width;
 use Livewire\Attributes\Title;
 use App\Services\ItemCodeService;
 use Illuminate\Database\QueryException;
@@ -46,8 +45,8 @@ class BarcodeGenerator extends Component
     public $printColumns = 4;
     public $fontSize = 7;
     public $rowsPerPage = 4; // Bổ sung cấu hình số hàng
-    public $colors, $specifications, $plasticTypes, $widths;
-    public $selectedColor, $selectedSpec, $selectedPlastic, $selectedWidth;
+    public $colors, $specifications, $plasticTypes;
+    public $selectedColor, $selectedSpec, $selectedPlastic, $width;
     // --- BIẾN CHO TẠO NHANH ĐƠN HÀNG ---
     public $newOrderType = 'C'; // Mặc định là loại C
     public $newOrderCustomer = '';
@@ -70,7 +69,6 @@ class BarcodeGenerator extends Component
         $this->colors = Color::where('is_active', true)->get();
         $this->specifications = Specification::where('is_active', true)->get();
         $this->plasticTypes = PlasticType::where('is_active', true)->get();
-        $this->widths = Width::where('is_active', true)->get();
 
         // Lấy danh sách Loại tem đang Active
         $this->itemTypes = ItemType::where('is_active', true)->get();
@@ -215,7 +213,7 @@ class BarcodeGenerator extends Component
         $rules = [
             'itemData.PRODUCT_ID' => 'required',
             'quantity' => 'required|integer|min:1',
-            'selectedWidth' => 'required',
+            'width' => 'required|numeric|min:0.1',
             'selectedColor' => 'required',
             'selectedSpec' => 'required',
             'selectedPlastic' => 'required',
@@ -228,7 +226,9 @@ class BarcodeGenerator extends Component
         // Định nghĩa các câu báo lỗi bằng tiếng Việt cho các trường cố định
         $messages = [
             'itemData.PRODUCT_ID.required' => 'Vui lòng chọn Mã Hàng.',
-            'selectedWidth.required' => 'Vui lòng chọn Khổ.',
+            'width.required' => 'Vui lòng nhập Khổ.',
+            'width.numeric' => 'Khổ phải là số.',
+            'width.min' => 'Khổ tối thiểu là 0.1.',
             'selectedColor.required' => 'Vui lòng chọn Màu.',
             'selectedSpec.required' => 'Vui lòng chọn Quy cách.',
             'selectedPlastic.required' => 'Vui lòng chọn Loại nhựa.',
@@ -284,7 +284,7 @@ class BarcodeGenerator extends Component
         $this->generatedItems = [];
         $this->selectedHistoryIds = [];
         // Prefix chung (Ví dụ: RMKHO1)
-        $widthCode = Width::find($this->selectedWidth)?->code ?? '';
+        $widthCode = $this->width ?? '';
         $colorCode = Color::find($this->selectedColor)?->code ?? '';
         $specCode = Specification::find($this->selectedSpec)?->code ?? '';
         $plasticCode = PlasticType::find($this->selectedPlastic)?->code ?? '';
@@ -323,7 +323,8 @@ class BarcodeGenerator extends Component
                     'color_id'         => $this->selectedColor ?: null,
                     'specification_id' => $this->selectedSpec ?: null,
                     'plastic_type_id'  => $this->selectedPlastic ?: null,
-                    'width_id'         => $this->selectedWidth ?: null,
+                    'width_original'   => $this->width ? (float) $this->width : null,
+                    'width'            => $this->width ? (float) $this->width : null,
                     // Map thêm các cột khóa ngoại nếu bạn đã tạo trong DB
                     'order_id' => !empty($this->itemData['ORDER_ID']) ? $this->itemData['ORDER_ID'] : null,
                     'product_id' => !empty($this->itemData['PRODUCT_ID']) ? $this->itemData['PRODUCT_ID'] : null,
@@ -470,7 +471,6 @@ class BarcodeGenerator extends Component
         $this->colors = Color::where('is_active', true)->get();
         $this->specifications = Specification::where('is_active', true)->get();
         $this->plasticTypes = PlasticType::where('is_active', true)->get();
-        $this->widths = Width::where('is_active', true)->get();
 
         // (Tùy chọn) Bạn có thể cho in log ra màn hình console để biết nó đang tự động chạy
         // $this->js("console.log('🔄 Đã tự động cập nhật danh mục mới nhất!');");

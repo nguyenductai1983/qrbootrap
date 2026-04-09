@@ -38,12 +38,6 @@
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button wire:click="switchTab('width')"
-                            class="nav-link fw-semibold {{ $activeTab === 'width' ? 'active text-primary' : 'text-secondary' }}">
-                            Khổ
-                        </button>
-                    </li>
-                    <li class="nav-item" role="presentation">
                         <button wire:click="switchTab('plastic_type')"
                             class="nav-link fw-semibold {{ $activeTab === 'plastic_type' ? 'active text-primary' : 'text-secondary' }}">
                             Loại nhựa

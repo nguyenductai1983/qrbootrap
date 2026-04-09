@@ -11,8 +11,10 @@ use Illuminate\Support\Facades\Auth;
 use App\Enums\ActionType;
 use App\Models\Product;
 use Livewire\Attributes\Title;
-use App\Events\PrintBarcodeRequested;
-use App\Events\PrintLabelEvent;
+use App\Events\PrintLabelRequested;
+use App\Events\PrintLabelAppEvent;
+use App\Models\PrintJob;
+use App\Models\PrintStation;
 
 #[Title('Xác nhận Tráng Ghép')]
 class CoatingConfirmation extends Component
@@ -22,6 +24,7 @@ class CoatingConfirmation extends Component
     public $usedLengths = [];
     public $newLength = '';
     public $coatingRatio = 1.0;
+    public $minWidth = 0; // Theo dõi khổ nhỏ nhất của các cây được quét
     public $products = [];
     public $selectedProductId = ''; // Model nhân viên chọn
     public $selectedMachineId = ''; // Máy đang thực hiện tráng
@@ -29,6 +32,14 @@ class CoatingConfirmation extends Component
     public $printStations = [];     // Danh sách trạm in được gán cho user
     public $printerMac = ''; // Máy in mặc định
     public $manualPrintRequired = null; // Trạng thái chứa mã khi chưa in
+
+    // Cấu hình tính năng mới: Lami và Cắt khổ
+    public $lami = 1; // Độ dày màng ghép
+    public $cutMode = 'keep'; // 'keep', 'trim', 'split'
+    public $trimWidth = ''; // Nhập khổ nếu xén
+    public $splitWidth1 = ''; // Khổ cuộn chia 1
+    public $splitWidth2 = ''; // Khổ cuộn chia 2
+    public $recoverEdgeTrim = false; // Phục vụ tính năng thu hồi biên dư
 
     public function mount()
     {
@@ -43,7 +54,7 @@ class CoatingConfirmation extends Component
         } else {
             $this->products = Product::all();
         }
-        $this->coatingRatio = cache()->get('coating_ratio_' . Auth::id(), 1.07);
+        $this->coatingRatio = cache()->get('coating_ratio_' . Auth::id(), 1);
 
         // Lấy danh sách máy và trạm in được phân công
         $this->machines = $user->machines()->where('status', true)->orderBy('code')->get();
@@ -103,6 +114,7 @@ class CoatingConfirmation extends Component
         if (!collect($this->scannedItems)->contains('id', $item->id)) {
             $this->scannedItems[] = $item;
             $this->usedLengths[$item->id] = 0;
+            $this->minWidth = collect($this->scannedItems)->min('width');
 
             // Bắn tín hiệu để JS tự động tính lại số mét Thành phẩm
             $this->dispatch('update-calculations');
@@ -115,6 +127,7 @@ class CoatingConfirmation extends Component
         unset($this->usedLengths[$itemId]);
         unset($this->scannedItems[$index]);
         $this->scannedItems = array_values($this->scannedItems);
+        $this->minWidth = count($this->scannedItems) > 0 ? collect($this->scannedItems)->min('width') : 0;
 
         $this->dispatch('update-calculations');
     }
@@ -131,6 +144,29 @@ class CoatingConfirmation extends Component
             return;
         }
 
+        // Validate tuỳ Chọn Cắt/Xén
+        $sourceWidth = $this->minWidth;
+
+        if ($this->cutMode === 'trim') {
+            if (!$this->trimWidth || $this->trimWidth <= 0) {
+                $this->dispatch('alert', ['type' => 'error', 'message' => 'Vui lòng nhập khổ mới (Xén)!']);
+                return;
+            }
+            if ($this->trimWidth > $sourceWidth) {
+                $this->dispatch('alert', ['type' => 'error', 'message' => 'Khổ xén (' . $this->trimWidth . ') không thể lớn hơn khổ cha (' . $sourceWidth . ')!']);
+                return;
+            }
+        } elseif ($this->cutMode === 'split') {
+            if (!$this->splitWidth1 || $this->splitWidth1 <= 0 || !$this->splitWidth2 || $this->splitWidth2 <= 0) {
+                $this->dispatch('alert', ['type' => 'error', 'message' => 'Vui lòng nhập đủ 2 khổ mới (Chia đôi)!']);
+                return;
+            }
+            if (($this->splitWidth1 + $this->splitWidth2) > $sourceWidth) {
+                $this->dispatch('alert', ['type' => 'error', 'message' => 'Tổng 2 khổ chia (' . ($this->splitWidth1 + $this->splitWidth2) . ') không thể lớn hơn khổ cha (' . $sourceWidth . ')!']);
+                return;
+            }
+        }
+        // kiểm tra chiều dài
         foreach ($this->scannedItems as $scannedItem) {
             $itemId = $scannedItem['id'];
             $used = (float) ($this->usedLengths[$itemId] ?? 0);
@@ -157,98 +193,195 @@ class CoatingConfirmation extends Component
 
             // 3. LẤY GỐC CÂY ĐẦU TIÊN ĐỂ BUILD MÃ
             $firstItemData = $this->scannedItems[0];
-            $sourceItem = Item::with(['order', 'color', 'specification', 'width', 'plasticType'])
+            $sourceItem = Item::with(['order', 'color', 'specification', 'plasticType'])
                 ->find($firstItemData['id']);
 
-            // 4. BUILD MÃ TRÁNG MỚI (CÓ CHỮ T)
-            $baseParts = array_filter([
-                $sourceItem->order->code ?? '',
-                $sourceItem->color->code ?? '',
-                $sourceItem->specification->code ?? '',
-                $sourceItem->width->code ?? '',
-                $sourceItem->plasticType->code ?? ''
-            ]);
+            // Lấy khổ nhỏ nhất của các cây mục để tính toán làm cấu trúc cây con
+            $sourceWidth = count($this->scannedItems) > 0 ? (float) $this->minWidth : (float) $sourceItem->width;
 
-            // Lấy thuộc tính động (Ví dụ: GSM)
+            // 4. LẤY SẴN CÁC THUỘC TÍNH NỀN có dùng để build mã
             $dynamicProps = ItemProperty::where('is_code', true)->get();
-            foreach ($dynamicProps as $prop) {
-                $val = $sourceItem->properties[$prop->code] ?? null;
-                if ($val !== null && $val !== '') {
-                    $part = ($prop->code_usage == 1) ? $prop->code : '';
-                    $part .= $val . ($prop->unit ?? '');
-                    $baseParts[] = trim($part);
-                }
+
+            // Xử lý phân loại sản phẩm dựa trên tuỳ chọn Lami
+            $isLamiApplied = floatval($this->lami) > 0;
+            $productCode = '';
+
+            if ($isLamiApplied) {
+                // CÓ LAMI: Chuyển đổi thành sản phẩm mới (Tráng ghép)
+                $selectedProduct = $this->selectedProductId ? Product::find($this->selectedProductId) : null;
+                $productCode = $selectedProduct?->code ?? '';
+                $targetProductId = $this->selectedProductId;
+                $targetType = 2; // 2: Tráng ghép (Sản phẩm mới)
+            } else {
+                // KHÔNG LAMI: Thành phẩm vẫn là sản phẩm bị tách ra (Mộc / Giữ nguyên loại)
+                $targetProductId = $sourceItem->product_id;
+                $targetType = $sourceItem->type ?: 1; // Giữ nguyên tính chất gốc
             }
-
-            // Gắn chiều dài tráng vào trước chữ T
-            $baseParts[] = intval($this->newLength);
-
-            // Nối chuỗi cơ sở (Ví dụ: "H212NDS98 WE D8 1780 PP 150 650")
-            $baseString = implode(' ', $baseParts);
-
-            // Tìm STT tiếp theo dựa trên code của Product được chọn
-            $selectedProduct = $this->selectedProductId ? \App\Models\Product::find($this->selectedProductId) : null;
-            $productCode = $selectedProduct?->code ?? '';
-
-            // Nếu có product code thì prefix = " PRODUCTCODE", không có thì để trống
-            $prefix = $productCode ? (' ' . $productCode) : '';
-
-            $countExisting = Item::where('code', 'LIKE', $baseString . $prefix . '%')->count();
-            $nextNo = str_pad($countExisting + 1, 3, '0', STR_PAD_LEFT); // Format: 001, 002...
-
-            // MÃ FINAL: Ví dụ: "H212NDS98 WE D8 1780 PP 150 650 VT001" hoặc "H212NDS98 WE D8 1780 PP 150 650 001"
-            $finalCode = $baseString . $prefix . $nextNo;
 
             // Dọn rác JSON
             $cleanProps = $sourceItem->properties ?? [];
-            unset($cleanProps['DAI'], $cleanProps['DAI_THANH_PHAM'], $cleanProps['LENGTH']);
+            // 5. CHUẨN BỊ THÔNG SỐ KHỔ VÀ TẠO QUY TRÌNH BAO NHIÊU CÂY
+            $widthsToCreate = [];
+            if ($this->cutMode === 'trim') {
+                $widthsToCreate[] = $this->trimWidth;
+            } elseif ($this->cutMode === 'split') {
+                $widthsToCreate[] = $this->splitWidth1;
+                $widthsToCreate[] = $this->splitWidth2;
+            } else {
+                $widthsToCreate[] = $sourceWidth; // Keep
+            }
+            $targetTotalWidth = array_sum($widthsToCreate);
 
-            // 5. KHAI SINH CÂY TRÁNG THÀNH PHẨM
             /** @var \App\Models\User $currentUser */
             $currentUser = Auth::user();
+            $generatedItems = [];
 
-            $coatedItem = Item::create([
-                'code' => $finalCode,
-                // 'type' => 2, // 🌟 Thay số này bằng Type của Vải Tráng trong hệ thống bạn
-                'status' => 1,
-                'type' => 2,
-                // 🌟 CHUẨN MỰC MỚI:
-                'original_length' => $this->newLength, // Lấy độ dài tem làm gốc để bảo vệ mã code
-                'length' => $this->newLength,          // Tồn kho hiện tại để bán/in
-
-                'created_by' => Auth::id(),
-                'order_id'         => $sourceItem->order_id,
-                'product_id'       => $this->selectedProductId,
-                'color_id'         => $sourceItem->color_id,
-                'specification_id' => $sourceItem->specification_id,
-                'width_id'         => $sourceItem->width_id,
-                'plastic_type_id'  => $sourceItem->plastic_type_id,
-                'properties'       => $cleanProps,
-                'department_id'    => $currentUser->department_id,
-                'machine_id'       => $this->selectedMachineId ?: null,
-            ]);
-
-            // 6. CẬP NHẬT CÂY MỘC CŨ VÀ GHI PHẢ HỆ
-            foreach ($this->scannedItems as $oldItemData) {
-                $oldItem = Item::find($oldItemData['id']);
-                $used = (float) $this->usedLengths[$oldItem->id];
-
-                // Ghi vết Pivot
-                $coatedItem->parents()->attach($oldItem->id, [
-                    'action_type' => ActionType::COATING->value,
-                    'used_length' => $used,
-                    'user_id' => Auth::id(),
-                    'created_at' => now(),
+            // Duyệt tạo Item tuỳ số lượng (1 cây Keep/Trim, 2 cây Split)
+            foreach ($widthsToCreate as $index => $targetWidth) {
+                // TẠO MÃ THEO CHÍNH XÁC KHỔ CỦA CÂY THÀNH PHẨM (targetWidth)
+                $baseParts = array_filter([
+                    $sourceItem->order->code ?? '',
+                    $sourceItem->color->code ?? '',
+                    $sourceItem->specification->code ?? '',
+                    intval($targetWidth) ?: '',
+                    $sourceItem->plasticType->code ?? ''
                 ]);
 
-                // Trừ mét tồn kho Mộc
-                $remainingLength = $oldItem->length - $used;
-                $oldItem->update([
-                    'length' => $remainingLength > 0 ? $remainingLength : 0,
+                foreach ($dynamicProps as $prop) {
+                    $val = $sourceItem->properties[$prop->code] ?? null;
+                    if ($val !== null && $val !== '') {
+                        $part = ($prop->code_usage == 1) ? $prop->code : '';
+                        $part .= $val . ($prop->unit ?? '');
+                        $baseParts[] = trim($part);
+                    }
+                }
+
+                $baseParts[] = intval($this->newLength);
+                $baseString = implode(' ', $baseParts);
+
+                // Thêm productCode trước nextNo nhưng KHÔNG có khoảng trắng ở giữa
+                $suffixCode = ($isLamiApplied && $productCode) ? (' ' . $productCode) : ' ';
+                $countExisting = Item::where('code', 'LIKE', $baseString . $suffixCode . '%')->count();
+                $nextNo = str_pad($countExisting + 1, 3, '0', STR_PAD_LEFT);
+                $finalCode = $baseString . $suffixCode . $nextNo;
+
+                $coatedItem = Item::create([
+                    'code' => trim($finalCode),
+                    'status' => 1,
+                    'type' => $targetType,
+                    'original_length' => $this->newLength,
+                    'length' => $this->newLength,
+                    'created_by' => Auth::id(),
+                    'order_id'         => $sourceItem->order_id,
+                    'product_id'       => $targetProductId,
+                    'color_id'         => $sourceItem->color_id,
+                    'specification_id' => $sourceItem->specification_id,
+                    'width_original'   => $targetWidth,
+                    'width'            => $targetWidth,
+                    'gsm'              => $sourceItem->gsm,
+                    'lami'             => $this->lami !== '' ? $this->lami : null,
+                    'plastic_type_id'  => $sourceItem->plastic_type_id,
+                    'properties'       => $cleanProps,
+                    'department_id'    => $currentUser->department_id,
+                    'machine_id'       => $this->selectedMachineId ?: null,
                 ]);
+
+                $generatedItems[] = $coatedItem;
+
+                // 6. CẬP NHẬT CÂY MỘC CŨ VÀ GHI PHẢ HỆ CHO *TỪNG CÂY TRÁNG MỚI*
+                // Lưu ý: Chỉ trừ hao hụt lần đầu tiên ở cuộn đầu, tránh trừ 2 lần nếu split!
+                foreach ($this->scannedItems as $oldItemData) {
+                    $oldItem = Item::find($oldItemData['id']);
+                    $used = (float) $this->usedLengths[$oldItem->id];
+
+                    // Kênh Pivot lưu liên kết (Tráng ghép hoặc Cắt khổ tùy theo có Lami hay không)
+                    $coatedItem->parents()->attach($oldItem->id, [
+                        'action_type' => $isLamiApplied ? ActionType::COATING->value : ActionType::CUTTING->value,
+                        'used_length' => $used, // Đặt đủ số mét cho tất cả các cuộn con
+                        'user_id' => Auth::id(),
+                        'created_at' => now(),
+                    ]);
+
+                    // Chỉ update trừ mét kho ở vòng lập đầu tiên của mảng cut (để không bị trừ 2 lần tồn kho nếu Split 2 cuộn)
+                    if ($index === 0) {
+                        $remainingLength = $oldItem->length - $used;
+                        $oldItem->update([
+                            'length' => $remainingLength > 0 ? $remainingLength : 0,
+                        ]);
+                    }
+                }
+            } // Hết xử lý cây tráng
+
+            // 7. XỬ LÝ THU HỒI BIÊN DƯ NẾU BẬT (CHỈ SINH 1 CÂY DUY NHẤT LÀ MỘC TRỪ KHO CỦA CHA ĐÚNG BẰNG used)
+            if ($this->recoverEdgeTrim) {
+                foreach ($this->scannedItems as $oldItemData) {
+                    $oldItem = Item::with(['order', 'color', 'specification', 'plasticType'])->find($oldItemData['id']);
+                    $diffWidth = (float) $oldItem->width - $targetTotalWidth;
+                    $used = (float) $this->usedLengths[$oldItem->id];
+
+                    if ($diffWidth > 0 && $used > 0) {
+                        // 1. Build Base Code cho cây mộc thu hồi
+                        $basePartsRecover = array_filter([
+                            $oldItem->order->code ?? '',
+                            $oldItem->color->code ?? '',
+                            $oldItem->specification->code ?? '',
+                            intval($diffWidth) ?: '',
+                            $oldItem->plasticType->code ?? ''
+                        ]);
+
+                        // Ghép tiếp thuộc tính động (nếu có, giữ nguyên của cha)
+                        foreach ($dynamicProps as $prop) {
+                            $val = $oldItem->properties[$prop->code] ?? null;
+                            if ($val !== null && $val !== '') {
+                                $part = ($prop->code_usage == 1) ? $prop->code : '';
+                                $part .= $val . ($prop->unit ?? '');
+                                $basePartsRecover[] = trim($part);
+                            }
+                        }
+
+                        $basePartsRecover[] = intval($used); // Gắn chiều dài vào mã gốc
+                        $baseStringRec = implode(' ', $basePartsRecover);
+
+                        $suffixCodeRec = ($isLamiApplied && $productCode) ? (' ' . $productCode) : ' ';
+                        $countExistingRec = Item::where('code', 'LIKE', $baseStringRec . $suffixCodeRec . '%')->count();
+                        $nextNoRec = str_pad($countExistingRec + 1, 3, '0', STR_PAD_LEFT);
+                        $finalCodeRec = $baseStringRec . $suffixCodeRec . $nextNoRec;
+
+                        $recoveredItem = Item::create([
+                            'code' => trim($finalCodeRec),
+                            'status' => 1,
+                            'type' => $targetType,
+                            'original_length' => $used,
+                            'length' => $used, // Chiều dài của biên bị lạng ra khớp đúng con số đã tiêu tốn
+                            'created_by' => Auth::id(),
+                            'order_id'         => $oldItem->order_id,
+                            'product_id'       => $targetProductId,
+                            'department_id'    => $currentUser->department_id,
+                            'machine_id'       => $this->selectedMachineId ?: null,
+                            'color_id'         => $oldItem->color_id,
+                            'specification_id' => $oldItem->specification_id,
+                            'plastic_type_id'  => $oldItem->plastic_type_id,
+                            'width_original'   => $diffWidth, // Khổ phần lỡ thu hồi
+                            'width'            => $diffWidth,
+                            'lami'             => $this->lami !== '' ? $this->lami : null,
+                            'notes'            => 'Thu hồi biên dư từ cuộn ' . $oldItem->code,
+                            'properties'       => $oldItem->properties,
+                        ]);
+
+                        $generatedItems[] = $recoveredItem; // Đẩy vào array lấy Lệnh IN luôn
+
+                        // Liên kết cha con - Kiểu cắt dọc (hoặc tráng nếu áp dụng Lami)
+                        $recoveredItem->parents()->attach($oldItem->id, [
+                            'action_type' => $isLamiApplied ? ActionType::COATING->value : ActionType::CUTTING->value,
+                            'used_length' => $used,
+                            'user_id' => Auth::id(),
+                            'created_at' => now(),
+                        ]);
+                    }
+                }
             }
 
-            // 7. HOÀN TẤT
+            // 8. HOÀN TẤT
             DB::commit();
 
             // Lưu cài đặt vào bộ nhớ đệm cho lần thao tác tiếp theo
@@ -256,35 +389,57 @@ class CoatingConfirmation extends Component
             cache()->forever('selected_product_id_' . Auth::id(), $this->selectedProductId);
             cache()->forever('selected_machine_id_' . Auth::id(), $this->selectedMachineId);
 
-            // 🌟 BẮN LỆNH IN QUA WEBSOCKET (Nếu có chọn trạm in)
-            if (!empty($this->printerMac)) {
-                try {
-                    broadcast(new PrintBarcodeRequested($coatedItem, $this->printerMac));
-                    $successMsg = 'Đã tráng xong và gửi lệnh in! Mã tem mới: ' . $finalCode;
-                    $this->setManualPrintState(
-                        'success',
-                        'Đã tráng xong và gửi lệnh in!',
-                        'Đã gửi lệnh in thành công! Vui lòng kiểm tra máy in.',
-                        $finalCode
-                    );
-                } catch (\Throwable $e) {
-                    \Illuminate\Support\Facades\Log::error('Lỗi broadcast gửi lệnh in: ' . $e->getMessage());
-                    $successMsg = 'Đã tráng xong nhưng lỗi gửi lệnh in!';
-                    $this->setManualPrintState(
-                        'error',
-                        'Tạo mã thành công nhưng Chưa In Được!',
-                        'Lỗi kết nối máy in/hệ thống. Vui lòng liên hệ quản trị. Hãy chụp màn hình hoặc ghi lại thông tin này để in bù:',
-                        $finalCode
-                    );
+            // 🌟 BẮN LỆNH IN QUA WEBSOCKET CHO TOÀN BỘ DANH SÁCH GENERATED
+            $msgCodes = [];
+            foreach ($generatedItems as $gItem) {
+                $msgCodes[] = $gItem->code;
+                if (!empty($this->printerMac)) {
+                    try {
+                        $printJob = PrintJob::create([
+                            'item_id' => $gItem->id,
+                            'printer_mac' => $this->printerMac,
+                            'user_id' => Auth::id(),
+                            'status' => PrintJob::STATUS_PENDING
+                        ]);
+
+                        $station = PrintStation::where('code', $this->printerMac)->first();
+
+                        if ($station && $station->client_type === 'app') {
+                            $printData = [
+                                'Path' => $station->template_name,
+                                'Data' => [
+                                    ['Name' => 'MaSP', 'Value' => $gItem->code],
+                                    ['Name' => 'TenSP', 'Value' => $gItem->product->name ?? ''],
+                                ],
+                                'JobId' => $printJob->id
+                            ];
+                            event(new PrintLabelAppEvent($station->station_token, $printData));
+                        } else {
+                            broadcast(new PrintLabelRequested($gItem, $this->printerMac, $printJob->id));
+                        }
+                    } catch (\Throwable $e) {
+                        \Illuminate\Support\Facades\Log::error('Lỗi broadcast gửi lệnh in: ' . $e->getMessage());
+                    }
                 }
+            }
+
+            $codesString = implode(', ', $msgCodes);
+
+            if (!empty($this->printerMac)) {
+                $successMsg = 'Đã tráng xong và gửi xử lý in! Mã tem: ' . $codesString;
+                $this->setManualPrintState(
+                    'success',
+                    'Đã tráng xong và chuyển in',
+                    'Đã xử lý in thành công! Vui lòng kiểm tra máy in.',
+                    $codesString
+                );
             } else {
-                $successMsg = 'Đã tráng xong nhưng chưa in (Không chọn trạm in)! Mã tem mới: ' . $finalCode;
-                // Lưu lại mã để hiển thị lên màn hình cho nhân viên mang đi in tay
+                $successMsg = 'Đã tráng xong (Chưa trạm in)! Mã tem: ' . $codesString;
                 $this->setManualPrintState(
                     'warning',
-                    'Đã tráng xong nhưng chưa in (Không chọn trạm in)!',
-                    'Bạn không chọn trạm in, vui lòng chụp màn hình hoặc ghi lại thông tin bên dưới để đem đi lấy tem:',
-                    $finalCode
+                    'Tráng xong nhưng chưa gửi IN',
+                    'Chưa có máy in, hãy gọi lệnh in lại trên màn hình hoặc báo quản lý.',
+                    $codesString
                 );
             }
 
@@ -307,6 +462,12 @@ class CoatingConfirmation extends Component
         $this->usedLengths = [];
         $this->newLength = '';
         $this->codeInput = '';
+        $this->cutMode = 'keep';
+        $this->trimWidth = '';
+        $this->splitWidth1 = '';
+        $this->splitWidth2 = '';
+        $this->lami = 1;
+        $this->minWidth = 0;
     }
 
     public function clearManualPrint()
@@ -332,21 +493,50 @@ class CoatingConfirmation extends Component
             'time'    => now()->format('d/m/Y H:i:s'),
         ];
     }
-    public function printtest()
-    {
-        $printData = [
-            'Path' => 'C:\\Labels\\Barcode_Template.btw',
-            'Data' => [
-                'MaSP' => 'PRO-999',
-                'TenSP' => 'Sản phẩm thử nghiệm'
-            ]
-        ];
 
-        // Gửi tới trạm in có key tương ứng
-        event(new PrintLabelEvent('station_001_secret', $printData));
+    public function reprintJob($jobId)
+    {
+        $job = PrintJob::with('item')->find($jobId);
+        if ($job && $job->item) {
+            $mac = $this->printerMac ?: $job->printer_mac;
+            $job->update([
+                'status' => PrintJob::STATUS_PENDING,
+                'printer_mac' => $mac,
+                'user_id' => Auth::id()
+            ]);
+
+            $station = PrintStation::where('code', $mac)->first();
+
+            if ($station && $station->client_type === 'app') {
+                $printData = [
+                    'Path' => $station->template_name,
+                    'Data' => [
+                        ['Name' => 'MaSP', 'Value' => $job->item->code],
+                        ['Name' => 'TenSP', 'Value' => $job->item->product->name],
+                    ],
+                    'JobId' => $job->id
+                ];
+                event(new PrintLabelAppEvent($station->station_token, $printData));
+            } else {
+                broadcast(new PrintLabelRequested($job->item, $mac, $job->id));
+            }
+
+            $this->dispatch('alert', ['type' => 'success', 'message' => 'Đã gửi lại lệnh in cho mã: ' . $job->item->code]);
+        } else {
+            $this->dispatch('alert', ['type' => 'error', 'message' => 'Không tìm thấy công việc in.']);
+        }
     }
+
     public function render()
     {
-        return view('livewire.production.coating-confirmation');
+        $recentPrintJobs = PrintJob::with('item')
+            ->where('user_id', Auth::id())
+            ->orderBy('id', 'desc')
+            ->take(5)
+            ->get();
+
+        return view('livewire.production.coating-confirmation', [
+            'recentPrintJobs' => $recentPrintJobs
+        ]);
     }
 }

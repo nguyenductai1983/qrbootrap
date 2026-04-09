@@ -12,6 +12,8 @@ use App\Models\Product;
 use App\Models\Department;
 use Livewire\Attributes\Title;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\ItemsExport;
 
 #[Title('Danh sách mã code')]
 class ItemManager extends Component
@@ -132,7 +134,7 @@ class ItemManager extends Component
 
         /** @var \App\Models\User $user */
         $user = Auth::user();
-        $query = Item::with(['order', 'product', 'color'])
+        $query = Item::with(['order', 'product', 'color', 'department', 'parents'])
             ->whereDate('created_at', '>=', $this->fromDate)
             ->whereDate('created_at', '<=', $this->toDate)
             ->when(!$user->canViewAllDepartments(), function ($q) use ($user) {
@@ -149,6 +151,9 @@ class ItemManager extends Component
             })
             ->when($this->filterColorId, function ($q) {
                 $q->where('color_id', $this->filterColorId);
+            })
+            ->when($this->filterDepartmentId, function ($q) {
+                $q->where('department_id', $this->filterDepartmentId);
             });
 
         $items = $query->orderBy('id', 'desc')->get();
@@ -158,7 +163,7 @@ class ItemManager extends Component
             return;
         }
 
-        return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\ItemsExport($items), 'danh-sach-tem-' . date('Ymd_His') . '.xlsx');
+        return Excel::download(new ItemsExport($items), 'danh-sach-tem-' . date('Ymd_His') . '.xlsx');
     }
 
     public function render()

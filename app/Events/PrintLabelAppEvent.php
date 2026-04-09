@@ -7,8 +7,9 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow; // Dùng Now
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Broadcasting\PrivateChannel;
 
-class PrintLabelEvent implements ShouldBroadcastNow // Sửa ở đây
+class PrintLabelAppEvent implements ShouldBroadcastNow // Sửa ở đây
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -23,14 +24,21 @@ class PrintLabelEvent implements ShouldBroadcastNow // Sửa ở đây
 
     public function broadcastOn(): array
     {
-        // Phải khớp với kênh C# đang nghe: print-stationvb.station_001_secret
+        // Dùng Channel thường nhưng với cái tên "bí mật"
         return [
-            new Channel('print-stationvb.' . $this->stationKey),
+            new Channel('printstationapp.' . $this->stationKey),
         ];
     }
 
     public function broadcastAs(): string
     {
-        return 'PrintCommand'; // Tên này cực kỳ quan trọng cho C#
+        return 'PrintAppCommand'; // Tên này cực kỳ quan trọng cho C#
+    }
+
+    public function broadcastWith(): array
+    {
+        // Điều này đảm bảo Laravel không tự ý bọc payload vào biến "data" hay "stationKey"
+        // mà đẩy nguyên gốc mảng $printData sang cho C# dễ xử lý.
+        return $this->data;
     }
 }

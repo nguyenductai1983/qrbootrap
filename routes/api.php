@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\QrCodeScanController;
+use App\Http\Controllers\Api\ScaleApiController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController; // Import AuthController
@@ -14,9 +15,7 @@ use App\Http\Controllers\Api\AuthController; // Import AuthController
 | be assigned to the "api" middleware group. Make something great!
 |
 */
-
 // Route để nhận dữ liệu JSON từ QR code
-
 
 // Route tùy chọn để xem dữ liệu quét (ví dụ để kiểm tra)
 // Route::get('/qrscan/{qr_code_id}', [QrCodeScanController::class, 'show']);
@@ -35,3 +34,10 @@ use App\Http\Controllers\Api\AuthController; // Import AuthController
 //     Route::post('/register', [AuthController::class, 'register']);
 //     Route::post('/qrscan', [QrCodeScanController::class, 'store']);    
 // });
+
+// ============================================================
+// API Trạm Cân (Scale Station) — Dành cho C# Client
+// Xác thực bằng station_token trong payload (không cần Sanctum)
+// ============================================================
+Route::post('/scale/broadcast-weight', [ScaleApiController::class, 'broadcastWeight']);
+Route::post('/warehouse/update-weight', [ScaleApiController::class, 'updateWeight']);

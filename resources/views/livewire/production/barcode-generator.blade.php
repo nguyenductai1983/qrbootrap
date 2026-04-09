@@ -176,16 +176,9 @@
                                 </select>
                             </div>
                             <div class="col-md-4">
-                                <label class="form-label small fw-bold" for="selectedWidth"><i
+                                <label class="form-label small fw-bold" for="width"><i
                                         class="fa-solid fa-text-width"></i>Khổ</label>
-                                <select wire:model="selectedWidth" class="form-select" id="selectedWidth">
-                                    <option value="">-- Chọn Khổ --</option>
-                                    @foreach ($widths as $width)
-                                        <option value="{{ $width->id }}">{{ $width->code }} -
-                                            {{ $width->name }}
-                                        </option>
-                                    @endforeach
-                                </select>
+                                <input wire:model="width" type="number" step="0.1" class="form-control" id="width">
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label small fw-bold" for="selectedPlastic"><i

@@ -38,15 +38,15 @@
                         </a>
                         <a href="#section-scan" class="list-group-item list-group-item-action fw-bold"
                             data-bs-toggle="list">
-                            4. Quét kiểm tra hàng
+                            4. Quét kiểm tra (Mobile)
                         </a>
                         <a href="#section-coating" class="list-group-item list-group-item-action fw-bold"
                             data-bs-toggle="list">
-                            5. Xác nhận tráng
+                            5. Xác nhận tráng (Mobile)
                         </a>
                         <a href="#section-warehouse" class="list-group-item list-group-item-action fw-bold text-success"
                             data-bs-toggle="list">
-                            6. Nhập Kho & Vị Trí
+                            6. Nhập Kho & Vị Trí (Mobile)
                         </a>
                         <a href="#section-printstation" class="list-group-item list-group-item-action fw-bold text-info"
                             data-bs-toggle="list">
@@ -95,46 +95,25 @@
 
                         <div class="tab-pane fade" id="section-print">
                             <div class="card shadow-sm border-0 mb-4">
-                                <div class="card-header  py-3">
-                                    <h5 class="fw-bold text-success m-0"><i class="fa-solid fa-print me-2"></i>2. Cách
-                                        In Tem Mã Vạch</h5>
+                                <div class="card-header py-3">
+                                    <h5 class="fw-bold text-success m-0"><i class="fa-solid fa-print me-2"></i>2. Cách In Tem Mã Vạch</h5>
                                 </div>
                                 <div class="card-body">
-                                    <p>Dùng để tạo tem dán lên sản phẩm mới.</p>
-
-                                    <div class="row g-3">
-                                        <div class="col-md-6">
-                                            <div class="border rounded p-3 h-100">
-                                                <h6 class="fw-bold">Quy trình thực hiện:</h6>
-                                                <ol class="ps-3 mb-0">
-                                                    <li class="mb-2">Trên menu trái, chọn mục <br><strong><i
-                                                                class="fa-solid fa-print text-muted"></i> In Tem Mã
-                                                            Vạch</strong> (hoặc <strong>In Tem Excel</strong>).</li>
-                                                    <li class="mb-2">Cột bên trái: Chọn <strong>Sản phẩm</strong> và
-                                                        <strong>Loại Tem</strong>.
-                                                    </li>
-                                                    <li class="mb-2">Cột bên phải: Chọn ý nghĩa cột đầu tiên
-                                                        (<strong>Số lượng tem</strong> hoặc <strong>Số thứ tự
-                                                            tem</strong>).</li>
-                                                    <li class="mb-2">Copy dữ liệu từ Excel và dán vào ô nội dung.
-                                                        <br><small class="text-muted">(Thứ tự cột: Cột 1, Mã Đơn Hàng,
-                                                            Màu, Loại, Khổ, Loại Nhựa, GSM, Chiều dài, Số máy)</small>
-                                                    </li>
-                                                    <li class="mb-2">Tùy chỉnh <strong>Định dạng mã in</strong> (QR
-                                                        Code/Barcode) và các thông số khác.</li>
-                                                    <li>Nhấn nút <strong>Tạo Mới & In Ngay</strong>.</li>
-                                                </ol>
-                                            </div>
+                                    <p>Chức năng dùng để tạo thẻ/tem thông tin dán lên từng sản phẩm (cây vải).</p>
+                                    <div class="row align-items-center mb-4">
+                                        <div class="col-md-6 mb-3 mb-md-0 text-center">
+                                            <img src="/images/guide/ss_print.png" alt="Cách in tem mã vạch" class="img-fluid border rounded shadow-sm w-100">
                                         </div>
                                         <div class="col-md-6">
-                                            <div class="border rounded p-3 h-100">
-                                                <h6 class="fw-bold text-danger">Lưu ý quan trọng:</h6>
-                                                <ul class="ps-3 mb-0 small">
-                                                    <li class="mb-2">Hãy kiểm tra kỹ giấy in trong máy in trước khi
-                                                        bấm nút.</li>
-                                                    <li>Nếu trình duyệt chặn cửa sổ bật lên (Popup), hãy cho phép nó để
-                                                        hộp thoại in xuất hiện.</li>
-                                                </ul>
+                                            <h6 class="fw-bold text-primary">Quy trình thực hiện:</h6>
+                                            <ol class="ps-3 mb-0">
+                                                <li class="mb-2">Trên menu trái, chọn mục <strong><i class="fa-solid fa-print text-muted"></i> In Tem Mã Vạch</strong>.</li>
+                                                <li class="mb-2"><strong>Bước 1:</strong> Chọn Sản phẩm, Loại Mã (BarCode hay QR Code) từ trình đơn thả xuống (Cột bên trái).</li>
+                                                <li class="mb-2"><strong>Bước 2:</strong> Copy trực tiếp nội dung chi tiết cây vải (Từ Excel) và dán (Paste) thẳng vào "Ô Nội dung".</li>
+                                                <li class="mb-2"><strong>Bước 3:</strong> Ấn nút <span class="badge bg-primary">Tạo Mới & In Ngay</span>. Dữ liệu sẽ vào máy in.</li>
+                                            </ol>
+                                            <div class="alert alert-secondary mt-3 small p-2">
+                                                <i class="fa-solid fa-lightbulb text-warning"></i> <strong>Mẹo:</strong> Thứ tự cột copy từ Excel thường là: Tên/Màu, Đơn Hàng, Loại, Khổ, Nhựa, GSM... tùy vào thiết lập quy chuẩn.
                                             </div>
                                         </div>
                                     </div>
@@ -144,38 +123,35 @@
 
                         <div class="tab-pane fade" id="section-excel">
                             <div class="card shadow-sm border-0 mb-4">
-                                <div class="card-header  py-3">
-                                    <h5 class="fw-bold text-success m-0"><i class="fa-solid fa-file-excel me-2"></i>3.
-                                        Nhập liệu từ Excel</h5>
+                                <div class="card-header py-3">
+                                    <h5 class="fw-bold text-success m-0"><i class="fa-solid fa-file-excel me-2"></i>3. Nhập liệu từ Excel</h5>
                                 </div>
                                 <div class="card-body">
-                                    <p>Chức năng này giúp bạn cập nhật thông tin (số mét, trọng lượng...) cho hàng loạt
-                                        tem cùng lúc.</p>
-
-                                    <div class="step-guide">
-                                        <div class="d-flex mb-3">
-                                            <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center"
-                                                style="width: 30px; height: 30px; min-width: 30px;">1</div>
-                                            <div class="ms-3">
-                                                <strong>Tải file mẫu:</strong> Vào mục Nhập/Xuất Excel -> Nhấn "Tải file
-                                                mẫu".
-                                            </div>
+                                    <p>Giúp bạn cập nhật khối lượng, số mét, thay đổi thông số đồng loạt nhanh chóng. Phù hợp cho văn phòng hoặc quản đốc làm việc trên máy tính.</p>
+                                    <div class="row align-items-center mb-4">
+                                        <div class="col-md-6 mb-3 mb-md-0 text-center">
+                                            <img src="/images/guide/ss_excel.png" alt="Nhập liệu bằng Excel" class="img-fluid border rounded shadow-sm w-100">
                                         </div>
-                                        <div class="d-flex mb-3">
-                                            <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center"
-                                                style="width: 30px; height: 30px; min-width: 30px;">2</div>
-                                            <div class="ms-3">
-                                                <strong>Nhập số liệu:</strong> Mở file Excel vừa tải, nhập số liệu vào
-                                                các cột tương ứng. <span class="text-danger fw-bold">Tuyệt đối không sửa
-                                                    cột Code</span>.
-                                            </div>
-                                        </div>
-                                        <div class="d-flex">
-                                            <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center"
-                                                style="width: 30px; height: 30px; min-width: 30px;">3</div>
-                                            <div class="ms-3">
-                                                <strong>Tải lên hệ thống:</strong> Chọn file Excel đã nhập -> Nhấn nút
-                                                "Nhập dữ liệu (Import)".
+                                        <div class="col-md-6">
+                                            <div class="step-guide">
+                                                <div class="d-flex mb-3 align-items-center">
+                                                    <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 30px; height: 30px; min-width: 30px;">1</div>
+                                                    <div class="ms-3">
+                                                        <strong>Tải Mẫu:</strong> Nhấn "Tải file mẫu" ở góc phải để lấy file chuẩn đã có danh sách toàn bộ các mã đang có.
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex mb-3 align-items-center">
+                                                    <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 30px; height: 30px; min-width: 30px;">2</div>
+                                                    <div class="ms-3">
+                                                        <strong>Chỉnh sửa:</strong> Nhập số cân (kg), số mét vào Excel. <br><span class="text-danger fw-bold"><i class="fa-solid fa-triangle-exclamation"></i> Không sửa cột "Code" (Mã)</span>.
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 30px; height: 30px; min-width: 30px;">3</div>
+                                                    <div class="ms-3">
+                                                        <strong>Tải Lên:</strong> Chọn file vừa điền xong và bấm "Upload dữ liệu". 
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -185,21 +161,23 @@
 
                         <div class="tab-pane fade" id="section-scan">
                             <div class="card shadow-sm border-0 mb-4">
-                                <div class="card-header  py-3">
-                                    <h5 class="fw-bold text-warning m-0"><i class="fa-solid fa-barcode me-2"></i>4.
-                                        Quét
-                                        kiểm tra hàng</h5>
+                                <div class="card-header py-3">
+                                    <h5 class="fw-bold text-warning m-0"><i class="fa-solid fa-mobile-screen-button me-2"></i>4. Sản Xuất & Quét Kiểm Tra (Mobile)</h5>
                                 </div>
                                 <div class="card-body">
-                                    <p>Sử dụng máy quét cầm tay hoặc camera điện thoại.</p>
-                                    <ol>
-                                        <li class="mb-2">Vào mục <strong>Quét Sản Phẩm</strong>.</li>
-                                        <li class="mb-2">Đặt con trỏ chuột vào ô nhập liệu trắng.</li>
-                                        <li>Cầm máy quét, bấm quét mã vạch trên tem sản phẩm. Thông tin chi tiết sẽ hiện
-                                            ra ngay bên dưới.</li>
-                                    </ol>
-                                    <div class="alert alert-secondary small">
-                                        Nếu dùng điện thoại, hãy bấm nút <strong>"Bật Camera"</strong> để quét.
+                                    <p>Chức năng này được tối ưu cho giao diện điện thoại, giúp bạn dễ dàng kiểm tra thông tin chi tiết mã vạch trực tiếp tại xưởng thông qua Camera điện thoại.</p>
+                                    <div class="row mb-4">
+                                        <div class="col-md-5 mb-3 mb-md-0 text-center">
+                                            <img src="/images/guide/mobile_scan.png" alt="Giao diện Quét kiểm tra trên Mobile" class="img-fluid border rounded shadow-sm w-100" style="max-width: 250px;">
+                                        </div>
+                                        <div class="col-md-7">
+                                            <ol class="ps-3 mb-0">
+                                                <li class="mb-2">Truy cập vào mục <strong>Quét Kiểm Tra</strong> (hoặc đường dẫn <code class="text-primary">/production/scan-mobile</code>).</li>
+                                                <li class="mb-2">Hệ thống sẽ yêu cầu quyền sử dụng Camera trên điện thoại, hãy bấm <strong>Cho phép</strong>.</li>
+                                                <li class="mb-2">Đưa Camera hướng vào mã vạch/mã QR của sản phẩm (cây vải) cần kiểm tra sao cho mã nằm gọn trong khung quét.</li>
+                                                <li>Thông tin chi tiết về sản phẩm (độ dài, tình trạng, lịch sử...) sẽ ngay lập tức được hiển thị bên dưới màn hình.</li>
+                                            </ol>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -207,79 +185,81 @@
 
                         <div class="tab-pane fade" id="section-coating">
                             <div class="card shadow-sm border-0 mb-4">
-                                <div class="card-header  py-3">
-                                    <h5 class="fw-bold text-success m-0"><i
-                                            class="fa-solid fa-layer-group me-2"></i>5. Xác
-                                        nhận tráng</h5>
+                                <div class="card-header py-3">
+                                    <h5 class="fw-bold text-success m-0"><i class="fa-solid fa-layer-group me-2"></i>5. Máy Tráng / Ghép Kéo Mộc (Mobile)</h5>
                                 </div>
                                 <div class="card-body">
-                                    <p>Sử dụng khi bạn cần ghép nhiều cây Mộc thành một cây Tráng mới.</p>
-                                    <ol>
-                                        <li class="mb-2">Vào mục <strong>Xác Nhận Tráng</strong> trên bảng điều khiển
-                                            hoặc menu.</li>
-                                        <li class="mb-2">Chọn <strong>Thành phẩm</strong> và <strong>Máy thực
-                                                hiện</strong>.</li>
-                                        <li class="mb-2">Quét lần lượt các mã tem Mộc. Có thể dùng súng quét, nhập
-                                            tay, hoặc dùng nút Bật Camera.</li>
-                                        <li class="mb-2">Nhập số mét xuất dùng tương ứng cho từng cây Mộc đã quét.
-                                        </li>
-                                        <li class="mb-2">Ở mục <strong>Thành phẩm đầu ra</strong>, nhập chiều dài
-                                            thực tế thu được của cây Tráng. Hệ thống sẽ tự tính tỉ lệ.</li>
-                                        <li>Nhấn nút <strong>XÁC NHẬN TẠO MÃ & IN TEM</strong>. Một mã sản phẩm Mới sẽ
-                                            tự động được sinh ra và gửi tín hiệu In.</li>
-                                    </ol>
-                                    <div class="alert alert-secondary small mt-3">
-                                        <i class="fa-solid fa-lightbulb text-warning me-1"></i> <strong>Lưu ý:</strong>
-                                        Đảm bảo <strong>Độ dài xuất dùng</strong> không vượt quá độ dài hiện tại của cây
-                                        mộc. Nếu nhập dư, hệ thống sẽ cảnh báo đỏ.
+                                    <p>Nghiệp vụ ghép nhiều cây vải "Mộc" thành 1 cuộn "Tráng" thành phẩm. Giao diện được thiết kế để thao tác nhanh trên điện thoại hoặc máy tính bảng gắn tại xưởng (đường dẫn <code class="text-primary">/production/coating-confirmation</code>).</p>
+                                    <div class="row mb-4">
+                                        <div class="col-md-5 mb-3 mb-md-0 text-center">
+                                            <img src="/images/guide/mobile_coating.png" alt="Giao diện Xác nhận Tráng trên Mobile" class="img-fluid border rounded shadow-sm w-100" style="max-width: 250px;">
+                                        </div>
+                                        <div class="col-md-7">
+                                            <ol class="ps-3 mb-0">
+                                                <li class="mb-2">Vào menu <strong>Xác Nhận Tráng</strong> và chọn Máy thực hiện trên màn hình thiết bị.</li>
+                                                <li class="mb-2">Sử dụng chức năng quét mã qua camera điện thoại hoặc súng quét Bluetooth để quét các cuộn vải "Mộc" được đưa lên máy.</li>
+                                                <li class="mb-2">Nhập trực tiếp <strong>số mét xuất</strong> cho mỗi cuộn mộc đã dùng ngay trên giao diện cảm ứng.</li>
+                                                <li class="mb-2">Ghi <strong>số mét Thu Được</strong> cho cây Tráng đầu ra.</li>
+                                                <li>Nhấn nút <span class="badge bg-success">TẠO MÃ & IN TEM</span>. Lệnh in sẽ tự động đẩy xuống máy Kiosk để in tem Tráng mới dán lên cuộn vừa làm ra.</li>
+                                            </ol>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        {{-- SECTION: NHẬP KHO --}}
                         <div class="tab-pane fade" id="section-warehouse">
                             <div class="card shadow-sm border-0 mb-4">
                                 <div class="card-header py-3">
-                                    <h5 class="fw-bold text-success m-0"><i class="fa-solid fa-warehouse me-2"></i>6.
-                                        Nhập Kho &amp; Quản Lý Vị Trí</h5>
+                                    <h5 class="fw-bold text-success m-0"><i class="fa-solid fa-warehouse me-2"></i>6. Nhập Kho &amp; Quản Lý Vị Trí (Mobile)</h5>
                                 </div>
                                 <div class="card-body">
-                                    <p>Chức năng kho giúp theo dõi hàng hóa bán thành phẩm theo vị trí thực tế trong
-                                        kho.</p>
-                                    <div class="row g-3">
-                                        <div class="col-md-6">
-                                            <div class="border rounded p-3 h-100">
-                                                <h6 class="fw-bold">Nhập kho đơn giản (Không vị trí):</h6>
-                                                <ol class="ps-3 mb-0">
-                                                    <li class="mb-2">Vào menu <strong>Nhập Kho</strong>, chọn chế độ
-                                                        <span class="badge bg-secondary">Nhập Tạm</span>.
-                                                    </li>
-                                                    <li class="mb-2">Quét lần lượt mã cây vải cần nhập kho.</li>
-                                                    <li>Hệ thống sẽ ghi nhận và cập nhật trạng thái người dùng nhao.
-                                                    </li>
-                                                </ol>
-                                            </div>
+                                    <p>Chức năng kho được thiết kế đặc biệt tối ưu cho <strong>điện thoại di động</strong> (đường dẫn <code class="text-primary">/warehouse/scan-to-location</code>), giúp công nhân trực tiếp sử dụng điện thoại cá nhân lấy nét qua camera để nhập kho và sắp xếp kệ hàng tại xưởng.</p>
+                                    
+                                    <h6 class="fw-bold text-primary mt-4 mb-3"><i class="fa-solid fa-1"></i> Các chế độ nhập kho</h6>
+                                    <div class="row mb-4 align-items-center">
+                                        <div class="col-md-5 mb-3 mb-md-0 text-center">
+                                            <img src="/images/guide/mobile_warehouse.png" alt="Giao diện Nhập kho trên Mobile" class="img-fluid border rounded shadow-sm w-100" style="max-width: 250px;">
                                         </div>
-                                        <div class="col-md-6">
-                                            <div class="border rounded p-3 h-100">
-                                                <h6 class="fw-bold">Nhập kho có vị trí:</h6>
-                                                <ol class="ps-3 mb-0">
-                                                    <li class="mb-2">Chọn chế độ <span class="badge bg-success">Nhập
-                                                            + Vị Trí</span>.</li>
-                                                    <li class="mb-2">Quét mã QR <strong>kệ hàng</strong> trước để
-                                                        chọn vị trí.</li>
-                                                    <li>Tiếp tục quét các mã cây vải. Mỗi cây sẽ tự gán vào kệ đó.</li>
-                                                </ol>
-                                            </div>
+                                        <div class="col-md-7">
+                                            <ul class="list-group list-group-flush mb-0">
+                                                <li class="list-group-item">
+                                                    <span class="badge bg-secondary me-2">Nhập Tạm</span> Quét nhanh mã qua camera điện thoại để xác nhận cây vải đã về kho (không ghi nhận xếp lên kệ nào).
+                                                </li>
+                                                <li class="list-group-item">
+                                                    <span class="badge bg-success me-2">Nhập + Vị Trí</span> Hướng camera quét mã QR dán trên kệ hàng TRƯỚC, sau đó lần lượt quét mã các cây vải. Các cây vải này sẽ tự động gắn vào hệ thống thuộc về kệ vừa quét.
+                                                </li>
+                                                <li class="list-group-item">
+                                                    <span class="badge bg-info text-dark me-2">Xác Nhận Vị Trí</span> Phù hợp khi thao tác chuyển kệ trên điện thoại cho các hàng hoá đã trong kho.
+                                                </li>
+                                            </ul>
                                         </div>
                                     </div>
-                                    <div class="alert alert-info small mt-3">
-                                        <i class="fa-solid fa-circle-info me-1"></i> Admin có thể vào <strong>Quản Lý
-                                            Vị Trí Kho</strong> để thêm/sửa kệ, và xuất Xuất báo cáo kho Excel bất kỳ
-                                        lúc
-                                        nào.
+
+                                    <h6 class="fw-bold text-primary mt-4 mb-3"><i class="fa-solid fa-2"></i> Cân điện tử & Nhập trọng lượng</h6>
+                                    <div class="row mb-4">
+                                        <div class="col-12">
+                                            <p>Nếu xưởng của bạn có trang bị cân điện tử kết nối qua WiFi với hệ thống:</p>
+                                            <ol class="mb-0">
+                                                <li class="mb-2">Giao diện điện thoại sẽ có khu vực hiển thị số kg truyền trực tiếp (real-time) từ cân điện tử. Khi có trạng thái <span class="badge bg-success">Ổn định</span>, bạn có thể tự động chốt số liệu.</li>
+                                                <li class="mb-2">Cũng có màn hình nhập tay dự phòng (trong trường hợp cân rớt mạng hoặc gặp trục trặc).</li>
+                                                <li><strong>Cách làm siêu tốc trên mobile:</strong> Đặt cuộn vải lên cân -> Số nảy trên điện thoại -> Quét mã QR qua camera điện thoại -> Lưu thành công!</li>
+                                            </ol>
+                                        </div>
                                     </div>
+
+                                    <h6 class="fw-bold text-primary mt-4 mb-3"><i class="fa-solid fa-3"></i> Xem Lịch Sử / Danh Sách Nhập Kho</h6>
+                                    <div class="row mb-2">
+                                        <div class="col-12">
+                                            <p>Ngay trên điện thoại, truy cập <strong>Danh Sách Nhập Kho</strong>, bạn có thể dễ dàng kiểm tra:</p>
+                                            <ul class="mb-0">
+                                                <li>Số mét, Lượng Kg, Vị trí kệ, Màu, Loại... của từng cây vải.</li>
+                                                <li>Trích xuất dữ liệu người nào thực hiện thao tác cân nhập kho và chốt vào giờ nào.</li>
+                                                <li>Các công cụ lọc hỗ trợ tra cứu nhanh <strong>Mã barcode</strong> hoặc <strong>Ngày nhập</strong> trên màn hình nhỏ di động.</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    
                                 </div>
                             </div>
                         </div>
@@ -288,39 +268,23 @@
                         <div class="tab-pane fade" id="section-printstation">
                             <div class="card shadow-sm border-0 mb-4">
                                 <div class="card-header py-3">
-                                    <h5 class="fw-bold text-info m-0"><i class="fa-solid fa-print me-2"></i>7. Trạm In
-                                        Kiosk (Tự Động)</h5>
+                                    <h5 class="fw-bold text-info m-0"><i class="fa-solid fa-print me-2"></i>7. Trạm In Kiosk (Tự Động)</h5>
                                 </div>
                                 <div class="card-body">
-                                    <p>Hệ thống in tự động cho phép máy tính Kiosk nhận lệnh in thông qua mạng nội bộ và
-                                        tự in không cần bấm gì thêm.</p>
-                                    <div class="row g-3">
-                                        <div class="col-md-6">
-                                            <div class="border rounded p-3 h-100">
-                                                <h6 class="fw-bold">Thiết lập trạm in (Admin):</h6>
-                                                <ol class="ps-3 mb-0">
-                                                    <li class="mb-2">Vào <strong>Quản Lý Trạm In</strong>, tạo mới
-                                                        trạm với mã (code) dậy nhớ.</li>
-                                                    <li class="mb-2">Vào <strong>Phân Công Trạm In</strong>, gán trạm
-                                                        cho đúng nhân viên.</li>
-                                                    <li>Nhân viên mở trình duyệt với tham số --kiosk-printing <a
-                                                            href="{{ route('production.print-station') }}"
-                                                            target="_blank"><strong>Print Station</strong></a> trên máy
-                                                        Kiosk và để yên.</li>
-                                                    <li> Các máy in khác khai báo /01 /02 /03 ...</li>
-                                                </ol>
-                                            </div>
+                                    <p>Giải pháp cho xưởng in tự động không cần người thao tác bấm máy: Máy tính cắm máy in luôn bật sẵn, tự động nhận lệnh từ mọi nơi.</p>
+                                    <div class="row align-items-center mb-4">
+                                        <div class="col-md-6 mb-3 mb-md-0 text-center">
+                                            <img src="/images/guide/ss_printstation.png" alt="Trạm in Kiosk tự động" class="img-fluid border rounded shadow-sm w-100">
                                         </div>
                                         <div class="col-md-6">
-                                            <div class="border rounded p-3 h-100">
-                                                <h6 class="fw-bold text-info">Quy trình in tự động:</h6>
-                                                <ol class="ps-3 mb-0 small">
-                                                    <li class="mb-2">Nhân viên thực hiện <strong>Xác Nhận
-                                                            Tráng</strong> ở máy tính khác.</li>
-                                                    <li class="mb-2">Hệ thống gửi tín hiệu qua mạng đến đúng trạm in
-                                                        được phân công.</li>
-                                                    <li>Máy Kiosk tự in tem không cần ai bấm gì.</li>
-                                                </ol>
+                                            <h6 class="fw-bold">Cách máy in tự động hoạt động:</h6>
+                                            <ol class="ps-3 mb-0">
+                                                <li class="mb-2"><strong>Admin</strong> tạo các "Trạm In" và gán quyền trạm in cho một nhân viên cụ thể (Tài khoản Kiosk).</li>
+                                                <li class="mb-2">Máy tính cắm máy in đăng nhập bằng tài khoản Kiosk đó, sau đó nhấp vào link <strong><a href="/production/print-station" target="_blank" class="text-decoration-none">Print Station Màn Hình Chờ</a></strong> và để y nguyên máy đó cả ngày.</li>
+                                                <li>Mỗi khi bất kỳ máy nào khác trong xưởng bấm nút phát hành tem (Ví dụ ở máy Tráng), tín hiệu mạng ảo sẽ nhảy tới màn hình Kiosk và đẩy thẳng ra máy in. </li>
+                                            </ol>
+                                            <div class="alert alert-secondary mt-3 small p-2">
+                                                *Lưu ý: Bật chế độ in âm thầm (SILENT PRINTING hoặc KIOSK mode) trên Chrome/Edge để tắt hộp thoại hỏi cấu hình trước khi in.
                                             </div>
                                         </div>
                                     </div>
@@ -332,50 +296,26 @@
                             <div class="tab-pane fade" id="section-admin">
                                 <div class="card shadow-sm border-0 mb-4 border-danger">
                                     <div class="card-header bg-danger text-white py-3">
-                                        <h5 class="fw-bold m-0"><i class="fa-solid fa-user-gear me-2"></i>6. Dành cho Quản
-                                            Trị Viên</h5>
+                                        <h5 class="fw-bold m-0"><i class="fa-solid fa-user-gear me-2"></i>8. Dành cho Quản Trị Viên</h5>
                                     </div>
                                     <div class="card-body">
-                                        <h6 class="fw-bold">Thiết lập dữ liệu ban đầu:</h6>
-                                        <p>Trước khi nhân viên có thể in tem, bạn cần tạo dữ liệu theo thứ tự sau:</p>
-
-                                        <div class="table-responsive">
-                                            <table class="table table-bordered table-sm">
-                                                <thead class="table-light">
-                                                    <tr>
-                                                        <th>Thứ tự</th>
-                                                        <th>Mục cần tạo</th>
-                                                        <th>Giải thích</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td>1</td>
-                                                        <td><a href="{{ route('manager.products') }}">Model Sản Phẩm</a>
-                                                        </td>
-                                                        <td>Tạo danh sách các mã hàng (Ví dụ: Áo thun, Vải Cotton...)</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>2</td>
-                                                        <td><a href="{{ route('manager.orders') }}">Đơn Hàng (PO)</a></td>
-                                                        <td>Tạo đơn hàng và gán các Model vào đơn hàng đó.</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>3</td>
-                                                        <td><a href="{{ route('users.index') }}">Người dùng</a></td>
-                                                        <td>Tạo tài khoản cho nhân viên và phân quyền (Roles).</td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
+                                        <p>Kiểm soát quy trình Cài Đặt Sản Xuất, Đơn hàng, Phân quyền hệ thống.</p>
+                                        <div class="row align-items-center mb-4">
+                                            <div class="col-md-5 mb-3 mb-md-0 text-center">
+                                                <img src="/images/guide/ss_admin.png" alt="Chức năng Admin" class="img-fluid border rounded shadow-sm w-100">
+                                            </div>
+                                            <div class="col-md-7">
+                                                <h6 class="fw-bold">Thiết lập dữ liệu ban đầu:</h6>
+                                                <p>Để khởi chạy xưởng mới, bạn cần tạo thông số theou thứ tự chuẩn sau:</p>
+                                                <ol class="ps-3 mb-0">
+                                                    <li class="mb-2"><strong>Mô hình Sản xuất:</strong> Vào menu <strong>Sản phẩm</strong> tạo các Mode, sau đó qua các Menu <strong>Danh mục / Loại Tem</strong> để tinh chỉnh.</li>
+                                                    <li class="mb-2"><strong>Đơn hàng (PO):</strong> Tạo mới Đơn Hàng và Liên kết (Map) các Sản Phẩm vào đơn hàng đó (Để lúc nhân viên In tem có thể bắt chéo Model + Đơn hàng).</li>
+                                                    <li class="mb-2"><strong>Người & Máy:</strong> Vào menu Quản lý Users tạo tài khoản. Phân đúng phân loại vai trò (Role). Sau đó gán cho họ phụ trách Máy Tráng, Trạm Cân, Kiosk đúng người.</li>
+                                                </ol>
+                                                <hr>
+                                                <p class="text-danger small"><i class="fa-solid fa-circle-exclamation me-1"></i> Nếu nhân viên đăng nhập thấy màn hình báo lỗi, nghĩa là tài khoản đó đang không được gắn bất kỳ Vai trò nào. Hãy qua menu Vai trò -> Edit -> Gán User.</p>
+                                            </div>
                                         </div>
-                                        <hr>
-                                        <h6 class="fw-bold text-danger">Khắc phục sự cố:</h6>
-                                        <ul>
-                                            <li><strong>User không thấy menu?</strong> -> Kiểm tra xem họ đã được gán Vai
-                                                trò (Role) hay chưa.</li>
-                                            <li><strong>Lỗi khi nhập Excel?</strong> -> Đảm bảo tiêu đề cột trong file Excel
-                                                không bị đổi tên.</li>
-                                        </ul>
                                     </div>
                                 </div>
                             </div>
