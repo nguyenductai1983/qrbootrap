@@ -260,7 +260,7 @@
                             };
                         @endphp
                         <div class="alert {{ $alertClass }} text-center shadow-sm" role="alert">
-                            <h5 class="alert-heading fw-bold mb-1">
+                            <h5 class="alert-heading fw-bold mb-1" style="white-space: pre-line;">
                                 <i class="fa-solid {{ $icon }} me-2"></i>{{ $message }}
                             </h5>
                             @if (in_array($scanStatus, ['error', 'warning']))

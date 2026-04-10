@@ -248,6 +248,39 @@ class ScanToLocation extends Component
         $this->dispatch('focus-input');
     }
 
+    /** Hàm sinh mã kho tự động */
+    private function generateWarehouseCode(Item $item): string
+    {
+        $monthChars = [
+            1 => 'A',
+            2 => 'B',
+            3 => 'C',
+            4 => 'D',
+            5 => 'E',
+            6 => 'F',
+            7 => 'G',
+            8 => 'H',
+            9 => 'I',
+            10 => 'J',
+            11 => 'K',
+            12 => 'L'
+        ];
+        $currentMonth = now()->month;
+        $monthChar = $monthChars[$currentMonth] ?? 'A';
+
+        // Đếm số lượng item cùng product đã nhập kho trong tháng
+        $count = Item::where('product_id', $item->product_id)
+            ->whereNotNull('warehouse_code')
+            ->whereYear('warehoused_at', now()->year)
+            ->whereMonth('warehoused_at', $currentMonth)
+            ->count();
+
+        $sequence = $count + 1;
+        $productCode = optional($item->product)->code ?? 'UNKNOWN';
+
+        return "{$productCode}-{$monthChar}{$sequence}";
+    }
+
     /** Hàm nhập kho dùng chung cho mode 1 & 2 */
     private function doWarehouseIn(Item $item, ?int $locationId, string $note): void
     {
@@ -263,11 +296,17 @@ class ScanToLocation extends Component
             ];
         }
 
+        $warehouseCode = $item->warehouse_code;
+        if (empty($warehouseCode)) {
+            $warehouseCode = $this->generateWarehouseCode($item);
+        }
+
         $item->update(array_merge([
             'status'             => ItemStatus::IN_WAREHOUSE,
             'current_location_id' => $locationId,
             'warehoused_by'      => Auth::id(),
             'warehoused_at'      => now(),
+            'warehouse_code'     => $warehouseCode,
         ], $weightData));
 
         if ($oldLocationId != $locationId) {
@@ -292,7 +331,7 @@ class ScanToLocation extends Component
         $weightText = $effectiveWeight ? " | {$effectiveWeight}kg" : '';
 
         $this->scanStatus = 'success';
-        $this->message    = "✅ ĐÃ NHẬP KHO: {$item->code}{$locText}{$weightText}";
+        $this->message    = "Mã kho: {$warehouseCode} \n ✅ ĐÃ NHẬP KHO: {$item->code}{$locText}{$weightText} ";
         $this->itemInfo   = $item;
         $this->dispatch('play-success-sound');
         $this->dispatch('focus-input');
@@ -312,7 +351,7 @@ class ScanToLocation extends Component
         $item->weight = $newWeight;
         $item->save();
 
-        // Xác định loại hành động
+        // Xác định loại hành động nhập kho mới hoặc tái nhập dư
         $isSurplus = ($oldWeight > 0 && $newWeight < $oldWeight);
         $actionType = $isSurplus
             ? MovementAction::SURPLUS_ENTRY->value
