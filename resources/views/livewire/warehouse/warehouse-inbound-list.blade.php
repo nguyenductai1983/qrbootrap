@@ -97,7 +97,7 @@
         <table class="table table-hover table-bordered align-middle mb-0 table-card">
             <thead>
                 <tr>
-                    <th>Mã Barcode</th>
+                    <th>Mã Tem / Mã Kho</th>
                     <th>Màu / Loại / Khổ</th>
                     <th>Số Mét</th>
                     <th>TL (kg)</th>
@@ -111,9 +111,12 @@
             <tbody>
                 @forelse ($items as $item)
                     <tr wire:key="inbound-{{ $item->id }}">
-                        <td data-label="Mã">
-                            <div class="d-flex align-items-center gap-2">
+                        <td data-label="Mã Tem / Mã Kho">
+                            <div class="d-flex flex-column gap-1 align-items-start">
                                 <span class="badge bg-dark font-monospace fs-6">{{ $item->code }}</span>
+                                @if($item->warehouse_code)
+                                    <span class="badge bg-success font-monospace border"><i class="fa-solid fa-qrcode me-1"></i>{{ $item->warehouse_code }}</span>
+                                @endif
                             </div>
                         </td>
                         <td data-label="Màu / Loại / Khổ">

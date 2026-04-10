@@ -93,9 +93,12 @@ class WarehouseInboundList extends Component
         ])
         ->whereNotNull('warehoused_by');
 
-        // Tìm kiếm theo mã barcode
+        // Tìm kiếm theo mã barcode hoặc mã kho
         if ($this->search !== '') {
-            $query->where('code', 'like', '%' . $this->search . '%');
+            $query->where(function($q) {
+                $q->where('code', 'like', '%' . $this->search . '%')
+                  ->orWhere('warehouse_code', 'like', '%' . $this->search . '%');
+            });
         }
 
         // Lọc theo dòng sản phẩm

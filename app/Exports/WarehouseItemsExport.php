@@ -77,6 +77,7 @@ class WarehouseItemsExport implements FromCollection, WithHeadings, WithMapping,
     {
         $headings = [
             'Mã Barcode',
+            'Mã Kho',
             'Màu Sắc',
             'Loại Vải',
             'Khổ',
@@ -110,6 +111,7 @@ class WarehouseItemsExport implements FromCollection, WithHeadings, WithMapping,
 
         $row = [
             $item->code,
+            $item->warehouse_code,
             $item->color ? $item->color->code : '',
             $item->specification ? $item->specification->code : '',
             $item->width,
@@ -146,7 +148,7 @@ class WarehouseItemsExport implements FromCollection, WithHeadings, WithMapping,
     public function columnFormats(): array
     {
         return [
-            'M' => 'dd/mm/yyyy hh:mm:ss', // Định dạng ngày tháng chuẩn Excel
+            'N' => 'dd/mm/yyyy hh:mm:ss', // Định dạng ngày tháng chuẩn Excel
         ];
     }
 }
