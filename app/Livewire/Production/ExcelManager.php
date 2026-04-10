@@ -63,7 +63,7 @@ class ExcelManager extends Component
         $fileName = 'SanXuat_' . date('Ymd_His') . '.xlsx';
 
         return Excel::download(
-            new ItemsExport($this->selectedOrderId, $this->selectedProductId, $this->fromDate, $this->toDate),
+            new \App\Exports\ItemsTemplateExport($this->selectedOrderId, $this->selectedProductId, $this->fromDate, $this->toDate),
             $fileName
         );
     }

@@ -72,7 +72,7 @@ class RolesAndPermissionsSeeder extends Seeder
         $productsRole = Role::firstOrCreate(['name' => 'products']);
         $warehouseRole = Role::firstOrCreate(['name' => 'warehouse']);
         $CoatingRole  = Role::firstOrCreate(['name' => 'coating']);
-
+        $printRole  = Role::firstOrCreate(['name' => 'print']);
         // Admin: tất cả quyền
         $adminRole->syncPermissions(Permission::all());
 
@@ -207,5 +207,16 @@ class RolesAndPermissionsSeeder extends Seeder
         );
         // Gán quyền coating cho user này
         $user->assignRole('coating');
+        $user = User::firstOrCreate(
+            [
+                'email' => 'print@qrcode.com',
+                'username' => 'print',
+                'name' => 'print',
+                'password' => Hash::make('12345678'), // Đặt mật khẩu
+                'department_id' => 3, // Gán vào phòng IT (ID 1) nếu muốn
+            ]
+        );
+        // Gán quyền coating cho user này
+        $user->assignRole('print');
     }
 }

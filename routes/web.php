@@ -131,6 +131,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::middleware(['permission:products.print'])->group(function () {
         Route::get('/production/barcode-generator-excel', BarcodeGeneratorExcel::class)->name('production.barcode-generator-excel');
         Route::get('/production/barcode-generator', BarcodeGenerator::class)->name('production.barcode-generator');
+    });
+    Route::middleware(['permission:print'])->group(function () {
         Route::get('/print-station/{station_id?}', function ($station_id = '01') {
             return view('production.print-station', compact('station_id'));
         })->name('production.print-station');

@@ -25,26 +25,51 @@ class ItemsImport implements ToModel, WithHeadingRow
             $ignoredColumns = ['code', 'created_at', 'original_length', 'length', 'gsm', 'weight'];
 
             // 2. Cập nhật các trường cố định
-            if (array_key_exists('original_length', $row) && !is_null($row['original_length'])) {
-                $item->original_length = is_numeric($row['original_length']) ? (float) $row['original_length'] : null;
+            if (array_key_exists('original_length', $row)) {
+                if (is_null($row['original_length']) || $row['original_length'] === '') {
+                    $item->original_length = null;
+                } else {
+                    $item->original_length = is_numeric($row['original_length']) ? (float) $row['original_length'] : $item->original_length;
+                }
             }
-            if (array_key_exists('length', $row) && !is_null($row['length'])) {
-                $item->length = is_numeric($row['length']) ? (float) $row['length'] : null;
+            if (array_key_exists('length', $row)) {
+                if (is_null($row['length']) || $row['length'] === '') {
+                    $item->length = null;
+                } else {
+                    $item->length = is_numeric($row['length']) ? (float) $row['length'] : $item->length;
+                }
+            }
+            if (array_key_exists('gsm', $row)) {
+                if (is_null($row['gsm']) || $row['gsm'] === '') {
+                    $item->gsm = null;
+                } else {
+                    $item->gsm = is_numeric($row['gsm']) ? (float) $row['gsm'] : $item->gsm;
+                }
+            }
+            if (array_key_exists('weight', $row)) {
+                if (is_null($row['weight']) || $row['weight'] === '') {
+                    $item->weight = null;
+                } else {
+                    $item->weight = is_numeric($row['weight']) ? (float) $row['weight'] : $item->weight;
+                }
             }
 
             // 3. Quét các cột còn lại để đưa vào properties
             foreach ($row as $key => $value) {
 
-                // BƯỚC A: Bỏ qua các cột cố định và các ô rỗng
-                if (in_array($key, $ignoredColumns) || is_null($value)) {
+                // BƯỚC A: Bỏ qua các cột cố định
+                if (in_array($key, $ignoredColumns)) {
                     continue;
                 }
 
-                // BƯỚC B: Chuẩn hóa Key từ 'so_met' thành 'SO_MET'
                 $dbKey = strtoupper($key);
 
-                // Gán giá trị động
-                $props[$dbKey] = $value;
+                // BƯỚC B: Gán giá trị động, nếu trống thì gán chuỗi rỗng để có thể xoá dữ liệu cũ
+                if (is_null($value) || $value === '') {
+                    $props[$dbKey] = ''; // hoặc unset($props[$dbKey]); tùy nhu cầu, nhưng để trống là an toàn
+                } else {
+                    $props[$dbKey] = $value;
+                }
             }
 
             // 4. Lưu lại thông tin
