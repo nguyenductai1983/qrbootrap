@@ -70,7 +70,8 @@
                         <div
                             class="card-header bg-dark border-bottom border-secondary d-flex justify-content-between align-items-center py-3">
                             <h4 class="mb-0 fw-bold text-success">
-                                <i class="fa-solid fa-print me-2"></i> Trạm in: <span class="text-warning">{{ strtoupper($station_id) }}</span>
+                                <i class="fa-solid fa-print me-2"></i> Trạm in: <span
+                                    class="text-warning">{{ strtoupper($station_id) }}</span>
                             </h4>
                             <div class="d-flex align-items-center">
                                 <div class="spinner-grow spinner-grow-sm text-danger me-2" role="status"></div>
@@ -151,7 +152,7 @@
                             const time = new Date().toLocaleTimeString('vi-VN');
 
                             const newItemHTML = `
-                                <li class="list-group-item bg-dark border-secondary text-white border-start border-4 border-success">
+                                <li class="list-group-item border-secondary border-start border-4 border-success">
                                     <div class="d-flex justify-content-between">
                                         <span class="text-success fw-bold">
                                             <i class="fa-solid fa-check-circle me-1"></i> NHẬN LỆNH LÚC ${time}
@@ -174,14 +175,15 @@
                             if (document.getElementById('print-text')) {
                                 document.getElementById('print-text').innerText = item.code;
                             }
-                            document.getElementById('print-length').innerText = 'Dài ' + item.length + ' m';
+                            document.getElementById('print-length').innerText = Math.round(item.length) + ' m';
 
                             // Áp dụng cấu hình cỡ chữ User vừa đặt
                             if (confText && document.getElementById('print-text')) {
                                 document.getElementById('print-text').style.fontSize = confText.value + 'px';
                             }
                             if (confLength && document.getElementById('print-length')) {
-                                document.getElementById('print-length').style.fontSize = confLength.value + 'px';
+                                document.getElementById('print-length').style.fontSize = confLength.value +
+                                    'px';
                             }
                             const userQrSize = parseInt(confQr?.value || 120);
 
@@ -198,14 +200,17 @@
                             // Đợi trình duyệt render hình ảnh QR lên DOM mất khoảng 300ms, rồi bóp cò máy in
                             setTimeout(() => {
                                 window.print();
-                                if(jobId) {
+                                if (jobId) {
                                     fetch('/printer/mark-printed/' + jobId, {
                                         method: 'POST',
                                         headers: {
                                             'Content-Type': 'application/json',
-                                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+                                            'X-CSRF-TOKEN': document.querySelector(
+                                                'meta[name="csrf-token"]')?.getAttribute(
+                                                'content') || ''
                                         }
-                                    }).then(res => res.json()).then(data => console.log('Đã cập nhật trạng thái đã in cho Job:', jobId));
+                                    }).then(res => res.json()).then(data => console.log(
+                                        'Đã cập nhật trạng thái đã in cho Job:', jobId));
                                 }
                             }, 300);
                         };
@@ -216,30 +221,30 @@
                                 '.card-header .d-flex.align-items-center');
                             if (statusDiv) statusDiv.innerHTML =
                                 '<span class="text-success fw-bold small"><i class="fa-solid fa-circle text-success me-1"></i> Đã kết nối với Reverb</span>';
-                            
+
                             // Check jobs
                             fetch('/printer/pending-jobs/{{ $station_id }}')
                                 .then(res => res.json())
                                 .then(data => {
-                                    if(data.success && data.jobs && data.jobs.length > 0) {
+                                    if (data.success && data.jobs && data.jobs.length > 0) {
                                         console.log('Có ' + data.jobs.length + ' lệnh in bù.');
-                                        
+
                                         let currentJobIndex = 0;
                                         const printNextJob = () => {
                                             if (currentJobIndex >= data.jobs.length) {
                                                 console.log('Đã in xong tất cả lệnh in bù.');
                                                 return;
                                             }
-                                            
+
                                             let job = data.jobs[currentJobIndex];
                                             currentJobIndex++;
-                                            
+
                                             executePrint(job.item, job.id);
-                                            
+
                                             // Gọi job tiếp theo sau 2 giây để đảm bảo DOM được thiết lập xong và tránh chồng chéo
                                             setTimeout(printNextJob, 2000);
                                         };
-                                        
+
                                         printNextJob();
                                     }
                                 });

@@ -88,7 +88,7 @@ class AnalyticsDashboard extends Component
             $isWarehouse = (bool) $dept->is_warehouse;
             $deptName = $dept->name;
             $deptId   = $dept->id;
-            
+
             $deptColor = $colorList[$colorIdx % count($colorList)];
             $colorIdx++;
 
@@ -97,7 +97,7 @@ class AnalyticsDashboard extends Component
                 $userIds = $dept->users->pluck('id');
                 $totalInWarehouse = Item::whereIn('warehoused_by', $userIds)
                     ->where('status', ItemStatus::IN_WAREHOUSE)->count();
-                
+
                 $metrics = [
                     [
                         'title' => 'Đang / Đã Nhập Kho',
@@ -124,14 +124,13 @@ class AnalyticsDashboard extends Component
                     'fill'            => true,
                     'pointRadius'     => 3,
                 ];
-
             } else {
                 // Sản xuất
                 $totalCreated = Item::where('department_id', $dept->id)
                     ->where('created_at', '>=', $from)->count();
 
                 $coatingCount = ItemGenealogy::where('created_at', '>=', $from)
-                    ->whereHas('item', function($q) use ($dept) {
+                    ->whereHas('item', function ($q) use ($dept) {
                         $q->where('department_id', $dept->id);
                     })->distinct('child_item_id')->count();
 
@@ -140,25 +139,25 @@ class AnalyticsDashboard extends Component
 
                 $metrics = [
                     [
-                        'title' => 'Item Mới',
+                        'title' => 'SP Mới',
                         'value' => number_format($totalCreated),
                         'icon'  => 'fa-solid fa-tags',
                         'color' => 'primary',
-                        'unit'  => 'tem'
+                        'unit'  => 'phiếu'
                     ],
                     [
                         'title' => 'Đã Xác Nhận Dùng',
                         'value' => number_format($coatingCount),
                         'icon'  => 'fa-solid fa-layer-group',
                         'color' => 'warning',
-                        'unit'  => 'lần'
+                        'unit'  => 'phiếu'
                     ],
                     [
                         'title' => 'Đang / Đã Nhập Kho',
                         'value' => number_format($totalInWarehouse),
                         'icon'  => 'fa-solid fa-warehouse',
                         'color' => 'info',
-                        'unit'  => 'cây'
+                        'unit'  => 'phiếu'
                     ]
                 ];
 
@@ -167,7 +166,7 @@ class AnalyticsDashboard extends Component
                     ->where('department_id', $deptId)
                     ->where('created_at', '>=', $from)
                     ->groupBy('day')->orderBy('day')->pluck('total', 'day');
-                    
+
                 $globalChartDatasets[] = [
                     'label'           => 'Sản Lượng (' . $deptName . ')',
                     'data'            => array_map(fn($d) => $prodTrend[$d] ?? 0, $allDays),
@@ -194,7 +193,6 @@ class AnalyticsDashboard extends Component
                     'fill'            => false,
                     'pointRadius'     => 3,
                 ];
-
             }
 
             $data[] = [

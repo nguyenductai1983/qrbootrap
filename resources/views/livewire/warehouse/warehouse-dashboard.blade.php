@@ -8,7 +8,7 @@
         </div>
         <div>
             <button wire:click="loadData" class="btn btn-primary shadow-sm">
-                <i class="fa-solid fa-rotate-right me-1"></i>Làm mới dữ liệu
+                <i class="fa-solid fa-rotate-right me-1"></i>Tải dữ liệu mới nhất
             </button>
         </div>
     </div>
@@ -21,7 +21,7 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <div class="text-muted small text-uppercase tracking-wide fw-bold mb-1">Tổng Số Cuộn / Tem
+                            <div class="text-muted small text-uppercase tracking-wide fw-bold mb-1">Tổng Số Sản Phẩm
                             </div>
                             <h2 class="fw-bold mb-0 text-primary">{{ number_format($totalItems) }}</h2>
                         </div>
@@ -115,7 +115,7 @@
                         <tr>
                             <th class="ps-4 py-3">Sản Phẩm</th>
                             <th class="text-center py-3">Mã Code</th>
-                            <th class="text-end py-3">Số Lượng Lô/Tem</th>
+                            <th class="text-end py-3">Số Lượng Sản Phẩm</th>
                             <th class="text-end pe-4 py-3">Tổng Khối Lượng (m)</th>
                         </tr>
                     </thead>

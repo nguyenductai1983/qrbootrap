@@ -49,13 +49,13 @@
                 </div>
                 <div>
                     <div class="fw-bold text-info-emphasis">Chế độ: Toàn Bộ Hệ Thống</div>
-                    <div class="small">Bạn đang xem dữ liệu của <strong>tất cả nhân viên</strong> trong hệ thống.
+                    <div class="small">Bạn đang xem dữ liệu của <strong>tất cả BP</strong> trong hệ thống.
                     </div>
                 </div>
             </div>
             <div class="ms-md-auto w-100 w-md-auto text-start text-md-end">
                 <span class="badge bg-info text-white rounded-pill px-3 py-2">
-                    <i class="fa-solid fa-shield-halved me-1"></i>Admin / Manager
+                    <i class="fa-solid fa-shield-halved me-1"></i>Quản lý
                 </span>
             </div>
         </div>
@@ -75,7 +75,7 @@
             </div>
             <div class="ms-md-auto w-100 w-md-auto text-start text-md-end">
                 <span class="badge bg-warning rounded-pill px-3 py-2">
-                    <i class="fa-solid fa-user-clock me-1"></i>Cá Nhân
+                    <i class="fa-solid fa-user-clock me-1"></i>Nhân Viên
                 </span>
             </div>
         </div>
@@ -83,16 +83,16 @@
 
     {{-- ═══ TIMELINE CHUNG ════ --}}
     @if (!empty($globalChart) && !empty($globalChart['datasets']))
-    <div class="card border-0 shadow-sm mb-5">
-        <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center pt-3">
-            <h6 class="fw-bold mb-0">
-                <i class="fa-solid fa-chart-area text-primary me-2"></i>Tiến Độ Hoạt Động Khâu Dây Chuyền
-            </h6>
+        <div class="card border-0 shadow-sm mb-5 d-none d-lg-block">
+            <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center pt-3">
+                <h6 class="fw-bold mb-0">
+                    <i class="fa-solid fa-chart-area text-primary me-2"></i>Tiến Độ Hoạt Động Khâu Dây Chuyền
+                </h6>
+            </div>
+            <div class="card-body pt-0">
+                <canvas id="c-global-timeline" height="80"></canvas>
+            </div>
         </div>
-        <div class="card-body pt-0">
-            <canvas id="c-global-timeline" height="80"></canvas>
-        </div>
-    </div>
     @endif
 
     {{-- ═══ DEPARTMENT CARDS ════ --}}
@@ -102,46 +102,48 @@
         </div>
     @else
         <div class="row g-4">
-        @foreach ($departmentsData as $dept)
-            <div class="col-12 col-xl-6">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-header bg-transparent border-0 pt-4 pb-0">
-                        <h5 class="fw-bold mb-0" style="color: #334155;">
-                            <i class="fa-solid {{ $dept['is_warehouse'] ? 'fa-warehouse text-info' : 'fa-building text-primary' }} me-2"></i>
-                            {{ $dept['name'] }}
-                        </h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="row g-3">
-                            @foreach ($dept['metrics'] as $kpi)
-                                <div class="col-12 col-md-4">
-                                    <div class="card border-2 border-{{ $kpi['color'] }} border-opacity-25 shadow-sm h-100 hover-kpi">
-                                        <div class="card-body p-3">
-                                            <div class="d-flex align-items-center justify-content-between mb-2">
-                                                <div class="bg-{{ $kpi['color'] }} bg-opacity-10 rounded-circle p-2"
-                                                    style="width: 42px; height: 42px; display:flex; align-items:center; justify-content:center;">
-                                                    <i class="{{ $kpi['icon'] }} text-{{ $kpi['color'] }}"></i>
+            @foreach ($departmentsData as $dept)
+                <div class="col-12 col-xl-6">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-header bg-transparent border-0 pt-4 pb-0">
+                            <h5 class="fw-bold mb-0" style="color: #334155;">
+                                <i
+                                    class="fa-solid {{ $dept['is_warehouse'] ? 'fa-warehouse text-info' : 'fa-building text-primary' }} me-2"></i>
+                                {{ $dept['name'] }}
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                @foreach ($dept['metrics'] as $kpi)
+                                    <div class="col-12 col-md-4">
+                                        <div
+                                            class="card border-2 border-{{ $kpi['color'] }} border-opacity-25 shadow-sm h-100 hover-kpi">
+                                            <div class="card-body p-3">
+                                                <div class="d-flex align-items-center justify-content-between mb-2">
+                                                    <div class="bg-{{ $kpi['color'] }} bg-opacity-10 rounded-circle p-2"
+                                                        style="width: 42px; height: 42px; display:flex; align-items:center; justify-content:center;">
+                                                        <i class="{{ $kpi['icon'] }} text-{{ $kpi['color'] }}"></i>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="fw-bold text-{{ $kpi['color'] }}"
-                                                style="font-size: 1.6rem; line-height: 1.1;">
-                                                {{ $kpi['value'] }}
-                                            </div>
-                                            <div class="fw-semibold small text-uppercase tracking-wide mt-1">
-                                                {{ $kpi['title'] }}
-                                            </div>
-                                            <div class="text-muted" style="font-size: 0.7rem;">
-                                                {{ $period }} ngày · {{ $kpi['unit'] }}
+                                                <div class="fw-bold text-{{ $kpi['color'] }}"
+                                                    style="font-size: 1.6rem; line-height: 1.1;">
+                                                    {{ $kpi['value'] }}
+                                                </div>
+                                                <div class="fw-semibold small text-uppercase tracking-wide mt-1">
+                                                    {{ $kpi['title'] }}
+                                                </div>
+                                                <div class="text-muted" style="font-size: 0.7rem;">
+                                                    {{ $period }} ngày · {{ $kpi['unit'] }}
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            @endforeach
+                                @endforeach
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        @endforeach
+            @endforeach
         </div>
     @endif
 
@@ -259,7 +261,7 @@
                 if (data && data.globalChart) {
                     globalChart = data.globalChart;
                 }
-                setTimeout(buildCharts, 100); 
+                setTimeout(buildCharts, 100);
             });
         });
     })();
