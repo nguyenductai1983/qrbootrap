@@ -42,6 +42,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\PrinterController;
+use App\Livewire\Warehouse\ScanToLocationClassic;
 //Role::withoutGlobalScopes()->get(); // Lấy tất cả vai trò mà không áp dụng bất kỳ global scope nào
 Route::view('/', 'welcome');
 Route::view('profile', 'profile')
@@ -158,6 +159,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->prefix('warehouse')
         ->name('warehouse.')
         ->group(function () {
+            Route::get('/scan-to-location-classic', ScanToLocationClassic::class)->name('scan-to-location-classic');
             Route::get('/scan-to-location', ScanToLocation::class)->name('scan-to-location');
             Route::get('/locations', LocationManager::class)->name('locations');
             Route::get('/reports', ReportManager::class)->name('reports');

@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Title;
 
 #[Title('Nhập Kho Bán Thành Phẩm')]
-class ScanToLocation extends Component
+class ScanToLocationClassic extends Component
 {
     /**
      * Chế độ hoạt động:
@@ -22,9 +22,6 @@ class ScanToLocation extends Component
      *  'confirm'  - (3) Xác nhận / cập nhật vị trí cho cây vải đã IN_WAREHOUSE
      */
     public string $mode = 'temp';
-
-    // Điều hướng form
-    public int $currentStep = 1;
 
     // Phiên làm việc
     public $currentLocation   = null;
@@ -75,55 +72,6 @@ class ScanToLocation extends Component
         // Lưu lựa chọn để dùng lần sau
         cache()->forever('warehouse_mode_' . Auth::id(), $this->mode);
         $this->resetSession();
-        $this->currentStep = 1;
-    }
-
-    // --- STEP BY STEP WIZARD ---
-    public function nextStep(): void
-    {
-        if ($this->currentStep === 1) {
-            if ($this->mode === 'temp') {
-                $this->currentStep = 3;
-            } else {
-                $this->currentStep = 2;
-                if ($this->currentLocationId) {
-                    $this->currentStep = 3; // Nếu đã có vị trí chọn sẵn thì skip step 2
-                }
-            }
-        } elseif ($this->currentStep === 2) {
-            // Cần check xem có vị trí chưa
-            if ($this->currentLocationId) {
-                $this->currentStep = 3;
-            } else {
-                $this->error("Chưa có vị trí, vui lòng quét mã kệ.");
-            }
-        }
-    }
-
-    public function prevStep(): void
-    {
-        if ($this->currentStep === 3) {
-            if ($this->mode === 'temp') {
-                $this->currentStep = 1;
-            } else {
-                $this->currentStep = 2;
-            }
-        } elseif ($this->currentStep === 2) {
-            $this->currentStep = 1;
-        }
-    }
-
-    public function goToStep(int $step): void
-    {
-        // Ràng buộc
-        if ($step === 3 && $this->mode !== 'temp' && !$this->currentLocationId) {
-            $this->error("Vui lòng quét vị trí trước.");
-            return;
-        }
-        if ($step === 2 && $this->mode === 'temp') {
-            return; // Mode temp không có step 2
-        }
-        $this->currentStep = $step;
     }
 
     // --- Lưu cache khi đổi trạm cân ---
@@ -189,19 +137,8 @@ class ScanToLocation extends Component
                 $this->scanStatus        = 'location';
                 $this->message           = "📍 Đã chọn vị trí: [{$location->code}] {$location->name}";
                 $this->dispatch('play-success-sound');
-                
-                // Tự động chuyển qua step 3 nếu đang ở step 2
-                if ($this->currentStep === 2) {
-                    $this->currentStep = 3;
-                }
                 return;
             }
-        }
-
-        // Nếu qua đây mà user đang ở step 2, tức là hệ thống đang mong chờ mã Kệ
-        if ($this->currentStep === 2) {
-            $this->error("❌ Mã không hợp lệ. Hãy quét mã QR của Kệ hàng.");
-            return;
         }
 
         // Bước 2: Tìm Item
@@ -486,10 +423,6 @@ class ScanToLocation extends Component
         $this->message           = '';
         $this->itemInfo          = null;
         $this->lastScannedCode   = null;
-        // Quay lại step 2 để chọn vị trí mới
-        if ($this->mode !== 'temp') {
-            $this->currentStep = 2;
-        }
     }
 
     public function resetSession(): void
@@ -514,6 +447,6 @@ class ScanToLocation extends Component
 
     public function render()
     {
-        return view('livewire.warehouse.scan-to-location');
+        return view('livewire.warehouse.scan-to-location-classic');
     }
 }
