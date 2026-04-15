@@ -10,8 +10,8 @@ class LocationSeeder extends Seeder
 {
     public function run(): void
     {
-        Location::create(['code' => 'A1', 'name' => 'A1', 'type' => 'warehouse']);
-        Location::create(['code' => 'A2', 'name' => 'A2', 'type' => 'warehouse']);
+        // Location::create(['code' => 'A1', 'name' => 'A1', 'type' => 'warehouse']);
+        // Location::create(['code' => 'A2', 'name' => 'A2', 'type' => 'warehouse']);
         Location::create(['code' => 'A3', 'name' => 'A3', 'type' => 'warehouse']);
         Location::create(['code' => 'A4', 'name' => 'A4', 'type' => 'warehouse']);
         Location::create(['code' => 'A5', 'name' => 'A5', 'type' => 'warehouse']);
@@ -35,7 +35,7 @@ class LocationSeeder extends Seeder
         Location::create(['code' => 'A23', 'name' => 'A23', 'type' => 'warehouse']);
         Location::create(['code' => 'A24', 'name' => 'A24', 'type' => 'warehouse']);
         Location::create(['code' => 'A25', 'name' => 'A25', 'type' => 'warehouse']);
-        Location::create(['code' => 'B1', 'name' => 'B1', 'type' => 'warehouse']);
+        // Location::create(['code' => 'B1', 'name' => 'B1', 'type' => 'warehouse']);
         Location::create(['code' => 'B2', 'name' => 'B2', 'type' => 'warehouse']);
         Location::create(['code' => 'B3', 'name' => 'B3', 'type' => 'warehouse']);
         Location::create(['code' => 'B4', 'name' => 'B4', 'type' => 'warehouse']);
