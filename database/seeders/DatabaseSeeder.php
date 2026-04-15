@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
         $this->call(MachineSeeder::class);
         $this->call(PrintStationSeeder::class);
         $this->call(ScaleStationSeeder::class);
+        $this->call(LocationSeeder::class);
         // 3. Tạo User Admin mẫu (Sau khi đã có Role và Department)
         // Kiểm tra xem user đã tồn tại chưa để tránh lỗi trùng email khi chạy lại
     }

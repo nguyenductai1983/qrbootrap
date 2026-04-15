@@ -214,6 +214,31 @@ class LocationManager extends Component
         $this->selectedLocations = [];
     }
 
+    public function printQRSingle($id)
+    {
+        $url = route('locations.print', [
+            'ids'      => $id,
+            'format'   => $this->printFormat,
+            'cols'     => $this->printColumns,
+            'rows'     => $this->rowsPerPage,
+            'fontSize' => $this->fontSize,
+        ]);
+
+        $this->dispatch('open-print-tab', url: $url);
+    }
+
+    public function printCodeSingle($id)
+    {
+        $url = route('locations.print-code', [
+            'ids'      => $id,
+            'cols'     => $this->codeColumns,
+            'rows'     => $this->codeRows,
+            'fontSize' => $this->codeFontSize,
+        ]);
+
+        $this->dispatch('open-print-tab', url: $url);
+    }
+
     public function exportInventory()
     {
         $fileName = 'TonKho_' . date('Ymd_His') . '.xlsx';
