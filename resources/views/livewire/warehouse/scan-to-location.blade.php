@@ -1,6 +1,6 @@
 <div class="container-fluid py-3 position-relative">
     <!-- OVERLAY LOADING TO BỰ CHỐNG CLICK NHẦM -->
-    <div wire:loading.flex
+    <div wire:loading.flex wire:target="nextStep, prevStep, goToStep, changeLocation"
         class="position-absolute w-100 h-100 top-0 start-0 z-3 flex-column justify-content-center align-items-center"
         style="background: rgba(255, 255, 255, 0.8);">
         <div class="spinner-border text-primary" style="width: 4rem; height: 4rem; border-width: 0.35em;" role="status">
@@ -200,7 +200,7 @@
                     <div class="card-body">
                         <div class="mode-selector row g-2">
                             <div class="col-12 col-lg-4">
-                                <input type="radio" wire:model.live="mode" value="temp" id="mode_temp"
+                                <input type="radio" wire:model="mode" value="temp" id="mode_temp"
                                     class="mode-radio d-none">
                                 <label for="mode_temp"
                                     class="mode-card card h-100 text-center border-2 border-warning text-warning mb-0">
@@ -214,7 +214,7 @@
                             </div>
 
                             <div class="col-12 col-lg-4">
-                                <input type="radio" wire:model.live="mode" value="with_loc" id="mode_with_loc"
+                                <input type="radio" wire:model="mode" value="with_loc" id="mode_with_loc"
                                     class="mode-radio d-none">
                                 <label for="mode_with_loc"
                                     class="mode-card card h-100 text-center border-2 border-success text-success mb-0">
@@ -228,7 +228,7 @@
                             </div>
 
                             <div class="col-12 col-lg-4">
-                                <input type="radio" wire:model.live="mode" value="confirm" id="mode_confirm"
+                                <input type="radio" wire:model="mode" value="confirm" id="mode_confirm"
                                     class="mode-radio d-none">
                                 <label for="mode_confirm"
                                     class="mode-card card h-100 text-center border-2 border-info text-info mb-0">

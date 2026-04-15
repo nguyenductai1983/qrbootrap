@@ -114,7 +114,7 @@
                 <a href="{{ route('warehouse.scan-to-location-classic') }}"
                     class="list-group-item list-group-item-action py-2 ps-5 d-flex align-items-center {{ request()->routeIs('warehouse.scan-to-location-classic') ? 'active' : '' }}"
                     title="Nhập Kho">
-                    <i class="fa-solid fa-fw fa-barcode text-success me-2"></i>
+                    <i class="fa-solid fa-fw fa-barcode text-info me-2"></i>
                     <span class="sidebar-text">Nhập Kho (Classic)</span>
                 </a>
 
