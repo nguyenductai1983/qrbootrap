@@ -75,6 +75,8 @@
             window.isCameraRunning = false;
             window.currentScanMethod = '';
             window.currentScannerId = '';
+            window.lastScannedText = '';
+            window.lastScannedTime = 0;
 
             // ===== DỌN DẸP CAMERA KHI LIVEWIRE CHUYỂN TRANG/RENDER =====
             document.addEventListener('livewire:initialized', () => {
@@ -187,6 +189,15 @@
                     { facingMode: "environment" },
                     config,
                     (decodedText) => {
+                        const now = Date.now();
+                        // Chặn spam mã: Nếu quét trùng mã trong vòng 2.5 giây thì bỏ qua tiếng kêu và event
+                        if (window.lastScannedText === decodedText && (now - window.lastScannedTime) < 2500) {
+                            return; 
+                        }
+                        
+                        window.lastScannedText = decodedText;
+                        window.lastScannedTime = now;
+
                         // Thêm Timeout và Try/Catch để ngăn lỗi Livewire làm crash đứng khung hình Camera
                         setTimeout(() => {
                             try {
