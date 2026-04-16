@@ -187,20 +187,41 @@
                     { facingMode: "environment" },
                     config,
                     (decodedText) => {
-                        const cameraContainer = document.getElementById('camera-container-' + scannerId);
-                        if (!cameraContainer) return;
-                        const wireComponent = cameraContainer.closest('[wire\\:id]');
-                        if (!wireComponent) return;
-                        
-                        const componentId = wireComponent.getAttribute('wire:id');
-                        Livewire.find(componentId).call(window.currentScanMethod, decodedText);
-                        
-                        // Phát âm thanh scan thành công cục bộ nếu cần
-                        const audioSuccess = new Audio('/audio/cartoon_boing.ogg');
-                        audioSuccess.play().catch(() => {});
+                        // Thêm Timeout và Try/Catch để ngăn lỗi Livewire làm crash đứng khung hình Camera
+                        setTimeout(() => {
+                            try {
+                                const audioSuccess = new Audio('/audio/cartoon_boing.ogg');
+                                audioSuccess.play().catch(() => {});
+
+                                const cameraContainer = document.getElementById('camera-container-' + window.currentScannerId);
+                                if (!cameraContainer) return;
+                                
+                                const wireComponent = cameraContainer.closest('[wire\\:id]');
+                                if (wireComponent && typeof Livewire.find === 'function') {
+                                    const componentId = wireComponent.getAttribute('wire:id');
+                                    Livewire.find(componentId).call(window.currentScanMethod, decodedText);
+                                } else {
+                                    // Fallback cứu hộ: Giả lập user paste mã vào ô input rồi ấn nút
+                                    console.warn("Livewire component not found via wire:id. Using fallback.");
+                                    const inputEl = document.getElementById('scannerInput_' + window.currentScannerId);
+                                    if(inputEl) {
+                                        inputEl.value = decodedText;
+                                        inputEl.dispatchEvent(new Event('input', {bubbles:true}));
+                                        setTimeout(() => {
+                                            if(inputEl.nextElementSibling) inputEl.nextElementSibling.click();
+                                        }, 100);
+                                    } else if (window.Livewire && window.Livewire.first) {
+                                        window.Livewire.first().call(window.currentScanMethod, decodedText);
+                                    }
+                                }
+                            } catch (e) {
+                                console.error('[Camera Error] Lỗi khi xử lý mã:', e);
+                                alert('Đã quét mã: ' + decodedText + ' nhưng hệ thống không phản hồi tĩnh!');
+                            }
+                        }, 10);
                     },
                     (errorMessage) => {
-                        // Ignore background scan scan errors
+                        // Ignore background scan errors
                     }
                 ).then(() => {
                     window.isCameraRunning = true;

@@ -9,6 +9,7 @@ use App\Models\Item;
 use App\Models\ItemMovement;
 use App\Events\ScaleWeightUpdated;
 use App\Enums\MovementAction;
+use App\Services\ItemWeightService;
 
 class ScaleApiController extends Controller
 {
@@ -86,42 +87,20 @@ class ScaleApiController extends Controller
             ], 404);
         }
 
-        $oldWeight = $item->weight;
         $newWeight = (float) $request->weight;
+        $userId = $request->user() ? $request->user()->id : null;
 
-        // Xác định loại hành động
-        $isSurplus = ($oldWeight !== null && $oldWeight > 0 && $newWeight < $oldWeight);
-        $actionType = $isSurplus
-            ? MovementAction::SURPLUS_ENTRY->value
-            : MovementAction::WEIGHT_UPDATE->value;
-
-        // Lần đầu cân → ghi weight_original
-        if ($item->weight_original === null) {
-            $item->weight_original = $newWeight;
-        }
-
-        $item->weight = $newWeight;
-        $item->save();
-
-        // Ghi log movement
-        $note = $isSurplus
-            ? "Tái nhập dư sau SX: {$oldWeight}kg → {$newWeight}kg (giảm " . round($oldWeight - $newWeight, 2) . "kg)"
-            : "Cập nhật trọng lượng: {$newWeight}kg";
-
-        ItemMovement::create([
-            'item_id'     => $item->id,
-            'action_type' => $actionType,
-            'note'        => $note,
-            'created_at'  => now(),
-        ]);
+        // Xử lý cập nhật thông qua Service dùng chung
+        $service = new ItemWeightService();
+        $result = $service->updateWeight($item, $newWeight, $userId);
 
         return response()->json([
             'success'    => true,
-            'message'    => $isSurplus ? 'Đã ghi nhận tái nhập dư.' : 'Đã cập nhật trọng lượng.',
+            'message'    => $result['is_surplus'] ? 'Đã ghi nhận tái nhập dư.' : 'Đã cập nhật trọng lượng.',
             'item_code'  => $item->code,
-            'old_weight' => $oldWeight,
-            'new_weight' => $newWeight,
-            'is_surplus' => $isSurplus,
+            'old_weight' => $result['old_weight'],
+            'new_weight' => $result['new_weight'],
+            'is_surplus' => $result['is_surplus'],
         ]);
     }
 }

@@ -53,7 +53,7 @@ class AuthController extends Controller
     {
         try {
             $request->validate([
-                'email' => 'required|string|email',
+                'email' => 'required|string',
                 'password' => 'required|string',
             ]);
         } catch (ValidationException $e) {
@@ -63,10 +63,16 @@ class AuthController extends Controller
             ], 422);
         }
 
-        // Thử xác thực bằng email và password
-        if (!Auth::attempt($request->only('email', 'password'))) {
+        // Xác định xem người dùng nhập email hay username
+        $loginField = filter_var($request->email, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+
+        // Thử xác thực
+        if (!Auth::attempt([
+            $loginField => $request->email,
+            'password' => $request->password
+        ])) {
             return response()->json([
-                'message' => 'Email hoac mat khau khong dung.',
+                'message' => 'Email/Username hoặc mật khẩu không đúng.',
             ], 401);
         }
 
@@ -103,7 +109,7 @@ class AuthController extends Controller
             'message' => 'Đăng xuất thành công!',
         ], 200);
     }
-public function logoutAll(Request $request)
+    public function logoutAll(Request $request)
     {
         // Thu hồi tất cả các token của người dùng
         $request->user()->tokens()->delete();

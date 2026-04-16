@@ -413,7 +413,7 @@ class CoatingConfirmation extends Component
                                 ],
                                 'JobId' => $printJob->id
                             ];
-                            event(new PrintLabelAppEvent($station->station_token, $printData));
+                            broadcast(new PrintLabelAppEvent($station->station_token, $printData));
                         } else {
                             broadcast(new PrintLabelRequested($gItem, $this->printerMac, $printJob->id));
                         }
@@ -516,7 +516,7 @@ class CoatingConfirmation extends Component
                     ],
                     'JobId' => $job->id
                 ];
-                event(new PrintLabelAppEvent($station->station_token, $printData));
+                broadcast(new PrintLabelAppEvent($station->station_token, $printData));
             } else {
                 broadcast(new PrintLabelRequested($job->item, $mac, $job->id));
             }

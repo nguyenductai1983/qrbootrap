@@ -132,6 +132,13 @@
                     <span class="sidebar-text">Quản lý Vị trí</span>
                 </a>
 
+                <a href="{{ route('warehouse.movement-log') }}"
+                    class="list-group-item list-group-item-action py-2 ps-5 d-flex align-items-center {{ request()->routeIs('warehouse.movement-log') ? 'active' : '' }}"
+                    title="Nhật Ký Kho">
+                    <i class="fa-solid fa-fw fa-clock-rotate-left text-secondary me-2"></i>
+                    <span class="sidebar-text">Nhật Ký Kho</span>
+                </a>
+
                 <a href="{{ route('warehouse.reports') }}"
                     class="list-group-item list-group-item-action py-2 ps-5 d-flex align-items-center {{ request()->routeIs('warehouse.reports') ? 'active' : '' }}"
                     title="Xuất báo cáo kho">

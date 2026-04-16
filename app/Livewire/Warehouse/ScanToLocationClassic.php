@@ -11,6 +11,7 @@ use App\Enums\ItemStatus;
 use App\Enums\MovementAction;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Title;
+use App\Services\ItemWeightService;
 
 #[Title('Nhập Kho Bán Thành Phẩm')]
 class ScanToLocationClassic extends Component
@@ -340,48 +341,21 @@ class ScanToLocationClassic extends Component
     /** XỬ LÝ CẬP NHẬT TRỌNG LƯỢNG / TÁI NHẬP DƯ */
     private function handleWeightUpdate(Item $item): void
     {
-        $oldWeight = (float) ($item->weight ?? 0);
         $newWeight = (float) $this->getEffectiveWeight();
 
-        // Lần đầu cân → ghi weight_original
-        if ($item->weight_original === null) {
-            $item->weight_original = $newWeight;
-        }
-
-
-
-        // Xác định loại hành động nhập kho mới hoặc tái nhập dư
-        $isSurplus = ($oldWeight > 0 && $newWeight < $oldWeight);
-        $actionType = $isSurplus
-            ? MovementAction::SURPLUS_ENTRY->value
-            : MovementAction::WEIGHT_UPDATE->value;
-
-        $note = $isSurplus
-            ? "Tái nhập dư sau SX: {$oldWeight}kg → {$newWeight}kg (giảm " . round($oldWeight - $newWeight, 2) . "kg)"
-            : "Cập nhật trọng lượng: {$newWeight}kg" . ($oldWeight > 0 ? " (trước: {$oldWeight}kg)" : '');
-
-        ItemMovement::create([
-            'item_id'     => $item->id,
-            'action_type' => $actionType,
-            'user_id'     => Auth::id(),
-            'note'        => $note,
-            'created_at'  => now(),
-        ]);
+        $service = new ItemWeightService();
+        $result = $service->updateWeight($item, $newWeight, Auth::id());
 
         $item->refresh()->load(['product', 'color', 'order', 'location']);
         $this->addToSession($item);
 
-        if ($isSurplus) {
-            $item->status = ItemStatus::SURPLUS_ENTRY;
-
+        if ($result['is_surplus']) {
             $this->scanStatus = 'success';
-            $this->message    = "♻️ TÁI NHẬP DƯ: {$item->code} | {$oldWeight}kg → {$newWeight}kg (giảm " . round($oldWeight - $newWeight, 2) . "kg)";
+            $this->message    = "♻️ TÁI NHẬP DƯ: {$item->code} | {$result['old_weight']}kg → {$result['new_weight']}kg (giảm " . round($result['old_weight'] - $result['new_weight'], 2) . "kg)";
         } else {
             $this->scanStatus = 'success';
-            $this->message    = "⚖️ ĐÃ CẬP NHẬT CÂN: {$item->code} | {$newWeight}kg";
+            $this->message    = "⚖️ ĐÃ CẬP NHẬT CÂN: {$item->code} | {$result['new_weight']}kg";
         }
-        $item->weight = $newWeight;
-        $item->save();
         $this->itemInfo = $item;
         $this->dispatch('play-success-sound');
         $this->dispatch('focus-input');

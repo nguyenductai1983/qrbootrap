@@ -81,9 +81,14 @@ class PrintAppController extends Controller
         return response()->json([
             'protocol' => '7',
             'client' => 'js',
-            'version' => '7.0.3',
+            'version' => '8.4.0', // Khớp chuẩn Echo
             'flash' => 'false',
-            'app_key' => config('reverb.apps.common.key'), // Lấy từ env Laravel
+            'app_key' => env('REVERB_APP_KEY'), // Đã sửa: dùng đúng biến env
+            'ws_host' => env('REVERB_HOST', 'qrbootrap.test'),
+            'ws_port' => env('REVERB_PORT', 8080),
+            'wss_port' => env('REVERB_PORT', 8080),
+            'force_tls' => env('REVERB_SCHEME', 'https') === 'https',
+            'scheme' => env('REVERB_SCHEME', 'https')
         ]);
     }
 }

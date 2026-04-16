@@ -24,20 +24,20 @@ use App\Http\Controllers\Api\AuthController; // Import AuthController
 //     return $request->user();
 // });
 // Route cho đăng nhập (không yêu cầu xác thực token)
-// Route::post('/login', [AuthController::class, 'login']);
+Route::post('/login', [AuthController::class, 'login']);
 
 // Các route yêu cầu xác thực bằng Sanctum token
-// Route::middleware('auth:sanctum')->group(function () {
-//     Route::post('/logout', [AuthController::class, 'logout']);
-//     Route::post('/logoutall', [AuthController::class, 'logoutAll']);
-//     Route::get('/user', [AuthController::class, 'user']);
-//     Route::post('/register', [AuthController::class, 'register']);
-//     Route::post('/qrscan', [QrCodeScanController::class, 'store']);    
-// });
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::post('/logoutall', [AuthController::class, 'logoutAll']);
+    Route::get('/user', [AuthController::class, 'user']);
+    Route::post('/register', [AuthController::class, 'register']);
 
-// ============================================================
-// API Trạm Cân (Scale Station) — Dành cho C# Client
-// Xác thực bằng station_token trong payload (không cần Sanctum)
-// ============================================================
-Route::post('/scale/broadcast-weight', [ScaleApiController::class, 'broadcastWeight']);
-Route::post('/warehouse/update-weight', [ScaleApiController::class, 'updateWeight']);
+    // ============================================================
+    // API Trạm Cân (Scale Station) — Dành cho C# Client
+    // Xác thực bằng Header "Authorization: Bearer <token>"
+    // Vẫn kết hợp xác thực station_token trong payload.
+    // ============================================================
+    Route::post('/scale/broadcast-weight', [ScaleApiController::class, 'broadcastWeight']);
+    Route::post('/warehouse/update-weight', [ScaleApiController::class, 'updateWeight']);
+});

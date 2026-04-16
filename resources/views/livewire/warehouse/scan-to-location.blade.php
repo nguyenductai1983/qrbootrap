@@ -395,6 +395,13 @@
                                 <input type="number" class="form-control text-center fw-bold fs-4"
                                     wire:model="manualWeight" step="0.01" min="0" placeholder="0.00"
                                     inputmode="decimal">
+                                @if ($scaleWeight !== null && $selectedScaleCode)
+                                    <small class="text-info mt-1 d-block text-center">
+                                        <i class="fa-solid fa-circle-info me-1"></i>
+                                        WebSocket đang cấp: <strong>{{ number_format($scaleWeight, 2) }} kg</strong>
+                                        — sẽ được ưu tiên hơn
+                                    </small>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -575,6 +582,9 @@
         });
 
         // ⚖️ ECHO WEBSOCKET — Lắng nghe trọng lượng từ trạm cân
+        if (typeof window.initWebSocket === 'function') {
+            window.initWebSocket();
+        }
         initScaleListener();
     });
 
@@ -609,6 +619,7 @@
 
                 // Gửi trọng lượng cho Livewire component
                 @this.call('updateScaleWeight', e.weight, e.is_stable);
+                console.log(e.weight, e.is_stable);
             });
     }
 

@@ -166,6 +166,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/scan', ScanToLocation::class)->name('scan');
             Route::get('/inbound-list', WarehouseInboundList::class)->name('inbound-list');
             Route::get('/dashboard', WarehouseDashboard::class)->name('dashboard');
+            Route::get('/movement-log', \App\Livewire\Warehouse\MovementLog::class)->name('movement-log');
         });
 
     // --- Tính Năng In Ấn Tập Trung (DRY Reprint) ---
