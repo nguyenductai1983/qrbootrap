@@ -202,14 +202,22 @@
                                     const componentId = wireComponent.getAttribute('wire:id');
                                     const lwInstance = Livewire.find(componentId);
                                     if (lwInstance) {
-                                        lwInstance.call(window.currentScanMethod, decodedText);
-                                        handled = true;
+                                        // Livewire 3: lwInstance refers directly to $wire object 
+                                        if (typeof lwInstance[window.currentScanMethod] === 'function') {
+                                            lwInstance[window.currentScanMethod](decodedText);
+                                            handled = true;
+                                        } 
+                                        // Livewire 2
+                                        else if (typeof lwInstance.call === 'function') {
+                                            lwInstance.call(window.currentScanMethod, decodedText);
+                                            handled = true;
+                                        }
                                     }
                                 } 
                                 
                                 if (!handled) {
-                                    // Fallback cứu hộ: Giả lập user paste mã vào ô input rồi ấn nút
-                                    console.warn("Livewire component not found or invalid registry. Using fallback.");
+                                    // Fallback cứu hộ thông qua DOM (Bền vững nhất)
+                                    console.warn("Using fallback to dispatch input event.");
                                     const inputEl = document.getElementById('scannerInput_' + window.currentScannerId);
                                     if(inputEl) {
                                         inputEl.value = decodedText;
@@ -217,8 +225,6 @@
                                         setTimeout(() => {
                                             if(inputEl.nextElementSibling) inputEl.nextElementSibling.click();
                                         }, 100);
-                                    } else if (window.Livewire && window.Livewire.first) {
-                                        window.Livewire.first().call(window.currentScanMethod, decodedText);
                                     }
                                 }
                             } catch (e) {
