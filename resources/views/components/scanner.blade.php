@@ -196,13 +196,20 @@
                                 const cameraContainer = document.getElementById('camera-container-' + window.currentScannerId);
                                 if (!cameraContainer) return;
                                 
+                                let handled = false;
                                 const wireComponent = cameraContainer.closest('[wire\\:id]');
                                 if (wireComponent && typeof Livewire.find === 'function') {
                                     const componentId = wireComponent.getAttribute('wire:id');
-                                    Livewire.find(componentId).call(window.currentScanMethod, decodedText);
-                                } else {
+                                    const lwInstance = Livewire.find(componentId);
+                                    if (lwInstance) {
+                                        lwInstance.call(window.currentScanMethod, decodedText);
+                                        handled = true;
+                                    }
+                                } 
+                                
+                                if (!handled) {
                                     // Fallback cứu hộ: Giả lập user paste mã vào ô input rồi ấn nút
-                                    console.warn("Livewire component not found via wire:id. Using fallback.");
+                                    console.warn("Livewire component not found or invalid registry. Using fallback.");
                                     const inputEl = document.getElementById('scannerInput_' + window.currentScannerId);
                                     if(inputEl) {
                                         inputEl.value = decodedText;
@@ -216,7 +223,7 @@
                                 }
                             } catch (e) {
                                 console.error('[Camera Error] Lỗi khi xử lý mã:', e);
-                                alert('Đã quét mã: ' + decodedText + ' nhưng hệ thống không phản hồi tĩnh!');
+                                alert('Đã quét mã: ' + decodedText + ' nhưng gặp sự cố kết nối giao diện!');
                             }
                         }, 10);
                     },
