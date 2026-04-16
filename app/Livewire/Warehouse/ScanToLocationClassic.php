@@ -348,8 +348,7 @@ class ScanToLocationClassic extends Component
             $item->weight_original = $newWeight;
         }
 
-        $item->weight = $newWeight;
-        $item->save();
+
 
         // Xác định loại hành động nhập kho mới hoặc tái nhập dư
         $isSurplus = ($oldWeight > 0 && $newWeight < $oldWeight);
@@ -373,13 +372,16 @@ class ScanToLocationClassic extends Component
         $this->addToSession($item);
 
         if ($isSurplus) {
+            $item->status = ItemStatus::SURPLUS_ENTRY;
+
             $this->scanStatus = 'success';
             $this->message    = "♻️ TÁI NHẬP DƯ: {$item->code} | {$oldWeight}kg → {$newWeight}kg (giảm " . round($oldWeight - $newWeight, 2) . "kg)";
         } else {
             $this->scanStatus = 'success';
             $this->message    = "⚖️ ĐÃ CẬP NHẬT CÂN: {$item->code} | {$newWeight}kg";
         }
-
+        $item->weight = $newWeight;
+        $item->save();
         $this->itemInfo = $item;
         $this->dispatch('play-success-sound');
         $this->dispatch('focus-input');

@@ -113,7 +113,7 @@
                     <tr wire:key="inbound-{{ $item->id }}">
                         <td data-label="Mã SP / Mã Kho">
                             <div class="d-flex flex-column gap-1 align-items-start">
-                                <span class="badge bg-dark font-monospace fs-6">{{ $item->code }}</span>
+                                <span class="badge bg-info font-monospace fs-6">{{ $item->code }}</span>
                                 @if ($item->warehouse_code)
                                     <span class="badge bg-success font-monospace border"><i
                                             class="fa-solid fa-qrcode me-1"></i>{{ $item->warehouse_code }}</span>
