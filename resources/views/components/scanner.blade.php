@@ -197,10 +197,15 @@
                                 if (!cameraContainer) return;
                                 
                                 let handled = false;
-                                const wireComponent = cameraContainer.closest('[wire\\:id]');
+                                let wireComponent = cameraContainer;
+                                while (wireComponent && !wireComponent.hasAttribute('wire:id')) {
+                                    wireComponent = wireComponent.parentElement;
+                                }
+
                                 if (wireComponent && typeof window.Livewire !== 'undefined' && typeof window.Livewire.find === 'function') {
                                     const componentId = wireComponent.getAttribute('wire:id');
                                     const lwInstance = window.Livewire.find(componentId);
+
                                     if (lwInstance) {
                                         // Livewire 3: lwInstance refers directly to $wire object 
                                         if (typeof lwInstance[window.currentScanMethod] === 'function') {
