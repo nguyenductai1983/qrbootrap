@@ -78,7 +78,7 @@
 
             // ===== DỌN DẸP CAMERA KHI LIVEWIRE CHUYỂN TRANG/RENDER =====
             document.addEventListener('livewire:initialized', () => {
-                // Livewire 3 Hook để bắt khi một thành phần bị xóa hoặc cập nhật DOM
+                // Sử dụng Livewire Hook để bắt khi một thành phần bị xóa hoặc cập nhật DOM
                 Livewire.hook('morph.removing', ({ el }) => {
                     // Tự động tắt camera nếu container của nó sắp bị xóa khỏi DOM
                     if (el.id && el.id.includes('wrapper') && window.isCameraRunning && window.html5QrcodeScanner) {

@@ -141,4 +141,10 @@ class Item extends Model
     {
         return $this->belongsTo(ItemType::class, 'type');
     }
+
+    // --- Lịch sử thay đổi ---
+    public function histories()
+    {
+        return $this->hasMany(ItemHistory::class)->orderBy('created_at', 'desc');
+    }
 }

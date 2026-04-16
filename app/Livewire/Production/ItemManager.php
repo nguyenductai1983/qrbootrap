@@ -38,6 +38,10 @@ class ItemManager extends Component
     // Khai báo sẵn cho tương lai: public $current_location_id;
     public $editOriginalLength = null; // 🌟 Thêm biến này
     public $editLength = null;         // 🌟 Thêm biến này
+    public $editGsm = null;
+    public $editWeight = null;
+    public $historyItemCode = '';
+    public $itemHistories = [];
     public function mount()
     {
         // Mặc định xuất 30 ngày gần đây
@@ -78,6 +82,8 @@ class ItemManager extends Component
             $this->editProperties = is_array($item->properties) ? $item->properties : json_decode($item->properties, true) ?? [];
             $this->editOriginalLength = $item->original_length;
             $this->editLength = $item->length;
+            $this->editGsm = $item->gsm;
+            $this->editWeight = $item->weight;
             // Chuẩn bị cho chức năng định vị sắp tới:
             // $this->current_location_id = $item->current_location_id;
 
@@ -90,11 +96,33 @@ class ItemManager extends Component
         if ($this->editItemId) {
             $item = Item::find($this->editItemId);
 
+            $changesToLog = [
+                'length' => ['old' => $item->length, 'new' => $this->editLength],
+                'gsm'    => ['old' => $item->gsm, 'new' => $this->editGsm],
+                'weight' => ['old' => $item->weight, 'new' => $this->editWeight],
+            ];
+
+            foreach ($changesToLog as $field => $values) {
+                // Chỉ so sánh giá trị null nếu nó thực sự khác, nếu == thì không lưu (float vs string)
+                // Lưu ý so sánh weak '!='
+                if ((string)$values['old'] !== (string)$values['new']) {
+                    \App\Models\ItemHistory::create([
+                        'item_id' => $item->id,
+                        'user_id' => Auth::id(),
+                        'field_name' => $field,
+                        'old_value' => $values['old'],
+                        'new_value' => $values['new'],
+                    ]);
+                }
+            }
+
             // Có thể thêm validation nếu cần thiết
             $item->update([
                 'properties' => $this->editProperties,
                 'original_length' => $this->editOriginalLength,
                 'length' => $this->editLength,
+                'gsm' => $this->editGsm,
+                'weight' => $this->editWeight,
                 // 'current_location_id' => $this->current_location_id, // Mở ra khi bạn làm xong table Locations
             ]);
 
@@ -112,6 +140,17 @@ class ItemManager extends Component
             session()->flash('message', "🗑️ Đã xóa tem [{$code}] thành công!");
         }
     }
+
+    public function viewHistory($id)
+    {
+        $item = Item::with('histories.user')->find($id);
+        if ($item) {
+            $this->historyItemCode = $item->code;
+            $this->itemHistories = $item->histories;
+            $this->dispatch('open-history-modal');
+        }
+    }
+
     public function selectSuggestion($Codestring)
     {
         $this->searchCode = $Codestring; // Điền tên vào ô input

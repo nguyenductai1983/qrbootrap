@@ -240,6 +240,10 @@
                                             class="btn btn-sm btn-outline-primary me-1" title="Sửa chi tiết">
                                             <i class="fa-solid fa-pen-to-square"></i>
                                         </button>
+                                        <button wire:click="viewHistory({{ $item->id }})"
+                                            class="btn btn-sm btn-outline-warning me-1" title="Xem lịch sử">
+                                            <i class="fa-solid fa-clock-rotate-left"></i>
+                                        </button>
                                         <a href="{{ route('manager.items.genealogy', $item->id) }}"
                                             class="btn btn-sm btn-outline-secondary me-1" title="Truy xuất nguồn gốc phả hệ">
                                             <i class="fa-solid fa-code-merge"></i>
@@ -288,6 +292,22 @@
                         </select>
                     </div>
 
+                    <h6 class="fw-bold mb-2">Thông số thực tế</h6>
+                    <div class="row g-2 mb-3">
+                        <div class="col-4">
+                            <label class="form-label small text-muted mb-1" for="editLength">Chiều dài (m)</label>
+                            <input type="number" step="0.01" wire:model="editLength" class="form-control form-control-sm" id="editLength">
+                        </div>
+                        <div class="col-4">
+                            <label class="form-label small text-muted mb-1" for="editGsm">GSM</label>
+                            <input type="number" step="0.01" wire:model="editGsm" class="form-control form-control-sm" id="editGsm">
+                        </div>
+                        <div class="col-4">
+                            <label class="form-label small text-muted mb-1" for="editWeight">Trọng lượng (kg)</label>
+                            <input type="number" step="0.01" wire:model="editWeight" class="form-control form-control-sm" id="editWeight">
+                        </div>
+                    </div>
+
                     <h6 class="fw-bold mb-3">Thông tin chi tiết (Properties)</h6>
                     <div class="row g-2">
                         {{-- Duyệt mảng properties tự động để sinh ra form chỉnh sửa --}}
@@ -316,6 +336,53 @@
                             class="fa-solid fa-save me-1"></i> Lưu thay đổi</button>
                 </div>
             </div>
+    </div>
+
+    {{-- MODAL LỊCH SỬ THAY ĐỔI --}}
+    <div wire:ignore.self class="modal fade" id="historyModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-light">
+                    <h5 class="modal-title fw-bold text-warning"><i class="fa-solid fa-clock-rotate-left me-2"></i>Lịch sử thay đổi: {{ $historyItemCode }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    @if($itemHistories && count($itemHistories) > 0)
+                        <div class="table-responsive">
+                            <table class="table table-sm table-bordered table-striped">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Thời gian</th>
+                                        <th>Người sửa</th>
+                                        <th>Trường</th>
+                                        <th>Giá trị cũ</th>
+                                        <th>Giá trị mới</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($itemHistories as $history)
+                                    <tr>
+                                        <td>{{ $history->created_at->format('d/m/Y H:i:s') }}</td>
+                                        <td>{{ $history->user->name ?? 'Hệ thống' }}</td>
+                                        <td>
+                                            @if($history->field_name === 'length') Chiều dài 
+                                            @elseif($history->field_name === 'gsm') GSM 
+                                            @elseif($history->field_name === 'weight') Trọng lượng 
+                                            @else {{ $history->field_name }} 
+                                            @endif
+                                        </td>
+                                        <td class="text-danger fw-bold">{{ $history->old_value }}</td>
+                                        <td class="text-success fw-bold">{{ $history->new_value }}</td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @else
+                        <div class="text-center text-muted py-3">Chưa có lịch sử thay đổi nào.</div>
+                    @endif
+                </div>
+            </div>
         </div>
     </div>
 
@@ -330,6 +397,12 @@
 
             Livewire.on('close-modal', () => {
                 myModal.hide();
+            });
+
+            // Modal lịch sử
+            let historyModal = new bootstrap.Modal(document.getElementById('historyModal'));
+            Livewire.on('open-history-modal', () => {
+                historyModal.show();
             });
         });
     </script>
