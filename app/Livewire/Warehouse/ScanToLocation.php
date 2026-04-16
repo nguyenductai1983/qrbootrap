@@ -189,7 +189,7 @@ class ScanToLocation extends Component
                 $this->scanStatus        = 'location';
                 $this->message           = "📍 Đã chọn vị trí: [{$location->code}] {$location->name}";
                 $this->dispatch('play-success-sound');
-                
+
                 // Tự động chuyển qua step 3 nếu đang ở step 2
                 if ($this->currentStep === 2) {
                     $this->currentStep = 3;
@@ -249,11 +249,11 @@ class ScanToLocation extends Component
             return;
         }
 
-        if ($item->status === ItemStatus::NONE) {
-            $this->error("⛔ Cây vải chưa được xác nhận sản xuất! Không thể nhập kho.");
-            $this->itemInfo = $item;
-            return;
-        }
+        // if ($item->status === ItemStatus::NONE) {
+        //     $this->error("⛔ Cây vải chưa được xác nhận sản xuất! Không thể nhập kho.");
+        //     $this->itemInfo = $item;
+        //     return;
+        // }
 
         if ($item->status === ItemStatus::IN_WAREHOUSE) {
             // === CÂY ĐÃ NHẬP KHO — KIỂM TRA TÁI NHẬP DƯ ===
