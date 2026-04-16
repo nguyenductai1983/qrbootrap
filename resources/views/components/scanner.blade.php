@@ -198,9 +198,9 @@
                                 
                                 let handled = false;
                                 const wireComponent = cameraContainer.closest('[wire\\:id]');
-                                if (wireComponent && typeof Livewire.find === 'function') {
+                                if (wireComponent && typeof window.Livewire !== 'undefined' && typeof window.Livewire.find === 'function') {
                                     const componentId = wireComponent.getAttribute('wire:id');
-                                    const lwInstance = Livewire.find(componentId);
+                                    const lwInstance = window.Livewire.find(componentId);
                                     if (lwInstance) {
                                         // Livewire 3: lwInstance refers directly to $wire object 
                                         if (typeof lwInstance[window.currentScanMethod] === 'function') {
@@ -229,7 +229,7 @@
                                 }
                             } catch (e) {
                                 console.error('[Camera Error] Lỗi khi xử lý mã:', e);
-                                alert('Đã quét mã: ' + decodedText + ' nhưng gặp sự cố kết nối giao diện!');
+                                alert('Mã QR: ' + decodedText + '.\nLỗi kĩ thuật JS: ' + e.message);
                             }
                         }, 10);
                     },
