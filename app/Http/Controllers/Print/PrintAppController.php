@@ -38,7 +38,7 @@ class PrintAppController extends Controller
                 'Path' => $station->template_name,
                 'Data' => [
                     ['Name' => 'MaSP', 'Value' => $job->item->code ?? ''],
-                    ['Name' => 'TenSP', 'Value' => $job->item->product->name ?? ''],
+                    ['Name' => 'Content', 'Value' => 'GSM :' . $job->item->gsm + $job->item->lami . 'g/m Dài ' . $job->item->length . 'm ' ?? ''],
                 ]
             ];
         });
