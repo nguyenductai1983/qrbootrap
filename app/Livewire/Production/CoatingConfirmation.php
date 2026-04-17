@@ -540,8 +540,14 @@ class CoatingConfirmation extends Component
 
     public function render()
     {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
         $recentPrintJobs = PrintJob::with('item')
-            ->where('user_id', Auth::id())
+            ->when(!$user->canViewAllDepartments(), function ($q) use ($user) {
+                $q->whereHas('item', function ($qItem) use ($user) {
+                    $qItem->where('department_id', $user->department_id);
+                });
+            })
             ->orderBy('id', 'desc')
             ->take(5)
             ->get();
