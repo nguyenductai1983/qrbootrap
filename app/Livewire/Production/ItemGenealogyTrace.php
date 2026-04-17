@@ -30,7 +30,7 @@ class ItemGenealogyTrace extends Component
 
     public function traceItem($id)
     {
-        return redirect()->route('manager.items.genealogy', $id);
+        return redirect()->route('items.genealogy', $id);
     }
 
     public function render()

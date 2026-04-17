@@ -168,8 +168,7 @@
                                 <p class="card-text text-muted small mb-4">Xem lịch sử và quản lý danh sách tem đã tạo.
                                 </p>
 
-                                <a href="{{ route('manager.items') }}"
-                                    class="btn btn-outline-info w-100 mt-auto stretched-link">
+                                <a href="{{ route('items') }}" class="btn btn-outline-info w-100 mt-auto stretched-link">
                                     Truy cập <i class="fas fa-arrow-right ms-1"></i>
                                 </a>
                             </div>
@@ -420,8 +419,8 @@
                                     <h6 class="fw-bold mb-0">Phân Công Trạm Cân</h6>
                                     <small class="text-muted">Gán trạm cân cho nhân viên</small>
                                 </div>
-                                <a href="{{ route('manager.user-scale-stations') }}" class="stretched-link text-warning"><i
-                                        class="fas fa-chevron-right"></i></a>
+                                <a href="{{ route('manager.user-scale-stations') }}"
+                                    class="stretched-link text-warning"><i class="fas fa-chevron-right"></i></a>
                             </div>
                         </div>
                     </div>
