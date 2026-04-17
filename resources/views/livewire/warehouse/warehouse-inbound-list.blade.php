@@ -97,6 +97,7 @@
         <table class="table table-hover table-bordered align-middle mb-0 table-card">
             <thead>
                 <tr>
+                    <th>#</th>
                     <th>Mã SP / Mã Kho</th>
                     <th>Màu / Loại / Khổ</th>
                     <th>Số Mét</th>
@@ -111,6 +112,9 @@
             <tbody>
                 @forelse ($items as $item)
                     <tr wire:key="inbound-{{ $item->id }}">
+                        <td data-label="#">
+                            {{ $loop->iteration }}
+                        </td>
                         <td data-label="Mã SP / Mã Kho">
                             <div class="d-flex flex-column gap-1 align-items-start">
                                 <span class="badge bg-info font-monospace fs-6">{{ $item->code }}</span>
