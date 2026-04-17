@@ -58,11 +58,11 @@
         <div id="print-area" style="display: none;">
             <div id="qrcode-wrapper"></div>
             <div id="print-text"
-                style="margin-top: 10px; font-family: monospace; font-weight: bold; font-size: 16px; text-align: center;">
+                style="margin-top: 5px; font-family: monospace; font-weight: bold; font-size: 16px; text-align: center;">
             </div>
             <div id="print-length" style="font-family: monospace; font-size: 14px; text-align: center;"></div>
         </div>
-
+        <!-- hết nội dung in-->
         <div class="container mt-5">
             <div class="row justify-content-center">
                 <div class="col-md-8">
@@ -175,7 +175,11 @@
                             if (document.getElementById('print-text')) {
                                 document.getElementById('print-text').innerText = item.code;
                             }
-                            document.getElementById('print-length').innerText = Math.round(item.length) + ' m';
+                            document.getElementById('print-length').innerText = 'GSM ' + (Number(item.gsm) +
+                                    Number(item.lami)) +
+                                ' g/m²' +
+                                ' - Length ' + Math.round(item
+                                    .length) + ' m';
 
                             // Áp dụng cấu hình cỡ chữ User vừa đặt
                             if (confText && document.getElementById('print-text')) {

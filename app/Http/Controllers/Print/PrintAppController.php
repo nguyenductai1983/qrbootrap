@@ -25,7 +25,7 @@ class PrintAppController extends Controller
 
         $jobs = PrintJob::with('item')
             ->where('printer_mac', $station->code)
-            ->where('status', PrintJob::STATUS_PENDING)
+            ->where('status', '!=', PrintJob::STATUS_SUCCESS)
             ->get();
 
         if ($jobs->isNotEmpty()) {
@@ -78,17 +78,24 @@ class PrintAppController extends Controller
     }
     public function getSocketConfig()
     {
+        $host = env('REVERB_HOST', 'qrbootrap.test');
+        // Nếu REVERB_HOST đang để 0.0.0.0 (để bind all interfaces), WebClient/C# không thể kết nối tới IP này
+        // Nên ta thay thế bằng host thực tế mà C# đang gọi (chẳng hạn qrbootrap.test hoặc 192.168.1.x)
+        if ($host === '0.0.0.0') {
+            $host = request()->getHost();
+        }
+
         return response()->json([
             'protocol' => '7',
             'client' => 'js',
-            'version' => '8.4.0', // Khớp chuẩn Echo
+            'version' => '8.4.0',
             'flash' => 'false',
-            'app_key' => env('REVERB_APP_KEY'), // Đã sửa: dùng đúng biến env
-            'ws_host' => env('REVERB_HOST', 'qrbootrap.test'),
+            'app_key' => env('REVERB_APP_KEY'),
+            'ws_host' => $host,
             'ws_port' => env('REVERB_PORT', 8080),
             'wss_port' => env('REVERB_PORT', 8080),
-            'force_tls' => env('REVERB_SCHEME', 'https') === 'https',
-            'scheme' => env('REVERB_SCHEME', 'https')
+            'force_tls' => env('REVERB_SCHEME', 'http') === 'https',
+            'scheme' => env('REVERB_SCHEME', 'http')
         ]);
     }
 }

@@ -342,7 +342,7 @@ class ScanToLocation extends Component
         $sequence = $count + 1;
         $productCode = optional($item->product)->code ?? 'UNKNOWN';
 
-        return "{$productCode}-{$monthChar}{$sequence}";
+        return "{$monthChar}{$sequence}";
     }
 
     /** Hàm nhập kho dùng chung cho mode 1 & 2 */

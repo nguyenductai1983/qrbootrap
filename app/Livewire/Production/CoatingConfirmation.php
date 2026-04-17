@@ -166,6 +166,8 @@ class CoatingConfirmation extends Component
                 return;
             }
         }
+        $parentWarehouseCodes = [];
+
         // kiểm tra chiều dài
         foreach ($this->scannedItems as $scannedItem) {
             $itemId = $scannedItem['id'];
@@ -180,7 +182,13 @@ class CoatingConfirmation extends Component
                 $this->dispatch('alert', ['type' => 'error', 'message' => "Mã {$scannedItem['code']} không đủ mét (Tồn: {$currentLength}m)!"]);
                 return;
             }
+
+            if (!empty($scannedItem['warehouse_code'])) {
+                $parentWarehouseCodes[] = $scannedItem['warehouse_code'];
+            }
         }
+
+        $combinedWarehouseCode = !empty($parentWarehouseCodes) ? implode('-', array_unique(array_filter($parentWarehouseCodes))) : null;
 
         DB::beginTransaction();
         try {
@@ -220,6 +228,7 @@ class CoatingConfirmation extends Component
 
             // Dọn rác JSON
             $cleanProps = $sourceItem->properties ?? [];
+
             // 5. CHUẨN BỊ THÔNG SỐ KHỔ VÀ TẠO QUY TRÌNH BAO NHIÊU CÂY
             $widthsToCreate = [];
             if ($this->cutMode === 'trim') {
@@ -267,6 +276,7 @@ class CoatingConfirmation extends Component
 
                 $coatedItem = Item::create([
                     'code' => trim($finalCode),
+                    'warehouse_code' => $combinedWarehouseCode,
                     'status' => 1,
                     'type' => $targetType,
                     'original_length' => $this->newLength,
@@ -349,6 +359,7 @@ class CoatingConfirmation extends Component
 
                         $recoveredItem = Item::create([
                             'code' => trim($finalCodeRec),
+                            'warehouse_code' => $oldItem->warehouse_code,
                             'status' => 1,
                             'type' => $targetType,
                             'original_length' => $used,

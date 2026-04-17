@@ -51,12 +51,7 @@ Route::view('profile', 'profile')
 Route::view('/guide', 'guide')->middleware(['auth'])->name('guide');
 require __DIR__ . '/auth.php';
 Route::post('/api/login', [AuthController::class, 'login']);
-// Tất cả các Route liên quan đến máy in đều dùng chung 1 "chìa khóa" Sanctum
-Route::prefix('printapi')->middleware('auth:sanctum')->group(function () {
-    Route::get('/pending-jobs/{station_token}', [PrintAppController::class, 'pendingJobs']);
-    Route::post('/statusupdate', [PrintAppController::class, 'receiveStatus']);
-    Route::get('/config', [PrintAppController::class, 'getSocketConfig']);
-});
+
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::view('dashboard', 'dashboard')
         ->name('dashboard');

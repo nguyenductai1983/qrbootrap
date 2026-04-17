@@ -2,9 +2,11 @@
 
 use App\Http\Controllers\Api\QrCodeScanController;
 use App\Http\Controllers\Api\ScaleApiController;
+use App\Http\Controllers\Print\PrintAppController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController; // Import AuthController
+use Illuminate\Support\Facades\Broadcast;
 /*
 |--------------------------------------------------------------------------
 | API Routes s
@@ -25,7 +27,7 @@ use App\Http\Controllers\Api\AuthController; // Import AuthController
 // });
 // Route cho đăng nhập (không yêu cầu xác thực token)
 Route::post('/login', [AuthController::class, 'login']);
-
+Broadcast::routes(['middleware' => ['auth:sanctum']]);
 // Các route yêu cầu xác thực bằng Sanctum token
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
@@ -40,4 +42,14 @@ Route::middleware('auth:sanctum')->group(function () {
     // ============================================================
     Route::post('/scale/broadcast-weight', [ScaleApiController::class, 'broadcastWeight']);
     Route::post('/warehouse/update-weight', [ScaleApiController::class, 'updateWeight']);
+
+    // ============================================================
+    // API Trạm In (Print Station) — Dành cho C# Client
+    // Xác thực bằng Header "Authorization: Bearer <token>"
+    // ============================================================
+    Route::prefix('print')->group(function () {
+        Route::get('/config', [PrintAppController::class, 'getSocketConfig']);
+        Route::get('/pending-jobs/{station_token}', [PrintAppController::class, 'pendingJobs']);
+        Route::post('/statusupdate', [PrintAppController::class, 'receiveStatus']);
+    });
 });
