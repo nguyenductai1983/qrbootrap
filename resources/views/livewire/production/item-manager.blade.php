@@ -184,6 +184,9 @@
                                         <span class="badge {{ $item->status?->badge() ?? '' }}">
                                             {{ $item->status?->label() ?? '' }}
                                         </span>
+                                        <span class="badge bg-info">
+                                            {{ $item->warehouse_code }}
+                                        </span>
                                     </td>
                                     {{-- CỘT CHIỀU DÀI --}}
                                     <td class="text-center text-wrap" data-label="Chiều dài">
@@ -245,7 +248,7 @@
                                             class="btn btn-sm btn-outline-warning me-1" title="Xem lịch sử">
                                             <i class="fa-solid fa-clock-rotate-left"></i>
                                         </button>
-                                        <a href="{{ route('manager.items.genealogy', $item->id) }}"
+                                        <a href="{{ route('items.genealogy', $item->id) }}"
                                             class="btn btn-sm btn-outline-secondary me-1"
                                             title="Truy xuất nguồn gốc phả hệ">
                                             <i class="fa-solid fa-code-merge"></i>
@@ -336,76 +339,75 @@
     {{-- MODAL LỊCH SỬ THAY ĐỔI --}}
     <div wire:ignore.self class="modal fade" id="historyModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header bg-light">
-                        <h5 class="modal-title fw-bold text-warning"><i
-                                class="fa-solid fa-clock-rotate-left me-2"></i>Lịch sử thay đổi:
-                            {{ $historyItemCode }}</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                            aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        @if ($itemHistories && count($itemHistories) > 0)
-                            <div class="table-responsive">
-                                <table class="table table-sm table-bordered table-striped">
-                                    <thead class="table-light">
+            <div class="modal-content">
+                <div class="modal-header bg-light">
+                    <h5 class="modal-title fw-bold text-warning"><i
+                            class="fa-solid fa-clock-rotate-left me-2"></i>Lịch sử thay đổi:
+                        {{ $historyItemCode }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    @if ($itemHistories && count($itemHistories) > 0)
+                        <div class="table-responsive">
+                            <table class="table table-sm table-bordered table-striped">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Thời gian</th>
+                                        <th>Người sửa</th>
+                                        <th>Trường</th>
+                                        <th>Giá trị cũ</th>
+                                        <th>Giá trị mới</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($itemHistories as $history)
                                         <tr>
-                                            <th>Thời gian</th>
-                                            <th>Người sửa</th>
-                                            <th>Trường</th>
-                                            <th>Giá trị cũ</th>
-                                            <th>Giá trị mới</th>
+                                            <td>{{ $history->created_at->format('d/m/Y H:i:s') }}</td>
+                                            <td>{{ $history->user->name ?? 'Hệ thống' }}</td>
+                                            <td>
+                                                @if ($history->field_name === 'length')
+                                                    Chiều dài
+                                                @elseif($history->field_name === 'gsm')
+                                                    GSM
+                                                @elseif($history->field_name === 'weight')
+                                                    Trọng lượng
+                                                @else
+                                                    {{ $history->field_name }}
+                                                @endif
+                                            </td>
+                                            <td class="text-danger fw-bold">{{ $history->old_value }}</td>
+                                            <td class="text-success fw-bold">{{ $history->new_value }}</td>
                                         </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($itemHistories as $history)
-                                            <tr>
-                                                <td>{{ $history->created_at->format('d/m/Y H:i:s') }}</td>
-                                                <td>{{ $history->user->name ?? 'Hệ thống' }}</td>
-                                                <td>
-                                                    @if ($history->field_name === 'length')
-                                                        Chiều dài
-                                                    @elseif($history->field_name === 'gsm')
-                                                        GSM
-                                                    @elseif($history->field_name === 'weight')
-                                                        Trọng lượng
-                                                    @else
-                                                        {{ $history->field_name }}
-                                                    @endif
-                                                </td>
-                                                <td class="text-danger fw-bold">{{ $history->old_value }}</td>
-                                                <td class="text-success fw-bold">{{ $history->new_value }}</td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        @else
-                            <div class="text-center text-muted py-3">Chưa có lịch sử thay đổi nào.</div>
-                        @endif
-                    </div>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @else
+                        <div class="text-center text-muted py-3">Chưa có lịch sử thay đổi nào.</div>
+                    @endif
                 </div>
             </div>
         </div>
-
-        {{-- Script bật/tắt Modal --}}
-        <script>
-            document.addEventListener('livewire:initialized', () => {
-                let myModal = new bootstrap.Modal(document.getElementById('itemModal'));
-
-                Livewire.on('open-modal', () => {
-                    myModal.show();
-                });
-
-                Livewire.on('close-modal', () => {
-                    myModal.hide();
-                });
-
-                // Modal lịch sử
-                let historyModal = new bootstrap.Modal(document.getElementById('historyModal'));
-                Livewire.on('open-history-modal', () => {
-                    historyModal.show();
-                });
-            });
-        </script>
     </div>
+
+    {{-- Script bật/tắt Modal --}}
+    <script>
+        document.addEventListener('livewire:initialized', () => {
+            let myModal = new bootstrap.Modal(document.getElementById('itemModal'));
+
+            Livewire.on('open-modal', () => {
+                myModal.show();
+            });
+
+            Livewire.on('close-modal', () => {
+                myModal.hide();
+            });
+
+            // Modal lịch sử
+            let historyModal = new bootstrap.Modal(document.getElementById('historyModal'));
+            Livewire.on('open-history-modal', () => {
+                historyModal.show();
+            });
+        });
+    </script>
+</div>

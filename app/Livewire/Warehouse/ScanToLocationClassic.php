@@ -277,7 +277,7 @@ class ScanToLocationClassic extends Component
             ->count();
 
         $sequence = $count + 1;
-        $productCode = optional($item->product)->code ?? 'UNKNOWN';
+        // $productCode = optional($item->product)->code ?? 'UNKNOWN';
 
         return "{$monthChar}{$sequence}";
     }

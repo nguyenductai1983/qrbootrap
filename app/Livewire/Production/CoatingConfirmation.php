@@ -188,8 +188,12 @@ class CoatingConfirmation extends Component
             }
         }
 
-        $combinedWarehouseCode = !empty($parentWarehouseCodes) ? implode('-', array_unique(array_filter($parentWarehouseCodes))) : null;
-
+        $combinedWarehouseCode = null;
+        if (!empty($parentWarehouseCodes)) {
+            $uniqueCodes = array_unique(array_filter($parentWarehouseCodes));
+            sort($uniqueCodes, SORT_NATURAL);
+            $combinedWarehouseCode = implode('-', $uniqueCodes);
+        }
         DB::beginTransaction();
         try {
             // 2. TÍNH TỈ LỆ HAO HỤT
@@ -213,18 +217,25 @@ class CoatingConfirmation extends Component
             // Xử lý phân loại sản phẩm dựa trên tuỳ chọn Lami
             $isLamiApplied = floatval($this->lami) > 0;
             $productCode = '';
-
+            $productCodeWH = '';
             if ($isLamiApplied) {
                 // CÓ LAMI: Chuyển đổi thành sản phẩm mới (Tráng ghép)
                 $selectedProduct = $this->selectedProductId ? Product::find($this->selectedProductId) : null;
                 $productCode = $selectedProduct?->code ?? '';
+                $productCodeWH = $productCode;
                 $targetProductId = $this->selectedProductId;
-                $targetType = 2; // 2: Tráng ghép (Sản phẩm mới)
+                $targetType = 2; // 2: Tráng ghép (Sản phẩm mới)               
             } else {
                 // KHÔNG LAMI: Thành phẩm vẫn là sản phẩm bị tách ra (Mộc / Giữ nguyên loại)
                 $targetProductId = $sourceItem->product_id;
+                $productCodeWH = $sourceItem->product->code;
                 $targetType = $sourceItem->type ?: 1; // Giữ nguyên tính chất gốc
             }
+
+            // 4.1. Generate combined warehouse code and handle uniqueness counting
+            $baseWarehouseCode = $combinedWarehouseCode ? $combinedWarehouseCode . '-' . $productCodeWH : $productCodeWH;
+            $countWarehouseCode = Item::where('warehouse_code', 'LIKE', $baseWarehouseCode . '%')->count();
+
 
             // Dọn rác JSON
             $cleanProps = $sourceItem->properties ?? [];
@@ -246,7 +257,10 @@ class CoatingConfirmation extends Component
             $generatedItems = [];
 
             // Duyệt tạo Item tuỳ số lượng (1 cây Keep/Trim, 2 cây Split)
+            $SplitCount = 1;
             foreach ($widthsToCreate as $index => $targetWidth) {
+                $finalCombinedWarehouseCode = $baseWarehouseCode . ($countWarehouseCode + $SplitCount);
+                $SplitCount++;
                 // TẠO MÃ THEO CHÍNH XÁC KHỔ CỦA CÂY THÀNH PHẨM (targetWidth)
                 $baseParts = array_filter([
                     $sourceItem->order->code ?? '',
@@ -276,7 +290,7 @@ class CoatingConfirmation extends Component
 
                 $coatedItem = Item::create([
                     'code' => trim($finalCode),
-                    'warehouse_code' => $combinedWarehouseCode,
+                    'warehouse_code' => $finalCombinedWarehouseCode,
                     'status' => 1,
                     'type' => $targetType,
                     'original_length' => $this->newLength,
@@ -325,6 +339,7 @@ class CoatingConfirmation extends Component
             // 7. XỬ LÝ THU HỒI BIÊN DƯ NẾU BẬT (CHỈ SINH 1 CÂY DUY NHẤT LÀ MỘC TRỪ KHO CỦA CHA ĐÚNG BẰNG used)
             if ($this->recoverEdgeTrim) {
                 foreach ($this->scannedItems as $oldItemData) {
+
                     $oldItem = Item::with(['order', 'color', 'specification', 'plasticType'])->find($oldItemData['id']);
                     $diffWidth = (float) $oldItem->width - $targetTotalWidth;
                     $used = (float) $this->usedLengths[$oldItem->id];
@@ -357,9 +372,13 @@ class CoatingConfirmation extends Component
                         $nextNoRec = str_pad($countExistingRec + 1, 3, '0', STR_PAD_LEFT);
                         $finalCodeRec = $baseStringRec . $suffixCodeRec . $nextNoRec;
 
+                        // Tăng STT cho phần thu hồi biên
+                        $finalCombinedWarehouseCodeRec = $baseWarehouseCode . ($countWarehouseCode + $SplitCount);
+                        $SplitCount++;
+
                         $recoveredItem = Item::create([
                             'code' => trim($finalCodeRec),
-                            'warehouse_code' => $oldItem->warehouse_code,
+                            'warehouse_code' => $finalCombinedWarehouseCodeRec,
                             'status' => 1,
                             'type' => $targetType,
                             'original_length' => $used,
@@ -420,7 +439,7 @@ class CoatingConfirmation extends Component
                                 'Path' => $station->template_name,
                                 'Data' => [
                                     ['Name' => 'MaSP', 'Value' => $gItem->code],
-                                    ['Name' => 'TenSP', 'Value' => $gItem->product->name ?? ''],
+                                    ['Name' => 'Content', 'Value' => 'GSM: ' . ($gItem->gsm + $gItem->lami) . 'g/m - Dài: ' . round($gItem->length) . 'm '],
                                 ],
                                 'JobId' => $printJob->id
                             ];

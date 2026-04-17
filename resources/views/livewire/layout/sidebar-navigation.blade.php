@@ -33,8 +33,8 @@
             <span class="sidebar-text">Biểu Đồ &amp; Báo Cáo</span>
         </a>
         @can('items.view')
-            <a href="{{ route('manager.items') }}"
-                class="list-group-item list-group-item-action py-3 ps-4 {{ request()->routeIs('manager.items') ? 'active' : '' }}"
+            <a href="{{ route('items') }}"
+                class="list-group-item list-group-item-action py-3 ps-4 {{ request()->routeIs('items') ? 'active' : '' }}"
                 title="Kho Mã Tem">
                 <i class="fa-solid fa-fw fa-tags text-dark me-2"></i>
                 <span class="sidebar-text">Mã Tem (Items)</span>
