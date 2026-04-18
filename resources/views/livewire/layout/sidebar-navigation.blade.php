@@ -42,9 +42,12 @@
         @endcan
         {{-- 2. NHÓM TÍNH NĂNG SẢN XUẤT (Production) --}}
         @can('products')
+            @php
+                $fabricMenuActive = request()->routeIs('items') || request()->routeIs('production.barcode-generator-excel') || request()->routeIs('production.excel-manager') || request()->routeIs('production.scan');
+            @endphp
             <div class="list-group-item py-3 ps-4 pe-2 d-flex justify-content-between align-items-center sidebar-dropdown-toggle"
                 data-bs-toggle="collapse" href="#productsSubmenu" role="button"
-                aria-expanded="{{ request()->routeIs('products.*') ? 'true' : 'false' }}" aria-controls="productsSubmenu"
+                aria-expanded="{{ $fabricMenuActive ? 'true' : 'false' }}" aria-controls="productsSubmenu"
                 title="Quản lý Vải">
                 <div>
                     <i class="fa-solid fa-fw fa-industry text-primary me-2"></i> {{-- Icon sản xuất --}}
@@ -52,8 +55,13 @@
                 </div>
                 <i class="fas fa-fw fa-chevron-down sidebar-arrow"></i>
             </div>
-            <div class="collapse {{ request()->routeIs('products.*') ? 'show' : '' }}" id="productsSubmenu"
+            <div class="collapse {{ $fabricMenuActive ? 'show' : '' }}" id="productsSubmenu"
                 data-bs-parent="#sidebar-wrapper">
+                <a href="{{ route('items') }}" title="Danh sách Vải"
+                    class="list-group-item list-group-item-action py-2 ps-5  {{ request()->routeIs('items') ? 'active' : '' }}">
+                    <i class="fa-solid fa-fw fa-list text-success me-2"></i>
+                    <span class="sidebar-text">Danh sách Vải</span>
+                </a>
                 <a href="{{ route('production.barcode-generator-excel') }}" title="In Tem Excel"
                     class="list-group-item list-group-item-action  py-2 ps-5  {{ request()->routeIs('production.barcode-generator-excel') ? 'active' : '' }}">
                     <i class="fa-solid fa-fw fa-print text-info me-2"></i>

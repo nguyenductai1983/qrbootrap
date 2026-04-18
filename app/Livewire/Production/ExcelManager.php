@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Maatwebsite\Excel\Facades\Excel;
 use Livewire\Attributes\Title;
-
+// dùng cho Vải nhập lại đi chung với ItemsTemplateExport và ItemsImport
 #[Title('Nhập xuất Excel mã code')]
 class ExcelManager extends Component
 {

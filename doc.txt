@@ -106,3 +106,6 @@ sudo supervisorctl update
 # Bật Reverb
 sudo supervisorctl start reverb
 sudo supervisorctl status
+
+
+  {{-- <x-mh-logo-icon class="fill-current d-lg-w-100 w-50 h-auto" /></a> --}}

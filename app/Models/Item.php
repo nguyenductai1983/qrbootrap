@@ -37,6 +37,7 @@ class Item extends Model
         'notes',
         'warehoused_by',
         'warehoused_at',
+        'shift',
 
     ];
 

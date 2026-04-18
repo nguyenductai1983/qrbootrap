@@ -5,7 +5,7 @@ namespace App\Imports;
 use App\Models\Item;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
-
+// dùng cho Vải nhập lại đi chung với ItemsTemplateExport
 class ItemsImport implements ToModel, WithHeadingRow
 {
     public function model(array $row)
@@ -22,7 +22,7 @@ class ItemsImport implements ToModel, WithHeadingRow
         if ($item) {
             $props = $item->properties ?? [];
             // 1. Khai báo các cột CỐ ĐỊNH không được lưu vào JSON properties
-            $ignoredColumns = ['code', 'created_at', 'original_length', 'length', 'gsm', 'weight'];
+            $ignoredColumns = ['code', 'created_at', 'original_length', 'length', 'gsm', 'weight', 'notes', 'shift'];
 
             // 2. Cập nhật các trường cố định
             if (array_key_exists('original_length', $row)) {
@@ -53,6 +53,20 @@ class ItemsImport implements ToModel, WithHeadingRow
                     $item->weight = is_numeric($row['weight']) ? (float) $row['weight'] : $item->weight;
                 }
             }
+            if (array_key_exists('notes', $row)) {
+                if (is_null($row['notes']) || $row['notes'] === '') {
+                    $item->notes = null;
+                } else {
+                    $item->notes = $row['notes'];
+                }
+            }
+            if (array_key_exists('shift', $row)) {
+                if (is_null($row['shift']) || $row['shift'] === '') {
+                    $item->shift = null;
+                } else {
+                    $item->shift = $row['shift'];
+                }
+            }
 
             // 3. Quét các cột còn lại để đưa vào properties
             foreach ($row as $key => $value) {
@@ -71,7 +85,6 @@ class ItemsImport implements ToModel, WithHeadingRow
                     $props[$dbKey] = $value;
                 }
             }
-
             // 4. Lưu lại thông tin
             // Cập nhật cả properties và các trường cố định (như po) nếu có thay đổi
             $item->properties = $props;

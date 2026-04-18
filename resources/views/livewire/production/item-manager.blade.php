@@ -288,17 +288,22 @@
                 <div class="modal-body">
                     <h6 class="fw-bold mb-2">Thông số thực tế</h6>
                     <div class="row g-2 mb-3">
-                        <div class="col-4">
+                        <div class="col-3">
+                            <label class="form-label small text-muted mb-1" for="editOriginalLength">Dài gốc (m)</label>
+                            <input type="number" step="0.01" wire:model="editOriginalLength"
+                                class="form-control form-control-sm" id="editOriginalLength">
+                        </div>
+                        <div class="col-3">
                             <label class="form-label small text-muted mb-1" for="editLength">Chiều dài (m)</label>
                             <input type="number" step="0.01" wire:model="editLength"
                                 class="form-control form-control-sm" id="editLength">
                         </div>
-                        <div class="col-4">
+                        <div class="col-3">
                             <label class="form-label small text-muted mb-1" for="editGsm">GSM</label>
                             <input type="number" step="0.01" wire:model="editGsm"
                                 class="form-control form-control-sm" id="editGsm">
                         </div>
-                        <div class="col-4">
+                        <div class="col-3">
                             <label class="form-label small text-muted mb-1" for="editWeight">Trọng lượng (kg)</label>
                             <input type="number" step="0.01" wire:model="editWeight"
                                 class="form-control form-control-sm" id="editWeight">
@@ -365,7 +370,9 @@
                                             <td>{{ $history->created_at->format('d/m/Y H:i:s') }}</td>
                                             <td>{{ $history->user->name ?? 'Hệ thống' }}</td>
                                             <td>
-                                                @if ($history->field_name === 'length')
+                                                @if ($history->field_name === 'original_length')
+                                                    Chiều dài gốc
+                                                @elseif($history->field_name === 'length')
                                                     Chiều dài
                                                 @elseif($history->field_name === 'gsm')
                                                     GSM

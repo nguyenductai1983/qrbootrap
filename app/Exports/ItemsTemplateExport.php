@@ -8,7 +8,7 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
-
+// dùng cho Vải xuất mẫu để nhập lại đi chung với ItemsImport
 class ItemsTemplateExport implements FromCollection, WithHeadings, WithMapping, ShouldAutoSize, WithStyles
 {
     protected $items;
@@ -57,6 +57,8 @@ class ItemsTemplateExport implements FromCollection, WithHeadings, WithMapping, 
             'length',
             'gsm',
             'weight',
+            'notes',
+            'shift'
         ];
 
         // Lấy thêm các dynamic properties
@@ -78,6 +80,8 @@ class ItemsTemplateExport implements FromCollection, WithHeadings, WithMapping, 
             $item->length,
             $item->gsm,
             $item->weight,
+            $item->notes,
+            $item->shift
         ];
 
         // Đổ dữ liệu vào các cột tương ứng với properties

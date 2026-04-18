@@ -97,6 +97,7 @@ class ItemManager extends Component
             $item = Item::find($this->editItemId);
 
             $changesToLog = [
+                'original_length' => ['old' => $item->original_length, 'new' => $this->editOriginalLength],
                 'length' => ['old' => $item->length, 'new' => $this->editLength],
                 'gsm'    => ['old' => $item->gsm, 'new' => $this->editGsm],
                 'weight' => ['old' => $item->weight, 'new' => $this->editWeight],
