@@ -212,7 +212,7 @@ class ItemManager extends Component
         // Query cơ bản kèm theo Relationship để tránh N+1 Query
         /** @var \App\Models\User $user */
         $user = Auth::user();
-        $query = Item::with(['order', 'product', 'color', 'parents'])
+        $query = Item::with(['order', 'product', 'color', 'department', 'creator', 'parents'])
             ->when(!$user->canViewAllDepartments(), function ($q) use ($user) {
                 $q->where('department_id', $user->department_id);
             })
