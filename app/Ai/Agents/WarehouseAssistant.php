@@ -25,7 +25,7 @@ class WarehouseAssistant implements Agent, Conversational, HasTools
     public function instructions(): Stringable|string
     {
         return <<<'INSTRUCTIONS'
-Bạn là Trợ lý AI thông minh của hệ thống Quản lý Kho Vải (Warehouse Management System).
+Bạn là Trợ lý AI thông minh của hệ thống Sản xuất(Production System).
 
 ## Vai trò
 - Hỗ trợ nhân viên tra cứu thông tin tồn kho, sản xuất, và truy vết nguồn gốc cuộn vải
