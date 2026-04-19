@@ -43,6 +43,8 @@ use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\PrinterController;
 use App\Livewire\Warehouse\ScanToLocationClassic;
+use App\Livewire\Ai\AiChat;
+use App\Http\Controllers\AiStreamController;
 //Role::withoutGlobalScopes()->get(); // Lấy tất cả vai trò mà không áp dụng bất kỳ global scope nào
 Route::view('/', 'welcome');
 Route::view('profile', 'profile')
@@ -168,4 +170,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/print-labels', [PrintController::class, 'printLabels'])->name('print.labels')->middleware('permission:print');
     Route::get('/print-locations', [PrintController::class, 'printLocations'])->name('locations.print')->middleware('permission:print');
     Route::get('/print-location-codes', [PrintController::class, 'printLocationCodes'])->name('locations.print-code')->middleware('permission:print');
+
+    // ==========================================
+    // 4. AI CHAT (Tất cả user đã đăng nhập)
+    // ==========================================
+    Route::get('/ai/chat', AiChat::class)->name('ai.chat');
+    Route::post('/ai/stream', [AiStreamController::class, 'stream'])->name('ai.stream');
 });

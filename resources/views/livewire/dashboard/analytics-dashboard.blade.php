@@ -86,7 +86,7 @@
         <div class="card border-0 shadow-sm mb-5 d-none d-lg-block">
             <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center pt-3">
                 <h6 class="fw-bold mb-0">
-                    <i class="fa-solid fa-chart-area text-primary me-2"></i>Tiến Độ Hoạt Động Khâu Dây Chuyền
+                    <i class="fa-solid fa-chart-area text-primary me-2"></i>Tiến Độ Hoạt Động Theo Sản Phẩm
                 </h6>
             </div>
             <div class="card-body pt-0">
@@ -95,27 +95,27 @@
         </div>
     @endif
 
-    {{-- ═══ DEPARTMENT CARDS ════ --}}
-    @if (empty($departmentsData))
+    {{-- ═══ PRODUCT CARDS ════ --}}
+    @if (empty($productsData))
         <div class="alert alert-warning">
             <i class="fa-solid fa-lock me-2"></i>Bạn không có quyền xem thông tin báo cáo nào.
         </div>
     @else
         <div class="row g-4">
-            @foreach ($departmentsData as $dept)
+            @foreach ($productsData as $product)
                 <div class="col-12 col-xl-6">
                     <div class="card border-0 shadow-sm h-100">
                         <div class="card-header bg-transparent border-0 pt-4 pb-0">
                             <h5 class="fw-bold mb-0" style="color: #334155;">
-                                <i
-                                    class="fa-solid {{ $dept['is_warehouse'] ? 'fa-warehouse text-info' : 'fa-building text-primary' }} me-2"></i>
-                                {{ $dept['name'] }}
+                                <i class="fa-solid fa-box-open text-primary me-2"></i>
+                                {{ $product['name'] }}
+                                <span class="badge bg-secondary-subtle text-secondary ms-2" style="font-size:0.7rem;">{{ $product['code'] }}</span>
                             </h5>
                         </div>
                         <div class="card-body">
                             <div class="row g-3">
-                                @foreach ($dept['metrics'] as $kpi)
-                                    <div class="col-12 col-md-4">
+                                @foreach ($product['metrics'] as $kpi)
+                                    <div class="col-6 col-md-3">
                                         <div
                                             class="card border-2 border-{{ $kpi['color'] }} border-opacity-25 shadow-sm h-100 hover-kpi">
                                             <div class="card-body p-3">
@@ -133,7 +133,7 @@
                                                     {{ $kpi['title'] }}
                                                 </div>
                                                 <div class="text-muted" style="font-size: 0.7rem;">
-                                                    {{ $period }} ngày · {{ $kpi['unit'] }}
+                                                    {{ $kpi['unit'] }}
                                                 </div>
                                             </div>
                                         </div>

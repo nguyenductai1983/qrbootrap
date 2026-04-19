@@ -234,6 +234,13 @@
                 </div>
             @endcan
         @endrole
+        {{-- AI CHAT - Tất cả user --}}
+        <a href="{{ route('ai.chat') }}"
+            class="list-group-item list-group-item-action py-3 ps-4 {{ request()->routeIs('ai.chat') ? 'active' : '' }}"
+            title="Trợ lý AI">
+            <i class="fa-solid fa-fw fa-robot text-info me-2"></i>
+            <span class="sidebar-text">Trợ lý AI</span>
+        </a>
         {{-- 3. NHÓM QUẢN TRỊ (ADMIN ONLY) --}}
         @role('admin')
             {{-- MỚI: --}}
