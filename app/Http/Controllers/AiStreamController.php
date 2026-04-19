@@ -27,8 +27,8 @@ class AiStreamController extends Controller
                 $stream = $agent->stream($request->input('message'));
 
                 foreach ($stream as $event) {
-                    // Trả về delta dạng JSON
-                    echo "data: " . json_encode(['delta' => (string) $event]) . "\n\n";
+                    // Trả về delta dạng JSON thô (laravel/ai đã tự serialize object event thành json)
+                    echo "data: " . ((string) $event) . "\n\n";
                     if (ob_get_level() > 0) ob_flush();
                     flush();
                 }
