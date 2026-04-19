@@ -14,7 +14,7 @@ class WarehouseStatsTool implements Tool
 {
     public function description(): Stringable|string
     {
-        return 'Thống kê tổng quan kho hàng: tổng số item theo trạng thái, theo phòng ban, theo sản phẩm, theo vị trí kho.';
+        return 'Thống kê tổng quan kho hàng: tổng số item theo trạng thái, theo Bộ phận, theo sản phẩm, theo vị trí kho.';
     }
 
     public function handle(Request $request): Stringable|string

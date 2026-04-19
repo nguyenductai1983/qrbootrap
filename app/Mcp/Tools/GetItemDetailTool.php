@@ -11,7 +11,7 @@ use Laravel\Mcp\Server\Tools\Annotations\IsReadOnly;
 use Laravel\Mcp\Server\Tools\Annotations\IsIdempotent;
 use Laravel\Mcp\Server\Tool;
 
-#[Description('Lấy thông tin chi tiết một cuộn vải/item theo ID hoặc mã code. Bao gồm thông tin sản phẩm, phòng ban, vị trí, lịch sử thay đổi, và phả hệ (parents/children).')]
+#[Description('Lấy thông tin chi tiết một cuộn vải/item theo ID hoặc mã code. Bao gồm thông tin sản phẩm, Bộ phận, vị trí, lịch sử thay đổi, và phả hệ (parents/children).')]
 #[IsReadOnly]
 #[IsIdempotent]
 class GetItemDetailTool extends Tool
@@ -22,23 +22,49 @@ class GetItemDetailTool extends Tool
 
         if ($id = $request->get('id')) {
             $item = Item::with([
-                'product', 'department', 'location', 'color', 'specification',
-                'plasticType', 'machine', 'creator', 'verifier', 'warehouser',
-                'itemType', 'order',
-                'parents.product', 'parents.department',
-                'children.product', 'children.department',
+                'product',
+                'department',
+                'location',
+                'color',
+                'specification',
+                'plasticType',
+                'machine',
+                'creator',
+                'verifier',
+                'warehouser',
+                'itemType',
+                'order',
+                'parents.product',
+                'parents.department',
+                'children.product',
+                'children.department',
                 'histories.user',
-                'movements.fromLocation', 'movements.toLocation', 'movements.user',
+                'movements.fromLocation',
+                'movements.toLocation',
+                'movements.user',
             ])->find($id);
         } elseif ($code = $request->get('code')) {
             $item = Item::with([
-                'product', 'department', 'location', 'color', 'specification',
-                'plasticType', 'machine', 'creator', 'verifier', 'warehouser',
-                'itemType', 'order',
-                'parents.product', 'parents.department',
-                'children.product', 'children.department',
+                'product',
+                'department',
+                'location',
+                'color',
+                'specification',
+                'plasticType',
+                'machine',
+                'creator',
+                'verifier',
+                'warehouser',
+                'itemType',
+                'order',
+                'parents.product',
+                'parents.department',
+                'children.product',
+                'children.department',
                 'histories.user',
-                'movements.fromLocation', 'movements.toLocation', 'movements.user',
+                'movements.fromLocation',
+                'movements.toLocation',
+                'movements.user',
             ])->where('code', $code)->first();
         }
 

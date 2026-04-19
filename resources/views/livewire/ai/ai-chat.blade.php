@@ -79,9 +79,9 @@
                                 </button>
                             </div>
                             <div class="col-auto">
-                                <button class="ai-suggestion-card" data-msg="Liệt kê các phòng ban sản xuất">
+                                <button class="ai-suggestion-card" data-msg="Liệt kê các Bộ phận sản xuất">
                                     <span class="ai-suggestion-icon">🏭</span>
-                                    <span>Phòng ban</span>
+                                    <span>Bộ phận</span>
                                 </button>
                             </div>
                             <div class="col-auto">
@@ -136,8 +136,12 @@
                     </button>
                 </form>
                 <div class="text-center mt-1">
-                    <small class="text-muted" style="font-size: 0.68rem;">AI có thể mắc lỗi. Vui lòng kiểm tra thông tin
-                        quan trọng.</small>
+                    <small class="text-muted" style="font-size: 0.72rem;">
+                        <i class="fas fa-info-circle text-info"></i> Hệ thống xử lý từng câu hỏi <strong>độc lập</strong> (không dùng trí nhớ nhân tạo). Vui lòng nêu rõ cụ thể yêu cầu (mã cuộn vải, thời gian) trong mỗi câu.
+                    </small>
+                </div>
+                <div class="text-center">
+                    <small class="text-muted" style="font-size: 0.65rem; opacity: 0.7;">AI có thể mắc lỗi. Vui lòng tự kiểm tra lại số liệu quan trọng.</small>
                 </div>
             </div>
         </div>
@@ -690,7 +694,16 @@
                                 if (parsed.conversationId) {
                                     conversationId = parsed.conversationId;
                                 }
+                                if (parsed.error) {
+                                    throw new Error(parsed.error);
+                                }
                             } catch (err) {
+                                // Nếu là event error JSON mà ta throw, thì throw tiếp ra stream
+                                if (err.message && (err.message.includes('Hệ thống AI') || err.message.includes(
+                                        'Lỗi kết nối AI'))) {
+                                    throw err;
+                                }
+
                                 // Some events may not be JSON, just accumulate text
                                 if (data.trim() && data !== '[DONE]') {
                                     fullText += data;
@@ -715,7 +728,14 @@
             } catch (error) {
                 console.error('Stream error:', error);
                 streamingContainer.style.setProperty('display', 'none', 'important');
-                appendMessage('assistant', '❌ Đã xảy ra lỗi khi kết nối AI. Vui lòng thử lại.', true);
+
+                let errorMsg = '❌ Đã xảy ra lỗi khi kết nối AI. Vui lòng thử lại.';
+                if (error.message && (error.message.includes('Hệ thống AI') || error.message.includes(
+                        'Lỗi kết nối AI'))) {
+                    errorMsg = error.message;
+                }
+
+                appendMessage('assistant', errorMsg, true);
             }
 
             isStreaming = false;

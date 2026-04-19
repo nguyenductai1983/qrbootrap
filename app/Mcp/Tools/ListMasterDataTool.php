@@ -21,7 +21,7 @@ use Laravel\Mcp\Server\Tools\Annotations\IsReadOnly;
 use Laravel\Mcp\Server\Tools\Annotations\IsIdempotent;
 use Laravel\Mcp\Server\Tool;
 
-#[Description('Liệt kê dữ liệu danh mục (master data) của hệ thống: phòng ban, sản phẩm, vị trí kho, máy móc, màu sắc, quy cách, loại nhựa, loại vải, đơn hàng, enum trạng thái. Dùng để lấy ID khi cần filter hoặc tạo item mới.')]
+#[Description('Liệt kê dữ liệu danh mục (master data) của hệ thống: Bộ phận, sản phẩm, vị trí kho, máy móc, màu sắc, quy cách, loại nhựa, loại vải, đơn hàng, enum trạng thái. Dùng để lấy ID khi cần filter hoặc tạo item mới.')]
 #[IsReadOnly]
 #[IsIdempotent]
 class ListMasterDataTool extends Tool
@@ -86,9 +86,16 @@ class ListMasterDataTool extends Tool
 
             default => [
                 'available_types' => [
-                    'departments', 'products', 'locations', 'machines',
-                    'colors', 'specifications', 'plastic_types', 'item_types',
-                    'orders', 'enums',
+                    'departments',
+                    'products',
+                    'locations',
+                    'machines',
+                    'colors',
+                    'specifications',
+                    'plastic_types',
+                    'item_types',
+                    'orders',
+                    'enums',
                 ],
                 'hint' => 'Vui lòng chỉ định type cần liệt kê.',
             ],
@@ -102,9 +109,16 @@ class ListMasterDataTool extends Tool
         return [
             'type' => $schema->string()
                 ->enum([
-                    'departments', 'products', 'locations', 'machines',
-                    'colors', 'specifications', 'plastic_types', 'item_types',
-                    'orders', 'enums',
+                    'departments',
+                    'products',
+                    'locations',
+                    'machines',
+                    'colors',
+                    'specifications',
+                    'plastic_types',
+                    'item_types',
+                    'orders',
+                    'enums',
                 ])
                 ->description('Loại danh mục cần liệt kê: departments, products, locations, machines, colors, specifications, plastic_types, item_types, orders, enums.')
                 ->required(),

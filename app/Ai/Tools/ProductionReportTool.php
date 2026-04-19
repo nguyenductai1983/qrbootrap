@@ -13,7 +13,7 @@ class ProductionReportTool implements Tool
 {
     public function description(): Stringable|string
     {
-        return 'Báo cáo sản xuất theo khoảng thời gian: tổng cuộn vải, phân bổ theo phòng ban, máy, sản phẩm, ca, ngày.';
+        return 'Báo cáo sản xuất theo khoảng thời gian: tổng cuộn vải, phân bổ theo Bộ phận, máy, sản phẩm, ca, ngày.';
     }
 
     public function handle(Request $request): Stringable|string
@@ -53,7 +53,7 @@ class ProductionReportTool implements Tool
         return [
             'date_from' => $schema->string()->description('Ngày bắt đầu YYYY-MM-DD (mặc định 7 ngày trước)'),
             'date_to' => $schema->string()->description('Ngày kết thúc YYYY-MM-DD (mặc định hôm nay)'),
-            'department_id' => $schema->integer()->description('Lọc theo phòng ban (tùy chọn)'),
+            'department_id' => $schema->integer()->description('Lọc theo Bộ phận (tùy chọn)'),
         ];
     }
 }

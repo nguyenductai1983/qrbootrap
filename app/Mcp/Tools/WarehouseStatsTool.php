@@ -13,7 +13,7 @@ use Laravel\Mcp\Server\Tools\Annotations\IsReadOnly;
 use Laravel\Mcp\Server\Tools\Annotations\IsIdempotent;
 use Laravel\Mcp\Server\Tool;
 
-#[Description('Thống kê tổng quan kho hàng: tổng số item theo trạng thái, theo phòng ban, theo sản phẩm, theo vị trí. Hữu ích để nắm bắt tình hình tồn kho nhanh chóng.')]
+#[Description('Thống kê tổng quan kho hàng: tổng số item theo trạng thái, theo Bộ phận, theo sản phẩm, theo vị trí. Hữu ích để nắm bắt tình hình tồn kho nhanh chóng.')]
 #[IsReadOnly]
 #[IsIdempotent]
 class WarehouseStatsTool extends Tool
@@ -109,7 +109,7 @@ class WarehouseStatsTool extends Tool
         return [
             'group_by' => $schema->string()
                 ->enum(['status', 'department', 'product', 'location', 'machine'])
-                ->description('Nhóm thống kê theo: status (trạng thái), department (phòng ban), product (sản phẩm), location (vị trí kho), machine (máy).')
+                ->description('Nhóm thống kê theo: status (trạng thái), department (Bộ phận), product (sản phẩm), location (vị trí kho), machine (máy).')
                 ->default('status'),
         ];
     }

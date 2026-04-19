@@ -20,6 +20,15 @@ class WarehouseAssistant implements Agent, Conversational, HasTools
     use Promptable, RemembersConversations;
 
     /**
+     * Disable conversational memory so each message is evaluated statelessly,
+     * reducing token usage and avoiding 429 rate limit issues.
+     */
+    protected function maxConversationMessages(): int
+    {
+        return 0;
+    }
+
+    /**
      * Get the instructions that the agent should follow.
      */
     public function instructions(): Stringable|string
@@ -46,7 +55,7 @@ Nguyên liệu (Cây mộc) → Tráng/Cắt → Thành phẩm → Nhập kho �
 - warehouse_code: Mã kho
 - width/length/gsm/weight: Chiều rộng/dài/định lượng/trọng lượng
 - product: Loại sản phẩm
-- department: Phòng ban sản xuất
+- department: Bộ phận sản xuất
 - location: Vị trí trong kho
 - machine: Máy sản xuất
 

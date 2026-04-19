@@ -16,7 +16,7 @@ class ListMasterDataTool implements Tool
 {
     public function description(): Stringable|string
     {
-        return 'Liệt kê dữ liệu danh mục hệ thống: departments (phòng ban), products (sản phẩm), locations (vị trí kho), machines (máy). Dùng để lấy ID khi cần filter.';
+        return 'Liệt kê dữ liệu danh mục hệ thống: departments (Bộ phận), products (sản phẩm), locations (vị trí kho), machines (máy). Dùng để lấy ID khi cần filter.';
     }
 
     public function handle(Request $request): Stringable|string

@@ -69,7 +69,7 @@ class SearchItemsTool implements Tool
             'warehouse_code' => $schema->string()->description('Mã kho warehouse_code (tìm gần đúng)'),
             'status' => $schema->integer()->description('Trạng thái: 0=Chưa SX, 1=Đã SX, 2=Đã nhập kho, 3=Hoàn kho'),
             'product_id' => $schema->integer()->description('ID sản phẩm'),
-            'department_id' => $schema->integer()->description('ID phòng ban'),
+            'department_id' => $schema->integer()->description('ID Bộ phận'),
             'location_id' => $schema->integer()->description('ID vị trí kho'),
             'limit' => $schema->integer()->description('Số kết quả tối đa (mặc định 15, tối đa 50)'),
         ];

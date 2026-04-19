@@ -12,7 +12,7 @@ use Laravel\Mcp\Server\Tools\Annotations\IsReadOnly;
 use Laravel\Mcp\Server\Tools\Annotations\IsIdempotent;
 use Laravel\Mcp\Server\Tool;
 
-#[Description('Tìm kiếm và lọc danh sách cuộn vải/item trong kho. Hỗ trợ lọc theo mã code, warehouse_code, trạng thái, sản phẩm, phòng ban, vị trí kho. Trả về danh sách item kèm thông tin liên quan.')]
+#[Description('Tìm kiếm và lọc danh sách cuộn vải/item trong kho. Hỗ trợ lọc theo mã code, warehouse_code, trạng thái, sản phẩm, Bộ phận, vị trí kho. Trả về danh sách item kèm thông tin liên quan.')]
 #[IsReadOnly]
 #[IsIdempotent]
 class SearchItemsTool extends Tool
@@ -108,7 +108,7 @@ class SearchItemsTool extends Tool
             'product_id' => $schema->integer()
                 ->description('Lọc theo ID sản phẩm (product).'),
             'department_id' => $schema->integer()
-                ->description('Lọc theo ID phòng ban/bộ phận sản xuất.'),
+                ->description('Lọc theo ID Bộ phận/bộ phận sản xuất.'),
             'location_id' => $schema->integer()
                 ->description('Lọc theo ID vị trí kho hiện tại.'),
             'machine_id' => $schema->integer()

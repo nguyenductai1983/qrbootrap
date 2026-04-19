@@ -13,7 +13,7 @@ use Laravel\Mcp\Server\Tools\Annotations\IsReadOnly;
 use Laravel\Mcp\Server\Tools\Annotations\IsIdempotent;
 use Laravel\Mcp\Server\Tool;
 
-#[Description('Báo cáo sản xuất theo khoảng thời gian: tổng số cuộn vải được tạo, phân bổ theo phòng ban, máy, sản phẩm, ca sản xuất. Hỗ trợ đánh giá năng suất và lập kế hoạch.')]
+#[Description('Báo cáo sản xuất theo khoảng thời gian: tổng số cuộn vải được tạo, phân bổ theo Bộ phận, máy, sản phẩm, ca sản xuất. Hỗ trợ đánh giá năng suất và lập kế hoạch.')]
 #[IsReadOnly]
 #[IsIdempotent]
 class ProductionReportTool extends Tool
@@ -112,7 +112,7 @@ class ProductionReportTool extends Tool
             'date_to' => $schema->string()
                 ->description('Ngày kết thúc báo cáo (format: YYYY-MM-DD). Mặc định hôm nay.'),
             'department_id' => $schema->integer()
-                ->description('Lọc theo phòng ban cụ thể (tùy chọn).'),
+                ->description('Lọc theo Bộ phận cụ thể (tùy chọn).'),
         ];
     }
 }

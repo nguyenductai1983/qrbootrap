@@ -21,7 +21,7 @@ use Laravel\Mcp\Server\Attributes\Version;
 #[Instructions('Server quản lý kho vải (Warehouse Management System). Cung cấp các công cụ để:
 - Tìm kiếm và xem chi tiết cuộn vải/item
 - Truy vết phả hệ nguồn gốc nguyên liệu (genealogy)
-- Thống kê tồn kho theo nhiều chiều: trạng thái, phòng ban, sản phẩm, vị trí
+- Thống kê tồn kho theo nhiều chiều: trạng thái, Bộ phận, sản phẩm, vị trí
 - Xem lịch sử di chuyển và hoạt động kho
 - Báo cáo sản xuất theo thời gian
 - Giám sát lệnh in tem nhãn
