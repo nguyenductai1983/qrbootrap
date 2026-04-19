@@ -43,7 +43,11 @@
         {{-- 2. NHÓM TÍNH NĂNG SẢN XUẤT (Production) --}}
         @can('products')
             @php
-                $fabricMenuActive = request()->routeIs('items') || request()->routeIs('production.barcode-generator-excel') || request()->routeIs('production.excel-manager') || request()->routeIs('production.scan');
+                $fabricMenuActive =
+                    request()->routeIs('items') ||
+                    request()->routeIs('production.barcode-generator-excel') ||
+                    request()->routeIs('production.excel-manager') ||
+                    request()->routeIs('production.scan');
             @endphp
             <div class="list-group-item py-3 ps-4 pe-2 d-flex justify-content-between align-items-center sidebar-dropdown-toggle"
                 data-bs-toggle="collapse" href="#productsSubmenu" role="button"
@@ -235,12 +239,14 @@
             @endcan
         @endrole
         {{-- AI CHAT - Tất cả user --}}
-        <a href="{{ route('ai.chat') }}"
-            class="list-group-item list-group-item-action py-3 ps-4 {{ request()->routeIs('ai.chat') ? 'active' : '' }}"
-            title="Trợ lý AI">
-            <i class="fa-solid fa-fw fa-robot text-info me-2"></i>
-            <span class="sidebar-text">Trợ lý AI</span>
-        </a>
+        @role('manager|admin')
+            <a href="{{ route('ai.chat') }}"
+                class="list-group-item list-group-item-action py-3 ps-4 {{ request()->routeIs('ai.chat') ? 'active' : '' }}"
+                title="Trợ lý AI">
+                <i class="fa-solid fa-fw fa-robot text-info me-2"></i>
+                <span class="sidebar-text">Trợ lý AI</span>
+            </a>
+        @endrole
         {{-- 3. NHÓM QUẢN TRỊ (ADMIN ONLY) --}}
         @role('admin')
             {{-- MỚI: --}}

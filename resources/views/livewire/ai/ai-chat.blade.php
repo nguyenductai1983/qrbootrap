@@ -661,6 +661,11 @@
                     throw new Error(`Server error: ${response.status}`);
                 }
 
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('text/event-stream')) {
+                    throw new Error(`Lỗi kết nối AI: Máy chủ trả về phản hồi không hợp lệ thay vì stream. (Có thể do lỗi hệ thống hoặc mất phiên đăng nhập)`);
+                }
+
                 const reader = response.body.getReader();
                 const decoder = new TextDecoder();
                 let fullText = '';
@@ -698,18 +703,12 @@
                                     throw new Error(parsed.error);
                                 }
                             } catch (err) {
-                                // Nếu là event error JSON mà ta throw, thì throw tiếp ra stream
-                                if (err.message && (err.message.includes('Hệ thống AI') || err.message.includes(
-                                        'Lỗi kết nối AI'))) {
+                                // Nếu là event error JSON mà ta throw, thì ném thẳng ra ngoài dòng stream
+                                if (err.message && (err.message.includes('Hệ thống AI') || err.message.includes('Lỗi kết nối AI') || err.message.includes('phản hồi không hợp lệ'))) {
                                     throw err;
                                 }
-
-                                // Some events may not be JSON, just accumulate text
-                                if (data.trim() && data !== '[DONE]') {
-                                    fullText += data;
-                                    streamingContent.innerHTML = markdownToHtml(fullText);
-                                    scrollToBottom();
-                                }
+                                // Ignore non-JSON or malformed lines, this prevents leaking HTML or error traces
+                                console.warn("Bỏ qua chunk dữ liệu không hợp lệ: ", data.substring(0, 50));
                             }
                         }
                     }
