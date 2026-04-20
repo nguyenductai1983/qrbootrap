@@ -130,7 +130,7 @@ class WarehouseItemsExport implements FromCollection, WithHeadings, WithMapping,
             $item->type,
             $item->verifier ? $item->verifier->name : '',
             $item->product ? $item->product->code : '',
-            $item->shift ? $item->shift->code : '',
+            $item->shift,
         ];
 
         foreach ($this->dynamicKeys as $key) {
