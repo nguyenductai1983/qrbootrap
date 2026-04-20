@@ -310,6 +310,19 @@
                         </div>
                     </div>
 
+                    <div class="row g-2 mb-3">
+                        <div class="col-4">
+                            <label class="form-label small text-muted mb-1" for="editShift">Ca sản xuất</label>
+                            <input type="text" wire:model="editShift" class="form-control form-control-sm"
+                                id="editShift" placeholder="VD: Ca 1, A...">
+                        </div>
+                        <div class="col-8">
+                            <label class="form-label small text-muted mb-1" for="editNotes">Ghi chú</label>
+                            <input type="text" wire:model="editNotes" class="form-control form-control-sm"
+                                id="editNotes" placeholder="Ghi chú thêm...">
+                        </div>
+                    </div>
+
                     <h6 class="fw-bold mb-3">Thông tin chi tiết (Properties)</h6>
                     <div class="row g-2">
                         {{-- Duyệt mảng properties tự động để sinh ra form chỉnh sửa --}}
@@ -378,6 +391,10 @@
                                                     GSM
                                                 @elseif($history->field_name === 'weight')
                                                     Trọng lượng
+                                                @elseif($history->field_name === 'shift')
+                                                    Ca sản xuất
+                                                @elseif($history->field_name === 'notes')
+                                                    Ghi chú
                                                 @else
                                                     {{ $history->field_name }}
                                                 @endif

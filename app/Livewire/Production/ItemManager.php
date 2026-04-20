@@ -40,6 +40,8 @@ class ItemManager extends Component
     public $editLength = null;         // 🌟 Thêm biến này
     public $editGsm = null;
     public $editWeight = null;
+    public $editShift = '';
+    public $editNotes = '';
     public $historyItemCode = '';
     public $itemHistories = [];
     public function mount()
@@ -84,6 +86,8 @@ class ItemManager extends Component
             $this->editLength = $item->length;
             $this->editGsm = $item->gsm;
             $this->editWeight = $item->weight;
+            $this->editShift = $item->shift;
+            $this->editNotes = $item->notes;
             // Chuẩn bị cho chức năng định vị sắp tới:
             // $this->current_location_id = $item->current_location_id;
 
@@ -101,6 +105,8 @@ class ItemManager extends Component
                 'length' => ['old' => $item->length, 'new' => $this->editLength],
                 'gsm'    => ['old' => $item->gsm, 'new' => $this->editGsm],
                 'weight' => ['old' => $item->weight, 'new' => $this->editWeight],
+                'shift'  => ['old' => $item->shift, 'new' => $this->editShift],
+                'notes'  => ['old' => $item->notes, 'new' => $this->editNotes],
             ];
 
             foreach ($changesToLog as $field => $values) {
@@ -124,6 +130,8 @@ class ItemManager extends Component
                 'length' => $this->editLength,
                 'gsm' => $this->editGsm,
                 'weight' => $this->editWeight,
+                'shift' => $this->editShift,
+                'notes' => $this->editNotes,
                 // 'current_location_id' => $this->current_location_id, // Mở ra khi bạn làm xong table Locations
             ]);
 
