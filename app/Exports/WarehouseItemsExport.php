@@ -95,6 +95,7 @@ class WarehouseItemsExport implements FromCollection, WithHeadings, WithMapping,
             'Loại (Type)',
             'Đứng máy',
             'Mã Sản Phẩm',
+            'Ca làm việc'
         ];
 
         foreach ($this->dynamicKeys as $key) {
@@ -129,6 +130,7 @@ class WarehouseItemsExport implements FromCollection, WithHeadings, WithMapping,
             $item->type,
             $item->verifier ? $item->verifier->name : '',
             $item->product ? $item->product->code : '',
+            $item->shift ? $item->shift->code : '',
         ];
 
         foreach ($this->dynamicKeys as $key) {
