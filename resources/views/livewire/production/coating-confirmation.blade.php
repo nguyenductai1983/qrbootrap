@@ -66,45 +66,6 @@
                 </div>
             </div>
 
-            {{-- Lịch sử in gần đây --}}
-            <div wire:poll.30s>
-                @if (isset($recentPrintJobs) && count($recentPrintJobs) > 0)
-                    <div class="card shadow-sm border-0 mt-3">
-                        <div class="card-header bg-secondary text-white fw-bold">
-                            <i class="fa-solid fa-clock-rotate-left"></i> Lịch sử in gần đây
-                        </div>
-                        <ul class="list-group list-group-flush">
-                            @foreach ($recentPrintJobs as $job)
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <div class="fw-bold text-primary">{{ $job->item->code }}</div>
-                                        <div class="small text-muted">{{ $job->created_at->format('H:i d/m') }} -
-                                            {{ $job->printer_mac }}</div>
-                                        @if ($job->status == \App\Models\PrintJob::STATUS_SUCCESS)
-                                            <span class="badge bg-success rounded-pill"><i
-                                                    class="fa-solid fa-check"></i> Đã
-                                                in</span>
-                                        @elseif($job->status == \App\Models\PrintJob::STATUS_PRINTING)
-                                            <span class="badge bg-info rounded-pill"><i
-                                                    class="fa-solid fa-spinner fa-spin"></i> Đang in</span>
-                                        @elseif($job->status == \App\Models\PrintJob::STATUS_FAILED)
-                                            <span class="badge bg-danger rounded-pill"><i
-                                                    class="fa-solid fa-triangle-exclamation"></i> Lỗi</span>
-                                        @else
-                                            <span class="badge bg-warning text-dark rounded-pill"><i
-                                                    class="fa-solid fa-clock"></i> Đang chờ</span>
-                                        @endif
-                                    </div>
-                                    <button wire:click="reprintJob({{ $job->id }})"
-                                        class="btn btn-sm btn-warning fw-bold shadow-sm" title="In lại mã này">
-                                        <i class="fa-solid fa-print"></i> In Lại
-                                    </button>
-                                </li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
-            </div>
         </div>
 
         {{-- KHU VỰC NHẬP SỐ LIỆU & XÁC NHẬN TRÁNG --}}
@@ -388,6 +349,46 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    {{-- Lịch sử in gần đây --}}
+    <div wire:poll.30s class="mt-3">
+        @if (isset($recentPrintJobs) && count($recentPrintJobs) > 0)
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-secondary text-white fw-bold">
+                    <i class="fa-solid fa-clock-rotate-left"></i> Lịch sử in gần đây
+                </div>
+                <ul class="list-group list-group-flush">
+                    @foreach ($recentPrintJobs as $job)
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <div class="fw-bold text-primary">{{ $job->item->code }}</div>
+                                <div class="small text-muted">{{ $job->created_at->format('H:i d/m') }} -
+                                    {{ $job->printer_mac }}</div>
+                                @if ($job->status == \App\Models\PrintJob::STATUS_SUCCESS)
+                                    <span class="badge bg-success rounded-pill"><i
+                                            class="fa-solid fa-check"></i> Đã
+                                        in</span>
+                                @elseif($job->status == \App\Models\PrintJob::STATUS_PRINTING)
+                                    <span class="badge bg-info rounded-pill"><i
+                                            class="fa-solid fa-spinner fa-spin"></i> Đang in</span>
+                                @elseif($job->status == \App\Models\PrintJob::STATUS_FAILED)
+                                    <span class="badge bg-danger rounded-pill"><i
+                                            class="fa-solid fa-triangle-exclamation"></i> Lỗi</span>
+                                @else
+                                    <span class="badge bg-warning text-dark rounded-pill"><i
+                                            class="fa-solid fa-clock"></i> Đang chờ</span>
+                                @endif
+                            </div>
+                            <button wire:click="reprintJob({{ $job->id }})"
+                                class="btn btn-sm btn-warning fw-bold shadow-sm" title="In lại mã này">
+                                <i class="fa-solid fa-print"></i> In Lại
+                            </button>
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
     </div>
 
     {{-- ========================================== --}}
