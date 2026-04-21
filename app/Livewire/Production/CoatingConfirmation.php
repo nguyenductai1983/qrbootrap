@@ -522,8 +522,11 @@ class CoatingConfirmation extends Component
                 'user_id' => Auth::id()
             ]);
 
-            $this->dispatchPrintJob($job, $job->item, $mac);
-            $this->dispatch('alert', ['type' => 'success', 'message' => 'Đã gửi lại lệnh in cho mã: ' . $job->item->code]);
+            if ($this->dispatchPrintJob($job, $job->item, $mac)) {
+                $this->dispatch('alert', ['type' => 'success', 'message' => 'Đã gửi lại lệnh in cho mã: ' . $job->item->code]);
+            } else {
+                $this->dispatch('alert', ['type' => 'error', 'message' => 'Gửi lệnh in thất bại, vui lòng thử lại hoặc kiểm tra kết nối máy in.']);
+            }
         } catch (Exception $e) {
             $this->dispatch('alert', ['type' => 'error', 'message' => 'Lỗi hệ thống: ' . $e->getMessage()]);
         }
@@ -531,8 +534,9 @@ class CoatingConfirmation extends Component
 
     /**
      * Gửi lệnh in qua WebSocket (dùng chung cho cả tạo mới và in lại)
+     * @return bool true nếu gửi thành công, false nếu thất bại
      */
-    private function dispatchPrintJob(PrintJob $printJob, Item $item, string $mac): void
+    private function dispatchPrintJob(PrintJob $printJob, Item $item, string $mac): bool
     {
         try {
             $station = PrintStation::where('code', $mac)->first();
@@ -550,9 +554,11 @@ class CoatingConfirmation extends Component
             } else {
                 broadcast(new PrintLabelRequested($item, $mac, $printJob->id));
             }
+            return true;
         } catch (\Throwable $e) {
             $printJob->update(['status' => PrintJob::STATUS_FAILED]);
             \Illuminate\Support\Facades\Log::error('Lỗi broadcast gửi lệnh in: ' . $e->getMessage());
+            return false;
         }
     }
 
