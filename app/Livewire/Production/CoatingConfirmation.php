@@ -15,6 +15,7 @@ use App\Events\PrintLabelRequested;
 use App\Events\PrintLabelAppEvent;
 use App\Models\PrintJob;
 use App\Models\PrintStation;
+use Exception;
 
 #[Title('Xác nhận Tráng Ghép')]
 class CoatingConfirmation extends Component
@@ -424,32 +425,13 @@ class CoatingConfirmation extends Component
             foreach ($generatedItems as $gItem) {
                 $msgCodes[] = $gItem->code;
                 if (!empty($this->printerMac)) {
-                    try {
-                        $printJob = PrintJob::create([
-                            'item_id' => $gItem->id,
-                            'printer_mac' => $this->printerMac,
-                            'user_id' => Auth::id(),
-                            'status' => PrintJob::STATUS_PENDING
-                        ]);
-
-                        $station = PrintStation::where('code', $this->printerMac)->first();
-
-                        if ($station && $station->client_type === 'app') {
-                            $printData = [
-                                'Path' => $station->template_name,
-                                'Data' => [
-                                    ['Name' => 'MaSP', 'Value' => $gItem->code],
-                                    ['Name' => 'Content', 'Value' => 'GSM: ' . ($gItem->gsm + $gItem->lami) . 'g/m - Dài: ' . round($gItem->length) . 'm '],
-                                ],
-                                'JobId' => $printJob->id
-                            ];
-                            broadcast(new PrintLabelAppEvent($station->station_token, $printData));
-                        } else {
-                            broadcast(new PrintLabelRequested($gItem, $this->printerMac, $printJob->id));
-                        }
-                    } catch (\Throwable $e) {
-                        \Illuminate\Support\Facades\Log::error('Lỗi broadcast gửi lệnh in: ' . $e->getMessage());
-                    }
+                    $printJob = PrintJob::create([
+                        'item_id' => $gItem->id,
+                        'printer_mac' => $this->printerMac,
+                        'user_id' => Auth::id(),
+                        'status' => PrintJob::STATUS_PENDING
+                    ]);
+                    $this->dispatchPrintJob($printJob, $gItem, $this->printerMac);
                 }
             }
 
@@ -526,8 +508,13 @@ class CoatingConfirmation extends Component
 
     public function reprintJob($jobId)
     {
-        $job = PrintJob::with('item')->find($jobId);
-        if ($job && $job->item) {
+        try {
+            $job = PrintJob::with('item')->find($jobId);
+            if (!$job || !$job->item) {
+                $this->dispatch('alert', ['type' => 'error', 'message' => 'Không tìm thấy công việc in.']);
+                return;
+            }
+
             $mac = $this->printerMac ?: $job->printer_mac;
             $job->update([
                 'status' => PrintJob::STATUS_PENDING,
@@ -535,25 +522,37 @@ class CoatingConfirmation extends Component
                 'user_id' => Auth::id()
             ]);
 
+            $this->dispatchPrintJob($job, $job->item, $mac);
+            $this->dispatch('alert', ['type' => 'success', 'message' => 'Đã gửi lại lệnh in cho mã: ' . $job->item->code]);
+        } catch (Exception $e) {
+            $this->dispatch('alert', ['type' => 'error', 'message' => 'Lỗi hệ thống: ' . $e->getMessage()]);
+        }
+    }
+
+    /**
+     * Gửi lệnh in qua WebSocket (dùng chung cho cả tạo mới và in lại)
+     */
+    private function dispatchPrintJob(PrintJob $printJob, Item $item, string $mac): void
+    {
+        try {
             $station = PrintStation::where('code', $mac)->first();
 
             if ($station && $station->client_type === 'app') {
                 $printData = [
                     'Path' => $station->template_name,
                     'Data' => [
-                        ['Name' => 'MaSP', 'Value' => $job->item->code],
-                        ['Name' => 'TenSP', 'Value' => $job->item->product->name],
+                        ['Name' => 'MaSP', 'Value' => $item->code],
+                        ['Name' => 'Content', 'Value' => 'GSM: ' . ($item->gsm + $item->lami) . 'g/m - Dài: ' . round($item->length) . 'm '],
                     ],
-                    'JobId' => $job->id
+                    'JobId' => $printJob->id
                 ];
                 broadcast(new PrintLabelAppEvent($station->station_token, $printData));
             } else {
-                broadcast(new PrintLabelRequested($job->item, $mac, $job->id));
+                broadcast(new PrintLabelRequested($item, $mac, $printJob->id));
             }
-
-            $this->dispatch('alert', ['type' => 'success', 'message' => 'Đã gửi lại lệnh in cho mã: ' . $job->item->code]);
-        } else {
-            $this->dispatch('alert', ['type' => 'error', 'message' => 'Không tìm thấy công việc in.']);
+        } catch (\Throwable $e) {
+            $printJob->update(['status' => PrintJob::STATUS_FAILED]);
+            \Illuminate\Support\Facades\Log::error('Lỗi broadcast gửi lệnh in: ' . $e->getMessage());
         }
     }
 
