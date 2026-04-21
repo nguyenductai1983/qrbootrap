@@ -80,9 +80,9 @@
 
                 <a href="{{ route('production.scan') }}"
                     class="list-group-item list-group-item-action py-2 ps-5  {{ request()->routeIs('production.scan') ? 'active' : '' }}"
-                    title="Dán Tem Vải">
+                    title="Xác nhận">
                     <i class="fa-solid fa-fw fa-barcode text-primary me-2"></i>
-                    <span class="sidebar-text">Dán Tem Vải</span>
+                    <span class="sidebar-text">Xác nhận</span>
                 </a>
             </div>
         @endcan

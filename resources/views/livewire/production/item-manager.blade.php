@@ -102,7 +102,7 @@
                         <select wire:model.live="filterOrderId" class="form-select" id="filterOrderId">
                             <option value="">-- Tất cả đơn hàng --</option>
                             @foreach ($orders as $order)
-                                <option value="{{ $order->id }}">{{ $order->code }} - {{ $order->customer_name }}
+                                <option value="{{ $order->id }}">{{ $order->code }} {{ $order->customer_name }}
                                 </option>
                             @endforeach
                         </select>
@@ -289,7 +289,8 @@
                     <h6 class="fw-bold mb-2">Thông số thực tế</h6>
                     <div class="row g-2 mb-3">
                         <div class="col-3">
-                            <label class="form-label small text-muted mb-1" for="editOriginalLength">Dài gốc (m)</label>
+                            <label class="form-label small text-muted mb-1" for="editOriginalLength">Dài gốc
+                                (m)</label>
                             <input type="number" step="0.01" wire:model="editOriginalLength"
                                 class="form-control form-control-sm" id="editOriginalLength">
                         </div>

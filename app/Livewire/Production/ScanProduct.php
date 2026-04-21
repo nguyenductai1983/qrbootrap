@@ -34,6 +34,11 @@ class ScanProduct extends Component
 
     public $lastScannedCode = null;
     public $scannedCodeInput = '';
+
+    // BIẾN CẬP NHẬT M
+    public $editLength = null;
+    public $editNotes = '';
+
     public function mount()
     {
         /** @var \App\Models\User $user */
@@ -102,6 +107,9 @@ class ScanProduct extends Component
 
             // Lấy full model ra view để load được Relationship
             $this->itemInfo = Item::with(['product', 'color', 'order'])->find($item->id);
+            $this->scannedItemId = $item->id;
+            $this->editLength = $item->length;
+            $this->editNotes = '';
 
             $this->dispatch('play-warning-sound');
             if ($source == 'mobile') {
@@ -168,6 +176,8 @@ class ScanProduct extends Component
         // Lấy full model ra view để load được Relationship
         $this->itemInfo = Item::with(['product', 'color', 'order'])->find($item->id);
         $this->scannedItemId = $item->id; // Lấy ID để có thể bấm nút In Lại
+        $this->editLength = $item->length;
+        $this->editNotes = '';
 
         $this->dispatch('play-success-sound');
 
@@ -199,7 +209,54 @@ class ScanProduct extends Component
         $this->itemInfo = [];
         $this->lastScannedCode = null;
         $this->scannedItemId = null;
+        $this->editLength = null;
+        $this->editNotes = '';
         $this->dispatch('resume-camera');
+    }
+
+    public function updateLength()
+    {
+        if (!$this->scannedItemId) {
+            return;
+        }
+
+        $item = Item::find($this->scannedItemId);
+        if (!$item) {
+            $this->dispatch('show-toast', ...[['type' => 'error', 'title' => 'Lỗi!', 'text' => 'Không tìm thấy dữ liệu vải.']]);
+            return;
+        }
+
+        $oldLength = $item->length;
+        $newLength = (float)$this->editLength;
+
+        // Lưu lịch sử nếu có thay đổi m
+        if ($oldLength != $newLength) {
+            \App\Models\ItemHistory::create([
+                'item_id' => $item->id,
+                'user_id' => Auth::id(),
+                'field_name' => 'length',
+                'old_value' => $oldLength,
+                'new_value' => $newLength,
+            ]);
+            $item->length = $newLength;
+        }
+
+        // Cập nhật notes
+        if (!empty($this->editNotes)) {
+            $existingNotes = $item->notes;
+            $newNote = "[Cập nhật " . now()->format('d/m/Y H:i') . "]: " . $this->editNotes;
+            $item->notes = $existingNotes ? $existingNotes . " | " . $newNote : $newNote;
+        }
+
+        if ($item->isDirty()) {
+            $item->save();
+            // Refresh info
+            $this->itemInfo = Item::with(['product', 'color', 'order'])->find($item->id);
+            $this->dispatch('show-toast', ...[['type' => 'success', 'title' => 'Thành công!', 'text' => 'Đã lưu thông số.']]);
+            $this->editNotes = ''; // Reset notes sau khi lưu
+        } else {
+             $this->dispatch('show-toast', ...[['type' => 'info', 'title' => 'Bỏ qua', 'text' => 'Không có thay đổi nào.']]);
+        }
     }
 
     public function render()

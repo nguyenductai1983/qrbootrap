@@ -103,7 +103,7 @@
                                 </div>
                                 <table class="table table-borderless mb-0 mt-3">
                                     <tr>
-                                        <td class="text-muted small" width="30%">Mã Vải:</td>
+                                        <td class="text-muted small" width="50%">Mã Vải:</td>
                                         <td class="fw-bold fs-5 text-primary">
                                             {{ $itemInfo->product->name ?? 'N/A' }}
                                             @if (!empty($selectedModelId))
@@ -121,8 +121,14 @@
                                         <td>
                                             <span class="badge bg-secondary">{{ $itemInfo->original_length ?? 0 }}
                                                 m</span>
-                                            <span class="badge bg-info text-dark">{{ $itemInfo->length ?? 0 }}
-                                                m</span>
+                                            <span class="text-muted small mx-1">→</span>
+                                            <div class="input-group input-group-sm d-inline-flex w-auto align-middle">
+                                                <input type="number" step="0.1" min="0"
+                                                    wire:model="editLength" wire:keydown.enter="updateLength"
+                                                    class="form-control form-control-sm border-warning fw-bold text-center"
+                                                    placeholder="m">
+                                                <span class="input-group-text py-0">m</span>
+                                            </div>
                                         </td>
                                     </tr>
                                     <tr>
@@ -136,6 +142,30 @@
                                         </td>
                                     </tr>
                                 </table>
+
+                                {{-- FORM CẬP NHẬT SỐ MÉT --}}
+                                <div class="border-top pt-2 mt-1">
+                                    <div class="row g-2 align-items-end">
+                                        <div class="col">
+                                            <label class="small text-muted" for="editNotes">
+                                                <i class="fa-solid fa-comment me-1"></i>Ghi chú (không bắt buộc)
+                                            </label>
+                                            <input type="text" wire:model="editNotes" id="editNotes"
+                                                class="form-control form-control-sm" placeholder="Lý do thay đổi...">
+                                        </div>
+                                        <div class="col-auto">
+                                            <button wire:click="updateLength" wire:loading.attr="disabled"
+                                                class="btn btn-sm btn-warning fw-bold">
+                                                <span wire:loading.remove wire:target="updateLength">
+                                                    <i class="fa-solid fa-floppy-disk me-1"></i>Lưu thông tin
+                                                </span>
+                                                <span wire:loading wire:target="updateLength">
+                                                    <i class="fa-solid fa-spinner fa-spin me-1"></i>Đang lưu...
+                                                </span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         @endif
 
