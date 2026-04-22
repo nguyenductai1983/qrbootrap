@@ -74,6 +74,14 @@
                     @enderror
                 </div>
 
+                <div class="mb-3 form-check">
+                    <input wire:model="force_password_change" type="checkbox" class="form-check-input" id="force_password_change">
+                    <label class="form-check-label text-warning fw-bold" for="force_password_change">{{ __('Bắt buộc đổi mật khẩu ở lần đăng nhập tiếp theo') }}</label>
+                    @error('force_password_change')
+                        <div class="text-danger mt-1 small">{{ $message }}</div>
+                    @enderror
+                </div>
+
                 {{-- <-- Trường gán Vai trò (từ Spatie) --> --}}
                 <div class="mb-3">
                     <label class="form-label">{{ __('Gán Vai trò') }}</label>

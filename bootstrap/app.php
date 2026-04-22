@@ -14,9 +14,9 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         // Đây là nơi bạn định nghĩa middleware toàn cục (global middleware)
-        // $middleware->web(append: [
-        //     \App\Http\Middleware\TrustProxies::class,
-        // ]);
+        $middleware->web(append: [
+            \App\Http\Middleware\RequirePasswordChange::class,
+        ]);
 
         // Đây là nơi bạn định nghĩa các route middleware
         $middleware->alias([

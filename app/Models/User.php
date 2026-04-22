@@ -26,6 +26,8 @@ class User extends Authenticatable
         'password',
         'department_id', // <-- Thay thế 'department' bằng 'department_id'
         'is_admin',
+        'force_password_change',
+        'password_changed_at',
     ];
 
     /**
@@ -49,6 +51,8 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'is_admin' => 'boolean',
+            'force_password_change' => 'boolean',
+            'password_changed_at' => 'datetime',
         ];
     }
 

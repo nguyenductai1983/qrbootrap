@@ -22,6 +22,7 @@ class UserForm extends Component
     public $password;
     public $password_confirmation;
     public $is_admin = false;
+    public $force_password_change = true;
     public $role;
     public $department_id; // <-- Thay đổi thành department_id
     public $selectedRoles = []; // <-- Mảng để lưu các vai trò được chọn
@@ -42,6 +43,7 @@ class UserForm extends Component
             $this->username = $this->user->username;
             $this->email = $this->user->email;
             $this->is_admin = (bool) $this->user->is_admin;
+            $this->force_password_change = (bool) $this->user->force_password_change;
             $this->role = $this->user->role; // Giữ lại nếu bạn vẫn dùng cột 'role'
             $this->department_id = $this->user->department_id;
             $this->selectedRoles = $this->user->roles->pluck('name')->toArray(); // <-- Lấy các vai trò hiện có
@@ -49,6 +51,7 @@ class UserForm extends Component
         } else {
             $this->user = new User();
             $this->is_admin = false;
+            $this->force_password_change = true;
             $this->role = 'manager'; // Giá trị mặc định cho cột 'role'
             $this->department_id = null;
             $this->selectedRoles = ['manager']; // Mặc định gán vai trò 'user' khi tạo mới
@@ -74,6 +77,7 @@ class UserForm extends Component
                 Rule::unique('users')->ignore($this->user->id),
             ],
             'is_admin' => ['boolean'],
+            'force_password_change' => ['boolean'],
             'password' => [
                 Rule::requiredIf(!$this->user->exists),
                 'nullable',
@@ -103,6 +107,7 @@ class UserForm extends Component
         $this->user->username = $this->username;
         $this->user->email = $this->email;
         $this->user->is_admin = $this->is_admin;
+        $this->user->force_password_change = $this->force_password_change;
         $this->user->department_id = $this->department_id;
 
         if ($this->password) {

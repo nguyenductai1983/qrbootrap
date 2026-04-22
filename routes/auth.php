@@ -28,6 +28,9 @@ Route::middleware('auth')->group(function () {
 
     Volt::route('confirm-password', 'pages.auth.confirm-password')
         ->name('password.confirm');
+
+    Volt::route('thay-doi-mat-khau-bat-buoc', 'pages.auth.force-password-change')
+        ->name('password.force-change');
 });
 Route::post('logout', function () {
     \Illuminate\Support\Facades\Auth::logout(); // Đăng xuất người dùng

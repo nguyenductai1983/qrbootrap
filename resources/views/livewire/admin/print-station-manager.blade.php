@@ -128,6 +128,16 @@
                                 <div class="p-3 mb-3 border rounded ">
                                     <h6 class="fw-bold mb-3 text-primary"><i class="fa-solid fa-gears me-1"></i> Cấu
                                         hình riêng cho App</h6>
+                                        
+                                    <div class="alert alert-info py-2 mb-3">
+                                        <strong>Cấu hình Server (Dành cho Dev nhập vào App C#):</strong>
+                                        <ul class="mb-0 small ps-3">
+                                            <li>App ID: <code>{{ config('broadcasting.connections.reverb.app_id') ?: env('REVERB_APP_ID') }}</code></li>
+                                            <li>App Key: <code>{{ config('broadcasting.connections.reverb.key') ?: env('REVERB_APP_KEY') }}</code></li>
+                                            <li>App Secret: <code>{{ config('broadcasting.connections.reverb.secret') ?: env('REVERB_APP_SECRET') }}</code></li>
+                                            <li>Host: <code>{{ request()->getHost() }}</code> (Port: <code>{{ config('broadcasting.connections.reverb.options.port') ?: env('REVERB_PORT', 8080) }}</code>)</li>
+                                        </ul>
+                                    </div>
                                     <div class="mb-3">
                                         <label class="form-label fw-bold" for="appKey">App Key (Kênh bảo mật) <span
                                                 class="text-danger">*</span></label>
