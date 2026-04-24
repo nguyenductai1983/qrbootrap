@@ -29,6 +29,7 @@ class Item extends Model
         'width_original',
         'width',
         'lami',
+        'gsmlami',
         'original_length',
         'length',
         'gsm',

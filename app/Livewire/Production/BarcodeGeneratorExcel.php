@@ -178,15 +178,85 @@ class BarcodeGeneratorExcel extends Component
             //nếu không có số lượng thì số lượng = 1
             if ($quantity < 1) $quantity = 1;
 
-            $orderId = null;
+            $ordersToProcess = [];
             if ($orderCode) {
-                $order = Order::firstOrNew(
-                    ['code' => $orderCode],
-                    ['status' => OrderStatus::RUNNING]
-                );
-                $order->total = ($order->total ?? 0) + $quantity;
-                $order->save();
-                $orderId = $order->id;
+                // Tách đơn hàng
+                $orderCodes = explode('+', $orderCode);
+                $count = count($orderCodes);
+                
+                $baseQty = floor($quantity / $count);
+                $remainder = $quantity % $count;
+
+                $needsNewPo = false;
+                $fetchedOrders = [];
+                foreach ($orderCodes as $code) {
+                    $code = trim($code);
+                    if (empty($code)) continue;
+                    
+                    $order = Order::firstOrNew(
+                        ['code' => $code],
+                        ['status' => OrderStatus::RUNNING]
+                    );
+                    $fetchedOrders[$code] = $order;
+                    
+                    if (empty($order->production_order_id)) {
+                        $needsNewPo = true;
+                    }
+                }
+
+                $productionOrder = null;
+                if ($needsNewPo) {
+                    // Tự động cấp LSX
+                    $year = date('y');
+                    $prefix = "LSX{$year}-";
+                    $lastPo = \App\Models\ProductionOrder::where('code', 'like', "{$prefix}%")
+                                        ->orderBy('code', 'desc')
+                                        ->first();
+                    if ($lastPo && preg_match('/-(\d+)$/', $lastPo->code, $matches)) {
+                        $nextNum = intval($matches[1]) + 1;
+                    } else {
+                        $nextNum = 1;
+                    }
+                    $poCode = $prefix . str_pad($nextNum, 4, '0', STR_PAD_LEFT);
+
+                    // Tạo bảng ProductionOrder nếu chưa có
+                    $productionOrder = \App\Models\ProductionOrder::firstOrCreate(
+                        ['code' => $poCode],
+                        [
+                            'status' => \App\Enums\ProductionOrderStatus::RUNNING,
+                            'start_date' => now(),
+                        ]
+                    );
+                }
+
+                foreach ($orderCodes as $index => $code) {
+                    $code = trim($code);
+                    if (empty($code)) continue;
+
+                    $qtyForThis = $baseQty + ($index < $remainder ? 1 : 0);
+                    
+                    if ($qtyForThis > 0) {
+                        $order = $fetchedOrders[$code];
+                        // Chỉ ghi đè LSX nếu trước đó order chưa có LSX
+                        if (empty($order->production_order_id) && $productionOrder) {
+                            $order->production_order_id = $productionOrder->id;
+                        }
+                        $order->total = ($order->total ?? 0) + $qtyForThis;
+                        $order->save();
+                        
+                        $ordersToProcess[] = [
+                            'orderId' => $order->id,
+                            'orderCode' => $code,
+                            'quantity' => $qtyForThis
+                        ];
+                    }
+                }
+            } else {
+                $ordersToProcess[] = [
+                    'orderId' => null,
+                    'orderCode' => '',
+                    'quantity' => $quantity
+                ];
             }
 
             $colorId   = $this->resolveAttributeId(Color::class, $colorCode);
@@ -194,74 +264,81 @@ class BarcodeGeneratorExcel extends Component
             $plasticId = $this->resolveAttributeId(PlasticType::class, $plasticCode);
             //nếu col0Mode = sequence thì no = inputCol0 - 1, ngược lại thì no = 0
             $no = ($this->col0Mode === 'sequence') ? $inputCol0 - 1 : 0;
-            for ($i = 0; $i < $quantity; $i++) {
-                $no++;
-                $propertiesToSave = [];
-                try {
-                    // 🌟 Tìm hoặc tạo Machine theo mã máy từ Excel
-                    $machineId = null;
-                    if (!empty($machineNum)) {
-                        /** @var \App\Models\User $user */
-                        $user = Auth::user();
-                        $userDeptId = $user->department_id;
-                        $userDeptCode = $user->department->code;
-                        $machine = Machine::firstOrCreate(
-                            ['code' => strtoupper($machineNum)],
-                            [
-                                'name'          => $userDeptCode . strtoupper($machineNum),
-                                'department_id' => $userDeptId,
-                                'status'        => true,
-                            ]
+
+            foreach ($ordersToProcess as $orderProcess) {
+                $oQty = $orderProcess['quantity'];
+                $oId = $orderProcess['orderId'];
+                $oCode = $orderProcess['orderCode'];
+
+                for ($i = 0; $i < $oQty; $i++) {
+                    $no++;
+                    $propertiesToSave = [];
+                    try {
+                        // 🌟 Tìm hoặc tạo Machine theo mã máy từ Excel
+                        $machineId = null;
+                        if (!empty($machineNum)) {
+                            /** @var \App\Models\User $user */
+                            $user = Auth::user();
+                            $userDeptId = $user->department_id;
+                            $userDeptCode = $user->department->code;
+                            $machine = Machine::firstOrCreate(
+                                ['code' => strtoupper($machineNum)],
+                                [
+                                    'name'          => $userDeptCode . strtoupper($machineNum),
+                                    'department_id' => $userDeptId,
+                                    'status'        => true,
+                                ]
+                            );
+                            $machineId = $machine->id;
+                        }
+
+                        // 🌟 GỌI SERVICE ĐỂ SINH MÃ TẠI ĐÂY
+                        $realCode = ItemCodeService::generateStandardCode(
+                            $oCode,
+                            $colorCode,
+                            $specCode,
+                            $widthCode,
+                            $plasticCode,
+                            $gsm,
+                            $length,
+                            $no
                         );
-                        $machineId = $machine->id;
-                    }
 
-                    // 🌟 GỌI SERVICE ĐỂ SINH MÃ TẠI ĐÂY (Code ngắn gọn và sạch sẽ hơn hẳn)
-                    $realCode = ItemCodeService::generateStandardCode(
-                        $orderCode,
-                        $colorCode,
-                        $specCode,
-                        $widthCode,
-                        $plasticCode,
-                        $gsm,
-                        $length,
-                        $no
-                    );
+                        $numericLength = is_numeric($length) ? (float) $length : null;
 
-                    $numericLength = is_numeric($length) ? (float) $length : null;
+                        /** @var \App\Models\User $currentUser */
+                        $currentUser = Auth::user();
 
-                    /** @var \App\Models\User $currentUser */
-                    $currentUser = Auth::user();
+                        $itemRecord = Item::create([
+                            'code'         => $realCode,
+                            'type'         => (int) $this->type,
+                            'properties'   => $propertiesToSave,
+                            'created_by'   => Auth::id(),
+                            'color_id'         => $colorId,
+                            'specification_id' => $specId,
+                            'plastic_type_id'  => $plasticId,
+                            'width_original'   => is_numeric($widthCode) ? (float) $widthCode : null,
+                            'width'            => is_numeric($widthCode) ? (float) $widthCode : null,
+                            'order_id'         => $oId,
+                            'product_id'       => $this->itemData['PRODUCT_ID'] ?? null,
+                            'original_length'  => $numericLength,
+                            'length'           => $numericLength,
+                            'department_id'    => $currentUser->department_id,
+                            'machine_id'       => $machineId,
+                            'gsm'              => is_numeric($gsm) ? (float) $gsm : null,
+                            'weight'           => is_numeric($weight) ? (float) $weight : null,
+                            'notes'            => $notes,
+                        ]);
 
-                    $itemRecord = Item::create([
-                        'code'         => $realCode,
-                        'type'         => (int) $this->type,
-                        'properties'   => $propertiesToSave,
-                        'created_by'   => Auth::id(),
-                        'color_id'         => $colorId,
-                        'specification_id' => $specId,
-                        'plastic_type_id'  => $plasticId,
-                        'width_original'   => is_numeric($widthCode) ? (float) $widthCode : null,
-                        'width'            => is_numeric($widthCode) ? (float) $widthCode : null,
-                        'order_id'         => $orderId,
-                        'product_id'       => $this->itemData['PRODUCT_ID'] ?? null,
-                        'original_length'  => $numericLength,
-                        'length'           => $numericLength,
-                        'department_id'    => $currentUser->department_id,
-                        'machine_id'       => $machineId,
-                        'gsm'              => is_numeric($gsm) ? (float) $gsm : null,
-                        'weight'           => is_numeric($weight) ? (float) $weight : null,
-                        'notes'            => $notes,
-                    ]);
-
-                    $newItemIds[] = $itemRecord->id;
-                } catch (QueryException $e) {
-                    if ($e->errorInfo[1] == 1062) {
-                        session()->flash('error', "Lỗi: Mã tem '{$realCode}' đã tồn tại trong hệ thống! Vui lòng kiểm tra lại số thứ tự hoặc dữ liệu Excel.");
+                        $newItemIds[] = $itemRecord->id;
+                    } catch (QueryException $e) {
+                        if ($e->errorInfo[1] == 1062) {
+                            session()->flash('error', "Lỗi: Mã tem '{$realCode}' đã tồn tại trong hệ thống! Vui lòng kiểm tra lại số thứ tự hoặc dữ liệu Excel.");
+                            return;
+                        }
+                        session()->flash('error', 'Lỗi hệ thống Database: ' . $e->getMessage());
                         return;
                     }
-                    session()->flash('error', 'Lỗi hệ thống Database: ' . $e->getMessage());
-                    return;
                 }
             }
         }

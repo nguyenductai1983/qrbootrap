@@ -32,7 +32,7 @@ php artisan make:model ItemGenealogy
 php artisan make:model ItemMovement
 cài tạo barcode
 composer require simplesoftwareio/simple-qrcode
-
+php artisan make:migration add_gsmlami_to_items_table --table=items
 php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvider"
 php artisan migrate
 php artisan db:seed
@@ -109,3 +109,4 @@ sudo supervisorctl status
 
 
   {{-- <x-mh-logo-icon class="fill-current d-lg-w-100 w-50 h-auto" /></a> --}}
+  php artisan make:migration create_production_orders_table --create=production_orders

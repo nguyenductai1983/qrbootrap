@@ -254,35 +254,12 @@ class BarcodeGenerator extends Component
         // 3. Thực thi kiểm tra với mảng động vừa tạo
         $this->validate($rules, $messages);
         // 4. Nếu vượt qua kiểm tra -> Bắt đầu logic tạo tem
-        $orderCode = $this->itemData['ORDER_CODE'] ?? null;
-        $orderId = null;
+        $orderCodeInput = $this->itemData['ORDER_CODE'] ?? null;
         $quantity = $this->quantity;
-        $start = 1;
-        $endnumber = $quantity;
-        if ($orderCode) {
-            // 1. Dùng firstOrNew thay vì firstOrCreate
-            $order = Order::firstOrNew(
-                ['code' => $orderCode], // Mảng 1: Điều kiện tìm kiếm
-                ['status' => OrderStatus::RUNNING] // Mảng 2: Thuộc tính gán sẵn nếu là tạo mới
-            );
-
-            // 2. Xử lý logic cộng dồn
-            // Nếu là Order mới, $order->total sẽ là null, ta dùng toán tử ?? 0 để ép nó về 0 rồi cộng với $quantity.
-            // Nếu là Order cũ, nó lấy total cũ cộng thêm $quantity.
-            $start = $order->total + 1;
-            $endnumber = $start + $quantity;
-            $order->total = ($order->total ?? 0) + $quantity;
-
-            // 3. Tiến hành lưu vào Database (Lúc này mới thực sự chạy lệnh INSERT hoặc UPDATE)
-            $order->save();
-
-            // 4. Bất kể là tìm thấy hay tạo mới, ta luôn có đối tượng $order và lấy được ID
-            $orderId = $order->id;
-        }
-        $this->itemData['ORDER_ID'] = (string) $orderId; // Ép kiểu chuỗi để lưu vào properties
 
         $this->generatedItems = [];
         $this->selectedHistoryIds = [];
+        
         // Prefix chung (Ví dụ: RMKHO1)
         $widthCode = $this->width ?? '';
         $colorCode = Color::find($this->selectedColor)?->code ?? '';
@@ -290,10 +267,83 @@ class BarcodeGenerator extends Component
         $plasticCode = PlasticType::find($this->selectedPlastic)?->code ?? '';
         $gsm = $this->gsm;
         $length = $this->length;
-        // Mã đơn hang + Mã khổ + Mã màu + Mã quy cách + Mã loại nhựa
-        // Các thuộc tính động: GSM, Độ dài, trọng lượng, v.v... và sẽ  ID được tự động ghép vào cuối cùng để đảm bảo tính duy nhất
 
-        for ($i = $start; $i < $endnumber; $i++) {
+        // Xử lý chia order và tạo LSX
+        $orderCodes = $orderCodeInput ? explode('+', $orderCodeInput) : [null];
+        $count = $orderCodeInput ? count(array_filter($orderCodes)) : 1;
+        $qtyPerOrder = floor($quantity / $count);
+        $remainder = $quantity % $count;
+
+        $needsNewPo = false;
+        $fetchedOrders = [];
+        if ($orderCodeInput) {
+            foreach ($orderCodes as $oc) {
+                $oc = trim($oc);
+                if (empty($oc)) continue;
+                $order = Order::firstOrNew(
+                    ['code' => $oc],
+                    ['status' => OrderStatus::RUNNING]
+                );
+                $fetchedOrders[$oc] = $order;
+                if (empty($order->production_order_id)) {
+                    $needsNewPo = true;
+                }
+            }
+        }
+
+        $poCode = null;
+        $productionOrder = null;
+        if ($needsNewPo) {
+            $prefix = 'LSX' . date('y') . '-';
+            $lastPo = \App\Models\ProductionOrder::where('code', 'LIKE', $prefix . '%')
+                ->orderBy('code', 'desc')
+                ->first();
+
+            $nextNum = 1;
+            if ($lastPo) {
+                $lastNumStr = substr($lastPo->code, strlen($prefix));
+                $nextNum = (int)$lastNumStr + 1;
+            }
+            $poCode = $prefix . str_pad($nextNum, 4, '0', STR_PAD_LEFT);
+
+            $productionOrder = \App\Models\ProductionOrder::firstOrCreate(
+                ['code' => $poCode],
+                [
+                    'status' => \App\Enums\ProductionOrderStatus::RUNNING,
+                    'start_date' => now(),
+                ]
+            );
+        }
+
+        foreach ($orderCodes as $index => $oc) {
+            $oc = trim($oc);
+            
+            $start = 1;
+            $endnumber = 1;
+            $currentOrderId = null;
+
+            if ($oc) {
+                $order = $fetchedOrders[$oc];
+
+                if (empty($order->production_order_id) && $productionOrder) {
+                    $order->production_order_id = $productionOrder->id;
+                }
+
+                $currentQty = $qtyPerOrder + ($index < $remainder ? 1 : 0);
+                if ($currentQty <= 0) continue;
+
+                $start = $order->total + 1;
+                $endnumber = $start + $currentQty;
+                $order->total = ($order->total ?? 0) + $currentQty;
+                $order->save();
+                $currentOrderId = $order->id;
+            } else {
+                $currentQty = $quantity;
+                $start = 1;
+                $endnumber = $start + $currentQty;
+            }
+
+            for ($i = $start; $i < $endnumber; $i++) {
 
             // CHỈ lưu các trường thuộc tính động thực sự vào cột properties, loại bỏ các biến hệ thống (như PRODUCT_ID, PRODUCT_NAME)
             $propertiesToSave = [];
@@ -304,7 +354,7 @@ class BarcodeGenerator extends Component
             }
             try {
                 $realCode = ItemCodeService::generateStandardCode(
-                    $orderCode,
+                    $oc,
                     $colorCode,
                     $specCode,
                     $widthCode,
@@ -326,7 +376,7 @@ class BarcodeGenerator extends Component
                     'width_original'   => $this->width ? (float) $this->width : null,
                     'width'            => $this->width ? (float) $this->width : null,
                     // Map thêm các cột khóa ngoại nếu bạn đã tạo trong DB
-                    'order_id' => !empty($this->itemData['ORDER_ID']) ? $this->itemData['ORDER_ID'] : null,
+                    'order_id' => $currentOrderId,
                     'product_id' => !empty($this->itemData['PRODUCT_ID']) ? $this->itemData['PRODUCT_ID'] : null,
                     'original_length' => $this->length ? (float) $this->length : null,
                     'length'          => $this->length ? (float) $this->length : null,
@@ -365,7 +415,7 @@ class BarcodeGenerator extends Component
                 // 4. Đưa vào danh sách in
                 $printInfo = $this->itemData;
                 $printInfo['type'] = $this->type; // <-- Bổ sung thêm type vào thông tin in mới
-                $printInfo['PO'] = $orderCode ?? ''; // <-- Bổ sung thêm PO vào thông tin in mới
+                $printInfo['PO'] = $oc ?? ''; // <-- Bổ sung thêm PO vào thông tin in mới
                 $printInfo['PRODUCT_NAME'] = $this->itemData['PRODUCT_NAME'] ?? '';
                 $printInfo['COLOR_NAME'] = Color::find($this->selectedColor)->name ?? '';
                 $printInfo['LENGTH'] = $this->length;
@@ -383,6 +433,7 @@ class BarcodeGenerator extends Component
                 }
                 session()->flash('error', 'Lỗi hệ thống Database: ' . $e->getMessage());
                 return;
+            }
             }
         }
         session()->flash('message', 'Đã tạo thành công ' . count($this->generatedItems) . ' tem.');
@@ -444,6 +495,26 @@ class BarcodeGenerator extends Component
         // Hàm sprintf('%03d', $sequence) sẽ biến 1 thành '001', 12 thành '012'
         // Ví dụ kết quả: C001-03-2026
         $orderCode = $this->newOrderType . sprintf('%03d', $sequence) .  $month .  $year;
+
+        // Sinh mã Lệnh Sản Xuất cho đơn hàng này
+        $prefix = 'LSX' . date('y') . '-';
+        $lastPo = \App\Models\ProductionOrder::where('code', 'LIKE', $prefix . '%')
+            ->orderBy('code', 'desc')
+            ->first();
+
+        $nextNum = 1;
+        if ($lastPo) {
+            $lastNumStr = substr($lastPo->code, strlen($prefix));
+            $nextNum = (int)$lastNumStr + 1;
+        }
+        $poCode = $prefix . str_pad($nextNum, 4, '0', STR_PAD_LEFT);
+
+        $productionOrder = \App\Models\ProductionOrder::create([
+            'code' => $poCode,
+            'status' => \App\Enums\ProductionOrderStatus::RUNNING,
+            'start_date' => now(),
+        ]);
+
         // 5. Lưu vào Database
         $order = Order::create([
             'code' => $orderCode,
@@ -451,6 +522,7 @@ class BarcodeGenerator extends Component
             'total' => $this->newOrderTotal ?? 0, // Lưu tổng số lượng vào cột total
             'customer_name' => $this->newOrderCustomer,
             'status' => OrderStatus::PENDING, // Trạng thái mặc định
+            'production_order_id' => $productionOrder->id,
         ]);
         // 6. Cập nhật lại danh sách Dropdown đơn hàng
         $this->orders = Order::orderBy('id', 'desc')->get();

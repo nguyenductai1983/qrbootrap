@@ -10,6 +10,7 @@ use App\Models\Item;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\Department;
+use App\Models\ProductionOrder;
 use Livewire\Attributes\Title;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
@@ -27,6 +28,7 @@ class ItemManager extends Component
     public $filterProductId = '';
     public $filterColorId = '';
     public $filterDepartmentId = '';
+    public $filterProductionOrderId = '';
     public $fromDate = '';
     public $toDate = '';
 
@@ -70,6 +72,10 @@ class ItemManager extends Component
         $this->resetPage();
     }
     public function updatingFilterDepartmentId()
+    {
+        $this->resetPage();
+    }
+    public function updatingFilterProductionOrderCode()
     {
         $this->resetPage();
     }
@@ -202,6 +208,11 @@ class ItemManager extends Component
             })
             ->when($this->filterDepartmentId, function ($q) {
                 $q->where('department_id', $this->filterDepartmentId);
+            })
+            ->when($this->filterProductionOrderId, function ($q) {
+                $q->whereHas('order', function ($q2) {
+                    $q2->where('production_order_id', $this->filterProductionOrderId);
+                });
             });
 
         $items = $query->orderBy('id', 'desc')->get();
@@ -238,6 +249,11 @@ class ItemManager extends Component
             })
             ->when($this->filterDepartmentId, function ($q) {
                 $q->where('department_id', $this->filterDepartmentId);
+            })
+            ->when($this->filterProductionOrderId, function ($q) {
+                $q->whereHas('order', function ($q2) {
+                    $q2->where('production_order_id', $this->filterProductionOrderId);
+                });
             });
         // 3. Lấy dữ liệu cho danh sách gợi ý (Chỉ lấy 5 kết quả đầu tiên cho nhẹ)
         $suggestions = collect();
@@ -247,6 +263,7 @@ class ItemManager extends Component
         return view('livewire.production.item-manager', [
             'items' => $query->orderBy('id', 'desc')->paginate(15),
             'orders' => Order::orderBy('id', 'desc')->get(),
+            'productionOrders' => ProductionOrder::orderBy('id', 'desc')->get(),
             'products' => Product::orderBy('name', 'asc')->get(),
             'colors' => Color::orderBy('name', 'asc')->get(),
             'departments' => Department::orderBy('name', 'asc')->get(),

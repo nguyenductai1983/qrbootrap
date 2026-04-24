@@ -146,9 +146,16 @@
                         <div class="col-md-4">
                             <label class="form-label small fw-bold" for="ORDER_CODE"><i
                                     class="fa-solid fa-file-invoice me-1"></i>Mã Đơn Hàng</label>
-                            <input type="text" class="form-control" placeholder="Nhập mã đơn hoặc ..."
+                            <input type="text" class="form-control" placeholder="Nhập mã đơn hoặc F317+F318"
                                 wire:model="itemData.ORDER_CODE" list="orderList" autocomplete="off"
                                 id="ORDER_CODE">
+                            <datalist id="orderList">
+                                @foreach($orders as $order)
+                                    <option value="{{ $order->code }}">
+                                        {{ $order->production_order_code ? 'LSX: ' . $order->production_order_code : '' }}
+                                    </option>
+                                @endforeach
+                            </datalist>
                         </div>
                         <div class="col-md-4">
                             <label class="form-label small fw-bold" for="selectedColor"><i

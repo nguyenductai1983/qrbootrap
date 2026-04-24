@@ -18,7 +18,6 @@
                     </option>
                 @endforeach
             </select>
-
             <label class="small text-muted fw-bold" for="selectedMachineId">
                 <i class="fa-solid fa-gears me-1"></i>Chọn Máy Thực Hiện
             </label>
@@ -69,7 +68,63 @@
         </div>
 
         {{-- KHU VỰC NHẬP SỐ LIỆU & XÁC NHẬN TRÁNG --}}
-        <div class="col-md-7">
+        <div class="col-md-7" x-data="{
+            mode: @entangle('cutMode'),
+            minW: @entangle('minWidth'),
+            trimWidth: @entangle('trimWidth'),
+            split1: @entangle('splitWidth1'),
+            split2: @entangle('splitWidth2'),
+            validateTrim() {
+                let t = parseFloat(this.trimWidth) || 0;
+                let m = parseFloat(this.minW) || 0;
+                if (t > m) {
+                    this.trimWidth = m;
+                }
+            },
+            validateSplit(fromMinWChange = false) {
+                let t1 = parseFloat(this.split1) || 0;
+                let t2 = parseFloat(this.split2) || 0;
+                let m = parseFloat(this.minW) || 0;
+        
+                if ((t1 + t2) > m) {
+                    if (fromMinWChange) {
+                        if (t1 === t2) {
+                            this.split1 = m / 2;
+                            this.split2 = m / 2;
+                        } else {
+                            let ratio = t1 / (t1 + t2);
+                            this.split1 = parseFloat((m * ratio).toFixed(1));
+                            this.split2 = parseFloat((m - this.split1).toFixed(1));
+                        }
+                    } else {
+                        if (t1 > m) {
+                            this.split1 = m;
+                            this.split2 = 0;
+                        } else {
+                            this.split2 = parseFloat((m - t1).toFixed(1));
+                        }
+                    }
+                }
+            },
+            init() {
+                this.$watch('minW', () => {
+                    this.validateTrim();
+                    this.validateSplit(true);
+                });
+                this.$watch('mode', (val) => {
+                    let m = parseFloat(this.minW) || 0;
+                    if (val === 'trim' && !this.trimWidth) {
+                        this.trimWidth = m;
+                    }
+                    if (val === 'split' && (!this.split1 || this.split1 == 0)) {
+                        this.split1 = m / 2;
+                        this.split2 = m / 2;
+                    }
+                    this.validateTrim();
+                    this.validateSplit(false);
+                });
+            }
+        }">
             <div class="card shadow-sm border-0">
                 <div class="card-header bg-success text-white fw-bold">
                     <i class="fa-solid fa-layer-group me-2"></i> Khai Báo Thành Phẩm Tráng
@@ -96,11 +151,14 @@
                                         </button>
                                     </div>
                                     <div class="row align-items-center p-2 rounded">
-                                        <div class="col-6 small text-muted">
+                                        <div class="col-4 small text-muted">
                                             Tồn: <b class="fs-6">{{ (float) $item['length'] }} m</b>
                                         </div>
-                                        <div class="col-6 small text-muted text-end">
-                                            Khổ mộc: <b class="fs-6 text-primary">{{ (float) $item['width'] }}</b>
+                                        <div class="col-4 small text-muted text-center">
+                                            GSM: <b class="fs-6 text-primary">{{ (float) $item['gsm'] }}</b>
+                                        </div>
+                                        <div class="col-4 small text-muted text-end">
+                                            Khổ: <b class="fs-6 text-primary">{{ (float) $item['width'] }}</b>
                                         </div>
                                     </div>
                                     <div class="row align-items-center p-2 rounded">
@@ -112,8 +170,12 @@
                                                     wire:model="usedLengths.{{ $item['id'] }}"
                                                     class="form-control form-control-lg text-end fw-bold input-used-length fs-4"
                                                     oninput="calculateFromUsed()" placeholder="0.0">
-                                                <button class="btn btn-sm btn-outline-primary" type="button"
-                                                    onclick="setUsedLength({{ $item['id'] }}, {{ $item['length'] }})">Dùng
+                                                <button class="btn btn-sm btn-outline-success" type="button"
+                                                    onclick="setUsedLength({{ $item['id'] }}, {{ $item['length'] }} ,50)">Dùng
+                                                    50%
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-danger" type="button"
+                                                    onclick="setUsedLength({{ $item['id'] }}, {{ $item['length'] }},100)">Dùng
                                                     hết</button>
                                             </div>
                                         </div>
@@ -121,6 +183,22 @@
                                 </li>
                             @endforeach
                         </ul>
+                        <label class="small text-muted fw-bold" for="selectedOrderId">Chọn Đơn Hàng </label>
+                        <select wire:model="selectedOrderId" id="selectedOrderId"
+                            class="form-select form-select-sm border-warning fw-bold text-dark mb-2">
+                            @if (empty($availableOrders))
+                                <option value="">-- Chọn Đơn hàng --</option>
+                            @else
+                                @foreach ($availableOrders as $order)
+                                    <option value="{{ $order->id }}">
+                                        {{ $order->code }}
+                                        @if ($order->production_order_code)
+                                            [{{ $order->production_order_code }}]
+                                        @endif
+                                    </option>
+                                @endforeach
+                            @endif
+                        </select>
                         <div class="d-flex justify-content-between align-items-end mb-3 mt-4">
                             <h6 class="fw-bold text-success text-uppercase mb-0"><i
                                     class="fa-solid fa-check-double me-1"></i> Thành phẩm đầu ra:</h6>
@@ -166,74 +244,21 @@
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label small text-muted fw-bold">Chỉ số Lami (Lami =0 là không
-                                    tráng):</label>
+                                <label class="form-label small text-muted fw-bold">Tổng GSM Thành phẩm (Mộc +
+                                    Lami):</label>
                                 <div class="input-group shadow-sm">
-                                    <input type="number" step="0.001" wire:model="lami"
+                                    <input type="number" step="0.1" wire:model="gsmlami"
                                         class="form-control form-control text-end fw-bold text-primary fs-4"
-                                        placeholder="0.00">
+                                        placeholder="0.0">
+                                    <span class="input-group-text fw-bold fs-5 text-primary">g/m²</span>
+                                </div>
+                                <div class="form-text text-danger small"><i class="fa-solid fa-circle-exclamation"></i> Bắt buộc nhập. Nhập 0 nếu không tráng ghép.
                                 </div>
                             </div>
                         </div>
 
                         <!-- Chế độ Khổ Vải -->
-                        <div class="card shadow-sm mb-4" x-data="{
-                            mode: @entangle('cutMode'),
-                            minW: @entangle('minWidth'),
-                            trimWidth: @entangle('trimWidth'),
-                            split1: @entangle('splitWidth1'),
-                            split2: @entangle('splitWidth2'),
-                            validateTrim() {
-                                let t = parseFloat(this.trimWidth) || 0;
-                                let m = parseFloat(this.minW) || 0;
-                                if (t > m) {
-                                    this.trimWidth = m;
-                                }
-                            },
-                            validateSplit(fromMinWChange = false) {
-                                let t1 = parseFloat(this.split1) || 0;
-                                let t2 = parseFloat(this.split2) || 0;
-                                let m = parseFloat(this.minW) || 0;
-                        
-                                if ((t1 + t2) > m) {
-                                    if (fromMinWChange) {
-                                        if (t1 === t2) {
-                                            this.split1 = m / 2;
-                                            this.split2 = m / 2;
-                                        } else {
-                                            let ratio = t1 / (t1 + t2);
-                                            this.split1 = parseFloat((m * ratio).toFixed(1));
-                                            this.split2 = parseFloat((m - this.split1).toFixed(1));
-                                        }
-                                    } else {
-                                        if (t1 > m) {
-                                            this.split1 = m;
-                                            this.split2 = 0;
-                                        } else {
-                                            this.split2 = parseFloat((m - t1).toFixed(1));
-                                        }
-                                    }
-                                }
-                            },
-                            init() {
-                                this.$watch('minW', () => {
-                                    this.validateTrim();
-                                    this.validateSplit(true);
-                                });
-                                this.$watch('mode', (val) => {
-                                    let m = parseFloat(this.minW) || 0;
-                                    if (val === 'trim' && !this.trimWidth) {
-                                        this.trimWidth = m;
-                                    }
-                                    if (val === 'split' && (!this.split1 || this.split1 == 0)) {
-                                        this.split1 = m / 2;
-                                        this.split2 = m / 2;
-                                    }
-                                    this.validateTrim();
-                                    this.validateSplit(false);
-                                });
-                            }
-                        }">
+                        <div class="card shadow-sm mb-4">
                             <div class="card-body">
                                 <label class="form-label text-muted fw-bold mb-3"><i
                                         class="fa-solid fa-scissors me-1"></i> Tùy chọn xử lý Khổ Màng</label>
@@ -366,8 +391,7 @@
                                 <div class="small text-muted">{{ $job->created_at->format('H:i d/m') }} -
                                     {{ $job->printer_mac }}</div>
                                 @if ($job->status == \App\Models\PrintJob::STATUS_SUCCESS)
-                                    <span class="badge bg-success rounded-pill"><i
-                                            class="fa-solid fa-check"></i> Đã
+                                    <span class="badge bg-success rounded-pill"><i class="fa-solid fa-check"></i> Đã
                                         in</span>
                                 @elseif($job->status == \App\Models\PrintJob::STATUS_PRINTING)
                                     <span class="badge bg-info rounded-pill"><i
@@ -400,10 +424,11 @@
             return document.querySelector(`.input-used-length[data-item-id="${itemId}"]`).value;
         }
 
-        window.setUsedLength = function(itemId, maxLength) {
+        window.setUsedLength = function(itemId, maxLength, percentage = 100) {
             let input = document.querySelector(`.input-used-length[data-item-id="${itemId}"]`);
             if (input) {
-                input.value = maxLength;
+                let calculatedLength = (maxLength * percentage / 100).toFixed(1);
+                input.value = calculatedLength;
                 input.dispatchEvent(new Event('input', {
                     bubbles: true
                 }));

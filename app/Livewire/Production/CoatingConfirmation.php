@@ -15,6 +15,7 @@ use App\Events\PrintLabelRequested;
 use App\Events\PrintLabelAppEvent;
 use App\Models\PrintJob;
 use App\Models\PrintStation;
+use App\Models\Order;
 use Exception;
 
 #[Title('Xác nhận Tráng Ghép')]
@@ -28,6 +29,8 @@ class CoatingConfirmation extends Component
     public $minWidth = 0; // Theo dõi khổ nhỏ nhất của các cây được quét
     public $products = [];
     public $selectedProductId = ''; // Model nhân viên chọn
+    public $selectedOrderId = ''; // Đơn hàng được chọn cho cuộn tráng ghép
+    public $availableOrders = []; // Danh sách đơn hàng ưu tiên
     public $selectedMachineId = ''; // Máy đang thực hiện tráng
     public $machines = [];          // Danh sách máy được gán cho user này
     public $printStations = [];     // Danh sách trạm in được gán cho user
@@ -35,7 +38,7 @@ class CoatingConfirmation extends Component
     public $manualPrintRequired = null; // Trạng thái chứa mã khi chưa in
 
     // Cấu hình tính năng mới: Lami và Cắt khổ
-    public $lami = 1; // Độ dày màng ghép
+    public $gsmlami = ''; // Tổng GSM thành phẩm
     public $cutMode = 'keep'; // 'keep', 'trim', 'split'
     public $trimWidth = ''; // Nhập khổ nếu xén
     public $splitWidth1 = ''; // Khổ cuộn chia 1
@@ -117,6 +120,30 @@ class CoatingConfirmation extends Component
             $this->usedLengths[$item->id] = 0;
             $this->minWidth = collect($this->scannedItems)->min('width');
 
+            if (count($this->scannedItems) === 1) {
+                $poId = $item->order->production_order_id ?? null;
+                $poOrders = collect();
+                if ($poId) {
+                    $poOrders = Order::where('production_order_id', $poId)->get();
+                }
+
+                $otherOrdersQuery = Order::where('status', '!=', \App\Enums\OrderStatus::COMPLETED);
+                if ($poId) {
+                    $otherOrdersQuery->where(function ($q) use ($poId) {
+                        $q->where('production_order_id', '!=', $poId)
+                            ->orWhereNull('production_order_id');
+                    });
+                }
+                $otherOrders = $otherOrdersQuery->orderBy('id', 'desc')->get();
+
+                $mergedOrders = $poOrders->merge($otherOrders);
+                $this->availableOrders = $mergedOrders;
+
+                if ($mergedOrders->isNotEmpty()) {
+                    $this->selectedOrderId = $mergedOrders->first()->id;
+                }
+            }
+
             // Bắn tín hiệu để JS tự động tính lại số mét Thành phẩm
             $this->dispatch('update-calculations');
         }
@@ -142,6 +169,14 @@ class CoatingConfirmation extends Component
         }
         if (!$this->newLength || $this->newLength <= 0) {
             $this->dispatch('alert', ['type' => 'error', 'message' => 'Vui lòng nhập chiều dài cây thành phẩm!']);
+            return;
+        }
+        if (!$this->selectedOrderId) {
+            $this->dispatch('alert', ['type' => 'error', 'message' => 'Vui lòng chọn Đơn hàng thực hiện!']);
+            return;
+        }
+        if ($this->gsmlami === '' || $this->gsmlami === null) {
+            $this->dispatch('alert', ['type' => 'error', 'message' => 'Vui lòng nhập Tổng GSM Thành phẩm (nhập 0 nếu không tráng ghép)!']);
             return;
         }
 
@@ -216,7 +251,7 @@ class CoatingConfirmation extends Component
             $dynamicProps = ItemProperty::where('is_code', true)->get();
 
             // Xử lý phân loại sản phẩm dựa trên tuỳ chọn Lami
-            $isLamiApplied = floatval($this->lami) > 0;
+            $isLamiApplied = floatval($this->gsmlami) > 0;
             $productCode = '';
             $productCodeWH = '';
             if ($isLamiApplied) {
@@ -297,14 +332,15 @@ class CoatingConfirmation extends Component
                     'original_length' => $this->newLength,
                     'length' => $this->newLength,
                     'created_by' => Auth::id(),
-                    'order_id'         => $sourceItem->order_id,
+                    'order_id'         => $this->selectedOrderId,
                     'product_id'       => $targetProductId,
                     'color_id'         => $sourceItem->color_id,
                     'specification_id' => $sourceItem->specification_id,
                     'width_original'   => $targetWidth,
                     'width'            => $targetWidth,
                     'gsm'              => $sourceItem->gsm,
-                    'lami'             => $this->lami !== '' ? $this->lami : null,
+                    'lami'             => ($this->gsmlami !== '' && $this->gsmlami !== null) ? ((float)$this->gsmlami - (float)$sourceItem->gsm) : null,
+                    'gsmlami'          => $this->gsmlami !== '' ? $this->gsmlami : null,
                     'plastic_type_id'  => $sourceItem->plastic_type_id,
                     'properties'       => $cleanProps,
                     'department_id'    => $currentUser->department_id,
@@ -385,7 +421,7 @@ class CoatingConfirmation extends Component
                             'original_length' => $used,
                             'length' => $used, // Chiều dài của biên bị lạng ra khớp đúng con số đã tiêu tốn
                             'created_by' => Auth::id(),
-                            'order_id'         => $oldItem->order_id,
+                            'order_id'         => $this->selectedOrderId,
                             'product_id'       => $targetProductId,
                             'department_id'    => $currentUser->department_id,
                             'machine_id'       => $this->selectedMachineId ?: null,
@@ -394,7 +430,9 @@ class CoatingConfirmation extends Component
                             'plastic_type_id'  => $oldItem->plastic_type_id,
                             'width_original'   => $diffWidth, // Khổ phần lỡ thu hồi
                             'width'            => $diffWidth,
-                            'lami'             => $this->lami !== '' ? $this->lami : null,
+                            'gsm'              => $oldItem->gsm,
+                            'lami'             => ($this->gsmlami !== '' && $this->gsmlami !== null) ? ((float)$this->gsmlami - (float)$oldItem->gsm) : null,
+                            'gsmlami'          => $this->gsmlami !== '' ? $this->gsmlami : null,
                             'notes'            => 'Thu hồi biên dư từ cuộn ' . $oldItem->code,
                             'properties'       => $oldItem->properties,
                         ]);
@@ -478,8 +516,10 @@ class CoatingConfirmation extends Component
         $this->trimWidth = '';
         $this->splitWidth1 = '';
         $this->splitWidth2 = '';
-        $this->lami = 1;
+        $this->gsmlami = '';
         $this->minWidth = 0;
+        $this->availableOrders = [];
+        $this->selectedOrderId = '';
     }
 
     public function clearManualPrint()
@@ -546,7 +586,7 @@ class CoatingConfirmation extends Component
                     'Path' => $station->template_name,
                     'Data' => [
                         ['Name' => 'MaSP', 'Value' => $item->code],
-                        ['Name' => 'Content', 'Value' => 'GSM: ' . ($item->gsm + $item->lami) . 'g/m - Dài: ' . round($item->length) . 'm '],
+                        ['Name' => 'Content', 'Value' => 'GSM: ' . ($item->gsmlami ?? ($item->gsm + $item->lami)) . 'g/m - Dài: ' . round($item->length) . 'm '],
                     ],
                     'JobId' => $printJob->id
                 ];

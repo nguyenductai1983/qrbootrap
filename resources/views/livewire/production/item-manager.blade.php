@@ -97,7 +97,16 @@
                     </div>
                 </div>
                 <div class="row g-3 ">
-                    <div class="col-md-3 col-12">
+                    <div class="col-md col-12">
+                        <label class="form-label small fw-bold" for="filterProductionOrderId">Lọc theo LSX:</label>
+                        <select wire:model.live="filterProductionOrderId" class="form-select" id="filterProductionOrderId">
+                            <option value="">-- Tất cả LSX --</option>
+                            @foreach ($productionOrders as $po)
+                                <option value="{{ $po->id }}">{{ $po->code }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md col-12">
                         <label class="form-label small fw-bold" for="filterOrderId">Lọc theo Đơn hàng:</label>
                         <select wire:model.live="filterOrderId" class="form-select" id="filterOrderId">
                             <option value="">-- Tất cả đơn hàng --</option>
@@ -107,7 +116,7 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-md-3 col-12">
+                    <div class="col-md col-12">
                         <label class="form-label small fw-bold" for="filterDepartmentId">Lọc theo Xưởng:</label>
                         <select wire:model.live="filterDepartmentId" class="form-select" id="filterDepartmentId">
                             <option value="">-- Tất cả xưởng --</option>
@@ -117,7 +126,7 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-md-3 col-12">
+                    <div class="col-md col-12">
                         <label class="form-label small fw-bold" for="filterProductId">Lọc theo Sản phẩm:</label>
                         <select wire:model.live="filterProductId" class="form-select" id="filterProductId">
                             <option value="">-- Tất cả sản phẩm --</option>
@@ -127,7 +136,7 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-md-3 col-12">
+                    <div class="col-md col-12">
                         <label class="form-label small fw-bold" for="filterColorId">Lọc theo Màu:</label>
                         <select wire:model.live="filterColorId" class="form-select" id="filterColorId">
                             <option value="">-- Tất cả màu --</option>

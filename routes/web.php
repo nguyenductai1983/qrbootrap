@@ -102,6 +102,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     Route::middleware(['permission:manager'])->prefix('manager')->group(function () {
+        Route::get('/production-orders', \App\Livewire\Admin\ProductionOrderManager::class)->name('manager.production-orders');
         Route::get('/orders', OrderManager::class)->name('manager.orders');
         Route::get('/products', ProductManager::class)->name('manager.products');
         Route::get('/properties', PropertyManager::class)->name('manager.properties');

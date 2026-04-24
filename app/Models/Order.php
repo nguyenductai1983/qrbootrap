@@ -10,7 +10,7 @@ class Order extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['code', 'status', 'type', 'total', 'customer_name', 'meta_data'];
+    protected $fillable = ['code', 'production_order_id', 'status', 'type', 'total', 'customer_name', 'meta_data'];
 
     protected $casts = [
         'meta_data' => 'array', // Tự động chuyển JSON sang mảng
@@ -21,5 +21,10 @@ class Order extends Model
     public function items()
     {
         return $this->hasMany(Item::class);
+    }
+
+    public function productionOrder()
+    {
+        return $this->belongsTo(ProductionOrder::class, 'production_order_id');
     }
 }

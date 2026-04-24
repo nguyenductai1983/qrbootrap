@@ -61,15 +61,15 @@
             </div>
             <div class="collapse {{ $fabricMenuActive ? 'show' : '' }}" id="productsSubmenu"
                 data-bs-parent="#sidebar-wrapper">
-                <a href="{{ route('items') }}" title="Danh sách Vải"
-                    class="list-group-item list-group-item-action py-2 ps-5  {{ request()->routeIs('items') ? 'active' : '' }}">
-                    <i class="fa-solid fa-fw fa-list text-success me-2"></i>
-                    <span class="sidebar-text">Danh sách Vải</span>
-                </a>
                 <a href="{{ route('production.barcode-generator-excel') }}" title="In Tem Excel"
                     class="list-group-item list-group-item-action  py-2 ps-5  {{ request()->routeIs('production.barcode-generator-excel') ? 'active' : '' }}">
                     <i class="fa-solid fa-fw fa-print text-info me-2"></i>
                     <span class="sidebar-text">In Tem Cây Vải</span>
+                </a>
+                <a href="{{ route('items') }}" title="Danh sách Vải"
+                    class="list-group-item list-group-item-action py-2 ps-5  {{ request()->routeIs('items') ? 'active' : '' }}">
+                    <i class="fa-solid fa-fw fa-list text-success me-2"></i>
+                    <span class="sidebar-text">Danh sách Vải</span>
                 </a>
                 {{-- MỚI: Menu Quản lý Excel (Export/Import số liệu) --}}
                 <a href="{{ route('production.excel-manager') }}" title="Quản lý Excel"
@@ -175,6 +175,13 @@
 
                 <div class="collapse {{ request()->routeIs('manager.*') ? 'show' : '' }}" id="productionConfigSubmenu"
                     data-bs-parent="#sidebar-wrapper">
+                    {{-- Link Lệnh Sản Xuất --}}
+                    <a href="{{ route('manager.production-orders') }}" title="Lệnh Sản Xuất (LSX)"
+                        class="list-group-item list-group-item-action py-2 ps-5 d-flex align-items-center {{ request()->routeIs('manager.production-orders') ? 'active' : '' }}">
+                        <i class="fa-solid fa-fw fa-boxes-packing text-warning me-2"></i>
+                        <span class="sidebar-text">Lệnh Sản Xuất (LSX)</span>
+                    </a>
+
                     {{-- Link Đơn Hàng --}}
                     {{-- 🌟 THÊM d-flex align-items-center --}}
                     <a href="{{ route('manager.orders') }}" title="Đơn hàng (PO)"
