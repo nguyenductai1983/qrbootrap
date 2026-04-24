@@ -87,12 +87,31 @@
             </div>
         @endcan
         @can('coating.scan')
-            <a href="{{ route('production.coating-confirmation') }}"
-                class="list-group-item list-group-item-action py-3 ps-4 {{ request()->routeIs('production.coating-confirmation') ? 'active' : '' }}"
-                title="Xác Nhận Tráng">
-                <i class="fa-solid fa-fw fa-barcode text-warning me-2"></i>
-                <span class="sidebar-text">Xác Nhận Tráng</span>
-            </a>
+            <div class="list-group-item py-3 ps-4 pe-2 d-flex justify-content-between align-items-center sidebar-dropdown-toggle"
+                data-bs-toggle="collapse" href="#coatingSubmenu" role="button"
+                aria-expanded="{{ request()->routeIs('production.coating-*') ? 'true' : 'false' }}" aria-controls="coatingSubmenu"
+                title="Quản lý Tráng">
+                <div>
+                    <i class="fa-solid fa-fw fa-fill-drip text-warning me-2"></i> {{-- Icon tráng --}}
+                    <span class="sidebar-text" title="Tráng">Tráng ghép</span>
+                </div>
+                <i class="fas fa-fw fa-chevron-down sidebar-arrow"></i>
+            </div>
+            <div class="collapse {{ request()->routeIs('production.coating-*') ? 'show' : '' }}" id="coatingSubmenu"
+                data-bs-parent="#sidebar-wrapper">
+                <a href="{{ route('production.coating-confirmation') }}"
+                    class="list-group-item list-group-item-action py-2 ps-5 {{ request()->routeIs('production.coating-confirmation') ? 'active' : '' }}"
+                    title="Xác Nhận Tráng">
+                    <i class="fa-solid fa-fw fa-barcode text-warning me-2"></i>
+                    <span class="sidebar-text">Xác Nhận Tráng</span>
+                </a>
+                <a href="{{ route('production.coating-update') }}"
+                    class="list-group-item list-group-item-action py-2 ps-5 {{ request()->routeIs('production.coating-update') ? 'active' : '' }}"
+                    title="Cập Nhật Tráng">
+                    <i class="fa-solid fa-fw fa-pen-to-square text-info me-2"></i>
+                    <span class="sidebar-text">Cập Nhật Tráng</span>
+                </a>
+            </div>
         @endcan
         {{-- MỚI THÊM: Kho mã Code/Tem (Sử dụng chung cho các bộ phận) --}}
 
