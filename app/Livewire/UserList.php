@@ -19,7 +19,7 @@ class UserList extends Component
         $this->resetPage();
     }
 
-    public function deleteUser($userId)
+    public function deleteUser(mixed $userId)
     {
         // Kiểm tra quyền
         /** @var \App\Models\User $user */

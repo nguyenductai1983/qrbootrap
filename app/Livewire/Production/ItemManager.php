@@ -33,15 +33,15 @@ class ItemManager extends Component
     public $toDate = '';
 
     // --- CÁC BIẾN CHỈNH SỬA ---
-    public $editItemId = null;
+    public mixed $editItemId = null;
     public $editCode = '';
     public $editProperties = []; // Mảng chứa dữ liệu JSON để edit
     public $showSuggestions = false; // Biến kiểm soát ẩn/hiện bảng gợi ý
     // Khai báo sẵn cho tương lai: public $current_location_id;
-    public $editOriginalLength = null; // 🌟 Thêm biến này
-    public $editLength = null;         // 🌟 Thêm biến này
-    public $editGsm = null;
-    public $editWeight = null;
+    public mixed $editOriginalLength = null; // 🌟 Thêm biến này
+    public mixed $editLength = null;         // 🌟 Thêm biến này
+    public mixed $editGsm = null;
+    public mixed $editWeight = null;
     public $editShift = '';
     public $editNotes = '';
     public $historyItemCode = '';
@@ -79,7 +79,7 @@ class ItemManager extends Component
     {
         $this->resetPage();
     }
-    public function edit($id)
+    public function edit(mixed $id)
     {
         $item = Item::find($id);
         if ($item) {
@@ -146,7 +146,7 @@ class ItemManager extends Component
         }
     }
 
-    public function delete($id)
+    public function delete(mixed $id)
     {
         $item = Item::find($id);
         if ($item) {
@@ -156,7 +156,7 @@ class ItemManager extends Component
         }
     }
 
-    public function viewHistory($id)
+    public function viewHistory(mixed $id)
     {
         $item = Item::with('histories.user')->find($id);
         if ($item) {
@@ -166,7 +166,7 @@ class ItemManager extends Component
         }
     }
 
-    public function selectSuggestion($Codestring)
+    public function selectSuggestion(string $Codestring)
     {
         $this->searchCode = $Codestring; // Điền tên vào ô input
         $this->showSuggestions = false;  // Giấu bảng gợi ý đi

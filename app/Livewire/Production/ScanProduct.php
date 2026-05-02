@@ -23,20 +23,20 @@ class ScanProduct extends Component
     public $scanStatus = ''; // 'success', 'error', 'warning'
     public $message = '';
     public $itemInfo = [];
-    public $orders;
+    public mixed $orders = [];
     public $machines = [];
     public $selectedMachineId = ''; // Máy đang thực hiện tráng
     // BIẾN MỚI
-    public $scannedItemId = null; // Lưu lại id của tem đang hiển thị
+    public mixed $scannedItemId = null; // Lưu lại id của tem đang hiển thị
     public $products = []; // Danh sách Model theo bộ phận
     public $selectedOrderId = '';
     public $selectedProductId = ''; // Model nhân viên chọn
 
-    public $lastScannedCode = null;
+    public mixed $lastScannedCode = null;
     public $scannedCodeInput = '';
 
     // BIẾN CẬP NHẬT M
-    public $editLength = null;
+    public mixed $editLength = null;
     public $editNotes = '';
 
     public function mount()
@@ -71,7 +71,7 @@ class ScanProduct extends Component
     }
 
     // --- XỬ LÝ 2: TỪ CAMERA ĐIỆN THOẠI (JS gọi lên) ---
-    public function handleScan($code)
+    public function handleScan(string $code)
     {
         $code = strtoupper(trim($code));
 
@@ -85,7 +85,7 @@ class ScanProduct extends Component
 
 
     // --- HÀM XỬ LÝ CHÍNH ĐÃ ĐƯỢC NÂNG CẤP ---   
-    public function processCode($code, $source = 'mobile')
+    public function processCode(string $code, string $source = 'mobile')
     {
         $this->lastScannedCode = $code;
         $this->itemInfo = [];
@@ -188,7 +188,7 @@ class ScanProduct extends Component
         }
     }
 
-    private function respondError($msg, $source)
+    private function respondError(string $msg, string $source)
     {
         $this->scanStatus = 'error';
         $this->message = $msg;

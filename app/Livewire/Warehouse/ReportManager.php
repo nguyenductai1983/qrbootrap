@@ -11,7 +11,7 @@ use Livewire\Attributes\Title;
 #[Title('Xuất báo cáo kho')]
 class ReportManager extends Component
 {
-    public $models;
+    public mixed $models = [];
     public $selectedModelId = '';
     public $fromDate = '';
     public $toDate = '';

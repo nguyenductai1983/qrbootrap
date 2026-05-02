@@ -11,13 +11,13 @@ use Livewire\Attributes\Title;
 #[Title('Quản lý Bộ phận')]
 class DepartmentForm extends Component
 {
-    public $department; // Biến để lưu trữ đối tượng Department khi chỉnh sửa
-    public $name;
-    public $code;
+    public mixed $department; // Biến để lưu trữ đối tượng Department khi chỉnh sửa
+    public mixed $name;
+    public mixed $code;
     public $is_warehouse = false;
     public $is_admin = false;
     public $selectedProducts = []; // Biến lưu các sản phẩm được trọn
-    public $allProducts; // Danh sách tất cả sản phẩm
+    public mixed $allProducts; // Danh sách tất cả sản phẩm
 
     public function mount($departmentId = null)
     {

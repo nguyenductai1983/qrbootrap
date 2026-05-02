@@ -24,7 +24,7 @@ class UserMachineAssignment extends Component
         $this->allMachines = Machine::with('department')->where('status', true)->orderBy('department_id')->orderBy('code')->get();
     }
 
-    public function updatedSelectedUserId($userId)
+    public function updatedSelectedUserId(mixed $userId)
     {
         if ($userId) {
             $user = User::find($userId);

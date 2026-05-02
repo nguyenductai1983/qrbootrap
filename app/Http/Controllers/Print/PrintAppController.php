@@ -15,7 +15,7 @@ class PrintAppController extends Controller
     /**
      * Lấy danh sách lệnh in đang chờ cho App C# khi kết nối lại
      */
-    public function pendingJobs($station_token)
+    public function pendingJobs(string $station_token)
     {
         $station = PrintStation::where('station_token', $station_token)->first();
 

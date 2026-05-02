@@ -11,7 +11,7 @@ class PrinterController extends Controller
     /**
      * Get pending print jobs for a specific printer.
      */
-    public function pendingJobs($mac)
+    public function pendingJobs(string $mac)
     {
         $jobs = PrintJob::with('item')->where('printer_mac', $mac)->where('status', PrintJob::STATUS_PENDING)->get();
         if ($jobs->isNotEmpty()) {
@@ -27,7 +27,7 @@ class PrinterController extends Controller
     /**
      * Mark a print job as printed.
      */
-    public function markPrinted($jobId)
+    public function markPrinted(mixed $jobId)
     {
         $job = PrintJob::find($jobId);
 

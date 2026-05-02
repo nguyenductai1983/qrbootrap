@@ -12,10 +12,10 @@ class ItemGenealogyTrace extends Component
 {
     use WithReprinting;
 
-    public $itemId;
-    public $rootItem;
+    public mixed $itemId = null;
+    public mixed $rootItem = null;
 
-    public function mount($id)
+    public function mount(mixed $id)
     {
         $this->itemId = $id;
         $this->loadData();
@@ -28,7 +28,7 @@ class ItemGenealogyTrace extends Component
             ->findOrFail($this->itemId);
     }
 
-    public function traceItem($id)
+    public function traceItem(mixed $id)
     {
         return redirect()->route('items.genealogy', $id);
     }

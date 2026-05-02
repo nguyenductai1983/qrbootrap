@@ -34,7 +34,7 @@ class BarcodeGeneratorExcel extends Component
     public $availableProducts = [];
     // Dữ liệu nhập liệu
     public $itemData = [];
-    public $excelData; // Chứa dữ liệu paste từ Excel
+    public $excelData = ''; // Chứa dữ liệu paste từ Excel
     public $col0Mode = 'quantity'; // 'quantity' hoặc 'sequence'
 
     public $generatedItems = []; // Danh sách tem CHỜ IN (Hiện tại)
@@ -83,7 +83,7 @@ class BarcodeGeneratorExcel extends Component
         $this->col0Mode = cache()->get('col0Mode' . Auth::id(), 'quantity');
     }
 
-    public function updatedItemDataProductId($value)
+    public function updatedItemDataProductId(mixed $value)
     {
         $product = Product::find($value);
         if ($product) {
@@ -96,7 +96,7 @@ class BarcodeGeneratorExcel extends Component
     /**
      * Hàm dùng chung để tìm hoặc tạo mới các thuộc tính (Màu, Khổ, Nhựa, Quy cách...)
      */
-    private function resolveAttributeId($modelClass, $code)
+    private function resolveAttributeId(string $modelClass, string $code)
     {
         if (empty($code)) {
             return null;
@@ -115,22 +115,22 @@ class BarcodeGeneratorExcel extends Component
         return $record->id;
     }
 
-    public function updatedPrintFormat($value)
+    public function updatedPrintFormat(mixed $value)
     {
         cache()->forever('excel_printFormat_' . Auth::id(), $value);
     }
 
-    public function updatedPrintColumns($value)
+    public function updatedPrintColumns(mixed $value)
     {
         cache()->forever('excel_printColumns_' . Auth::id(), $value);
     }
 
-    public function updatedFontSize($value)
+    public function updatedFontSize(mixed $value)
     {
         cache()->forever('excel_fontSize_' . Auth::id(), $value);
     }
 
-    public function updatedRowsPerPage($value)
+    public function updatedRowsPerPage(mixed $value)
     {
         cache()->forever('excel_rowsPerPage_' . Auth::id(), $value);
     }
@@ -273,6 +273,7 @@ class BarcodeGeneratorExcel extends Component
                 for ($i = 0; $i < $oQty; $i++) {
                     $no++;
                     $propertiesToSave = [];
+                    $realCode = '';
                     try {
                         // 🌟 Tìm hoặc tạo Machine theo mã máy từ Excel
                         $machineId = null;

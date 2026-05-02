@@ -22,7 +22,7 @@ class PermissionList extends Component
         $this->showSuggestions = true; // Hiện gợi ý khi người dùng bắt đầu gõ
     }
 
-    public function deletePermission($permissionId)
+    public function deletePermission(mixed $permissionId)
     {
         // Kiểm tra quyền
         /** @var \App\Models\User $user */
@@ -46,7 +46,7 @@ class PermissionList extends Component
         }
     }
     // Hàm xử lý khi người dùng click vào 1 dòng gợi ý
-    public function selectSuggestion($permissionName)
+    public function selectSuggestion(string $permissionName)
     {
         $this->search = $permissionName; // Điền tên vào ô input
         $this->showSuggestions = false;  // Giấu bảng gợi ý đi

@@ -45,16 +45,16 @@ class BarcodeGenerator extends Component
     public $printColumns = 4;
     public $fontSize = 7;
     public $rowsPerPage = 4; // Bổ sung cấu hình số hàng
-    public $colors, $specifications, $plasticTypes;
-    public $selectedColor, $selectedSpec, $selectedPlastic, $width;
+    public $colors = [], $specifications = [], $plasticTypes = [];
+    public $selectedColor = '', $selectedSpec = '', $selectedPlastic = '', $width = '';
     // --- BIẾN CHO TẠO NHANH ĐƠN HÀNG ---
     public $newOrderType = 'C'; // Mặc định là loại C
     public $newOrderCustomer = '';
     public $newOrderTotal = 1;
-    public $length;
-    public $gsm;
-    public $weight;
-    public $notes;
+    public $length = '';
+    public $gsm = '';
+    public $weight = '';
+    public $notes = '';
     public function mount()
     {
         /** @var \App\Models\User $user */ // <-- Đã thêm dòng fix lỗi IDE
@@ -112,7 +112,7 @@ class BarcodeGenerator extends Component
         }
     }
     // Hàm này tự chạy khi người dùng thay đổi giá trị của select box Chọn Product
-    public function updatedItemDataProductId($value)
+    public function updatedItemDataProductId(mixed $value)
     {
         $product = Product::find($value);
         if ($product) {
@@ -127,7 +127,7 @@ class BarcodeGenerator extends Component
     }
 
     // Hàm xử lý lấy thuộc tính thông minh
-    private function loadDynamicProperties($productId)
+    private function loadDynamicProperties(mixed $productId)
     {
         $query = ItemProperty::where('is_active', true)
             ->where(function ($q) use ($productId) {
@@ -153,7 +153,7 @@ class BarcodeGenerator extends Component
     }
 
     // Khi chọn Order -> Tự điền PO Text
-    public function updatedItemDataOrderId($value)
+    public function updatedItemDataOrderId(mixed $value)
     {
         $this->js("console.log('Đổi Đơn hàng sang: {$value}');");
         $order = Order::find($value);
@@ -171,7 +171,7 @@ class BarcodeGenerator extends Component
     //     // $this->dispatch('show-toast', title: 'Danh sách sản phẩm vừa được làm mới!');
     // }
 
-    private function getNextSequence($prefix)
+    private function getNextSequence(string $prefix)
     {
         $lastItem = Item::where('code', 'LIKE', $prefix . '%')
             ->orderBy('id', 'desc')
@@ -187,22 +187,22 @@ class BarcodeGenerator extends Component
     }
 
     // --- LƯU CẤU HÌNH IN VÀO CACHE TỰ ĐỘNG ---
-    public function updatedPrintFormat($value)
+    public function updatedPrintFormat(mixed $value)
     {
         cache()->forever('normal_printFormat_' . Auth::id(), $value);
     }
 
-    public function updatedPrintColumns($value)
+    public function updatedPrintColumns(mixed $value)
     {
         cache()->forever('normal_printColumns_' . Auth::id(), $value);
     }
 
-    public function updatedFontSize($value)
+    public function updatedFontSize(mixed $value)
     {
         cache()->forever('normal_fontSize_' . Auth::id(), $value);
     }
 
-    public function updatedRowsPerPage($value)
+    public function updatedRowsPerPage(mixed $value)
     {
         cache()->forever('normal_rowsPerPage_' . Auth::id(), $value);
     }
@@ -352,6 +352,7 @@ class BarcodeGenerator extends Component
                     $propertiesToSave[$prop->code] = $this->itemData[$prop->code];
                 }
             }
+            $realCode = '';
             try {
                 $realCode = ItemCodeService::generateStandardCode(
                     $oc,

@@ -10,7 +10,7 @@ class ItemCodeService
      * Sinh mã tem theo đúng chuẩn của màn hình Import Excel
      * Định dạng: [ORDER] [COLOR] [SPEC] [WIDTH] [PLASTIC] [GSM] [LENGTH] [STT]
      */
-    public static function generateStandardCode($orderCode, $colorCode, $specCode, $widthCode, $plasticCode, $gsm, $length, $sequenceNo)
+    public static function generateStandardCode(mixed $orderCode, mixed $colorCode, mixed $specCode, mixed $widthCode, mixed $plasticCode, mixed $gsm, mixed $length, mixed $sequenceNo)
     {
         // 1. Tạo Prefix
         $prefix = strtoupper(trim("$orderCode $colorCode $specCode $widthCode $plasticCode $gsm $length"));

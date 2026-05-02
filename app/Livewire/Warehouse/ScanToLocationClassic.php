@@ -25,14 +25,14 @@ class ScanToLocationClassic extends Component
     public string $mode = 'temp';
 
     // Phiên làm việc
-    public $currentLocation   = null;
+    public mixed $currentLocation   = null;
     public ?int $currentLocationId = null;
 
     // Trạng thái quét
     public string $scanStatus = '';   // 'success' | 'error' | 'warning' | 'location'
     public string $message    = '';
-    public $itemInfo          = null;
-    public $lastScannedCode   = null;
+    public mixed $itemInfo          = null;
+    public mixed $lastScannedCode   = null;
     public string $scannedCodeInput = '';
 
     // Lịch sử trong phiên (tối đa 20)
@@ -41,9 +41,9 @@ class ScanToLocationClassic extends Component
     // === CÂN ĐIỆN TỬ ===
     public $scaleStations = [];         // Danh sách trạm cân được phân quyền cho user
     public string $selectedScaleCode = ''; // Mã trạm cân đang chọn
-    public $scaleWeight = null;         // Trọng lượng real-time từ cân (nhận qua JS dispatch)
+    public mixed $scaleWeight = null;         // Trọng lượng real-time từ cân (nhận qua JS dispatch)
     public bool $scaleStable = false;   // Số cân đã ổn định chưa
-    public $manualWeight = null;        // Trọng lượng nhập tay (fallback khi không có WebSocket)
+    public mixed $manualWeight = null;        // Trọng lượng nhập tay (fallback khi không có WebSocket)
 
     public function mount(): void
     {
@@ -111,7 +111,7 @@ class ScanToLocationClassic extends Component
     }
 
     // --- XỬ LÝ CAMERA ---
-    public function handleScan($code): void
+    public function handleScan(string $code): void
     {
         $code = strtoupper(trim($code));
         if ($this->lastScannedCode === $code && $this->scanStatus === 'success') {

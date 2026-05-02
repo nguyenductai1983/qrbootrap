@@ -11,11 +11,11 @@ use Livewire\Attributes\Title;
 #[Title('Quản lý Vai trò')]
 class RoleForm extends Component
 {
-    public $role;
-    public $name;
+    public mixed $role;
+    public mixed $name;
     public $selectedPermissions = []; // Mảng để lưu các quyền được chọn
 
-    public $allPermissions; // Biến để lưu tất cả các quyền
+    public mixed $allPermissions; // Biến để lưu tất cả các quyền
 
     public function mount($roleId = null)
     {

@@ -13,7 +13,7 @@ class CategoryManager extends Component
     public $dataList = [];
 
     // Các biến cho Form Thêm/Sửa
-    public $itemId = null;
+    public mixed $itemId = null;
     public $code = '';
     public $name = '';
     public $is_active = true;
@@ -24,7 +24,7 @@ class CategoryManager extends Component
     }
 
     // Hàm chuyển Tab
-    public function switchTab($tab)
+    public function switchTab(string $tab)
     {
         $this->activeTab = $tab;
         $this->resetForm();
@@ -58,7 +58,7 @@ class CategoryManager extends Component
     }
 
     // Bấm nút Sửa
-    public function edit($id)
+    public function edit(mixed $id)
     {
         $model = $this->getModelClass();
         $record = $model::find($id);
@@ -104,7 +104,7 @@ class CategoryManager extends Component
     }
 
     // Bật/Tắt trạng thái nhanh
-    public function toggleActive($id)
+    public function toggleActive(mixed $id)
     {
         $modelClass = $this->getModelClass();
         $record = $modelClass::find($id);

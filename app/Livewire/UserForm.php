@@ -15,22 +15,22 @@ use Livewire\Attributes\Title;
 #[Title('Quản lý Người dùng')]
 class UserForm extends Component
 {
-    public $user;
-    public $name;
-    public $username;
-    public $email;
-    public $password;
-    public $password_confirmation;
+    public mixed $user;
+    public mixed $name;
+    public mixed $username;
+    public mixed $email;
+    public mixed $password;
+    public mixed $password_confirmation;
     public $is_admin = false;
     public $force_password_change = true;
-    public $role;
-    public $department_id; // <-- Thay đổi thành department_id
+    public mixed $role;
+    public mixed $department_id; // <-- Thay đổi thành department_id
     public $selectedRoles = []; // <-- Mảng để lưu các vai trò được chọn
-    public $departments; // <-- Biến để lưu danh sách Bộ phận
-    public $allRoles; // <-- Biến để lưu tất cả các vai trò
+    public mixed $departments; // <-- Biến để lưu danh sách Bộ phận
+    public mixed $allRoles; // <-- Biến để lưu tất cả các vai trò
 
     public $selectedPermissions = []; // <-- Mảng để lưu các quyền cấp trực tiếp
-    public $allPermissions; // <-- Biến để lưu tất cả các quyền
+    public mixed $allPermissions; // <-- Biến để lưu tất cả các quyền
     public function mount($userId = null)
     {
         $this->departments = Department::orderBy('name')->get();

@@ -23,7 +23,7 @@ class MovementLog extends Component
     public $dateFrom = '';
     public $dateTo = '';
 
-    public function updating($field)
+    public function updating(string $field)
     {
         // Reset về trang 1 khi gõ tìm kiếm hoặc đổi filter
         if (in_array($field, ['searchCode', 'actionType', 'userId', 'dateFrom', 'dateTo'])) {

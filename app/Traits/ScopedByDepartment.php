@@ -4,6 +4,9 @@ namespace App\Traits;
 
 use App\Scopes\DepartmentScope;
 
+/**
+ * @mixin \Illuminate\Database\Eloquent\Model
+ */
 trait ScopedByDepartment
 {
     /**

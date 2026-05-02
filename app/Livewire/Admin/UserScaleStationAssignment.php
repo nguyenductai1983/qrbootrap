@@ -8,10 +8,10 @@ use App\Models\ScaleStation;
 
 class UserScaleStationAssignment extends Component
 {
-    public $users;
-    public $scaleStations;
+    public mixed $users;
+    public mixed $scaleStations;
 
-    public $selectedUser    = null;
+    public mixed $selectedUser    = null;
     public $selectedStations = [];
 
     public function mount()
@@ -20,7 +20,7 @@ class UserScaleStationAssignment extends Component
         $this->scaleStations = ScaleStation::where('status', true)->orderBy('name')->get();
     }
 
-    public function selectUser($userId)
+    public function selectUser(mixed $userId)
     {
         $this->selectedUser = User::find($userId);
         if ($this->selectedUser) {

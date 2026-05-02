@@ -18,12 +18,12 @@ class ExcelManager extends Component
 {
     use WithFileUploads;
 
-    public $orders, $products;
+    public mixed $orders = [], $products = [];
     public $selectedOrderId = '';
     public $selectedProductId = '';
     public $fromDate = '';
     public $toDate = '';
-    public $fileUpload; // Biến chứa file Excel import
+    public mixed $fileUpload = null; // Biến chứa file Excel import
 
     public function mount()
     {
@@ -45,7 +45,7 @@ class ExcelManager extends Component
         }
     }
 
-    public function updatedSelectedProductId($value)
+    public function updatedSelectedProductId(mixed $value)
     {
         // Lưu lựa chọn mới vào Cache trong 30 ngày
         Cache::put('user_' . Auth::id() . '_excel_product', $value, now()->addDays(30));

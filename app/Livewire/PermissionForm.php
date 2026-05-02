@@ -10,8 +10,8 @@ use Livewire\Attributes\Title;
 #[Title('Quản lý Quyền hạn')]
 class PermissionForm extends Component
 {
-    public $permission;
-    public $name;
+    public mixed $permission;
+    public mixed $name;
 
     public function mount($permissionId = null)
     {

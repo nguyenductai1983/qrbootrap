@@ -21,7 +21,7 @@ class RoleList extends Component
         $this->resetPage();
     }
 
-    public function deleteRole($roleId)
+    public function deleteRole(mixed $roleId)
     {
         // Kiểm tra quyền
         /** @var User $user */

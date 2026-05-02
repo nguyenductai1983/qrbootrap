@@ -45,7 +45,7 @@ class TraceGenealogyTool implements Tool
         return json_encode($result, JSON_UNESCAPED_UNICODE);
     }
 
-    private function flattenTree($items, string $relation, int $depth = 0): array
+    private function flattenTree(mixed $items, string $relation, int $depth = 0): array
     {
         if ($depth > 5) return [];
         $nodes = [];

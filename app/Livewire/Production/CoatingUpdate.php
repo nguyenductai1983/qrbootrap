@@ -14,7 +14,7 @@ use Livewire\Attributes\Title;
 class CoatingUpdate extends Component
 {
     public $codeInput = '';
-    public $item = null;
+    public mixed $item = null;
     public $gsmlami = '';
     public $selectedOrderId = '';
     public $availableOrders = [];
@@ -51,7 +51,7 @@ class CoatingUpdate extends Component
         $this->codeInput = '';
     }
 
-    public function selectItem($itemId)
+    public function selectItem(mixed $itemId)
     {
         $this->item = Item::with('order')->find($itemId);
         if ($this->item) {

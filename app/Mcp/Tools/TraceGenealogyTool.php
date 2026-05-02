@@ -55,7 +55,7 @@ class TraceGenealogyTool extends Tool
         return Response::text(json_encode($result, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
     }
 
-    private function buildTree($relatives, string $direction, int $depth = 0): array
+    private function buildTree(mixed $relatives, string $direction, int $depth = 0): array
     {
         if ($depth > 10) return []; // Tránh vòng lặp vô hạn
 

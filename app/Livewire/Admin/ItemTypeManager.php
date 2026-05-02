@@ -10,7 +10,7 @@ class ItemTypeManager extends Component
 {
     use WithPagination;
 
-    public $code, $name, $description, $is_active = true, $typeId;
+    public mixed $code, $name, $description, $is_active = true, $typeId;
     public $isEditMode = false;
     public $searchTerm = '';
 
@@ -44,7 +44,7 @@ class ItemTypeManager extends Component
         $this->dispatch('close-modal');
     }
 
-    public function edit($id)
+    public function edit(mixed $id)
     {
         $type = ItemType::find($id);
         if ($type) {
@@ -81,7 +81,7 @@ class ItemTypeManager extends Component
         }
     }
 
-    public function delete($id)
+    public function delete(mixed $id)
     {
         ItemType::find($id)->delete();
         session()->flash('message', 'Đã xóa Loại Tem!');

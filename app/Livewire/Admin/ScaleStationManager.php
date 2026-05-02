@@ -11,8 +11,8 @@ class ScaleStationManager extends Component
 {
     use WithPagination;
 
-    public $name, $code, $status = true, $stationId;
-    public $station_token, $notes;
+    public mixed $name, $code, $status = true, $stationId;
+    public mixed $station_token, $notes;
     public $showModal = false;
 
     protected function rules()
@@ -87,7 +87,7 @@ class ScaleStationManager extends Component
         $this->resetInputFields();
     }
 
-    public function edit($id)
+    public function edit(mixed $id)
     {
         $station = ScaleStation::findOrFail($id);
         $this->stationId     = $id;
@@ -99,7 +99,7 @@ class ScaleStationManager extends Component
         $this->showModal = true;
     }
 
-    public function delete($id)
+    public function delete(mixed $id)
     {
         ScaleStation::findOrFail($id)->delete();
         session()->flash('message', 'Đã xóa trạm cân thành công!');

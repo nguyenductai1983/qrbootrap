@@ -81,28 +81,38 @@
                     this.trimWidth = m;
                 }
             },
+            updateSplit(source) {
+                let m = parseFloat(this.minW) || 0;
+                if (source === 1) {
+                    let t1 = parseFloat(this.split1) || 0;
+                    if (t1 > m) {
+                        t1 = m;
+                        this.split1 = t1;
+                    }
+        
+                } else if (source === 2) {
+                    let t2 = parseFloat(this.split2) || 0;
+                    if (t2 > m) {
+                        t2 = m;
+                        this.split2 = t2;
+                    }
+        
+                }
+            },
             validateSplit(fromMinWChange = false) {
                 let t1 = parseFloat(this.split1) || 0;
                 let t2 = parseFloat(this.split2) || 0;
                 let m = parseFloat(this.minW) || 0;
         
-                if ((t1 + t2) > m) {
-                    if (fromMinWChange) {
-                        if (t1 === t2) {
-                            this.split1 = m / 2;
-                            this.split2 = m / 2;
-                        } else {
-                            let ratio = t1 / (t1 + t2);
-                            this.split1 = parseFloat((m * ratio).toFixed(1));
-                            this.split2 = parseFloat((m - this.split1).toFixed(1));
-                        }
+                if (fromMinWChange) {
+                    if (t1 === t2 || (t1 + t2) === 0) {
+                        this.split1 = m / 2;
+                        this.split2 = m / 2;
                     } else {
-                        if (t1 > m) {
-                            this.split1 = m;
-                            this.split2 = 0;
-                        } else {
-                            this.split2 = parseFloat((m - t1).toFixed(1));
-                        }
+                        let ratio = t1 / (t1 + t2);
+                        if (isNaN(ratio)) ratio = 0.5;
+                        this.split1 = parseFloat((m * ratio).toFixed(1));
+                        this.split2 = parseFloat((m - this.split1).toFixed(1));
                     }
                 }
             },
@@ -252,7 +262,9 @@
                                         placeholder="0.0">
                                     <span class="input-group-text fw-bold fs-5 text-primary">g/m²</span>
                                 </div>
-                                <div class="form-text text-danger small"><i class="fa-solid fa-circle-exclamation"></i> Bắt buộc nhập. Nhập 0 nếu không tráng ghép.
+                                <div class="form-text text-danger small"><i
+                                        class="fa-solid fa-circle-exclamation"></i> Bắt buộc nhập. Nhập 0 nếu không
+                                    tráng ghép.
                                 </div>
                             </div>
                         </div>
@@ -299,13 +311,13 @@
                                     style="display: none;">
                                     <div class="col-6">
                                         <label class="form-label small fw-bold text-info">Khổ cây 1</label>
-                                        <input type="number" step="0.1" x-model.lazy="split1"
-                                            @input="validateSplit" class="form-control fw-bold" placeholder="0.0">
+                                        <input type="number" step="0.1" x-model="split1"
+                                            @input="updateSplit(1)" class="form-control fw-bold" placeholder="0.0">
                                     </div>
                                     <div class="col-6">
                                         <label class="form-label small fw-bold text-info">Khổ cây 2</label>
-                                        <input type="number" step="0.1" x-model.lazy="split2"
-                                            @input="validateSplit" class="form-control fw-bold" placeholder="0.0">
+                                        <input type="number" step="0.1" x-model="split2"
+                                            @input="updateSplit(2)" class="form-control fw-bold" placeholder="0.0">
                                     </div>
                                 </div>
                                 <div class="form-check form-switch mt-3 pt-3 border-top border-secondary-subtle">
@@ -481,25 +493,6 @@
                     }
                 }, 100);
             });
-
-            //     Livewire.on('manual-print-alert', (event) => {
-            //         Swal.fire({
-            //             icon: 'warning',
-            //             title: 'CHƯA CÓ LỆNH IN!',
-            //             html: `
-        //     <div style="text-align:center;">
-        //         <p>Bạn không chọn trạm in, hãy chụp ảnh màn hình này lại:</p>
-        //         <div style="border:2px solid #007bff; padding:15px; background:#f8f9fa;">
-        //             <h2 style="color:#007bff; font-weight:bold;">${event[0].code}</h2>
-        //             <p style="margin:5px 0;">Dài: <b>${event[0].length}m</b> | Tạo lúc: ${event[0].time}</p>
-        //         </div>
-        //     </div>
-        // `,
-            //             confirmButtonText: 'Đã chụp',
-            //             allowOutsideClick: false // Bắt buộc phải bấm OK mới được tắt
-            //         });
-            //     });
-
 
             Livewire.on('alert', (event) => {
                 Swal.fire({

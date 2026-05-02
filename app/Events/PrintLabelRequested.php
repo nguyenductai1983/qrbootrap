@@ -13,9 +13,9 @@ class PrintLabelRequested implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $item;
-    public $printerMac; // (Tùy chọn) Mã của máy in hoặc trạm in
-    public $printJobId; // ID của công việc in trong database
+    public mixed $item;
+    public mixed $printerMac; // (Tùy chọn) Mã của máy in hoặc trạm in
+    public mixed $printJobId; // ID của công việc in trong database
 
     public function __construct(Item $item, $printerMac = '01', $printJobId = null)
     {

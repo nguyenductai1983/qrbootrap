@@ -15,15 +15,15 @@ class ProductionOrderManager extends Component
 
     public $search = '';
     public $statusFilter = '';
-    public $selectedOrder = null;
+    public mixed $selectedOrder = null;
     public $isEditModalOpen = false;
 
     // Các trường form
-    public $productionOrderId;
-    public $status;
-    public $start_date;
-    public $end_date;
-    public $notes;
+    public mixed $productionOrderId;
+    public mixed $status;
+    public mixed $start_date;
+    public mixed $end_date;
+    public mixed $notes;
     
     // Xem chi tiết các orders bên trong
     public $viewingOrders = [];
@@ -39,7 +39,7 @@ class ProductionOrderManager extends Component
         $this->resetPage();
     }
 
-    public function editMode($id)
+    public function editMode(mixed $id)
     {
         $po = ProductionOrder::findOrFail($id);
         $this->productionOrderId = $po->id;
@@ -50,7 +50,7 @@ class ProductionOrderManager extends Component
         $this->isEditModalOpen = true;
     }
 
-    public function viewOrders($id)
+    public function viewOrders(mixed $id)
     {
         $po = ProductionOrder::findOrFail($id);
         $this->selectedOrder = $po;

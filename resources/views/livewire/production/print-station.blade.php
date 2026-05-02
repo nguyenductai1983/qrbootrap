@@ -29,6 +29,9 @@
 
             /* --- CẤU HÌNH GIAO DIỆN KHI MÁY IN KÍCH HOẠT --- */
             @media print {
+                @page {
+                    margin: 0;
+                }
 
                 /* 1. Ẩn toàn bộ giao diện Web (Nền đen, cột trái phải, menu...) */
                 body>*:not(#print-area) {
@@ -45,22 +48,24 @@
                     left: 0;
                     top: 0;
                     width: 100%;
+                    height: 100%;
                     background-color: white !important;
                     color: black !important;
-                    padding: 10px;
+                    padding: 0px !important;
+                    box-sizing: border-box;
+                    overflow: hidden;
                 }
             }
         </style>
     </head>
 
     <body>
-        <!-- KHU VỰC IN (Bình thường sẽ ẩn, chỉ hiện lên mặt giấy in) -->
+        <!-- KHU VỰC IN (Bình thường sẽ ẩn, chỉ hiện lên mặt giấy in) style="display: none;"-->
         <div id="print-area" style="display: none;">
             <div id="qrcode-wrapper"></div>
-            <div id="print-text"
-                style="margin-top: 5px; font-family: monospace; font-weight: bold; font-size: 16px; text-align: center;">
+            <div id="print-text" style="font-family: Arial; font-weight: bold; text-align: center;">
             </div>
-            <div id="print-length" style="font-family: monospace; font-size: 14px; text-align: center;"></div>
+            <div id="print-length" style="font-family: Arial; font-weight: bold; text-align: center;"></div>
         </div>
         <!-- hết nội dung in-->
         <div class="container mt-5">
@@ -120,23 +125,18 @@
 
                 // NẠP VÀ LƯU CẤU HÌNH FONT CHỮ VÀO BỘ NHỚ TRÌNH DUYỆT (Nhớ Size)
                 const confText = document.getElementById('conf-text');
-                const confLength = document.getElementById('conf-length');
                 const confQr = document.getElementById('conf-qr');
 
                 if (localStorage.getItem('print_conf_text') && confText) confText.value = localStorage.getItem(
                     'print_conf_text');
-                if (localStorage.getItem('print_conf_length') && confLength) confLength.value = localStorage.getItem(
-                    'print_conf_length');
                 if (localStorage.getItem('print_conf_qr') && confQr) confQr.value = localStorage.getItem(
                     'print_conf_qr');
 
                 const savePrintConfig = () => {
                     if (confText) localStorage.setItem('print_conf_text', confText.value);
-                    if (confLength) localStorage.setItem('print_conf_length', confLength.value);
                     if (confQr) localStorage.setItem('print_conf_qr', confQr.value);
                 };
                 if (confText) confText.addEventListener('input', savePrintConfig);
-                if (confLength) confLength.addEventListener('input', savePrintConfig);
                 if (confQr) confQr.addEventListener('input', savePrintConfig);
 
                 // Đẩy hàm vào đợi Echo khởi tạo xong
@@ -184,13 +184,10 @@
                             // Áp dụng cấu hình cỡ chữ User vừa đặt
                             if (confText && document.getElementById('print-text')) {
                                 document.getElementById('print-text').style.fontSize = confText.value + 'px';
-                            }
-                            if (confLength && document.getElementById('print-length')) {
-                                document.getElementById('print-length').style.fontSize = confLength.value +
+                                document.getElementById('print-length').style.fontSize = confText.value +
                                     'px';
                             }
                             const userQrSize = parseInt(confQr?.value || 120);
-
                             // Gọi thư viện vẽ mã QR Code mới nhất
                             new QRCode(qrContainer, {
                                 text: item.code,

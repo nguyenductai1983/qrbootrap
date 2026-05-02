@@ -21,6 +21,7 @@ use Exception;
 #[Title('Xác nhận Tráng Ghép')]
 class CoatingConfirmation extends Component
 {
+    private const TOLERANCE = 0.05;
     public $codeInput = '';
     public $scannedItems = [];
     public $usedLengths = [];
@@ -35,7 +36,7 @@ class CoatingConfirmation extends Component
     public $machines = [];          // Danh sách máy được gán cho user này
     public $printStations = [];     // Danh sách trạm in được gán cho user
     public $printerMac = ''; // Máy in mặc định
-    public $manualPrintRequired = null; // Trạng thái chứa mã khi chưa in
+    public mixed $manualPrintRequired = null; // Trạng thái chứa mã khi chưa in
 
     // Cấu hình tính năng mới: Lami và Cắt khổ
     public $gsmlami = ''; // Tổng GSM thành phẩm
@@ -149,7 +150,7 @@ class CoatingConfirmation extends Component
         }
     }
 
-    public function removeItem($index)
+    public function removeItem(int $index)
     {
         $itemId = $this->scannedItems[$index]['id'];
         unset($this->usedLengths[$itemId]);
@@ -188,8 +189,8 @@ class CoatingConfirmation extends Component
                 $this->dispatch('alert', ['type' => 'error', 'message' => 'Vui lòng nhập khổ mới (Xén)!']);
                 return;
             }
-            if ($this->trimWidth > $sourceWidth) {
-                $this->dispatch('alert', ['type' => 'error', 'message' => 'Khổ xén (' . $this->trimWidth . ') không thể lớn hơn khổ cha (' . $sourceWidth . ')!']);
+            if ($this->trimWidth > $sourceWidth * (1 + self::TOLERANCE)) {
+                $this->dispatch('alert', ['type' => 'error', 'message' => 'Khổ xén (' . $this->trimWidth . ') không thể lớn hơn khổ cha +5% (' . $sourceWidth * (1 + self::TOLERANCE) . ')!']);
                 return;
             }
         } elseif ($this->cutMode === 'split') {
@@ -197,8 +198,8 @@ class CoatingConfirmation extends Component
                 $this->dispatch('alert', ['type' => 'error', 'message' => 'Vui lòng nhập đủ 2 khổ mới (Chia đôi)!']);
                 return;
             }
-            if (($this->splitWidth1 + $this->splitWidth2) > $sourceWidth) {
-                $this->dispatch('alert', ['type' => 'error', 'message' => 'Tổng 2 khổ chia (' . ($this->splitWidth1 + $this->splitWidth2) . ') không thể lớn hơn khổ cha (' . $sourceWidth . ')!']);
+            if (($this->splitWidth1 + $this->splitWidth2) > $sourceWidth * (1 + self::TOLERANCE)) {
+                $this->dispatch('alert', ['type' => 'error', 'message' => 'Tổng 2 khổ chia (' . ($this->splitWidth1 + $this->splitWidth2) . ') không thể lớn hơn khổ cha +5%(' . $sourceWidth * (1 + self::TOLERANCE) . ')!']);
                 return;
             }
         }
@@ -527,7 +528,7 @@ class CoatingConfirmation extends Component
         $this->manualPrintRequired = null;
     }
 
-    private function setManualPrintState($type, $header, $content, $code)
+    private function setManualPrintState(string $type, string $header, string $content, string $code)
     {
         $icons = [
             'success' => 'fa-solid fa-circle-check text-success',
@@ -546,7 +547,7 @@ class CoatingConfirmation extends Component
         ];
     }
 
-    public function reprintJob($jobId)
+    public function reprintJob(mixed $jobId)
     {
         try {
             $job = PrintJob::with('item')->find($jobId);

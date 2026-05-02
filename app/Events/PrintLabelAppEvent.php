@@ -13,10 +13,10 @@ class PrintLabelAppEvent implements ShouldBroadcastNow // Sửa ở đây
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $data;
-    public $stationKey;
+    public mixed $data;
+    public mixed $stationKey;
 
-    public function __construct($stationKey, $printData)
+    public function __construct(mixed $stationKey, mixed $printData)
     {
         $this->stationKey = $stationKey;
         $this->data = $printData;

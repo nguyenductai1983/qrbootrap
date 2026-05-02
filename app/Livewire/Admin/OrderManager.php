@@ -12,7 +12,7 @@ class OrderManager extends Component
 {
     use WithPagination;
 
-    public $code, $customer_name, $status = OrderStatus::RUNNING, $orderId, $type, $total;
+    public mixed $code, $customer_name, $status = OrderStatus::RUNNING, $orderId, $type, $total;
     public $isEditMode = false;
     public $searchTerm = '';
     public function mount()
@@ -55,7 +55,7 @@ class OrderManager extends Component
         $this->dispatch('close-modal'); // Đóng modal bằng JS
     }
 
-    public function edit($id)
+    public function edit(mixed $id)
     {
         $order = Order::find($id);
         if ($order) {
@@ -91,7 +91,7 @@ class OrderManager extends Component
         }
     }
 
-    public function delete($id)
+    public function delete(mixed $id)
     {
         Order::find($id)->delete();
         session()->flash('message', 'Đã xóa đơn hàng!');

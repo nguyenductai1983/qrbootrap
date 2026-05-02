@@ -10,8 +10,8 @@ class PropertyManager extends Component
 {
     use WithPagination;
 
-    public $code, $name, $type = 'text', $options = '', $sort_order = 0, $unit = '';
-    public $is_required = false, $is_active = true, $propertyId, $code_usage = 0;
+    public mixed $code, $name, $type = 'text', $options = '', $sort_order = 0, $unit = '';
+    public mixed $is_required = false, $is_active = true, $propertyId, $code_usage = 0;
 
     public $isEditMode = false;
     public $searchTerm = '';
@@ -81,7 +81,7 @@ class PropertyManager extends Component
         $this->dispatch('close-modal');
     }
 
-    public function edit($id)
+    public function edit(mixed $id)
     {
         $property = ItemProperty::with('products')->find($id);
         if ($property) {
@@ -144,7 +144,7 @@ class PropertyManager extends Component
         }
     }
 
-    public function delete($id)
+    public function delete(mixed $id)
     {
         ItemProperty::find($id)->delete();
         session()->flash('message', 'Đã xóa thuộc tính!');

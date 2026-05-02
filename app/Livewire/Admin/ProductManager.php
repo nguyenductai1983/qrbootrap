@@ -11,7 +11,7 @@ class ProductManager extends Component
 {
     use WithPagination;
 
-    public $code, $name, $description, $productId;
+    public mixed $code, $name, $description, $productId;
     public $selectedDepartments = []; // Mảng chứa ID các phân xưởng được chọn
     public $departments = []; // Danh sách tất cả phân xưởng để hiển thị checkbox
 
@@ -60,7 +60,7 @@ class ProductManager extends Component
         $this->dispatch('close-modal');
     }
 
-    public function edit($id)
+    public function edit(mixed $id)
     {
         $product = Product::with('departments')->find($id);
         if ($product) {
@@ -102,7 +102,7 @@ class ProductManager extends Component
         }
     }
 
-    public function delete($id)
+    public function delete(mixed $id)
     {
         Product::find($id)->delete();
         session()->flash('message', 'Đã xóa sản phẩm!');

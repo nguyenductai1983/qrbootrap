@@ -20,7 +20,7 @@ class DepartmentList extends Component
         $this->resetPage();
     }
 
-    public function deleteDepartment($departmentId)
+    public function deleteDepartment(mixed $departmentId)
     {
         /** @var \App\Models\User $user */
         $user = Auth::user();

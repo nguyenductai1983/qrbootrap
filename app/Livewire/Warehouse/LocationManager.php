@@ -14,7 +14,7 @@ class LocationManager extends Component
     use WithPagination;
 
     public $search = '';
-    public $locationId, $code, $name, $type = 'warehouse';
+    public mixed $locationId = null, $code = '', $name = '', $type = 'warehouse';
     public $isEditMode = false;
     public $showModal = false;
 
@@ -42,31 +42,31 @@ class LocationManager extends Component
         $this->codeFontSize = cache()->get('loc_codeFontSize_' . $uid, 12);
     }
 
-    public function updatedPrintFormat($v)
+    public function updatedPrintFormat(mixed $v)
     {
         cache()->forever('loc_printFormat_'  . Auth::id(), $v);
     }
-    public function updatedPrintColumns($v)
+    public function updatedPrintColumns(mixed $v)
     {
         cache()->forever('loc_printColumns_' . Auth::id(), $v);
     }
-    public function updatedFontSize($v)
+    public function updatedFontSize(mixed $v)
     {
         cache()->forever('loc_fontSize_'     . Auth::id(), $v);
     }
-    public function updatedRowsPerPage($v)
+    public function updatedRowsPerPage(mixed $v)
     {
         cache()->forever('loc_rowsPerPage_'  . Auth::id(), $v);
     }
-    public function updatedCodeColumns($v)
+    public function updatedCodeColumns(mixed $v)
     {
         cache()->forever('loc_codeColumns_'  . Auth::id(), $v);
     }
-    public function updatedCodeRows($v)
+    public function updatedCodeRows(mixed $v)
     {
         cache()->forever('loc_codeRows_'     . Auth::id(), $v);
     }
-    public function updatedCodeFontSize($v)
+    public function updatedCodeFontSize(mixed $v)
     {
         cache()->forever('loc_codeFontSize_' . Auth::id(), $v);
     }
@@ -125,7 +125,7 @@ class LocationManager extends Component
         $this->resetPage();
     }
 
-    public function edit($id)
+    public function edit(mixed $id)
     {
         $location = Location::findOrFail($id);
         $this->locationId = $location->id;
@@ -137,7 +137,7 @@ class LocationManager extends Component
         $this->showModal = true;
     }
 
-    public function delete($id)
+    public function delete(mixed $id)
     {
         $location = Location::find($id);
         if ($location) {
@@ -156,7 +156,7 @@ class LocationManager extends Component
         $this->resetInputFields();
     }
 
-    public function toggleSelectAll($pageIds)
+    public function toggleSelectAll(array $pageIds)
     {
         // Kiểm tra xem tất cả ID trên trang hiện tại đã được chọn chưa
         $allSelected = empty(array_diff($pageIds, $this->selectedLocations));
@@ -214,7 +214,7 @@ class LocationManager extends Component
         $this->selectedLocations = [];
     }
 
-    public function printQRSingle($id)
+    public function printQRSingle(mixed $id)
     {
         $url = route('locations.print', [
             'ids'      => $id,
@@ -227,7 +227,7 @@ class LocationManager extends Component
         $this->dispatch('open-print-tab', url: $url);
     }
 
-    public function printCodeSingle($id)
+    public function printCodeSingle(mixed $id)
     {
         $url = route('locations.print-code', [
             'ids'      => $id,

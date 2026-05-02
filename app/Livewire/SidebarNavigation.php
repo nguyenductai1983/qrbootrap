@@ -8,7 +8,7 @@ use Illuminate\Support\Str;
 
 class SidebarNavigation extends Component
 {
-    public $menu = null;
+    public mixed $menu = null;
 
     public function mount()
     {

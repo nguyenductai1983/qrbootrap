@@ -8,10 +8,10 @@ use App\Models\PrintStation;
 
 class UserPrintStationAssignment extends Component
 {
-    public $users;
-    public $printStations;
+    public mixed $users;
+    public mixed $printStations;
 
-    public $selectedUser = null;
+    public mixed $selectedUser = null;
     public $selectedStations = [];
 
     public function mount()
@@ -20,7 +20,7 @@ class UserPrintStationAssignment extends Component
         $this->printStations = PrintStation::where('status', true)->get();
     }
 
-    public function selectUser($userId)
+    public function selectUser(mixed $userId)
     {
         $this->selectedUser = User::find($userId);
         if ($this->selectedUser) {

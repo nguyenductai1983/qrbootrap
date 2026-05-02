@@ -10,8 +10,8 @@ class PrintStationManager extends Component
 {
     use WithPagination;
 
-    public $name, $code, $status = true, $stationId;
-    public $client_type = 'browser', $station_token, $template_name;
+    public mixed $name, $code, $status = true, $stationId;
+    public mixed $client_type = 'browser', $station_token, $template_name;
     public $showModal = false;
 
     protected $rules = [
@@ -76,7 +76,7 @@ class PrintStationManager extends Component
         $this->resetInputFields();
     }
 
-    public function edit($id)
+    public function edit(mixed $id)
     {
         $station = PrintStation::findOrFail($id);
         $this->stationId = $id;
@@ -91,7 +91,7 @@ class PrintStationManager extends Component
         $this->showModal = true;
     }
 
-    public function delete($id)
+    public function delete(mixed $id)
     {
         PrintStation::findOrFail($id)->delete();
         session()->flash('message', 'Xóa thành công!');

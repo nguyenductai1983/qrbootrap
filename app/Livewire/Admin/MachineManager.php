@@ -11,7 +11,7 @@ class MachineManager extends Component
 {
     use WithPagination;
 
-    public $name, $code, $department_id, $status = true, $machineId;
+    public mixed $name, $code, $department_id, $status = true, $machineId;
     public $departments = [];
     public $isEditMode = false;
     public $searchTerm = '';
@@ -57,7 +57,7 @@ class MachineManager extends Component
         $this->dispatch('close-modal');
     }
 
-    public function edit($id)
+    public function edit(mixed $id)
     {
         $machine = Machine::find($id);
         if ($machine) {
@@ -94,7 +94,7 @@ class MachineManager extends Component
         }
     }
 
-    public function delete($id)
+    public function delete(mixed $id)
     {
         Machine::find($id)->delete();
         session()->flash('message', 'Đã xóa máy!');
