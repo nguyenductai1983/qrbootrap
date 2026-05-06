@@ -262,7 +262,7 @@ style: |
   <li><span class="num blue">2</span> Tại ô <strong>"Email hoặc Username"</strong> — gõ tên đăng nhập của bạn.</li>
   <li><span class="num blue">3</span> Tại ô <strong>"Password"</strong> — gõ mật khẩu.</li>
   <li><span class="num blue">4</span> Nhấn nút <span class="btn-demo">Đăng nhập</span> màu xanh to bên dưới.</li>
-  <li><span class="num blue">5</span> Hệ thống sẽ chuyển sang màn hình <strong>Dashboard</strong> chính.</li>
+  <li><span class="num blue">5</span> Hệ thống sẽ chuyển sang màn hình <strong>Màn hình chính</strong> chính.</li>
 </ul>
 <div class="tip">
 💡 <strong>Nếu quên mật khẩu:</strong> Nhấn vào link <strong>"Quên mật khẩu?"</strong> ở góc phải phía dưới ô mật khẩu, hoặc liên hệ bộ phận IT.
@@ -276,7 +276,7 @@ style: |
 
 ---
 
-# Bước 2: Màn Hình Chính (Dashboard)
+# Bước 2: Màn Hình Chính
 
 <div class="layout">
 <div class="left">
@@ -291,8 +291,8 @@ style: |
 </div>
 </div>
 <div class="right">
-<img src="screenshots/g00_dash_all_cards.png" alt="T&#7845;t c&#7843; th&#7867; ch&#7913;c n&#259;ng tr&#234;n Dashboard" />
-<div class="caption">Các thẻ chức năng trên Dashboard</div>
+<img src="screenshots/g00_dash_all_cards.png" alt="T&#7845;t c&#7843; th&#7867; ch&#7913;c n&#259;ng tr&#234;n Màn hình chính" />
+<div class="caption">Các thẻ chức năng trên Màn hình chính</div>
 </div>
 </div>
 
@@ -310,13 +310,13 @@ style: |
 
 ---
 
-# I — Quét Cây Vải: Vị Trí Trên Dashboard
+# I — Quét Cây Vải: Vị Trí Trên Màn hình chính
 
 <div class="layout">
 <div class="left">
 <ul class="steps">
   <li><span class="num yellow">1</span> Sau khi đăng nhập, cuộn xuống phần 
-  <strong>"Tác Vụ Sản Xuất"</strong> trên Dashboard.</li>
+ trên Màn hình chính.</li>
   <li><span class="num yellow">2</span> Tìm thẻ <strong>"Quét Cây Vải"</strong> — có biểu tượng mã vạch màu vàng.</li>
   <li><span class="num yellow">3</span> Nhấn nút <span class="btn-demo yellow">Truy cập →</span> màu vàng bên dưới thẻ.</li>
 </ul>
@@ -325,7 +325,7 @@ style: |
 </div>
 </div>
 <div class="right">
-<img src="screenshots/g01_dash_production_cards.png" alt="Thẻ Quét Cây Vải trên Dashboard" />
+<img src="screenshots/g01_dash_production_cards.png" alt="Thẻ Quét Cây Vải trên Màn hình chính" />
 <div class="caption">Thẻ "Quét Cây Vải" trong nhóm Tác Vụ Sản Xuất</div>
 </div>
 </div>
@@ -360,7 +360,7 @@ style: |
 <ul class="steps">
   <li><span class="num yellow">7</span> Tại mục <strong>"QUÉT SẢN PHẨM"</strong>, nhấn <span class="btn-demo yellow">📷 BẬT CAMERA</span> hoặc nhập mã tem vào ô <strong>"NHẬP MÃ THỦ CÔNG"</strong> rồi nhấn <strong>▶</strong>.</li>
   <li><span class="num yellow">8</span> Hệ thống tự nhận diện — hiển thị <strong>"ĐÃ XÁC NHẬN"</strong> màu xanh lá kèm thông tin: Mã Vải, Màu, Thông số.</li>
-  <li><span class="num yellow">9</span> Nhấn <span class="btn-demo yellow">📷 In Lại</span> nếu cần in lại tem.</li>
+  <li><span class="num yellow">9</span> Nhấn <span class="btn-demo yellow"> 🖨️ In Lại</span> nếu cần in lại tem.</li>
   <li><span class="num yellow">10</span> Nhập <span class="btn-demo yellow">Số mét</span> và nhấn nút <strong>▶</strong> bên cạnh.</li>
   <li><span class="num yellow">11</span> Ghi chú, và nhấn <span class="btn-demo yellow">Lưu thông tin </span> để hoàn thành.</li>
 </ul>
@@ -388,12 +388,12 @@ style: |
 
 ---
 
-# II — Xác Nhận Tráng: Vị Trí Trên Dashboard
+# II — Xác Nhận Tráng: Vị Trí Trên Màn hình chính
 
 <div class="layout">
 <div class="left">
 <ul class="steps">
-  <li><span class="num green">1</span> Cuộn xuống phần <strong>"Tác Vụ Sản Xuất"</strong> trên Dashboard.</li>
+  <li><span class="num green">1</span> Cuộn xuống phần trên Màn hình chính.</li>
   <li><span class="num green">2</span> Tìm thẻ <strong>"Xác Nhận Tráng"</strong> — có biểu tượng checklist màu xanh.</li>
   <li><span class="num green">3</span> Nhấn nút <span class="btn-demo green">Truy cập →</span> bên dưới thẻ.</li>
 </ul>
@@ -402,7 +402,7 @@ style: |
 </div>
 </div>
 <div class="right">
-<img src="screenshots/g01_dash_coating_cards.png" alt="Dashboard sản xuất" />
+<img src="screenshots/g01_dash_coating_cards.png" alt="Màn hình chính sản xuất" />
 <div class="caption">Cuộn xuống tìm thẻ "Xác Nhận Tráng"</div>
 </div>
 </div>
@@ -441,10 +441,10 @@ style: |
   <li><span class="num green">10</span> Nhập <strong>"Dài tráng TT thu được"</strong>.</li>
   <li><span class="num green">11</span> Nhập <strong>"Tổng GSM Thành phẩm (Vải + Lami)"</strong>.</li>
   <li><span class="num green">12</span> Chọn <strong>"Tùy chọn xử lý Khổ Màng"</strong>.</li>
-  <ul class="steps"> 
-    <li><span class="num green">12.1</span>  Giữ nguyên khổ</li>
-    <li><span class="num green">12.2</span>  Xén biên (Nhập khổ mới)</li>
-    <li><span class="num green">12.3</span>  Chia đôi (Tạo 2 cuộn mới)</li>
+  <ul class="steps" style="margin-left: 40px;"> 
+    <li><span class="num green">.1</span>  Giữ nguyên khổ</li>
+    <li><span class="num green">.2</span>  Xén biên (Nhập khổ mới)</li>
+    <li><span class="num green">.3</span>  Chia đôi (Tạo 2 cuộn mới)</li>
   </ul> 
   <li><span class="num green">13</span>  Tự động thu hồi phần biên dư (Sinh mã Mộc mới cất kho cho dải dư khi xén / lệch khổ)</li>                                   
   <li><span class="num green">14</span> Nhấn nút <span class="btn-demo green">TẠO MÃ TEM TRÁNG MỚI</span> ở dưới cùng.</li>
@@ -476,12 +476,12 @@ style: |
 
 ---
 
-# III — Cập Nhật Tráng: Vị Trí Trên Dashboard
+# III — Cập Nhật Tráng: Vị Trí Trên Màn hình chính
 
 <div class="layout">
 <div class="left">
 <ul class="steps">
-  <li><span class="num blue">1</span> Cuộn xuống phần <strong>"Tác Vụ Sản Xuất"</strong> trên Dashboard.</li>
+  <li><span class="num blue">1</span> Cuộn xuống trên Màn hình chính.</li>
   <li><span class="num blue">2</span> Tìm thẻ <strong>"Cập Nhật Tráng"</strong> — có biểu tượng bút chì màu xanh dương.</li>
   <li><span class="num blue">3</span> Nhấn nút <span class="btn-demo">Truy cập →</span> bên dưới thẻ.</li>
 </ul>
@@ -490,7 +490,7 @@ style: |
 </div>
 </div>
 <div class="right">
-<img src="screenshots/g01_dash_update_coating_cards.png" alt="Dashboard sản xuất" />
+<img src="screenshots/g01_dash_update_coating_cards.png" alt="Màn hình chính sản xuất" />
 <div class="caption">Cuộn xuống tìm thẻ "Cập Nhật Tráng"</div>
 </div>
 </div>
@@ -533,21 +533,21 @@ style: |
 
 ---
 
-# IV — Nhập Kho: Vị Trí Trên Dashboard
+# IV — Nhập Kho: Vị Trí Trên Màn hình chính
 
 <div class="layout">
 <div class="left">
 <ul class="steps">
-  <li><span class="num teal">1</span> Cuộn xuống để tìm phần <strong>"Tác Vụ Sản Xuất"</strong> hoặc thẻ riêng <strong>"Nhập Kho"</strong> trên Dashboard.</li>
-  <li><span class="num teal">2</span> Thẻ <strong>"Nhập Kho"</strong> có biểu tượng kho màu xanh ngọc.</li>
+  <li><span class="num teal">1</span> Cuộn xuống trên Màn hình chính.</li>
+  <li><span class="num teal">2</span> Tìm thẻ <strong>"Nhập Kho"</strong> có biểu tượng kho màu xanh ngọc.</li>
   <li><span class="num teal">3</span> Nhấn nút <span class="btn-demo" style="background:#0d9488;">Truy cập →</span> bên dưới thẻ.</li>
 </ul>
 <div class="tip">
-💡 Thẻ "Nhập Kho" thường nằm ở nhóm <strong>Kho Hàng</strong> phía dưới Dashboard.
+💡 Thẻ "Nhập Kho" thường nằm ở nhóm <strong>Kho Hàng</strong> phía dưới Màn hình chính.
 </div>
 </div>
 <div class="right">
-<img src="screenshots/g02_dash_warehouse_card.png" alt="Thẻ Nhập Kho trên Dashboard" />
+<img src="screenshots/g02_dash_warehouse_card.png" alt="Thẻ Nhập Kho trên Màn hình chính" />
 <div class="caption">Thẻ "Nhập Kho" trong nhóm Kho Hàng</div>
 </div>
 </div>
