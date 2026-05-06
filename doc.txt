@@ -110,3 +110,12 @@ sudo supervisorctl status
 
   {{-- <x-mh-logo-icon class="fill-current d-lg-w-100 w-50 h-auto" /></a> --}}
   php artisan make:migration create_production_orders_table --create=production_orders
+
+Cách 1 (Nhanh nhất): Mở file mobile_guide.md (hiện nằm trong thư mục public/) 
+bằng Visual Studio Code, cài đặt Extension Marp for VS Code, 
+sau đó nhấn chuột phải chọn Export slide deck... và lưu dưới dạng file .pptx.
+Cách 2: Mở link HTML trên trình duyệt, nhấn Ctrl + P để in thành file PDF. 
+Sau đó bạn có thể dùng các trang web miễn phí (như iLovePDF) 
+chuyển từ PDF sang PPTX một cách dễ dàng.
+npx @marp-team/marp-cli --no-stdin mobile_guide.md --html --output mobile_guide.html
+npx @marp-team/marp-cli --no-stdin public/mobile_guide.md --html --output public/mobile_guide.html

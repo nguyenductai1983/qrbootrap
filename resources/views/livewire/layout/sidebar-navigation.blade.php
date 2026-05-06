@@ -86,11 +86,11 @@
                 </a>
             </div>
         @endcan
-        @can('coating.scan')
+        @can('coating')
             <div class="list-group-item py-3 ps-4 pe-2 d-flex justify-content-between align-items-center sidebar-dropdown-toggle"
                 data-bs-toggle="collapse" href="#coatingSubmenu" role="button"
-                aria-expanded="{{ request()->routeIs('production.coating-*') ? 'true' : 'false' }}" aria-controls="coatingSubmenu"
-                title="Quản lý Tráng">
+                aria-expanded="{{ request()->routeIs('production.coating-*') ? 'true' : 'false' }}"
+                aria-controls="coatingSubmenu" title="Quản lý Tráng">
                 <div>
                     <i class="fa-solid fa-fw fa-fill-drip text-warning me-2"></i> {{-- Icon tráng --}}
                     <span class="sidebar-text" title="Tráng">Tráng ghép</span>
@@ -105,6 +105,7 @@
                     <i class="fa-solid fa-fw fa-barcode text-warning me-2"></i>
                     <span class="sidebar-text">Xác Nhận Tráng</span>
                 </a>
+
                 <a href="{{ route('production.coating-update') }}"
                     class="list-group-item list-group-item-action py-2 ps-5 {{ request()->routeIs('production.coating-update') ? 'active' : '' }}"
                     title="Cập Nhật Tráng">
@@ -115,7 +116,7 @@
         @endcan
         {{-- MỚI THÊM: Kho mã Code/Tem (Sử dụng chung cho các bộ phận) --}}
 
-        @can('warehouse.scan')
+        @can('warehouse')
             <div class="list-group-item py-3 ps-4 pe-2 d-flex justify-content-between align-items-center sidebar-dropdown-toggle"
                 data-bs-toggle="collapse" href="#warehouseSubmenu" role="button"
                 aria-expanded="{{ request()->routeIs('warehouse.*') ? 'true' : 'false' }}" aria-controls="warehouseSubmenu"

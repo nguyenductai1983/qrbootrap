@@ -1,0 +1,3 @@
+ Livewire: The published Livewire assets are out of date
+ See: https://livewire.laravel.com/docs/installation#publishing-livewires-frontend-assets
+ php artisan livewire:publish --assets

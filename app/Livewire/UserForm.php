@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\User;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
@@ -15,22 +16,26 @@ use Livewire\Attributes\Title;
 #[Title('Quản lý Người dùng')]
 class UserForm extends Component
 {
-    public mixed $user;
-    public mixed $name;
-    public mixed $username;
-    public mixed $email;
-    public mixed $password;
-    public mixed $password_confirmation;
+    public mixed $user = null;
+    public mixed $name = '';
+    public mixed $username = '';
+    public mixed $email = '';
+
+    #[Locked]
+    public mixed $password = '';
+
+    #[Locked]
+    public mixed $password_confirmation = '';
     public $is_admin = false;
     public $force_password_change = true;
-    public mixed $role;
-    public mixed $department_id; // <-- Thay đổi thành department_id
+    public mixed $role = '';
+    public mixed $department_id = null; // <-- Thay đổi thành department_id
     public $selectedRoles = []; // <-- Mảng để lưu các vai trò được chọn
-    public mixed $departments; // <-- Biến để lưu danh sách Bộ phận
-    public mixed $allRoles; // <-- Biến để lưu tất cả các vai trò
+    public mixed $departments = []; // <-- Biến để lưu danh sách Bộ phận
+    public mixed $allRoles = []; // <-- Biến để lưu tất cả các vai trò
 
     public $selectedPermissions = []; // <-- Mảng để lưu các quyền cấp trực tiếp
-    public mixed $allPermissions; // <-- Biến để lưu tất cả các quyền
+    public mixed $allPermissions = []; // <-- Biến để lưu tất cả các quyền
     public function mount($userId = null)
     {
         $this->departments = Department::orderBy('name')->get();

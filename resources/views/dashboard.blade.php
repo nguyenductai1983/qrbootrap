@@ -130,7 +130,29 @@
                         </div>
                     </div>
                 @endcan
+                {{-- Chức năng: DANH SÁCH TEM --}}
+                @can('warehouse.scan')
+                    <div class="col-md-6 col-lg-3">
+                        <div class="card h-100 shadow-sm border-2 hover-card">
+                            <div class="card-body d-flex flex-column text-center p-4">
+                                <div class="mb-3">
+                                    <div class="bg-info bg-opacity-10 text-info rounded-circle d-inline-flex p-3">
+                                        <i class="fa-solid fa-list-check fa-2x"></i>
+                                    </div>
+                                </div>
+                                <h5 class="card-title fw-bold">Nhập Kho</h5>
+                                <p class="card-text text-muted small mb-4">Quét mã nhập & gán vị trí
+                                </p>
 
+                                <a href="{{ route('warehouse.scan') }}"
+                                    class="btn btn-outline-info w-100 mt-auto stretched-link">
+                                    Truy cập <i class="fas fa-arrow-right ms-1"></i>
+                                </a>
+                            </div>
+
+                        </div>
+                    </div>
+                @endcan
                 {{-- Chức năng: XÁC NHẬN TRÁNG --}}
                 @can('coating.scan')
                     <div class="col-md-6 col-lg-3">
@@ -153,22 +175,21 @@
                         </div>
                     </div>
                 @endcan
-
-                {{-- Chức năng: DANH SÁCH TEM --}}
-                @can('items.view')
+                @can('coating.update')
                     <div class="col-md-6 col-lg-3">
                         <div class="card h-100 shadow-sm border-2 hover-card">
                             <div class="card-body d-flex flex-column text-center p-4">
                                 <div class="mb-3">
-                                    <div class="bg-info bg-opacity-10 text-info rounded-circle d-inline-flex p-3">
-                                        <i class="fa-solid fa-list-check fa-2x"></i>
+                                    <div class="bg-success bg-opacity-10 text-success rounded-circle d-inline-flex p-3">
+                                        <i class="fa-solid fa-layer-group fa-2x"></i>
                                     </div>
                                 </div>
-                                <h5 class="card-title fw-bold">Danh Sách Sản Phẩm</h5>
-                                <p class="card-text text-muted small mb-4">Xem lịch sử và quản lý danh sách tem đã tạo.
+                                <h5 class="card-title fw-bold">Cập Nhật Tráng</h5>
+                                <p class="card-text text-muted small mb-4">Cập nhật số mét thực tế tráng.
                                 </p>
 
-                                <a href="{{ route('items') }}" class="btn btn-outline-info w-100 mt-auto stretched-link">
+                                <a href="{{ route('production.coating-update') }}"
+                                    class="btn btn-outline-success w-100 mt-auto stretched-link">
                                     Truy cập <i class="fas fa-arrow-right ms-1"></i>
                                 </a>
                             </div>
@@ -177,72 +198,73 @@
                 @endcan
             </div>
             {{-- Nhóm Kho --}}
-            <h6 class="text-muted fw-bold text-uppercase small mb-3 mt-4"><i class="fa-solid fa-warehouse me-1"></i>
-                Kho Hàng</h6>
-            <div class="row g-4 mb-4">
-                <div class="col-md-6 col-lg-3">
-                    <div class="card h-100 shadow-sm border-2 hover-card">
-                        <div class="card-body p-3 d-flex align-items-center">
-                            <div class="bg-success bg-opacity-10 text-success p-3 rounded me-3">
-                                <i class="fa-solid fa-warehouse"></i>
+            @can('warehouse')
+                <h6 class="text-muted fw-bold text-uppercase small mb-3 mt-4"><i class="fa-solid fa-warehouse me-1"></i>
+                    Kho Hàng</h6>
+                <div class="row g-4 mb-4">
+                    <div class="col-md-6 col-lg-3">
+                        <div class="card h-100 shadow-sm border-2 hover-card">
+                            <div class="card-body p-3 d-flex align-items-center">
+                                <div class="bg-success bg-opacity-10 text-success p-3 rounded me-3">
+                                    <i class="fa-solid fa-warehouse"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="fw-bold mb-0">Nhập Kho</h6>
+                                    <small class="text-muted">Quét mã nhập & gán vị trí</small>
+                                </div>
+                                <a href="{{ route('warehouse.scan') }}" class="stretched-link text-success"><i
+                                        class="fas fa-chevron-right"></i></a>
                             </div>
-                            <div class="flex-grow-1">
-                                <h6 class="fw-bold mb-0">Nhập Kho</h6>
-                                <small class="text-muted">Quét mã nhập & gán vị trí</small>
-                            </div>
-                            <a href="{{ route('warehouse.scan') }}" class="stretched-link text-success"><i
-                                    class="fas fa-chevron-right"></i></a>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-6 col-lg-3">
-                    <div class="card h-100 shadow-sm border-2 hover-card">
-                        <div class="card-body p-3 d-flex align-items-center">
-                            <div class="bg-primary bg-opacity-10 text-primary p-3 rounded me-3">
-                                <i class="fa-solid fa-list-check fa-xl"></i>
+                    <div class="col-md-6 col-lg-3">
+                        <div class="card h-100 shadow-sm border-2 hover-card">
+                            <div class="card-body p-3 d-flex align-items-center">
+                                <div class="bg-primary bg-opacity-10 text-primary p-3 rounded me-3">
+                                    <i class="fa-solid fa-list-check fa-xl"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="fw-bold mb-0">Danh Sách Nhập Kho</h6>
+                                    <small class="text-muted">Xem lịch sử nhập kho</small>
+                                </div>
+                                <a href="{{ route('warehouse.inbound-list') }}" class="stretched-link text-primary"><i
+                                        class="fas fa-chevron-right"></i></a>
                             </div>
-                            <div class="flex-grow-1">
-                                <h6 class="fw-bold mb-0">Danh Sách Nhập Kho</h6>
-                                <small class="text-muted">Xem lịch sử nhập kho</small>
-                            </div>
-                            <a href="{{ route('warehouse.inbound-list') }}" class="stretched-link text-primary"><i
-                                    class="fas fa-chevron-right"></i></a>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-6 col-lg-3">
-                    <div class="card h-100 shadow-sm border-2 hover-card">
-                        <div class="card-body p-3 d-flex align-items-center">
-                            <div class="bg-success bg-opacity-10 text-success p-3 rounded me-3">
-                                <i class="fa-solid fa-map-location-dot fa-xl"></i>
+                    <div class="col-md-6 col-lg-3">
+                        <div class="card h-100 shadow-sm border-2 hover-card">
+                            <div class="card-body p-3 d-flex align-items-center">
+                                <div class="bg-success bg-opacity-10 text-success p-3 rounded me-3">
+                                    <i class="fa-solid fa-map-location-dot fa-xl"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="fw-bold mb-0">Vị Trí Kho</h6>
+                                    <small class="text-muted">Quản lý kệ & vị trí</small>
+                                </div>
+                                <a href="{{ route('warehouse.locations') }}" class="stretched-link text-success"><i
+                                        class="fas fa-chevron-right"></i></a>
                             </div>
-                            <div class="flex-grow-1">
-                                <h6 class="fw-bold mb-0">Vị Trí Kho</h6>
-                                <small class="text-muted">Quản lý kệ & vị trí</small>
-                            </div>
-                            <a href="{{ route('warehouse.locations') }}" class="stretched-link text-success"><i
-                                    class="fas fa-chevron-right"></i></a>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-6 col-lg-3">
-                    <div class="card h-100 shadow-sm border-2 hover-card">
-                        <div class="card-body p-3 d-flex align-items-center">
-                            <div class="bg-success bg-opacity-10 text-success p-3 rounded me-3">
-                                <i class="fa-solid fa-file-excel fa-xl"></i>
+                    <div class="col-md-6 col-lg-3">
+                        <div class="card h-100 shadow-sm border-2 hover-card">
+                            <div class="card-body p-3 d-flex align-items-center">
+                                <div class="bg-success bg-opacity-10 text-success p-3 rounded me-3">
+                                    <i class="fa-solid fa-file-excel fa-xl"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="fw-bold mb-0">Báo Cáo Kho</h6>
+                                    <small class="text-muted">Xuất Excel tồn kho</small>
+                                </div>
+                                <a href="{{ route('warehouse.reports') }}" class="stretched-link text-success"><i
+                                        class="fas fa-chevron-right"></i></a>
                             </div>
-                            <div class="flex-grow-1">
-                                <h6 class="fw-bold mb-0">Báo Cáo Kho</h6>
-                                <small class="text-muted">Xuất Excel tồn kho</small>
-                            </div>
-                            <a href="{{ route('warehouse.reports') }}" class="stretched-link text-success"><i
-                                    class="fas fa-chevron-right"></i></a>
                         </div>
                     </div>
-                </div>
 
-            </div>
-
+                </div>
+            @endcan
             {{-- 4. KHU VỰC QUẢN TRỊ HỆ THỐNG --}}
             @role('manager|admin')
                 <h4 class="fw-bold mb-3 border-start border-4 border-danger ps-3">
@@ -320,7 +342,8 @@
                 </div>
 
                 {{-- Nhóm Máy Móc, Trạm In & Trạm Cân --}}
-                <h6 class="text-muted fw-bold text-uppercase small mb-3 mt-4"><i class="fa-solid fa-gears me-1"></i> Máy
+                <h6 class="text-muted fw-bold text-uppercase small mb-3 mt-4"><i class="fa-solid fa-gears me-1"></i>
+                    Máy
                     Móc &amp; Trạm</h6>
                 <div class="row g-4 mb-4">
                     {{-- Quản lý Máy --}}
@@ -428,7 +451,8 @@
             @endrole
             @role('admin')
                 {{-- Nhóm Phân Quyền --}}
-                <h6 class="text-muted fw-bold text-uppercase small mb-3"><i class="fa-solid fa-user-shield me-1"></i> Phân
+                <h6 class="text-muted fw-bold text-uppercase small mb-3"><i class="fa-solid fa-user-shield me-1"></i>
+                    Phân
                     Quyền & Người Dùng</h6>
                 <div class="row g-4">
                     {{-- User --}}
@@ -505,8 +529,10 @@
             <div class="card shadow-sm border-2 bg-primary bg-gradient text-white mt-5">
                 <div class="card-body p-4 d-flex flex-column flex-md-row justify-content-between align-items-center">
                     <div class="mb-3 mb-md-0">
-                        <h4 class="fw-bold"><i class="fa-solid fa-book-open me-2"></i> Hướng Dẫn Sử Dụng Hệ Thống</h4>
-                        <p class="mb-0 text-white-50">Xem tài liệu chi tiết cách in tem, nhập liệu Excel và quy trình
+                        <h4 class="fw-bold"><i class="fa-solid fa-book-open me-2"></i> Hướng Dẫn Sử Dụng Hệ Thống
+                        </h4>
+                        <p class="mb-0 text-white-50">Xem tài liệu chi tiết cách in tem, nhập liệu Excel và quy
+                            trình
                             quét mã.</p>
                     </div>
                     <a href="{{ route('guide') }}"
