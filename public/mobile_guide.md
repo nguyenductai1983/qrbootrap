@@ -315,8 +315,7 @@ style: |
 <div class="layout">
 <div class="left">
 <ul class="steps">
-  <li><span class="num yellow">1</span> Sau khi đăng nhập, cuộn xuống phần 
- trên Màn hình chính.</li>
+  <li><span class="num yellow">1</span> Trên Màn hình chính cuộn xuống.</li>
   <li><span class="num yellow">2</span> Tìm thẻ <strong>"Quét Cây Vải"</strong> — có biểu tượng mã vạch màu vàng.</li>
   <li><span class="num yellow">3</span> Nhấn nút <span class="btn-demo yellow">Truy cập →</span> màu vàng bên dưới thẻ.</li>
 </ul>
@@ -393,7 +392,7 @@ style: |
 <div class="layout">
 <div class="left">
 <ul class="steps">
-  <li><span class="num green">1</span> Cuộn xuống phần trên Màn hình chính.</li>
+  <li><span class="num green">1</span>Trên Màn hình chính cuộn xuống.</li>
   <li><span class="num green">2</span> Tìm thẻ <strong>"Xác Nhận Tráng"</strong> — có biểu tượng checklist màu xanh.</li>
   <li><span class="num green">3</span> Nhấn nút <span class="btn-demo green">Truy cập →</span> bên dưới thẻ.</li>
 </ul>
@@ -481,7 +480,7 @@ style: |
 <div class="layout">
 <div class="left">
 <ul class="steps">
-  <li><span class="num blue">1</span> Cuộn xuống trên Màn hình chính.</li>
+  <li><span class="num blue">1</span> Trên Màn hình chính cuộn xuống.</li>
   <li><span class="num blue">2</span> Tìm thẻ <strong>"Cập Nhật Tráng"</strong> — có biểu tượng bút chì màu xanh dương.</li>
   <li><span class="num blue">3</span> Nhấn nút <span class="btn-demo">Truy cập →</span> bên dưới thẻ.</li>
 </ul>
@@ -538,7 +537,7 @@ style: |
 <div class="layout">
 <div class="left">
 <ul class="steps">
-  <li><span class="num teal">1</span> Cuộn xuống trên Màn hình chính.</li>
+  <li><span class="num teal">1</span> Trên Màn hình chính cuộn xuống..</li>
   <li><span class="num teal">2</span> Tìm thẻ <strong>"Nhập Kho"</strong> có biểu tượng kho màu xanh ngọc.</li>
   <li><span class="num teal">3</span> Nhấn nút <span class="btn-demo" style="background:#0d9488;">Truy cập →</span> bên dưới thẻ.</li>
 </ul>
