@@ -537,7 +537,7 @@ style: |
 <div class="layout">
 <div class="left">
 <ul class="steps">
-  <li><span class="num teal">1</span> Trên Màn hình chính cuộn xuống..</li>
+  <li><span class="num teal">1</span> Trên Màn hình chính cuộn xuống.</li>
   <li><span class="num teal">2</span> Tìm thẻ <strong>"Nhập Kho"</strong> có biểu tượng kho màu xanh ngọc.</li>
   <li><span class="num teal">3</span> Nhấn nút <span class="btn-demo" style="background:#0d9488;">Truy cập →</span> bên dưới thẻ.</li>
 </ul>
@@ -576,7 +576,7 @@ style: |
   </tr>
   <tr style="background:#f0fdfa;">
     <td style="padding:8px;font-weight:700;">🔑 Xác Nhận Vị Trí</td>
-    <td style="padding:8px;">Gán kệ cho hàng đã "Tạm"</td>
+    <td style="padding:8px;">Gán kệ cho hàng đã nhập "Tạm"</td>
   </tr>
 </table>
 <div class="tip">
@@ -619,7 +619,7 @@ style: |
 <div class="left">
 <ul class="steps">
   <li><span class="num teal">1</span> Chọn <strong>"📍 Nhập + Vị Trí"</strong> và nhấn <strong>TIẾP THEO →</strong>.</li>
-  <li><span class="num teal">2</span> <strong>Nhập vị trí:</strong> Gõ <code>Code...</code> rồi nhấn <strong>TIẾP THEO →</strong>.</li>
+  <li><span class="num teal">2</span> <strong>Nhập vị trí:</strong> Gõ <code>Code vị trí...</code> rồi nhấn <strong>TIẾP THEO →</strong>.</li>
   <li><span class="num teal">3</span> Quét hoặc gõ mã: <code>Code...</code> rồi nhấn <strong>▶</strong>.</li>
   <li><span class="num teal">4</span> Hệ thống báo xác nhận đã nhập vào đúng vị trí kệ.</li>
 </ul>
@@ -641,7 +641,7 @@ style: |
 <div class="left">
 <ul class="steps">
   <li><span class="num teal">1</span> Chọn <strong>"🔑 Xác Nhận Vị Trí"</strong> và nhấn <strong>TIẾP THEO →</strong>.</li>
-  <li><span class="num teal">2</span> <strong>Chọn vị trí:</strong> Gõ kệ đích (Ví dụ: <code>Code...</code>).</li>
+  <li><span class="num teal">2</span> <strong>Chọn vị trí:</strong> Gõ kệ đích (Ví dụ: <code>Code vị trí...</code>).</li>
   <li><span class="num teal">3</span> Quét mã hàng đang ở trạng thái "Tạm": <code>Code...</code>.</li>
   <li><span class="num teal">4</span> Nhấn <strong>Hoàn thành</strong> để kết thúc.</li>
 </ul>
