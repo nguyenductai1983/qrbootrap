@@ -10,27 +10,6 @@
     <div class="row g-3">
         {{-- KHU VỰC QUÉT MÃ VẠCH / CAMERA --}}
         <div class="col-md-5">
-            <label class="small text-muted fw-bold" for="selectedProductId">Chọn Thành phẩm</label>
-            <select wire:model="selectedProductId" id="selectedProductId"
-                class="form-select form-select-sm border-secondary fw-bold text-success mb-2">
-                @foreach ($products as $product)
-                    <option value="{{ $product->id }}">{{ $product->code }} - {{ $product->name }}
-                    </option>
-                @endforeach
-            </select>
-            <label class="small text-muted fw-bold" for="selectedMachineId">
-                <i class="fa-solid fa-gears me-1"></i>Chọn Máy Thực Hiện
-            </label>
-            <select wire:model="selectedMachineId" id="selectedMachineId"
-                class="form-select form-select-sm border-primary fw-bold text-primary mb-2">
-                <option value="">-- Không chọn / Không rõ --</option>
-                @foreach ($machines as $machine)
-                    <option value="{{ $machine->id }}">
-                        [{{ $machine->code }}] {{ $machine->name }}
-                    </option>
-                @endforeach
-            </select>
-
             <label class="small text-muted fw-bold mt-2" for="printerMac">
                 <i class="fa-solid fa-print me-1"></i>Chọn Trạm In
             </label>
@@ -55,6 +34,26 @@
                     Bạn chưa được gán Trạm In. Liên hệ Admin.
                 </div>
             @endif
+            <label class="small text-muted fw-bold" for="selectedProductId">Chọn Thành phẩm</label>
+            <select wire:model="selectedProductId" id="selectedProductId"
+                class="form-select form-select-sm border-secondary fw-bold text-success mb-2">
+                @foreach ($products as $product)
+                    <option value="{{ $product->id }}">{{ $product->code }} - {{ $product->name }}
+                    </option>
+                @endforeach
+            </select>
+            <label class="small text-muted fw-bold" for="selectedMachineId">
+                <i class="fa-solid fa-gears me-1"></i>Chọn Máy Thực Hiện
+            </label>
+            <select wire:model="selectedMachineId" id="selectedMachineId"
+                class="form-select form-select-sm border-primary fw-bold text-primary mb-2">
+                <option value="">-- Không chọn / Không rõ --</option>
+                @foreach ($machines as $machine)
+                    <option value="{{ $machine->id }}">
+                        [{{ $machine->code }}] {{ $machine->name }}
+                    </option>
+                @endforeach
+            </select>
             <div class="card shadow-sm border-0">
                 <div class="card-header bg-primary text-white fw-bold">
                     <i class="fa-solid fa-barcode"></i> Quét Mã Vải
@@ -145,11 +144,27 @@
                         <div
                             class="alert alert-light border border-secondary border-dashed text-center text-muted py-5">
                             <i class="fa-solid fa-box-open fa-3x mb-3 text-light-subtle"></i>
-                            <br>Chưa có cây vải Mộc nào được quét.
+                            <br>Chưa có cây vải nào được quét.
                         </div>
                     @else
                         <h6 class="fw-bold text-secondary text-uppercase mb-3"><i
                                 class="fa-solid fa-boxes-stacked me-1"></i>Đầu Vào:</h6>
+                        <label class="small text-muted fw-bold" for="selectedOrderId">Chọn Đơn Hàng </label>
+                        <select wire:model="selectedOrderId" id="selectedOrderId"
+                            class="form-select form-select-sm border-warning fw-bold text-dark mb-2">
+                            @if (empty($availableOrders))
+                                <option value="">-- Chọn Đơn hàng --</option>
+                            @else
+                                @foreach ($availableOrders as $order)
+                                    <option value="{{ $order->id }}">
+                                        {{ $order->code }}
+                                        @if ($order->production_order_code)
+                                            [{{ $order->production_order_code }}]
+                                        @endif
+                                    </option>
+                                @endforeach
+                            @endif
+                        </select>
                         <ul class="list-group mb-4 shadow-sm">
                             @foreach ($scannedItems as $index => $item)
                                 <li class="list-group-item border-start border-4 border-primary">
@@ -173,7 +188,9 @@
                                     </div>
                                     <div class="row align-items-center p-2 rounded">
                                         <div class="col-12 col-md-12">
-                                            <label class="form-label small text-muted fw-bold">Dùng (m):</label>
+                                            <label class="form-label small text-muted fw-bold">Số mét vải dùng
+                                                (m)
+                                                :</label>
                                             <div class="input-group">
                                                 <input type="number" step="0.1" max="{{ $item['length'] }}"
                                                     data-item-id="{{ $item['id'] }}"
@@ -193,26 +210,11 @@
                                 </li>
                             @endforeach
                         </ul>
-                        <label class="small text-muted fw-bold" for="selectedOrderId">Chọn Đơn Hàng </label>
-                        <select wire:model="selectedOrderId" id="selectedOrderId"
-                            class="form-select form-select-sm border-warning fw-bold text-dark mb-2">
-                            @if (empty($availableOrders))
-                                <option value="">-- Chọn Đơn hàng --</option>
-                            @else
-                                @foreach ($availableOrders as $order)
-                                    <option value="{{ $order->id }}">
-                                        {{ $order->code }}
-                                        @if ($order->production_order_code)
-                                            [{{ $order->production_order_code }}]
-                                        @endif
-                                    </option>
-                                @endforeach
-                            @endif
-                        </select>
+
                         <div class="d-flex justify-content-between align-items-end mb-3 mt-4">
                             <h6 class="fw-bold text-success text-uppercase mb-0"><i
                                     class="fa-solid fa-check-double me-1"></i> Thành phẩm đầu ra:</h6>
-                            <span class="badge text-secondary border shadow-sm" title="Tỉ lệ: Tổng mộc / Thành phẩm">
+                            <span class="badge text-secondary border shadow-sm" title="Tỉ lệ: Tổng vải / Thành phẩm">
                                 <i class="fa-solid fa-robot text-info"></i> Tỉ lệ hao hụt: <span id="ratio-display"
                                     class="text-primary fw-bold">{{ number_format($coatingRatio ?? 1.07, 3) }}</span>
                             </span>
@@ -229,8 +231,8 @@
                                 <div class="d-flex align-items-center mb-2">
                                     <i class="fa-solid fa-scissors fa-2x me-3 text-warning"></i>
                                     <div>
-                                        <h6 class="fw-bold text-dark mb-1">Phát hiện lệch khổ Mộc!</h6>
-                                        <p class="mb-0 small text-muted">Hệ thống ghi nhận có cuộn Mộc lớn hơn khổ tối
+                                        <h6 class="fw-bold text-dark mb-1">Phát hiện lệch khổ Vải!</h6>
+                                        <p class="mb-0 small text-muted">Hệ thống ghi nhận có cuộn vải lớn hơn khổ tối
                                             thiểu ({{ $minW }}). Trong đó:</p>
                                     </div>
                                 </div>
@@ -254,7 +256,7 @@
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label small text-muted fw-bold">Tổng GSM Thành phẩm (Mộc +
+                                <label class="form-label small text-muted fw-bold">Tổng GSM Thành phẩm (Vải +
                                     Lami):</label>
                                 <div class="input-group shadow-sm">
                                     <input type="number" step="0.1" wire:model="gsmlami"
@@ -324,7 +326,7 @@
                                     <input class="form-check-input" type="checkbox" role="switch"
                                         wire:model="recoverEdgeTrim" id="switchRecover">
                                     <label class="form-check-label fw-bold text-dark" style="cursor: pointer;"
-                                        for="switchRecover">Tự động thu hồi phần biên dư (Sinh mã Mộc mới cất kho cho
+                                        for="switchRecover">Tự động thu hồi phần biên dư (Sinh mã Vải mới cất kho cho
                                         dải dư khi xén / lệch khổ)</label>
                                 </div>
                             </div>

@@ -180,7 +180,7 @@
                         <div class="card h-100 shadow-sm border-2 hover-card">
                             <div class="card-body d-flex flex-column text-center p-4">
                                 <div class="mb-3">
-                                    <div class="bg-success bg-opacity-10 text-success rounded-circle d-inline-flex p-3">
+                                    <div class="bg-danger bg-opacity-10 text-danger rounded-circle d-inline-flex p-3">
                                         <i class="fa-solid fa-layer-group fa-2x"></i>
                                     </div>
                                 </div>
@@ -189,7 +189,7 @@
                                 </p>
 
                                 <a href="{{ route('production.coating-update') }}"
-                                    class="btn btn-outline-success w-100 mt-auto stretched-link">
+                                    class="btn btn-outline-danger w-100 mt-auto stretched-link">
                                     Truy cập <i class="fas fa-arrow-right ms-1"></i>
                                 </a>
                             </div>

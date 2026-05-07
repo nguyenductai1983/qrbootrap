@@ -338,10 +338,10 @@ style: |
 <ul class="steps">
   <li><span class="num yellow">4</span> Phần <strong>"Thiết lập quét"</strong> xuất hiện ở đầu trang.</li>
   <li><span class="num yellow">5</span> Nhấn vào ô <strong>"Chọn Máy Thực Hiện"</strong> → chọn máy bạn đang sử dụng.</li>
-  <li><span class="num yellow">6</span> Ô <strong>"Gán Đơn Hàng (PO)"</strong> và <strong>"Gán Model"</strong>: có thể để mặc định hoặc chọn theo ca trưởng.</li>
-</ul>
-<div class="tip">
-💡 <strong>Thiết lập một lần mỗi ca:</strong> Hệ thống sẽ nhớ cho các lần quét tiếp theo.
+  <div class="tip">
+   Ô <strong>"Gán Đơn Hàng (PO)"</strong> và <strong>"Gán Model"</strong>: có thể để mặc định hoặc chọn theo ca trưởng.
+💡 <br>
+<strong>Thiết lập một lần mỗi ca:</strong> Hệ thống sẽ nhớ cho các lần quét tiếp theo.
 </div>
 </div>
 <div class="right">
@@ -357,11 +357,11 @@ style: |
 <div class="layout">
 <div class="left">
 <ul class="steps">
-  <li><span class="num yellow">7</span> Tại mục <strong>"QUÉT SẢN PHẨM"</strong>, nhấn <span class="btn-demo yellow">📷 BẬT CAMERA</span> hoặc nhập mã tem vào ô <strong>"NHẬP MÃ THỦ CÔNG"</strong> rồi nhấn <strong>▶</strong>.</li>
-  <li><span class="num yellow">8</span> Hệ thống tự nhận diện — hiển thị <strong>"ĐÃ XÁC NHẬN"</strong> màu xanh lá kèm thông tin: Mã Vải, Màu, Thông số.</li>
-  <li><span class="num yellow">9</span> Nhấn <span class="btn-demo yellow"> 🖨️ In Lại</span> nếu cần in lại tem.</li>
-  <li><span class="num yellow">10</span> Nhập <span class="btn-demo yellow">Số mét</span> và nhấn nút <strong>▶</strong> bên cạnh.</li>
-  <li><span class="num yellow">11</span> Ghi chú, và nhấn <span class="btn-demo yellow">Lưu thông tin </span> để hoàn thành.</li>
+  <li><span class="num yellow">6</span> Tại mục <strong>"QUÉT SẢN PHẨM"</strong>, nhấn <span class="btn-demo yellow">📷 BẬT CAMERA</span> hoặc nhập mã tem vào ô <strong>"NHẬP MÃ THỦ CÔNG"</strong> rồi nhấn <strong>▶</strong>.</li>
+  <li><span class="num yellow">7</span> Hệ thống tự nhận diện — hiển thị <strong>"ĐÃ XÁC NHẬN"</strong> màu xanh lá kèm thông tin: Mã Vải, Màu, Thông số.</li>
+  <li><span class="num yellow">8</span> Nhấn <span class="btn-demo yellow"> 🖨️ In Lại</span> nếu cần in lại tem.</li>
+  <li><span class="num yellow">9</span> Nhập <span class="btn-demo yellow">Số mét thực tế</span></li>
+  <li><span class="num yellow">10</span> Ghi chú nếu cần, và nhấn <span class="btn-demo yellow">Lưu thông tin </span> để hoàn thành.</li>
 </ul>
 <div class="ok">
 ✅ <strong>Thành công:</strong> Xuất hiện thông báo "Lưu thành công".
@@ -414,13 +414,12 @@ style: |
 <div class="left">
 <ul class="steps">
   <li><span class="num green">4</span> Phần <strong>"Thiết lập quét"</strong> xuất hiện ở trên cùng.</li>
-  <li><span class="num green">5</span> Chọn <strong>Thành phẩm</strong> ở ô đầu tiên (ví dụ: V – Vải).</li>
-  <li><span class="num green">6</span> Chọn <strong>"Máy Thực Hiện"</strong> — chọn máy tráng bạn đang dùng.</li>
-  <li><span class="num green">7</span> Chọn <strong>"Trạm In"</strong> — máy in gần khu vực của bạn.</li>
-   <li><span class="num green">8</span> Tại mục <strong>"QUÉT VẢI ĐỂ TRÁNG"</strong> → nhấn <span class="btn-demo green">📷 BẬT CAMERA</span> hoặc nhập mã thủ công.</li>
+  <li><span class="num green">5</span> Chọn <strong>"Máy Thực Hiện"</strong> — chọn máy tráng bạn đang dùng.</li>  
+   <li><span class="num green">6</span> Tại mục <strong>"QUÉT VẢI ĐỂ TRÁNG"</strong> → nhấn <span class="btn-demo green">📷 BẬT CAMERA</span> hoặc nhập mã thủ công.</li>
 </ul>
 <div class="tip">
-💡 <strong>Trạm in</strong> là máy in tem. Hỏi ca trưởng nếu không biết chọn cái nào.
+💡 <strong>Trạm in</strong> là máy in tem. Hỏi quản lý nếu có nhiều máy không biết chọn cái nào.<br>
+Chọn Thành phẩm ở ô đầu tiên (ví dụ: V – Vải).
 </div>
 </div>
 <div class="right">
@@ -435,21 +434,20 @@ style: |
 
 <div class="layout">
 <div class="left">
-<ul class="steps"> 
-  <li><span class="num green">9</span> Chọn <strong>"Đơn Hàng"</strong> sử dụng.</li>
-  <li><span class="num green">10</span> Nhập <strong>"Dài tráng TT thu được"</strong>.</li>
-  <li><span class="num green">11</span> Nhập <strong>"Tổng GSM Thành phẩm (Vải + Lami)"</strong>.</li>
-  <li><span class="num green">12</span> Chọn <strong>"Tùy chọn xử lý Khổ Màng"</strong>.</li>
-  <ul class="steps" style="margin-left: 40px;"> 
-    <li><span class="num green">.1</span>  Giữ nguyên khổ</li>
-    <li><span class="num green">.2</span>  Xén biên (Nhập khổ mới)</li>
-    <li><span class="num green">.3</span>  Chia đôi (Tạo 2 cuộn mới)</li>
-  </ul> 
-  <li><span class="num green">13</span>  Tự động thu hồi phần biên dư (Sinh mã Mộc mới cất kho cho dải dư khi xén / lệch khổ)</li>                                   
-  <li><span class="num green">14</span> Nhấn nút <span class="btn-demo green">TẠO MÃ TEM TRÁNG MỚI</span> ở dưới cùng.</li>
+<ul class="steps">  
+<li><span class="num green">7</span> Nhập <strong>"Số mét vải dùng (m):"</strong>.</li>
+  <li><span class="num green">8</span> Nhập <strong>"Dài tráng thành phẩm thu được"</strong>.</li>
+  <li><span class="num green">9</span> Nhập <strong>"Tổng GSM Thành phẩm (Vải + Lami)"</strong>.</li>
+  <li><span class="num green">10</span> Chọn <strong>"Tùy chọn xử lý Khổ Màng"</strong>.</li>
+  <ul class="steps" style="margin-left: 20px;"> 
+    Giữ nguyên khổ | Xén biên (Nhập khổ mới) | Chia đôi (Tạo 2 cuộn mới)
+    </ul> 
+  <li><span class="num green">11</span> Nhấn nút <span class="btn-demo green">TẠO MÃ TEM TRÁNG MỚI</span> ở dưới cùng.</li>
 </ul>
 <div class="tip">
-💡 Khi chọn **Chia đôi**, hệ thống sẽ tự động tạo một tem mới cho phần vải dư ra ngoài (nếu có), giúp bạn quản lý tồn kho chính xác.
+Chọn <strong>"Đơn Hàng"</strong> sử dụng tùy chọn.<br>
+💡 Khi chọn Chia đôi, hệ thống sẽ tự động tạo một tem mới cho phần vải dư ra ngoài (nếu có), giúp bạn quản lý tồn kho chính xác.<br>
+Tự động thu hồi phần biên dư (Sinh mã Mộc mới cất kho cho dải dư khi xén / lệch khổ)
 </div>
 <div class="ok">
 ✅ <strong>Thành công:</strong> Hệ thống tạo tem tráng mới và in tự động tại trạm in đã chọn.
@@ -503,10 +501,12 @@ style: |
 <ul class="steps">
   <li><span class="num blue">4</span> Tại mục "QUÉT MÃ CẬP NHẬT" → nhấn 📷 BẬT CAMERA hoặc nhập mã thủ công</li>
   <li><span class="num blue">5</span> Kiểm tra thông tin chi tiết của mã tráng.</li>
-  <li><span class="num blue">6</span> Chọn lại Đơn hàng cần cập nhật (nếu cần).</li>
-  <li><span class="num blue">7</span> Cập nhật lại <strong>GSM Thành phẩm</strong>.</li>  
-  <li><span class="num blue">8</span> Nhấn nút <span class="btn-demo blue">CẬP NHẬT</span> ở dưới cùng.</li>
+    <li><span class="num blue">6</span> Cập nhật lại <strong>GSM Thành phẩm</strong>.</li>  
+  <li><span class="num blue">7</span> Nhấn nút <span class="btn-demo blue">CẬP NHẬT</span> ở dưới cùng.</li>
 </ul>
+<div class="tip">
+💡 Chọn lại Đơn hàng cần cập nhật (nếu cần).
+</div>
 <div class="ok">
 ✅ <strong>Thành công:</strong> Thông tin số mét và GSM được cập nhật vào hệ thống.
 </div>

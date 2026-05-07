@@ -10,21 +10,6 @@
                 </div>
                 <div class="card-body py-2 ">
                     <div class="row g-2">
-                        <div class="col-12 col-lg-4">
-                            <label class="small text-muted fw-bold" for="selectedMachineId">
-                                <i class="fa-solid fa-gears me-1"></i>Chọn Máy Thực Hiện
-                            </label>
-                            <select wire:model="selectedMachineId" id="selectedMachineId"
-                                class="form-select form-select-sm border-primary fw-bold text-primary mb-2">
-                                <option value="">-- Không chọn / Không rõ --</option>
-                                @foreach ($machines as $machine)
-                                    <option value="{{ $machine->id }}">
-                                        [{{ $machine->code }}] {{ $machine->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-
-                        </div>
                         {{-- 1. Chọn Đơn Hàng --}}
                         <div class="col-6 col-lg-4">
                             <label class="small text-muted fw-bold" for="selectedOrderId">Gán Đơn Hàng (PO)</label>
@@ -49,8 +34,20 @@
                                 @endforeach
                             </select>
                         </div>
-
-
+                        <div class="col-12 col-lg-4">
+                            <label class="small text-muted fw-bold" for="selectedMachineId">
+                                <i class="fa-solid fa-gears me-1"></i>Chọn Máy Thực Hiện
+                            </label>
+                            <select wire:model="selectedMachineId" id="selectedMachineId"
+                                class="form-select form-select-sm border-primary fw-bold text-primary mb-2">
+                                <option value="">-- Không chọn / Không rõ --</option>
+                                @foreach ($machines as $machine)
+                                    <option value="{{ $machine->id }}">
+                                        [{{ $machine->code }}] {{ $machine->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
                 </div>
                 <div class="card shadow border-0">
@@ -117,7 +114,7 @@
                                         <td class="fw-bold">{{ $itemInfo->color->name ?? '-' }}</td>
                                     </tr>
                                     <tr>
-                                        <td class="text-muted small">Thông số:</td>
+                                        <td class="text-muted small">Số mét thực :</td>
                                         <td>
                                             <span class="badge bg-secondary">{{ $itemInfo->original_length ?? 0 }}
                                                 m</span>
