@@ -27,7 +27,7 @@
                                 class="btn btn-sm text-primary bg-warning fw-bold shadow-sm text-nowrap"
                                 wire:loading.attr="disabled">
                                 <span wire:loading.remove wire:target="exportExcel">
-                                    <i class="fa-solid fa-file-excel me-1 text-success"></i> Xuất Excel (kèm nguồn gốc)
+                                    <i class="fa-solid fa-file-excel me-1 text-success"></i> Xuất Excel
                                 </span>
                                 <span wire:loading wire:target="exportExcel">
                                     <i class="fa-solid fa-spinner fa-spin me-1"></i> Đang xuất...
@@ -148,7 +148,7 @@
                                 <th>Màu</th>
                                 <th>Trạng thái</th>
                                 <th>Sản xuất</th>
-                                <th> Ngày sản xuất</th>
+                                <th>Ngày</th>
                                 <th>Chiều dài (Gốc/Còn)</th>
                                 <th>Nguồn gốc (Cây Cha)</th>
                                 <th>Chi tiết (Properties)</th>

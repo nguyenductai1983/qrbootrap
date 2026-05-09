@@ -176,7 +176,7 @@ class ItemProductManager extends Component
 
         /** @var \App\Models\User $user */
         $user = Auth::user();
-        $query = Item::with(['order', 'product', 'color', 'department', 'parents'])
+        $query = Item::with(['order', 'product', 'color', 'department', 'parents', 'machine'])
             ->whereDate('created_at', '>=', $this->fromDate)
             ->whereDate('created_at', '<=', $this->toDate)
             ->when(!$user->canViewAllDepartments(), function ($q) use ($user) {
@@ -204,7 +204,7 @@ class ItemProductManager extends Component
             return;
         }
 
-        return Excel::download(new ItemsExportProduct($items), 'danh-sach-tem-' . date('Ymd_His') . '.xlsx');
+        return Excel::download(new ItemsExportProduct($items), 'SanXuat-' . date('Ymd_His') . '.xlsx');
     }
 
     public function render()
