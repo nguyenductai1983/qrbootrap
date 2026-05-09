@@ -267,7 +267,7 @@
             @endcan
         @endrole
         {{-- AI CHAT - Tất cả user --}}
-        @role('manager|admin')
+        @role('admin')
             <a href="{{ route('ai.chat') }}"
                 class="list-group-item list-group-item-action py-3 ps-4 {{ request()->routeIs('ai.chat') ? 'active' : '' }}"
                 title="Trợ lý AI">
