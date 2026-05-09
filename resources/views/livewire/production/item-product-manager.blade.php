@@ -152,6 +152,7 @@
                                 <th>Chiều dài (Gốc/Còn)</th>
                                 <th>Nguồn gốc (Cây Cha)</th>
                                 <th>Chi tiết (Properties)</th>
+                                <th>Ghi chú</th>
                                 <th>Hành động</th>
                             </tr>
                         </thead>
@@ -167,7 +168,7 @@
                                         <span
                                             class="badge bg-secondary rounded-pill">{{ $item->creator->name ?? '-' }}</span>
                                     </td>
-                                    <td data-label="Màu">{{ $item->color->name ?? '-' }}</td>
+                                    <td data-label="Màu">{{ $item->color->code ?? '-' }}</td>
                                     <td class="text-center" data-label="Trạng thái">
                                         <span class="badge {{ $item->status?->badge() ?? '' }}">
                                             {{ $item->status?->label() ?? '' }}
@@ -225,6 +226,9 @@
                                             </ul>
                                         @endif
                                     </td>
+                                    <td data-label="Ghi chú">
+                                        {{ $item->notes ?? '' }}
+                                    </td>
                                     <td class="text-center" data-label="Hành động">
                                         <button wire:click="reprintItems([{{ $item->id }}])"
                                             class="btn btn-sm btn-outline-info me-1" title="In lại tem">
@@ -249,6 +253,7 @@
                                             <i class="fa-solid fa-trash"></i>
                                         </button>
                                     </td>
+
                                 </tr>
                             @empty
                                 <tr>

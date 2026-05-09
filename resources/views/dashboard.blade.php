@@ -196,6 +196,27 @@
                         </div>
                     </div>
                 @endcan
+                @can('quality')
+                    <div class="col-md-6 col-lg-3">
+                        <div class="card h-100 shadow-sm border-2 hover-card">
+                            <div class="card-body d-flex flex-column text-center p-4">
+                                <div class="mb-3">
+                                    <div class="bg-warning bg-opacity-10 text-warning rounded-circle d-inline-flex p-3">
+                                        <i class="fa-solid fa-magnifying-glass fa-2x"></i>
+                                    </div>
+                                </div>
+                                <h5 class="card-title fw-bold">Kiểm Tra Chất Lượng</h5>
+                                <p class="card-text text-muted small mb-4">Kiểm tra chất lượng sản phẩm.
+                                </p>
+
+                                <a href="{{ route('quality.scan-production') }}"
+                                    class="btn btn-outline-warning w-100 mt-auto stretched-link">
+                                    Truy cập <i class="fas fa-arrow-right ms-1"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                @endcan
             </div>
             {{-- Nhóm Kho --}}
             @can('warehouse')

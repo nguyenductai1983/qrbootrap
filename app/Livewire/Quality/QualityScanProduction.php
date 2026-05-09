@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Production;
+namespace App\Livewire\Quality;
 
 use Livewire\Component;
 use App\Models\Item;
@@ -11,11 +11,11 @@ use App\Enums\ItemStatus;
 use App\Models\Machine;
 use Livewire\Attributes\Title;
 
-#[Title('Xác nhận Cây Vải')]
+#[Title('Xác nhận QC Vải')]
 /**
  * @method void dispatch(string $event, string $type = null, string $title = null, string $text = null)
  */
-class ScanProduct extends Component
+class QualityScanProduction extends Component
 {
     use \App\Livewire\Traits\WithReprinting;
 
@@ -35,8 +35,8 @@ class ScanProduct extends Component
     public mixed $lastScannedCode = null;
     public $scannedCodeInput = '';
 
-    // BIẾN CẬP NHẬT M
-    public mixed $editLength = null;
+    // BIẾN CẬP NHẬT GSM
+    public mixed $editGsm = null;
     public $editNotes = '';
 
     public function mount()
@@ -108,7 +108,7 @@ class ScanProduct extends Component
             // Lấy full model ra view để load được Relationship
             $this->itemInfo = Item::with(['product', 'color', 'order'])->find($item->id);
             $this->scannedItemId = $item->id;
-            $this->editLength = $item->length;
+            $this->editGsm = $item->gsm;
             $this->editNotes = '';
 
             $this->dispatch('play-warning-sound');
@@ -176,7 +176,7 @@ class ScanProduct extends Component
         // Lấy full model ra view để load được Relationship
         $this->itemInfo = Item::with(['product', 'color', 'order'])->find($item->id);
         $this->scannedItemId = $item->id; // Lấy ID để có thể bấm nút In Lại
-        $this->editLength = $item->length;
+        $this->editGsm = $item->gsm;
         $this->editNotes = '';
 
         $this->dispatch('play-success-sound');
@@ -209,12 +209,12 @@ class ScanProduct extends Component
         $this->itemInfo = [];
         $this->lastScannedCode = null;
         $this->scannedItemId = null;
-        $this->editLength = null;
+        $this->editGsm = null;
         $this->editNotes = '';
         $this->dispatch('resume-camera');
     }
 
-    public function updateLength()
+    public function updateGsm()
     {
         if (!$this->scannedItemId) {
             return;
@@ -226,26 +226,25 @@ class ScanProduct extends Component
             return;
         }
 
-        $oldLength = $item->length;
-        $newLength = (float)$this->editLength;
+        $oldGsm = $item->gsm;
+        $newGsm = (float)$this->editGsm;
 
-        // Lưu lịch sử nếu có thay đổi m
-        if ($oldLength != $newLength) {
+        // Lưu lịch sử nếu có thay đổi gsm
+        if ($oldGsm != $newGsm) {
             \App\Models\ItemHistory::create([
                 'item_id' => $item->id,
                 'user_id' => Auth::id(),
-                'field_name' => 'length',
-                'old_value' => $oldLength,
-                'new_value' => $newLength,
+                'field_name' => 'gsm',
+                'old_value' => $oldGsm,
+                'new_value' => $newGsm,
             ]);
-            $item->length = $newLength;
-            $item->original_length = $newLength;
+            $item->gsm = $newGsm;
         }
 
         // Cập nhật notes
         if (!empty($this->editNotes)) {
             $existingNotes = $item->notes;
-            $newNote = $this->editNotes;
+            $newNote = "[Cập nhật " . now()->format('d/m/Y H:i') . "]: " . $this->editNotes;
             $item->notes = $existingNotes ? $existingNotes . " | " . $newNote : $newNote;
         }
 
@@ -254,6 +253,7 @@ class ScanProduct extends Component
             // Refresh info
             $this->itemInfo = Item::with(['product', 'color', 'order'])->find($item->id);
             $this->dispatch('show-toast', ...[['type' => 'success', 'title' => 'Thành công!', 'text' => 'Đã lưu thông số.']]);
+            $this->editNotes = ''; // Reset notes sau khi lưu
         } else {
             $this->dispatch('show-toast', ...[['type' => 'info', 'title' => 'Bỏ qua', 'text' => 'Không có thay đổi nào.']]);
         }
@@ -262,6 +262,6 @@ class ScanProduct extends Component
     public function render()
     {
         $this->js("console.log('Quyét mã code')");
-        return view('livewire.production.scan-product');
+        return view('livewire.quality.scan-product');
     }
 }

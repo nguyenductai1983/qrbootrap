@@ -47,6 +47,7 @@ use App\Livewire\Warehouse\ScanToLocationClassic;
 use App\Livewire\Ai\AiChat;
 use App\Http\Controllers\AiStreamController;
 use App\Livewire\Production\CoatingUpdate;
+use App\Livewire\Quality\QualityScanProduction;
 //Role::withoutGlobalScopes()->get(); // Lấy tất cả vai trò mà không áp dụng bất kỳ global scope nào
 Route::view('/', 'welcome');
 Route::view('profile', 'profile')
@@ -148,7 +149,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/excel-manager', ExcelManager::class)->name('excel-manager');
         });
     });
-
+    Route::middleware(['permission:quality'])->group(function () {
+        Route::prefix('quality')->name('quality.')->group(function () {
+            Route::get('/scan-production', QualityScanProduction::class)->name('scan-production');
+        });
+    });
     Route::middleware(['permission:coating.scan'])->group(function () {
         Route::prefix('production')->name('production.')->group(function () {
             Route::get('/coating-confirmation', CoatingConfirmation::class)->name('coating-confirmation');

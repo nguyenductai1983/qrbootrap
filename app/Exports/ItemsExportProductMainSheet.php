@@ -91,7 +91,7 @@ class ItemsExportProductMainSheet implements FromCollection, WithHeadings, WithM
             $item->machine->name ?? '',
             $item->order->code ?? '',
             $item->product->name ?? '',
-            $item->color->name ?? '',
+            $item->color->code ?? '',
             $item->status?->label() ?? '',
             $item->original_length,
             $item->length,

@@ -111,7 +111,7 @@
                                     </tr>
                                     <tr>
                                         <td class="text-muted small">Màu:</td>
-                                        <td class="fw-bold">{{ $itemInfo->color->name ?? '-' }}</td>
+                                        <td class="fw-bold">{{ $itemInfo->color->code ?? '-' }}</td>
                                     </tr>
                                     <tr>
                                         <td class="text-muted small">Số mét thực :</td>

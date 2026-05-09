@@ -47,6 +47,7 @@
                     request()->routeIs('production.barcode-generator-excel') ||
                     request()->routeIs('production.excel-manager') ||
                     request()->routeIs('production.scan') ||
+                    request()->routeIs('production.scan-qc') ||
                     request()->routeIs('itemproducts');
             @endphp
             <div class="list-group-item py-3 ps-4 pe-2 d-flex justify-content-between align-items-center sidebar-dropdown-toggle"
@@ -114,13 +115,35 @@
                 </a>
             </div>
         @endcan
+        @can('quality')
+            <div class="list-group-item py-3 ps-4 pe-2 d-flex justify-content-between align-items-center sidebar-dropdown-toggle"
+                data-bs-toggle="collapse" href="#qualitySubmenu" role="button"
+                aria-expanded="{{ request()->routeIs('quality.*') ? 'true' : 'false' }}" aria-controls="qualitySubmenu"
+                title="Quản lý QC">
+                <div>
+                    <i class="fa-solid fa-fw fa-check-double text-warning me-2"></i> {{-- Icon QC --}}
+                    <span class="sidebar-text" title="QC">QC</span>
+                </div>
+                <i class="fas fa-fw fa-chevron-down sidebar-arrow"></i>
+            </div>
+            <div class="collapse {{ request()->routeIs('quality.*') ? 'show' : '' }}" id="qualitySubmenu"
+                data-bs-parent="#sidebar-wrapper">
+                <a href="{{ route('quality.scan-production') }}"
+                    class="list-group-item list-group-item-action py-2 ps-5  {{ request()->routeIs('quality.scan-production') ? 'active' : '' }}"
+                    title="QC Vải">
+                    <i class="fa-solid fa-fw fa-check-double text-warning me-2"></i>
+                    <span class="sidebar-text">QC Vải</span>
+                </a>
+            </div>
+        @endcan
+
         {{-- MỚI THÊM: Kho mã Code/Tem (Sử dụng chung cho các bộ phận) --}}
 
         @can('warehouse')
             <div class="list-group-item py-3 ps-4 pe-2 d-flex justify-content-between align-items-center sidebar-dropdown-toggle"
                 data-bs-toggle="collapse" href="#warehouseSubmenu" role="button"
-                aria-expanded="{{ request()->routeIs('warehouse.*') ? 'true' : 'false' }}" aria-controls="warehouseSubmenu"
-                title="Quản lý Kho">
+                aria-expanded="{{ request()->routeIs('warehouse.*') ? 'true' : 'false' }}"
+                aria-controls="warehouseSubmenu" title="Quản lý Kho">
                 <div>
                     <i class="fa-solid fa-fw fa-warehouse text-primary me-2"></i> {{-- Icon kho hàng --}}
                     <span class="sidebar-text" title="Kho">Kho</span>
