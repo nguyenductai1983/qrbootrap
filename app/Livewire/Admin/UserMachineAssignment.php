@@ -26,6 +26,17 @@ class UserMachineAssignment extends Component
 
     public function updatedSelectedUserId(mixed $userId)
     {
+        $this->loadUserMachines($userId);
+    }
+
+    public function selectUser($userId)
+    {
+        $this->selectedUserId = $userId;
+        $this->loadUserMachines($userId);
+    }
+
+    private function loadUserMachines($userId)
+    {
         if ($userId) {
             $user = User::find($userId);
             if ($user) {

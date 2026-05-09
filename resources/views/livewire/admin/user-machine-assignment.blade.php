@@ -18,12 +18,70 @@
     @endif
 
     <div class="row g-4">
+        {{-- Panel phải: Danh sách tổng quan --}}
+        <div class="col-lg-7">
+            <div class="card shadow-sm">
+                <div class="card-header fw-bold">
+                    <i class="fa-solid fa-list me-1"></i> Danh Sách Phân Công Hiện Tại
+                </div>
+                <div class="card-body">
+                    <input type="text" wire:model.live="searchTerm" class="form-control mb-3" id="assignSearch"
+                        placeholder="Tìm kiếm nhân viên...">
+
+                    <div class="table-responsive">
+                        <table class="table table-hover table-sm align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Nhân Viên</th>
+                                    <th>Bộ phận</th>
+                                    <th>Các Máy Được Giao</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse ($userList as $user)
+                                    <tr wire:click="selectUser({{ $user->id }})"
+                                        class="{{ $selectedUserId == $user->id ? 'table-warning' : '' }}"
+                                        style="cursor: pointer;" title="Nhấn để chọn nhân viên này">
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="me-2">
+                                                    @if ($selectedUserId == $user->id)
+                                                        <i class="fa-solid fa-circle-check text-success"></i>
+                                                    @else
+                                                        <i class="fa-regular fa-circle text-muted"></i>
+                                                    @endif
+                                                </div>
+                                                <span class="fw-medium">{{ $user->name }}</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="text-muted small">{{ $user->department->name ?? '-' }}</span>
+                                        </td>
+                                        <td>
+                                            @forelse ($user->machines as $machine)
+                                                <span
+                                                    class="badge bg-primary font-monospace me-1 mb-1">{{ $machine->code }}</span>
+                                            @empty
+                                                <span class="text-muted small">Chưa phân công</span>
+                                            @endforelse
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="3" class="text-center text-muted">Không tìm thấy nhân viên.</td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+
+                    {{ $userList->links() }}
+                </div>
+            </div>
+        </div>
         {{-- Panel trái: Chọn user và chọn máy --}}
         <div class="col-lg-5">
-            <div class="card shadow-sm h-100">
-                <div class="card-header bg-warning bg-opacity-25 fw-bold">
-                    <i class="fa-solid fa-sliders me-1"></i> Phân Công
-                </div>
+            <div class="card shadow-sm h-90">
                 <div class="card-body">
                     <div class="mb-3">
                         <label class="form-label fw-bold d-flex align-items-center" for="selectUser">
@@ -91,53 +149,6 @@
             </div>
         </div>
 
-        {{-- Panel phải: Danh sách tổng quan --}}
-        <div class="col-lg-7">
-            <div class="card shadow-sm">
-                <div class="card-header fw-bold">
-                    <i class="fa-solid fa-list me-1"></i> Danh Sách Phân Công Hiện Tại
-                </div>
-                <div class="card-body">
-                    <input type="text" wire:model.live="searchTerm" class="form-control mb-3" id="assignSearch"
-                        placeholder="Tìm kiếm nhân viên...">
 
-                    <div class="table-responsive">
-                        <table class="table table-hover table-sm align-middle">
-                            <thead>
-                                <tr>
-                                    <th>Nhân Viên</th>
-                                    <th>Bộ phận</th>
-                                    <th>Các Máy Được Giao</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse ($userList as $user)
-                                    <tr>
-                                        <td>{{ $user->name }}</td>
-                                        <td>
-                                            <span class="text-muted small">{{ $user->department->name ?? '-' }}</span>
-                                        </td>
-                                        <td>
-                                            @forelse ($user->machines as $machine)
-                                                <span
-                                                    class="badge bg-primary font-monospace me-1 mb-1">{{ $machine->code }}</span>
-                                            @empty
-                                                <span class="text-muted small">Chưa phân công</span>
-                                            @endforelse
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="3" class="text-center text-muted">Không tìm thấy nhân viên.</td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
-
-                    {{ $userList->links() }}
-                </div>
-            </div>
-        </div>
     </div>
 </div>
