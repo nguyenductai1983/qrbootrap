@@ -13,6 +13,7 @@ class ItemHistory extends Model
         'field_name',
         'old_value',
         'new_value',
+        'note',
     ];
 
     public function item()

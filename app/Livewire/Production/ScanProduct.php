@@ -10,6 +10,7 @@ use App\Models\Product;
 use App\Enums\ItemStatus;
 use App\Models\Machine;
 use Livewire\Attributes\Title;
+use App\Models\ItemHistory;
 
 #[Title('Xác nhận Cây Vải')]
 /**
@@ -231,12 +232,13 @@ class ScanProduct extends Component
 
         // Lưu lịch sử nếu có thay đổi m
         if ($oldLength != $newLength) {
-            \App\Models\ItemHistory::create([
+            ItemHistory::create([
                 'item_id' => $item->id,
                 'user_id' => Auth::id(),
                 'field_name' => 'length',
                 'old_value' => $oldLength,
                 'new_value' => $newLength,
+                'note' => $this->editNotes,
             ]);
             $item->length = $newLength;
             $item->original_length = $newLength;

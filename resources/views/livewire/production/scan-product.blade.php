@@ -143,14 +143,14 @@
                                 {{-- FORM CẬP NHẬT SỐ MÉT --}}
                                 <div class="border-top pt-2 mt-1">
                                     <div class="row g-2 align-items-end">
-                                        <div class="col">
+                                        <div class="col-md-12 col-lg-9">
                                             <label class="small text-muted" for="editNotes">
                                                 <i class="fa-solid fa-comment me-1"></i>Ghi chú (không bắt buộc)
                                             </label>
                                             <input type="text" wire:model="editNotes" id="editNotes"
                                                 class="form-control form-control-sm" placeholder="Lý do thay đổi...">
                                         </div>
-                                        <div class="col-auto">
+                                        <div class="col-12 col-lg-auto">
                                             <button wire:click="updateLength" wire:loading.attr="disabled"
                                                 class="btn btn-sm btn-warning fw-bold">
                                                 <span wire:loading.remove wire:target="updateLength">

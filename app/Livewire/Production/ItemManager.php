@@ -15,6 +15,7 @@ use Livewire\Attributes\Title;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ItemsExport;
+use App\Models\ItemHistory;
 
 #[Title('Danh sách mã code')]
 class ItemManager extends Component
@@ -119,12 +120,13 @@ class ItemManager extends Component
                 // Chỉ so sánh giá trị null nếu nó thực sự khác, nếu == thì không lưu (float vs string)
                 // Lưu ý so sánh weak '!='
                 if ((string)$values['old'] !== (string)$values['new']) {
-                    \App\Models\ItemHistory::create([
+                    ItemHistory::create([
                         'item_id' => $item->id,
                         'user_id' => Auth::id(),
                         'field_name' => $field,
                         'old_value' => $values['old'],
                         'new_value' => $values['new'],
+                        'note' => $this->editNotes,
                     ]);
                 }
             }

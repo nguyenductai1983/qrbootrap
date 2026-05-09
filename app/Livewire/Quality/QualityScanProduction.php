@@ -10,6 +10,7 @@ use App\Models\Product;
 use App\Enums\ItemStatus;
 use App\Models\Machine;
 use Livewire\Attributes\Title;
+use App\Models\ItemHistory;
 
 #[Title('Xác nhận QC Vải')]
 /**
@@ -101,9 +102,9 @@ class QualityScanProduction extends Component
         }
 
         // 2. Kiểm tra đã quét chưa
-        if ($item->status == ItemStatus::VERIFIED || $item->verified_at) {
+        if ($item->status == ItemStatus::IN_WAREHOUSE || $item->warehoused_at) {
             $this->scanStatus = 'warning';
-            $this->message = $code . " ⚠️ Cảnh báo: Mã này ĐÃ ĐƯỢC sử dụng.";
+            $this->message = $code . " ⚠️ Cảnh báo: Mã này ĐÃ ĐƯỢC nhập kho.";
 
             // Lấy full model ra view để load được Relationship
             $this->itemInfo = Item::with(['product', 'color', 'order'])->find($item->id);
@@ -231,12 +232,13 @@ class QualityScanProduction extends Component
 
         // Lưu lịch sử nếu có thay đổi gsm
         if ($oldGsm != $newGsm) {
-            \App\Models\ItemHistory::create([
+            ItemHistory::create([
                 'item_id' => $item->id,
                 'user_id' => Auth::id(),
                 'field_name' => 'gsm',
                 'old_value' => $oldGsm,
                 'new_value' => $newGsm,
+                'note' => $this->editNotes,
             ]);
             $item->gsm = $newGsm;
         }
