@@ -44,7 +44,6 @@
         @can('products')
             @php
                 $fabricMenuActive =
-                    request()->routeIs('items') ||
                     request()->routeIs('production.barcode-generator-excel') ||
                     request()->routeIs('production.excel-manager') ||
                     request()->routeIs('production.scan') ||
