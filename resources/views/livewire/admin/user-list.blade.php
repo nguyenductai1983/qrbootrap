@@ -89,7 +89,7 @@
             </div>
 
             <div class="mt-3">
-                {{ $users->links('pagination::bootstrap-5') }}
+                {{ $users->links() }}
             </div>
 
         </div>
