@@ -21,9 +21,6 @@
         {{-- Panel phải: Danh sách tổng quan --}}
         <div class="col-lg-7">
             <div class="card shadow-sm">
-                <div class="card-header fw-bold">
-                    <i class="fa-solid fa-list me-1"></i> Danh Sách Phân Công Hiện Tại
-                </div>
                 <div class="card-body">
                     <input type="text" wire:model.live="searchTerm" class="form-control mb-3" id="assignSearch"
                         placeholder="Tìm kiếm nhân viên...">
@@ -33,7 +30,7 @@
                             <thead>
                                 <tr>
                                     <th>Nhân Viên</th>
-                                    <th>Bộ phận</th>
+                                    <th>B.P</th>
                                     <th>Các Máy Được Giao</th>
                                 </tr>
                             </thead>
