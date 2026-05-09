@@ -180,92 +180,91 @@
                 </a>
             </div>
         @endcan
-        @role('manager|admin')
-            @can('manager')
-                {{-- MỚI: Dropdown Quản lý Dữ liệu Sản xuất (Orders & products) --}}
-                <div class="list-group-item py-3 ps-4 pe-2 d-flex justify-content-between align-items-center sidebar-dropdown-toggle"
-                    data-bs-toggle="collapse" href="#productionConfigSubmenu" role="button"
-                    aria-expanded="{{ request()->routeIs('manager.orders') || request()->routeIs('manager.products') ? 'true' : 'false' }}"
-                    aria-controls="productionConfigSubmenu" title="Quản lý Dữ liệu Sản xuất">
-                    <div>
-                        <i class="fa-solid fa-fw fa-boxes-stacked text-primary me-2"></i> {{-- Icon kho hàng/dữ liệu --}}
-                        <span class="sidebar-text" title="Dữ liệu Sản xuất">Cài đặt Sản xuất</span>
-                    </div>
-                    <i class="fas fa-fw fa-chevron-down sidebar-arrow"></i>
+
+        @can('manager')
+            {{-- MỚI: Dropdown Quản lý Dữ liệu Sản xuất (Orders & products) --}}
+            <div class="list-group-item py-3 ps-4 pe-2 d-flex justify-content-between align-items-center sidebar-dropdown-toggle"
+                data-bs-toggle="collapse" href="#productionConfigSubmenu" role="button"
+                aria-expanded="{{ request()->routeIs('manager.orders') || request()->routeIs('manager.products') ? 'true' : 'false' }}"
+                aria-controls="productionConfigSubmenu" title="Quản lý Dữ liệu Sản xuất">
+                <div>
+                    <i class="fa-solid fa-fw fa-boxes-stacked text-primary me-2"></i> {{-- Icon kho hàng/dữ liệu --}}
+                    <span class="sidebar-text" title="Dữ liệu Sản xuất">Cài đặt Sản xuất</span>
                 </div>
+                <i class="fas fa-fw fa-chevron-down sidebar-arrow"></i>
+            </div>
 
-                <div class="collapse {{ request()->routeIs('manager.*') ? 'show' : '' }}" id="productionConfigSubmenu"
-                    data-bs-parent="#sidebar-wrapper">
-                    {{-- Link Lệnh Sản Xuất --}}
-                    <a href="{{ route('manager.production-orders') }}" title="Lệnh Sản Xuất (LSX)"
-                        class="list-group-item list-group-item-action py-2 ps-5 d-flex align-items-center {{ request()->routeIs('manager.production-orders') ? 'active' : '' }}">
-                        <i class="fa-solid fa-fw fa-boxes-packing text-warning me-2"></i>
-                        <span class="sidebar-text">Lệnh Sản Xuất (LSX)</span>
-                    </a>
+            <div class="collapse {{ request()->routeIs('manager.*') ? 'show' : '' }}" id="productionConfigSubmenu"
+                data-bs-parent="#sidebar-wrapper">
+                {{-- Link Lệnh Sản Xuất --}}
+                <a href="{{ route('manager.production-orders') }}" title="Lệnh Sản Xuất (LSX)"
+                    class="list-group-item list-group-item-action py-2 ps-5 d-flex align-items-center {{ request()->routeIs('manager.production-orders') ? 'active' : '' }}">
+                    <i class="fa-solid fa-fw fa-boxes-packing text-warning me-2"></i>
+                    <span class="sidebar-text">Lệnh Sản Xuất (LSX)</span>
+                </a>
 
-                    {{-- Link Đơn Hàng --}}
-                    {{-- 🌟 THÊM d-flex align-items-center --}}
-                    <a href="{{ route('manager.orders') }}" title="Đơn hàng (PO)"
-                        class="list-group-item list-group-item-action py-2 ps-5 d-flex align-items-center {{ request()->routeIs('manager.orders') ? 'active' : '' }}">
-                        <i class="fa-solid fa-fw fa-file-invoice text-info me-2"></i> {{-- 🌟 THÊM fa-fw --}}
-                        <span class="sidebar-text">Đơn hàng (PO)</span>
-                    </a>
+                {{-- Link Đơn Hàng --}}
+                {{-- 🌟 THÊM d-flex align-items-center --}}
+                <a href="{{ route('manager.orders') }}" title="Đơn hàng (PO)"
+                    class="list-group-item list-group-item-action py-2 ps-5 d-flex align-items-center {{ request()->routeIs('manager.orders') ? 'active' : '' }}">
+                    <i class="fa-solid fa-fw fa-file-invoice text-info me-2"></i> {{-- 🌟 THÊM fa-fw --}}
+                    <span class="sidebar-text">Đơn hàng (PO)</span>
+                </a>
 
-                    {{-- Link Sản Phẩm --}}
-                    <a href="{{ route('manager.products') }}" title="Sản phẩm"
-                        class="list-group-item list-group-item-action py-2 ps-5 d-flex align-items-center {{ request()->routeIs('manager.products') ? 'active' : '' }}">
-                        <i class="fa-brands fa-fw fa-product-hunt text-primary me-2"></i>
-                        <span class="sidebar-text">Sản phẩm</span>
-                    </a>
-                    <a href="{{ route('manager.item-types') }}" title="Loại tem (Prefix)"
-                        class="list-group-item list-group-item-action py-2 ps-5 d-flex align-items-center {{ request()->routeIs('manager.item-types') ? 'active' : '' }}">
-                        <i class="fa-solid fa-fw fa-layer-group text-secondary me-2"></i>
-                        <span class="sidebar-text">Loại Tem (Prefix)</span>
-                    </a>
-                    <a href="{{ route('manager.categories') }}" title="Danh mục sản phẩm"
-                        class="list-group-item list-group-item-action py-2 ps-5 d-flex align-items-center {{ request()->routeIs('manager.categories') ? 'active' : '' }}">
-                        <i class="fa-solid fa-fw fa-list text-success me-2"></i>
-                        <span class="sidebar-text">Danh mục</span>
-                    </a>
-                    <a href="{{ route('manager.properties') }}" title="Thuộc tính sản phẩm"
-                        class="list-group-item list-group-item-action py-2 ps-5 d-flex align-items-center {{ request()->routeIs('manager.properties') ? 'active' : '' }}">
-                        <i class="fa-solid fa-fw fa-tags text-warning me-2"></i>
-                        <span class="sidebar-text">Thuộc Tính </span>
-                    </a>
+                {{-- Link Sản Phẩm --}}
+                <a href="{{ route('manager.products') }}" title="Sản phẩm"
+                    class="list-group-item list-group-item-action py-2 ps-5 d-flex align-items-center {{ request()->routeIs('manager.products') ? 'active' : '' }}">
+                    <i class="fa-brands fa-fw fa-product-hunt text-primary me-2"></i>
+                    <span class="sidebar-text">Sản phẩm</span>
+                </a>
+                <a href="{{ route('manager.item-types') }}" title="Loại tem (Prefix)"
+                    class="list-group-item list-group-item-action py-2 ps-5 d-flex align-items-center {{ request()->routeIs('manager.item-types') ? 'active' : '' }}">
+                    <i class="fa-solid fa-fw fa-layer-group text-secondary me-2"></i>
+                    <span class="sidebar-text">Loại Tem (Prefix)</span>
+                </a>
+                <a href="{{ route('manager.categories') }}" title="Danh mục sản phẩm"
+                    class="list-group-item list-group-item-action py-2 ps-5 d-flex align-items-center {{ request()->routeIs('manager.categories') ? 'active' : '' }}">
+                    <i class="fa-solid fa-fw fa-list text-success me-2"></i>
+                    <span class="sidebar-text">Danh mục</span>
+                </a>
+                <a href="{{ route('manager.properties') }}" title="Thuộc tính sản phẩm"
+                    class="list-group-item list-group-item-action py-2 ps-5 d-flex align-items-center {{ request()->routeIs('manager.properties') ? 'active' : '' }}">
+                    <i class="fa-solid fa-fw fa-tags text-warning me-2"></i>
+                    <span class="sidebar-text">Thuộc Tính </span>
+                </a>
 
-                    <a href="{{ route('manager.machines') }}" title="Quản lý Máy Móc"
-                        class="list-group-item list-group-item-action py-2 ps-5 d-flex align-items-center {{ request()->routeIs('manager.machines') ? 'active' : '' }}">
-                        <i class="fa-solid fa-fw fa-gears text-secondary me-2"></i>
-                        <span class="sidebar-text">Máy Móc</span>
-                    </a>
-                    <a href="{{ route('manager.user-machines') }}" title="Phân Công Máy"
-                        class="list-group-item list-group-item-action py-2 ps-5 d-flex align-items-center {{ request()->routeIs('manager.user-machines') ? 'active' : '' }}">
-                        <i class="fa-solid fa-fw fa-user-gear text-primary me-2"></i>
-                        <span class="sidebar-text">Phân Công Máy</span>
-                    </a>
-                    <a href="{{ route('manager.print-stations') }}" title="Trạm In"
-                        class="list-group-item list-group-item-action py-2 ps-5 d-flex align-items-center {{ request()->routeIs('manager.print-stations') ? 'active' : '' }}">
-                        <i class="fa-solid fa-fw fa-print text-info me-2"></i>
-                        <span class="sidebar-text">Trạm In</span>
-                    </a>
-                    <a href="{{ route('manager.user-print-stations') }}" title="Phân Công Trạm In"
-                        class="list-group-item list-group-item-action py-2 ps-5 d-flex align-items-center {{ request()->routeIs('manager.user-print-stations') ? 'active' : '' }}">
-                        <i class="fa-solid fa-fw fa-user-tag text-success me-2"></i>
-                        <span class="sidebar-text">Phân Công Trạm In</span>
-                    </a>
-                    <a href="{{ route('manager.scale-stations') }}" title="Trạm Cân"
-                        class="list-group-item list-group-item-action py-2 ps-5 d-flex align-items-center {{ request()->routeIs('manager.scale-stations') ? 'active' : '' }}">
-                        <i class="fa-solid fa-fw fa-weight-scale text-warning me-2"></i>
-                        <span class="sidebar-text">Trạm Cân</span>
-                    </a>
-                    <a href="{{ route('manager.user-scale-stations') }}" title="Phân Công Trạm Cân"
-                        class="list-group-item list-group-item-action py-2 ps-5 d-flex align-items-center {{ request()->routeIs('manager.user-scale-stations') ? 'active' : '' }}">
-                        <i class="fa-solid fa-fw fa-user-check text-info me-2"></i>
-                        <span class="sidebar-text">Phân Công Trạm Cân</span>
-                    </a>
-                </div>
-            @endcan
-        @endrole
+                <a href="{{ route('manager.machines') }}" title="Quản lý Máy Móc"
+                    class="list-group-item list-group-item-action py-2 ps-5 d-flex align-items-center {{ request()->routeIs('manager.machines') ? 'active' : '' }}">
+                    <i class="fa-solid fa-fw fa-gears text-secondary me-2"></i>
+                    <span class="sidebar-text">Máy Móc</span>
+                </a>
+                <a href="{{ route('manager.user-machines') }}" title="Phân Công Máy"
+                    class="list-group-item list-group-item-action py-2 ps-5 d-flex align-items-center {{ request()->routeIs('manager.user-machines') ? 'active' : '' }}">
+                    <i class="fa-solid fa-fw fa-user-gear text-primary me-2"></i>
+                    <span class="sidebar-text">Phân Công Máy</span>
+                </a>
+                <a href="{{ route('manager.print-stations') }}" title="Trạm In"
+                    class="list-group-item list-group-item-action py-2 ps-5 d-flex align-items-center {{ request()->routeIs('manager.print-stations') ? 'active' : '' }}">
+                    <i class="fa-solid fa-fw fa-print text-info me-2"></i>
+                    <span class="sidebar-text">Trạm In</span>
+                </a>
+                <a href="{{ route('manager.user-print-stations') }}" title="Phân Công Trạm In"
+                    class="list-group-item list-group-item-action py-2 ps-5 d-flex align-items-center {{ request()->routeIs('manager.user-print-stations') ? 'active' : '' }}">
+                    <i class="fa-solid fa-fw fa-user-tag text-success me-2"></i>
+                    <span class="sidebar-text">Phân Công Trạm In</span>
+                </a>
+                <a href="{{ route('manager.scale-stations') }}" title="Trạm Cân"
+                    class="list-group-item list-group-item-action py-2 ps-5 d-flex align-items-center {{ request()->routeIs('manager.scale-stations') ? 'active' : '' }}">
+                    <i class="fa-solid fa-fw fa-weight-scale text-warning me-2"></i>
+                    <span class="sidebar-text">Trạm Cân</span>
+                </a>
+                <a href="{{ route('manager.user-scale-stations') }}" title="Phân Công Trạm Cân"
+                    class="list-group-item list-group-item-action py-2 ps-5 d-flex align-items-center {{ request()->routeIs('manager.user-scale-stations') ? 'active' : '' }}">
+                    <i class="fa-solid fa-fw fa-user-check text-info me-2"></i>
+                    <span class="sidebar-text">Phân Công Trạm Cân</span>
+                </a>
+            </div>
+        @endcan
         {{-- AI CHAT - Tất cả user --}}
         @role('admin')
             <a href="{{ route('ai.chat') }}"
