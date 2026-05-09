@@ -22,6 +22,7 @@ use App\Livewire\Production\BarcodeList;
 use App\Livewire\Admin\PropertyManager;
 use App\Livewire\Admin\ItemTypeManager;
 use App\Livewire\Production\ItemManager;
+use App\Livewire\Production\ItemProductManager;
 use App\Livewire\Admin\CategoryManager;
 use App\Livewire\Admin\MachineManager;
 use App\Livewire\Admin\UserMachineAssignment;
@@ -122,7 +123,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/items', ItemManager::class)->name('items');
         Route::get('/items/{id}/genealogy', \App\Livewire\Production\ItemGenealogyTrace::class)->name('items.genealogy');
     });
-
+    Route::middleware(['permission:products.view'])->group(function () {
+        Route::get('/itemproducts', ItemProductManager::class)->name('itemproducts');
+    });
     // ==========================================
     // 2. NHÓM PRODUCTION (Sản xuất)
     // ==========================================

@@ -47,7 +47,8 @@
                     request()->routeIs('items') ||
                     request()->routeIs('production.barcode-generator-excel') ||
                     request()->routeIs('production.excel-manager') ||
-                    request()->routeIs('production.scan');
+                    request()->routeIs('production.scan') ||
+                    request()->routeIs('itemproducts');
             @endphp
             <div class="list-group-item py-3 ps-4 pe-2 d-flex justify-content-between align-items-center sidebar-dropdown-toggle"
                 data-bs-toggle="collapse" href="#productsSubmenu" role="button"
@@ -66,8 +67,8 @@
                     <i class="fa-solid fa-fw fa-print text-info me-2"></i>
                     <span class="sidebar-text">In Tem Cây Vải</span>
                 </a>
-                <a href="{{ route('items') }}" title="Danh sách Vải"
-                    class="list-group-item list-group-item-action py-2 ps-5  {{ request()->routeIs('items') ? 'active' : '' }}">
+                <a href="{{ route('itemproducts') }}" title="Danh sách Vải"
+                    class="list-group-item list-group-item-action py-2 ps-5  {{ request()->routeIs('itemproducts') ? 'active' : '' }}">
                     <i class="fa-solid fa-fw fa-list text-success me-2"></i>
                     <span class="sidebar-text">Danh sách Vải</span>
                 </a>

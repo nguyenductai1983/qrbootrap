@@ -10,7 +10,7 @@ use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class ItemsMainSheet implements FromCollection, WithHeadings, WithMapping, ShouldAutoSize, WithStyles, WithTitle
+class ItemsExportProductMainSheet implements FromCollection, WithHeadings, WithMapping, ShouldAutoSize, WithStyles, WithTitle
 {
     /**
      * 
@@ -23,6 +23,7 @@ class ItemsMainSheet implements FromCollection, WithHeadings, WithMapping, Shoul
      * @param mixed $items 
      * @return void 
      */
+
     public function __construct($items)
     {
         $this->items = $items;
@@ -57,9 +58,10 @@ class ItemsMainSheet implements FromCollection, WithHeadings, WithMapping, Shoul
         $headings = [
             'Mã Tem (Code)',
             'Ngày tạo',
+            'Người xác nhận',
+            'Thời gian xác nhận',
             'Đơn hàng',
             'Sản phẩm',
-            'Phân xưởng',
             'Màu sắc',
             'Trạng thái',
             'Dài Gốc (m)',
@@ -83,9 +85,10 @@ class ItemsMainSheet implements FromCollection, WithHeadings, WithMapping, Shoul
         $row = [
             $item->code,
             $item->created_at ? $item->created_at->format('Y-m-d H:i:s') : '',
+            $item->verifier->username ?? '',
+            $item->verified_at ? $item->verified_at->format('Y-m-d H:i:s') : '',
             $item->order->code ?? '',
             $item->product->name ?? '',
-            $item->department->name ?? '',
             $item->color->name ?? '',
             $item->status?->label() ?? '',
             $item->original_length,

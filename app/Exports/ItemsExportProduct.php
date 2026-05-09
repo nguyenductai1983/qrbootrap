@@ -7,7 +7,7 @@ use App\Exports\ItemsMainSheet;
 use App\Exports\ItemsGenealogySheet;
 use Illuminate\Support\Collection;
 
-class ItemsExport implements WithMultipleSheets
+class ItemsExportProduct implements WithMultipleSheets
 {
     /**
      * 
@@ -22,7 +22,7 @@ class ItemsExport implements WithMultipleSheets
             $this->items = $orderId;
         } else {
             // Called from ExcelManager with IDs → query internally
-            $query = \App\Models\Item::with(['order', 'product', 'color', 'department', 'parents']);
+            $query = \App\Models\Item::with(['order', 'product', 'color', 'verifier', 'parents']);
 
             if ($orderId !== null && $orderId !== '') {
                 $query->where('order_id', $orderId);
@@ -41,8 +41,7 @@ class ItemsExport implements WithMultipleSheets
     public function sheets(): array
     {
         return [
-            new ItemsMainSheet($this->items),
-            new ItemsGenealogySheet($this->items),
+            new ItemsExportProductMainSheet($this->items),
         ];
     }
 }

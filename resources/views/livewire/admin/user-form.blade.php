@@ -68,15 +68,18 @@
 
                 <div class="mb-3 form-check">
                     <input wire:model="is_admin" type="checkbox" class="form-check-input" id="is_admin">
-                    <label class="form-check-label text-danger fw-bold" for="is_admin">{{ __('Quyền Quản Trị Hệ Thống (is_admin)') }}</label>
+                    <label class="form-check-label text-danger fw-bold"
+                        for="is_admin">{{ __('Quyền Quản Trị Hệ Thống (is_admin)') }}</label>
                     @error('is_admin')
                         <div class="text-danger mt-1 small">{{ $message }}</div>
                     @enderror
                 </div>
 
                 <div class="mb-3 form-check">
-                    <input wire:model="force_password_change" type="checkbox" class="form-check-input" id="force_password_change">
-                    <label class="form-check-label text-warning fw-bold" for="force_password_change">{{ __('Bắt buộc đổi mật khẩu ở lần đăng nhập tiếp theo') }}</label>
+                    <input wire:model="force_password_change" type="checkbox" class="form-check-input"
+                        id="force_password_change">
+                    <label class="form-check-label text-warning fw-bold"
+                        for="force_password_change">{{ __('Bắt buộc đổi mật khẩu ở lần đăng nhập tiếp theo') }}</label>
                     @error('force_password_change')
                         <div class="text-danger mt-1 small">{{ $message }}</div>
                     @enderror
@@ -131,12 +134,11 @@
                         <div class="text-danger mt-1">{{ $message }}</div>
                     @enderror
                 </div>
-
-                <div class="d-flex justify-content-end mt-4">
-                    <a href="{{ route('users.index') }}" class="btn btn-secondary me-2">
+                <div class="input-group mb-3">
+                    <a href="{{ route('users.index') }}" class="form-control btn btn-secondary me-2">
                         {{ __('Hủy') }}
                     </a>
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="form-control btn btn-primary">
                         {{ __('Lưu') }}
                     </button>
                 </div>

@@ -239,6 +239,7 @@ class ScanProduct extends Component
                 'new_value' => $newLength,
             ]);
             $item->length = $newLength;
+            $item->original_length = $newLength;
         }
 
         // Cập nhật notes
@@ -255,7 +256,7 @@ class ScanProduct extends Component
             $this->dispatch('show-toast', ...[['type' => 'success', 'title' => 'Thành công!', 'text' => 'Đã lưu thông số.']]);
             $this->editNotes = ''; // Reset notes sau khi lưu
         } else {
-             $this->dispatch('show-toast', ...[['type' => 'info', 'title' => 'Bỏ qua', 'text' => 'Không có thay đổi nào.']]);
+            $this->dispatch('show-toast', ...[['type' => 'info', 'title' => 'Bỏ qua', 'text' => 'Không có thay đổi nào.']]);
         }
     }
 
