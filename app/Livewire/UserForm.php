@@ -21,10 +21,8 @@ class UserForm extends Component
     public mixed $username = '';
     public mixed $email = '';
 
-    #[Locked]
     public mixed $password = '';
 
-    #[Locked]
     public mixed $password_confirmation = '';
     public $is_admin = false;
     public $force_password_change = true;
