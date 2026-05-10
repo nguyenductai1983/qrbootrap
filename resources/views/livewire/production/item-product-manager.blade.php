@@ -149,6 +149,7 @@
                                 <th>Trạng thái</th>
                                 <th>Sản xuất</th>
                                 <th>Ngày</th>
+                                <th>Ca</th>
                                 <th>Chiều dài (Gốc/Còn)</th>
                                 <th>Nguồn gốc (Cây Cha)</th>
                                 <th>Chi tiết (Properties)</th>
@@ -182,6 +183,9 @@
                                     </td>
                                     <td class="text-center text-wrap" data-label="Ngày sản xuất">
                                         {{ $item->verified_at?->format('d/m/Y H:i:s') }}
+                                    </td>
+                                    <td class="text-center text-wrap" data-label="Ca">
+                                        {{ $item->shift?->name ?? '-' }}
                                     </td>
                                     {{-- CỘT CHIỀU DÀI --}}
                                     <td class="text-center text-wrap" data-label="Chiều dài">
