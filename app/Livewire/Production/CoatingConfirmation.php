@@ -330,7 +330,6 @@ class CoatingConfirmation extends Component
                     'warehouse_code' => $finalCombinedWarehouseCode,
                     'status' => 1,
                     'type' => $targetType,
-                    'original_length' => $this->newLength,
                     'length' => $this->newLength,
                     'created_by' => Auth::id(),
                     'order_id'         => $this->selectedOrderId,
