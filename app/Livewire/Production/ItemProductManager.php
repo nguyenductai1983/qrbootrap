@@ -206,7 +206,7 @@ class ItemProductManager extends Component
             return;
         }
 
-        return Excel::download(new ItemsExportProduct($items), 'SanXuat-' . date('Ymd_His') . '.xlsx');
+        return Excel::download(new ItemsExportProduct($items), 'Vai-' . date('Ymd_His') . '.xlsx');
     }
 
     public function render()

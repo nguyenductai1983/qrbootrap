@@ -49,12 +49,12 @@
                                 tem:</label>
 
                             {{-- 🌟 THẺ BỌC POSITION-RELATIVE 🌟 (Bắt buộc phải có để chứa nút X và Gợi ý) --}}
-                            <div class="position-relative flex-grow-1">
+                            <div class="position-relative flex-grow-1" wire:click.away="hideSuggestions">
 
                                 {{-- Thêm pe-4 (padding-right) để chữ gõ vào không bị đè lên nút X --}}
-                                <input type="text" wire:model.live.debounce.500ms="searchCode"
+                                <input type="text" wire:model.live.debounce.500ms="searchCode" wire:focus="$set('showSuggestions', true)"
                                     class="form-control pe-4" placeholder="Nhập mã tem hoặc quét barcode..."
-                                    id="searchCode">
+                                    id="searchCode" autocomplete="off">
 
                                 {{-- Nút Reset (X) --}}
                                 @if (strlen($searchCode) > 0)

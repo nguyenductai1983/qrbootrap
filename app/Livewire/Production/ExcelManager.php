@@ -60,7 +60,7 @@ class ExcelManager extends Component
             'selectedProductId.required' => 'Vui lòng chọn Sản Phẩm để lấy mẫu dữ liệu.'
         ]);
 
-        $fileName = 'SanXuat_' . date('Ymd_His') . '.xlsx';
+        $fileName = 'VaiExelExport_' . date('Ymd_His') . '.xlsx';
 
         return Excel::download(
             new \App\Exports\ItemsTemplateExport($this->selectedOrderId, $this->selectedProductId, $this->fromDate, $this->toDate),

@@ -181,6 +181,11 @@ class ItemManager extends Component
         $this->resetPage();
     }
 
+    public function hideSuggestions()
+    {
+        $this->showSuggestions = false;
+    }
+
     public function exportExcel()
     {
         if (empty($this->fromDate) || empty($this->toDate)) {

@@ -5,6 +5,8 @@ namespace App\Imports;
 use App\Models\Item;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use App\Models\ItemHistory;
+use Illuminate\Support\Facades\Auth;
 // dùng cho Vải nhập lại đi chung với ItemsTemplateExport
 class ItemsImport implements ToModel, WithHeadingRow
 {
@@ -86,8 +88,21 @@ class ItemsImport implements ToModel, WithHeadingRow
                 }
             }
             // 4. Lưu lại thông tin
-            // Cập nhật cả properties và các trường cố định (như po) nếu có thay đổi
             $item->properties = $props;
+
+            // Ghi nhận lịch sử nếu length bị thay đổi
+            if ($item->isDirty('length')) {
+                ItemHistory::create([
+                    'item_id' => $item->id,
+                    'user_id' => Auth::id(),
+                    'field_name' => 'length',
+                    'old_value' => $item->getOriginal('length'),
+                    'new_value' => $item->length,
+                    'note' => 'Nhập lại từ file Excel',
+                ]);
+            }
+
+            // Lưu thay đổi vào CSDL
             $item->save();
         }
 
