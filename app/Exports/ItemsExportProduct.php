@@ -20,7 +20,7 @@ class ItemsExportProduct implements WithMultipleSheets
             $this->items = $orderId;
         } else {
             // Called from ExcelManager with IDs → query internally
-            $query = \App\Models\Item::with(['order', 'product', 'color', 'verifier', 'parents']);
+            $query = \App\Models\Item::with(['order', 'product', 'color', 'verifier', 'parents', 'shift']);
 
             if ($orderId !== null && $orderId !== '') {
                 $query->where('order_id', $orderId);

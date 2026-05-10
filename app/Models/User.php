@@ -25,6 +25,7 @@ class User extends Authenticatable
         'email',
         'password',
         'department_id', // <-- Thay thế 'department' bằng 'department_id'
+        'shift_id',      // <-- Thêm shift_id
         'is_admin',
         'force_password_change',
         'password_changed_at',
@@ -75,6 +76,12 @@ class User extends Authenticatable
     public function department()
     {
         return $this->belongsTo(Department::class);
+    }
+
+    // Định nghĩa mối quan hệ nhiều-một với Shift
+    public function shift()
+    {
+        return $this->belongsTo(Shift::class);
     }
 
     public function printStations()

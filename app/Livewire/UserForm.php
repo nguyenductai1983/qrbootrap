@@ -11,6 +11,7 @@ use App\Models\Department; // <-- Import Department model
 use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Role; // <-- Import Role model
 use Spatie\Permission\Models\Permission; // <-- Import Permission model
+use App\Models\Shift; // <-- Import Shift model
 use Livewire\Attributes\Title;
 
 #[Title('Quản lý Người dùng')]
@@ -28,8 +29,10 @@ class UserForm extends Component
     public $force_password_change = true;
     public mixed $role = '';
     public mixed $department_id = null; // <-- Thay đổi thành department_id
+    public mixed $shift_id = null; // <-- Thêm trường shift_id
     public $selectedRoles = []; // <-- Mảng để lưu các vai trò được chọn
     public mixed $departments = []; // <-- Biến để lưu danh sách Bộ phận
+    public mixed $shifts = []; // <-- Biến để lưu danh sách Ca làm việc
     public mixed $allRoles = []; // <-- Biến để lưu tất cả các vai trò
 
     public $selectedPermissions = []; // <-- Mảng để lưu các quyền cấp trực tiếp
@@ -37,6 +40,7 @@ class UserForm extends Component
     public function mount($userId = null)
     {
         $this->departments = Department::orderBy('name')->get();
+        $this->shifts = Shift::orderBy('name')->get(); // <-- Lấy danh sách ca làm việc
         $this->allRoles = Role::orderBy('name')->get(); // <-- Lấy tất cả vai trò
         $this->allPermissions = Permission::orderBy('name')->get(); // <-- Lấy tất cả Permission
 
@@ -49,6 +53,7 @@ class UserForm extends Component
             $this->force_password_change = (bool) $this->user->force_password_change;
             $this->role = $this->user->role; // Giữ lại nếu bạn vẫn dùng cột 'role'
             $this->department_id = $this->user->department_id;
+            $this->shift_id = $this->user->shift_id; // Lấy shift_id hiện có
             $this->selectedRoles = $this->user->roles->pluck('name')->toArray(); // <-- Lấy các vai trò hiện có
             $this->selectedPermissions = $this->user->permissions->pluck('name')->toArray(); // <-- Lấy các quyền trực tiếp hiện có
         } else {
@@ -57,6 +62,7 @@ class UserForm extends Component
             $this->force_password_change = true;
             $this->role = 'manager'; // Giá trị mặc định cho cột 'role'
             $this->department_id = null;
+            $this->shift_id = null; // Mặc định không có ca
             $this->selectedRoles = ['manager']; // Mặc định gán vai trò 'user' khi tạo mới
             $this->selectedPermissions = []; // Không gán quyền trực tiếp nào mặc định
         }
@@ -89,6 +95,7 @@ class UserForm extends Component
                 'confirmed',
             ],
             'department_id' => ['nullable', 'exists:departments,id'],
+            'shift_id' => ['nullable', 'exists:shifts,id'], // <-- Validate shift_id
             'selectedRoles' => ['nullable', 'array'],
             'selectedRoles.*' => ['exists:roles,name'], // <-- Mỗi vai trò phải tồn tại
             'selectedPermissions' => ['nullable', 'array'],
@@ -112,6 +119,7 @@ class UserForm extends Component
         $this->user->is_admin = $this->is_admin;
         $this->user->force_password_change = $this->force_password_change;
         $this->user->department_id = $this->department_id;
+        $this->user->shift_id = $this->shift_id; // Lưu shift_id
 
         if ($this->password) {
             $this->user->password = Hash::make($this->password);

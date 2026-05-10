@@ -45,11 +45,14 @@ class UserList extends Component
     public function render()
     {
         $users = User::query()
-            ->with('department', 'roles') // <-- Eager load mối quan hệ department và roles
+            ->with('department', 'roles', 'shift') // <-- Eager load mối quan hệ department, roles và shift
             ->when($this->search, function ($query) {
                 $query->where('name', 'like', '%' . $this->search . '%')
                     ->orWhere('email', 'like', '%' . $this->search . '%')
                     ->orWhereHas('department', function ($q) {
+                        $q->where('name', 'like', '%' . $this->search . '%');
+                    })
+                    ->orWhereHas('shift', function ($q) { // <-- Tìm kiếm theo ca
                         $q->where('name', 'like', '%' . $this->search . '%');
                     })
                     ->orWhereHas('roles', function ($q) { // <-- Tìm kiếm theo vai trò

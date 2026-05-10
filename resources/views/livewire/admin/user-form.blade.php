@@ -66,6 +66,20 @@
                     @enderror
                 </div>
 
+                <div class="mb-3">
+                    <label for="shift_id" class="form-label">{{ __('Ca làm việc') }}</label>
+                    <select wire:model="shift_id" id="shift_id"
+                        class="form-select @error('shift_id') is-invalid @enderror">
+                        <option value="">{{ __('Chọn Ca làm việc') }}</option>
+                        @foreach ($shifts as $shift)
+                            <option value="{{ $shift->id }}">{{ $shift->name }}</option>
+                        @endforeach
+                    </select>
+                    @error('shift_id')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
                 <div class="mb-3 form-check">
                     <input wire:model="is_admin" type="checkbox" class="form-check-input" id="is_admin">
                     <label class="form-check-label text-danger fw-bold"

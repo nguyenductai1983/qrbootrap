@@ -90,6 +90,7 @@ class ItemsExportProductMainSheet implements FromCollection, WithHeadings, WithM
             $item->verified_at ? $item->verified_at->format('d/m/Y H:i:s') : '',
             $item->machine->name ?? '',
             $item->order->code ?? '',
+            $item->shift->name ?? '',
             $item->product->name ?? '',
             $item->color->code ?? '',
             $item->status?->label() ?? '',

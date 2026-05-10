@@ -1,6 +1,6 @@
 node_modules
 vendor
-database/migrations
+database
 .vscode
 launch.json
 .env

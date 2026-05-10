@@ -47,6 +47,7 @@
                             <th scope="col">Email</th>
                             <th scope="col">{{ __('Vai trò') }}</th>
                             <th scope="col">{{ __('Bộ phận') }}</th>
+                            <th scope="col">{{ __('Ca làm việc') }}</th>
                             <th scope="col">{{ __('Hành động') }}</th>
                         </tr>
                     </thead>
@@ -62,6 +63,7 @@
                                     @endforeach
                                 </td>
                                 <td>{{ $user->department->name ?? '-' }}</td>
+                                <td>{{ $user->shift->name ?? '-' }}</td>
                                 <td>
                                     @can('users.edit')
                                         <a href="{{ route('users.edit', $user) }}" class="btn btn-sm btn-info me-2">
@@ -79,7 +81,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="text-center text-muted">
+                                <td colspan="6" class="text-center text-muted">
                                     {{ __('Không tìm thấy người dùng nào.') }}
                                 </td>
                             </tr>
