@@ -1,8 +1,10 @@
 <div class="container-fluid py-4 position-relative">
     <!-- OVERLAY LOADING TO BỰ CHỐNG CLICK NHẦM -->
-    <div wire:loading.flex class="position-absolute w-100 h-100 top-0 start-0 z-3 flex-column justify-content-center align-items-center" 
-         style="background: transparent;">
-        <div class="spinner-border text-primary" style="width: 4rem; height: 4rem; border-width: 0.35em;" role="status"></div>
+    <div wire:loading.flex
+        class="position-absolute w-100 h-100 top-0 start-0 z-3 flex-column justify-content-center align-items-center"
+        style="background: transparent;">
+        <div class="spinner-border text-primary" style="width: 4rem; height: 4rem; border-width: 0.35em;" role="status">
+        </div>
         <h4 class="mt-3 fw-bold text-primary">Đang xử lý, vui lòng đợi...</h4>
     </div>
 
@@ -43,16 +45,16 @@
                                 <td>{{ $machine->name }}</td>
                                 <td>
                                     @if ($machine->department)
-                                        <span class="badge">{{ $machine->department->name }}</span>
+                                        <span class="badge bg-primary">{{ $machine->department->name }}</span>
                                     @else
-                                        <span class="text-muted">-</span>
+                                        <span class="badge bg-danger">Không có</span>
                                     @endif
                                 </td>
                                 <td>
                                     @if ($machine->status)
                                         <span class="badge bg-success">Đang hoạt động</span>
                                     @else
-                                        <span class="badge bg-secondary">Ngừng hoạt động</span>
+                                        <span class="badge bg-danger">Ngừng hoạt động</span>
                                     @endif
                                 </td>
                                 <td class="text-end">
@@ -68,7 +70,8 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="text-center text-muted py-4">Chưa có máy nào được đăng ký.</td>
+                                <td colspan="5" class="text-center text-muted py-4">Chưa có máy nào được đăng ký.
+                                </td>
                             </tr>
                         @endforelse
                     </tbody>
