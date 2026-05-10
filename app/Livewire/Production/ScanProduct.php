@@ -244,6 +244,23 @@ class ScanProduct extends Component
             $item->original_length = $newLength;
         }
 
+        // Cập nhật Gán Đơn Hàng (PO)
+        if (!empty($this->selectedOrderId) && $item->order_id != $this->selectedOrderId) {
+            $item->order_id = $this->selectedOrderId;
+            
+            $order = $this->orders->find($this->selectedOrderId);
+            if ($order) {
+                $properties = $item->properties ?? [];
+                $properties['PO'] = $order->code;
+                $item->properties = $properties;
+            }
+        }
+
+        // Cập nhật Chọn Máy Thực Hiện
+        if (!empty($this->selectedMachineId) && $item->machine_id != $this->selectedMachineId) {
+            $item->machine_id = $this->selectedMachineId;
+        }
+
         // Cập nhật notes
         if (!empty($this->editNotes)) {
             $existingNotes = $item->notes;
