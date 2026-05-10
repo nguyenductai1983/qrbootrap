@@ -52,9 +52,9 @@
                             <div class="position-relative flex-grow-1" wire:click.away="hideSuggestions">
 
                                 {{-- Thêm pe-4 (padding-right) để chữ gõ vào không bị đè lên nút X --}}
-                                <input type="text" wire:model.live.debounce.500ms="searchCode" wire:focus="$set('showSuggestions', true)"
-                                    class="form-control pe-4" placeholder="Nhập mã tem hoặc quét barcode..."
-                                    id="searchCode" autocomplete="off">
+                                <input type="text" wire:model.live.debounce.500ms="searchCode"
+                                    wire:focus="$set('showSuggestions', true)" class="form-control pe-4"
+                                    placeholder="Nhập mã tem hoặc quét barcode..." id="searchCode" autocomplete="off">
 
                                 {{-- Nút Reset (X) --}}
                                 @if (strlen($searchCode) > 0)
@@ -99,7 +99,8 @@
                 <div class="row g-3 ">
                     <div class="col-md col-12">
                         <label class="form-label small fw-bold" for="filterProductionOrderId">Lọc theo LSX:</label>
-                        <select wire:model.live="filterProductionOrderId" class="form-select" id="filterProductionOrderId">
+                        <select wire:model.live="filterProductionOrderId" class="form-select"
+                            id="filterProductionOrderId">
                             <option value="">-- Tất cả LSX --</option>
                             @foreach ($productionOrders as $po)
                                 <option value="{{ $po->id }}">{{ $po->code }}</option>
@@ -152,7 +153,8 @@
                 @if (session()->has('message'))
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
                         <i class="fa-solid fa-circle-check me-1"></i> {{ session('message') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"
+                            aria-label="Close"></button>
                     </div>
                 @endif
 
@@ -188,7 +190,7 @@
                                         <span
                                             class="badge bg-secondary rounded-pill">{{ $item->creator->name ?? '-' }}</span>
                                     </td>
-                                    <td data-label="Màu">{{ $item->color->name ?? '-' }}</td>
+                                    <td data-label="Màu">{{ $item->color->code ?? '-' }}</td>
                                     <td class="text-center" data-label="Trạng thái">
                                         <span class="badge {{ $item->status?->badge() ?? '' }}">
                                             {{ $item->status?->label() ?? '' }}
@@ -241,8 +243,7 @@
                                         @endif
                                     </td>
                                     <td class="text-center text-muted" data-label="Vị trí">
-                                        {{-- Sắp tới: {{ $item->currentLocation->name ?? 'Chưa định vị' }} --}}
-                                        <i class="fa-solid fa-location-dot me-1"></i> N/A
+                                        {{ $item->location->code ?? '' }}
                                     </td>
                                     <td class="text-center" data-label="Hành động">
                                         <button wire:click="reprintItems([{{ $item->id }}])"
