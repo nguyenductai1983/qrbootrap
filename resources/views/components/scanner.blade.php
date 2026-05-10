@@ -30,7 +30,6 @@
     {{-- 2. GIAO DIỆN MOBILE (Nút bật camera) --}}
     <div class="d-md-none text-center mb-3">
         <div class="mobile-guide_{{ $id }} mb-3">
-            <p class="text-muted small mb-2">Sử dụng Camera điện thoại</p>
             <div class="d-grid">
                 <button type="button" class="btn btn-primary btn-lg shadow btn-start-camera-mobile"
                     onclick="startCamera('{{ $onScan }}', '{{ $id }}')">
@@ -81,9 +80,12 @@
             // ===== DỌN DẸP CAMERA KHI LIVEWIRE CHUYỂN TRANG/RENDER =====
             document.addEventListener('livewire:initialized', () => {
                 // Sử dụng Livewire Hook để bắt khi một thành phần bị xóa hoặc cập nhật DOM
-                Livewire.hook('morph.removing', ({ el }) => {
+                Livewire.hook('morph.removing', ({
+                    el
+                }) => {
                     // Tự động tắt camera nếu container của nó sắp bị xóa khỏi DOM
-                    if (el.id && el.id.includes('wrapper') && window.isCameraRunning && window.html5QrcodeScanner) {
+                    if (el.id && el.id.includes('wrapper') && window.isCameraRunning && window
+                        .html5QrcodeScanner) {
                         window.forceStopCamera();
                     }
                 });
@@ -96,8 +98,10 @@
                 Livewire.on('resume-camera', () => {
                     if (window.isCameraRunning) {
                         setTimeout(() => {
-                            document.querySelectorAll('.placeholder-icon_' + window.currentScannerId).forEach(el => el.style.display = 'none');
-                            document.querySelectorAll('.mobile-guide_' + window.currentScannerId).forEach(el => el.style.display = 'none');
+                            document.querySelectorAll('.placeholder-icon_' + window
+                                .currentScannerId).forEach(el => el.style.display = 'none');
+                            document.querySelectorAll('.mobile-guide_' + window.currentScannerId)
+                                .forEach(el => el.style.display = 'none');
                         }, 50);
                     } else if (window.currentScannerId) {
                         const input = document.getElementById('scannerInput_' + window.currentScannerId);
@@ -127,11 +131,13 @@
                 if (window.isCameraRunning && window.html5QrcodeScanner) {
                     try {
                         window.html5QrcodeScanner.stop().catch(() => {}).finally(() => {
-                            try { window.html5QrcodeScanner.clear(); } catch(e) {}
+                            try {
+                                window.html5QrcodeScanner.clear();
+                            } catch (e) {}
                             window.html5QrcodeScanner = null;
                             window.isCameraRunning = false;
                         });
-                    } catch(e) {}
+                    } catch (e) {}
                 }
             };
 
@@ -158,7 +164,9 @@
                 if (window.isCameraRunning && window.html5QrcodeScanner) {
                     window.html5QrcodeScanner.stop().catch(() => {}).finally(() => {
                         window.isCameraRunning = false;
-                        try { window.html5QrcodeScanner.clear(); } catch(e) {}
+                        try {
+                            window.html5QrcodeScanner.clear();
+                        } catch (e) {}
                         window.html5QrcodeScanner = null;
                         window.initNewHtml5Qrcode(readerId, scannerId);
                     });
@@ -181,20 +189,24 @@
                 window.html5QrcodeScanner = new Html5Qrcode(readerId);
                 const config = {
                     fps: 10,
-                    qrbox: { width: 250, height: 250 },
+                    qrbox: {
+                        width: 250,
+                        height: 250
+                    },
                     aspectRatio: 1.0
                 };
 
-                window.html5QrcodeScanner.start(
-                    { facingMode: "environment" },
+                window.html5QrcodeScanner.start({
+                        facingMode: "environment"
+                    },
                     config,
                     (decodedText) => {
                         const now = Date.now();
                         // Chặn spam mã: Nếu quét trùng mã trong vòng 2.5 giây thì bỏ qua tiếng kêu và event
                         if (window.lastScannedText === decodedText && (now - window.lastScannedTime) < 2500) {
-                            return; 
+                            return;
                         }
-                        
+
                         window.lastScannedText = decodedText;
                         window.lastScannedTime = now;
 
@@ -204,16 +216,18 @@
                                 const audioSuccess = new Audio('/audio/cartoon_boing.ogg');
                                 audioSuccess.play().catch(() => {});
 
-                                const cameraContainer = document.getElementById('camera-container-' + window.currentScannerId);
+                                const cameraContainer = document.getElementById('camera-container-' + window
+                                    .currentScannerId);
                                 if (!cameraContainer) return;
-                                
+
                                 let handled = false;
                                 let wireComponent = cameraContainer;
                                 while (wireComponent && !wireComponent.hasAttribute('wire:id')) {
                                     wireComponent = wireComponent.parentElement;
                                 }
 
-                                if (wireComponent && typeof window.Livewire !== 'undefined' && typeof window.Livewire.find === 'function') {
+                                if (wireComponent && typeof window.Livewire !== 'undefined' && typeof window
+                                    .Livewire.find === 'function') {
                                     const componentId = wireComponent.getAttribute('wire:id');
                                     const lwInstance = window.Livewire.find(componentId);
 
@@ -222,24 +236,28 @@
                                         if (typeof lwInstance[window.currentScanMethod] === 'function') {
                                             lwInstance[window.currentScanMethod](decodedText);
                                             handled = true;
-                                        } 
+                                        }
                                         // Livewire 2
                                         else if (typeof lwInstance.call === 'function') {
                                             lwInstance.call(window.currentScanMethod, decodedText);
                                             handled = true;
                                         }
                                     }
-                                } 
-                                
+                                }
+
                                 if (!handled) {
                                     // Fallback cứu hộ thông qua DOM (Bền vững nhất)
                                     console.warn("Using fallback to dispatch input event.");
-                                    const inputEl = document.getElementById('scannerInput_' + window.currentScannerId);
-                                    if(inputEl) {
+                                    const inputEl = document.getElementById('scannerInput_' + window
+                                        .currentScannerId);
+                                    if (inputEl) {
                                         inputEl.value = decodedText;
-                                        inputEl.dispatchEvent(new Event('input', {bubbles:true}));
+                                        inputEl.dispatchEvent(new Event('input', {
+                                            bubbles: true
+                                        }));
                                         setTimeout(() => {
-                                            if(inputEl.nextElementSibling) inputEl.nextElementSibling.click();
+                                            if (inputEl.nextElementSibling) inputEl
+                                                .nextElementSibling.click();
                                         }, 100);
                                     }
                                 }
@@ -262,11 +280,14 @@
 
                     const msg = err && err.message ? err.message.toLowerCase() : '';
                     if (msg.includes('permission') || msg.includes('denied') || msg.includes('notallowed')) {
-                        alert('❌ Trình duyệt bị chặn quyền Camera.\n\nVui lòng:\n1. Nhấn vào biểu tượng khoá/camera trên thanh địa chỉ\n2. Cho phép truy cập Camera\n3. Tải lại trang');
+                        alert(
+                            '❌ Trình duyệt bị chặn quyền Camera.\n\nVui lòng:\n1. Nhấn vào biểu tượng khoá/camera trên thanh địa chỉ\n2. Cho phép truy cập Camera\n3. Tải lại trang');
                     } else if (msg.includes('notfound') || msg.includes('devicenotfound')) {
                         alert('❌ Không tìm thấy Camera trên thiết bị này.');
-                    } else if (msg.includes('https') || location.protocol !== 'https:' && location.hostname !== 'localhost') {
-                        alert('❌ Camera chỉ hoạt động trên HTTPS hoặc localhost.\n\nTrang web đang dùng: ' + location.protocol + '//' + location.hostname);
+                    } else if (msg.includes('https') || location.protocol !== 'https:' && location.hostname !==
+                        'localhost') {
+                        alert('❌ Camera chỉ hoạt động trên HTTPS hoặc localhost.\n\nTrang web đang dùng: ' +
+                            location.protocol + '//' + location.hostname);
                     } else {
                         alert('❌ Không thể mở Camera: ' + (err.message || err));
                     }
@@ -276,12 +297,16 @@
             window.stopCamera = function(scannerId) {
                 if (window.html5QrcodeScanner) {
                     window.html5QrcodeScanner.stop().then(() => {
-                        try { window.html5QrcodeScanner.clear(); } catch (e) {}
+                        try {
+                            window.html5QrcodeScanner.clear();
+                        } catch (e) {}
                         window.html5QrcodeScanner = null;
                         window.isCameraRunning = false;
                         window.resetUI(scannerId);
                     }).catch(err => {
-                        try { window.html5QrcodeScanner.clear(); } catch (e) {}
+                        try {
+                            window.html5QrcodeScanner.clear();
+                        } catch (e) {}
                         window.html5QrcodeScanner = null;
                         window.isCameraRunning = false;
                         window.resetUI(scannerId);
@@ -295,8 +320,8 @@
             window.resetUI = function(scannerId) {
                 if (!scannerId) return;
                 const container = document.getElementById('camera-container-' + scannerId);
-                if(container) container.style.display = 'none';
-                
+                if (container) container.style.display = 'none';
+
                 document.querySelectorAll('.mobile-guide_' + scannerId).forEach(el => el.style.display = 'block');
                 document.querySelectorAll('.placeholder-icon_' + scannerId).forEach(el => el.style.display = 'block');
 

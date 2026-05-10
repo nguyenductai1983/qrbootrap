@@ -287,15 +287,6 @@
                 </a>
             </div>
         @endcan
-        {{-- AI CHAT - Tất cả user --}}
-        @role('admin')
-            <a href="{{ route('ai.chat') }}"
-                class="list-group-item list-group-item-action py-3 ps-4 {{ request()->routeIs('ai.chat') ? 'active' : '' }}"
-                title="Trợ lý AI">
-                <i class="fa-solid fa-fw fa-robot text-info me-2"></i>
-                <span class="sidebar-text">Trợ lý AI</span>
-            </a>
-        @endrole
         {{-- 3. NHÓM QUẢN TRỊ (ADMIN ONLY) --}}
         @role('admin')
             {{-- MỚI: --}}
@@ -335,6 +326,15 @@
                     <span class="sidebar-text">Phân quyền</span>
                 </a>
             </div>
+        @endrole
+        {{-- AI CHAT  --}}
+        @role('admin')
+            <a href="{{ route('ai.chat') }}"
+                class="list-group-item list-group-item-action py-3 ps-4 {{ request()->routeIs('ai.chat') ? 'active' : '' }}"
+                title="Trợ lý AI">
+                <i class="fa-solid fa-fw fa-robot text-info me-2"></i>
+                <span class="sidebar-text">Trợ lý AI</span>
+            </a>
         @endrole
     </div>
     <a href="#"

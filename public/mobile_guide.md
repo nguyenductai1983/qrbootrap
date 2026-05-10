@@ -218,32 +218,65 @@ style: |
 
 ---
 
+<!-- _class: split -->
+
+# 💡 Giới Thiệu
+
+
+<div class="row">
+<div class="left">
+
+### 1. Bối cảnh & Thách thức
+- 🌐 **Thị trường:** 4.0, AI, Dữ liệu số.
+- 🎯 **Khách hàng:** Đòi hỏi minh bạch, **truy xuất nguồn gốc**.
+- 🏭 **Nội bộ:** Giải quyết bài toán **sản lượng công nhân**.
+
+### 2. Quyền lợi Công nhân
+- 🛡️ **Bảo vệ quyền lợi:** Minh bạch, theo thời gian thực.
+- 💯 **Công bằng:** Rõ ràng 100%, **không lo mất sản lượng**.
+
+### 3. Ứng dụng phần mềm theo PDCA
+- 📝 **Plan (Chuẩn bị):** Thiết lập lệnh sản xuất, quy trình và định mức trên hệ thống.
+- ⚡ **Do (Thực hiện):** Công nhân thao tác số hóa, quét mã ghi nhận dữ liệu tại chuyền.
+- 🔍 **Check (Kiểm tra):** QC đối chiếu dữ liệu, phần mềm tự động cảnh báo lỗi.
+- 📈 **Act (Cải tiến):** Phân tích báo cáo từ hệ thống để tối ưu và tinh gọn sản xuất.
+
+<div class="ok">
+✅ <strong>Thông điệp:</strong> <br>
+<em>"Phần mềm sẽ công bằng cho anh chị em, đồng thời là chìa khóa chinh phục khách hàng khó tính nhất."</em>
+</div>
+
+</div>
+</div>
+
+---
+
 # Mục Lục — 4 Chức Năng Chính
 
 <div class="toc-grid">
 <div class="toc-card y">
-  <a href="#5">
+  <a href="#6">
     <div class="toc-icon">🟡</div>
     <h3>Quét Cây Vải</h3>
     <p>Xác nhận sản xuất bằng camera hoặc mã thủ công</p>
   </a>
 </div>
 <div class="toc-card g">
-  <a href="#9">
+  <a href="#10">
     <div class="toc-icon">🟢</div>
     <h3>Xác Nhận Tráng</h3>
     <p>Quét vải gốc & khai báo thành phẩm tráng mới</p>
   </a>
 </div>
 <div class="toc-card b">
-  <a href="#13">
+  <a href="#14">
     <div class="toc-icon">🔵</div>
     <h3>Cập Nhật Tráng</h3>
     <p>Quét mã tráng và nhập số mét thực tế</p>
   </a>
 </div>
 <div class="toc-card t">
-  <a href="#16">
+  <a href="#17">
     <div class="toc-icon">🏭</div>
     <h3>Nhập Kho</h3>
     <p>Chọn hình thức nhập và quét mã hàng</p>
@@ -655,6 +688,34 @@ Tự động thu hồi phần biên dư (Sinh mã Mộc mới cất kho cho dả
 </div>
 </div>
 
+
+
+---
+
+<!-- _class: split -->
+
+# 🤝 Lắng Nghe & Cải Tiến
+**Phần mềm được thiết kế để phục vụ chính công việc của anh chị!**
+
+<div class="row">
+<div class="left">
+
+### Góc trao đổi:
+- Thao tác bấm/quét mã trên điện thoại có **chậm hay khó dùng** không?
+- Chữ và nút bấm trên màn hình có bị **nhỏ quá** không?
+- Anh chị có hay bị **mất mạng, xoay vòng vòng** khi đang đứng ở chuyền không?
+- Có thao tác nào làm **mất nhiều thời gian** hơn so với ghi sổ tay cũ không?
+
+### 💡 Tinh thần hợp tác
+- **Sửa lỗi:** Hệ thống mới chắc chắn cần thời gian làm quen, mong anh chị em cứ phản hồi ngay nếu thấy vướng mắc.
+- **Làm chủ công nghệ:** Mỗi ý kiến khen/chê của anh chị đều giúp đội IT điều chỉnh app "mượt" và sát thực tế hơn.
+
+<div class="ok">
+✅ <strong>Tiếp nhận phản hồi:</strong> Mọi vướng mắc xin báo lại cho Quản đốc hoặc nhắn thẳng vào nhóm Zalo Hỗ Trợ IT!
+</div>
+
+</div>
+</div>
 
 ---
 
