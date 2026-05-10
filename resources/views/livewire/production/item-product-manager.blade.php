@@ -185,7 +185,7 @@
                                         {{ $item->verified_at?->format('d/m/Y H:i:s') }}
                                     </td>
                                     <td class="text-center text-wrap" data-label="Ca">
-                                        {{ $item->shift?->name ?? '-' }}
+                                        {{ $item->verifier?->shift?->name ?? '-' }}
                                     </td>
                                     {{-- CỘT CHIỀU DÀI --}}
                                     <td class="text-center text-wrap" data-label="Chiều dài">

@@ -178,7 +178,7 @@ class ItemProductManager extends Component
 
         /** @var \App\Models\User $user */
         $user = Auth::user();
-        $query = Item::with(['order', 'product', 'color', 'department', 'parents', 'machine', 'shift'])
+        $query = Item::with(['order', 'product', 'color', 'department', 'parents', 'machine', 'verifier.shift'])
             ->whereDate('created_at', '>=', $this->fromDate)
             ->whereDate('created_at', '<=', $this->toDate)
             ->when(!$user->canViewAllDepartments(), function ($q) use ($user) {
