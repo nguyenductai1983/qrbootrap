@@ -331,6 +331,7 @@ class CoatingConfirmation extends Component
                     'status' => 1,
                     'type' => $targetType,
                     'length' => $this->newLength,
+                    'original_length' => $this->newLength,
                     'created_by' => Auth::id(),
                     'order_id'         => $this->selectedOrderId,
                     'product_id'       => $targetProductId,
