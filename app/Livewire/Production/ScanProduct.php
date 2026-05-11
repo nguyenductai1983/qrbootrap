@@ -77,7 +77,7 @@ class ScanProduct extends Component
         $code = strtoupper(trim($code));
 
         // Debounce: Tránh quét 1 mã 2 lần liên tiếp trên Camera
-        if ($this->lastScannedCode === $code && $this->scanStatus === 'success') {
+        if ($this->lastScannedCode === $code) {
             return;
         }
 

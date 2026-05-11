@@ -114,7 +114,7 @@ class ScanToLocationClassic extends Component
     public function handleScan(string $code): void
     {
         $code = strtoupper(trim($code));
-        if ($this->lastScannedCode === $code && $this->scanStatus === 'success') {
+        if ($this->lastScannedCode === $code) {
             return;
         }
         $this->processCode($code);
