@@ -233,7 +233,7 @@
                             </td>
 
                             <td>{{ $item->order->code ?? '-' }}</td>
-                            <td>{{ $item->color->name ?? '-' }}</td>
+                            <td>{{ $item->color->code ?? '-' }}</td>
                             <td>{{ $item->product->name ?? 'N/A' }}</td>
                             <td class="small text-muted">{{ $item->created_at->format('d/m H:i') }}</td>
                         </tr>
