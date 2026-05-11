@@ -11,7 +11,7 @@ class ProductManager extends Component
 {
     use WithPagination;
 
-    public mixed $code, $name, $description, $productId;
+    public mixed $code = '', $name = '', $description = '', $productId = null;
     public $selectedDepartments = []; // Mảng chứa ID các phân xưởng được chọn
     public $departments = []; // Danh sách tất cả phân xưởng để hiển thị checkbox
 
