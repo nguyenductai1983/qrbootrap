@@ -88,10 +88,16 @@
             </div>
         @endcan
         @can('coating')
+            @php
+                $coatingMenuActive =
+                    request()->routeIs('production.coating-confirmation') ||
+                    request()->routeIs('production.coating-update') ||
+                    request()->routeIs('itemproducts');
+            @endphp
             <div class="list-group-item py-3 ps-4 pe-2 d-flex justify-content-between align-items-center sidebar-dropdown-toggle"
                 data-bs-toggle="collapse" href="#coatingSubmenu" role="button"
-                aria-expanded="{{ request()->routeIs('production.coating-*') ? 'true' : 'false' }}"
-                aria-controls="coatingSubmenu" title="Quản lý Tráng">
+                aria-expanded="{{ $coatingMenuActive ? 'true' : 'false' }}" aria-controls="coatingSubmenu"
+                title="Quản lý Tráng">
                 <div>
                     <i class="fa-solid fa-fw fa-fill-drip text-warning me-2"></i> {{-- Icon tráng --}}
                     <span class="sidebar-text" title="Tráng">Tráng ghép</span>
