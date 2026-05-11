@@ -259,6 +259,7 @@ class CoatingConfirmation extends Component
                 // CÓ LAMI: Chuyển đổi thành sản phẩm mới (Tráng ghép)
                 $selectedProduct = $this->selectedProductId ? Product::find($this->selectedProductId) : null;
                 $productCode = $selectedProduct?->code ?? '';
+                // đoạn này lấy mã sản phẩm làm mã kho
                 $productCodeWH = $productCode;
                 $targetProductId = $this->selectedProductId;
                 $targetType = 2; // 2: Tráng ghép (Sản phẩm mới)               

@@ -41,7 +41,7 @@
                                     <div class="d-flex flex-column align-items-center justify-content-center"
                                         style="height: 100%; width: 100%;">
                                         <div class="qr-container">
-                                            {!! SimpleSoftwareIO\QrCode\Facades\QrCode::size(80)->generate($item->code) !!}
+                                            {!! SimpleSoftwareIO\QrCode\Facades\QrCode::encoding('UTF-8')->size(80)->generate($item->code) !!}
                                         </div>
                                         <div class="code-text fw-bold text-center w-100 mt-1" @style(['font-size: ' . ($fontSize ?? 10) . 'px', 'letter-spacing: 0.5px', 'word-wrap: break-word', 'line-height: 1.2'])>
                                             {{ $item->code }}
