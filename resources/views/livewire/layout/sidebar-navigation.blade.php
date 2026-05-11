@@ -113,6 +113,11 @@
                     <i class="fa-solid fa-fw fa-pen-to-square text-info me-2"></i>
                     <span class="sidebar-text">Cập Nhật Tráng</span>
                 </a>
+                <a href="{{ route('itemproducts') }}" title="Danh sách Vải"
+                    class="list-group-item list-group-item-action py-2 ps-5  {{ request()->routeIs('itemproducts') ? 'active' : '' }}">
+                    <i class="fa-solid fa-fw fa-list text-success me-2"></i>
+                    <span class="sidebar-text">Danh sách Vải</span>
+                </a>
             </div>
         @endcan
         @can('quality')
