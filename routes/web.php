@@ -123,8 +123,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::middleware(['permission:items.view'])->group(function () {
         Route::get('/items', ItemManager::class)->name('items');
         Route::get('/items/{id}/genealogy', \App\Livewire\Production\ItemGenealogyTrace::class)->name('items.genealogy');
-    });
-    Route::middleware(['permission:products.view'])->group(function () {
         Route::get('/itemproducts', ItemProductManager::class)->name('itemproducts');
     });
     // ==========================================
