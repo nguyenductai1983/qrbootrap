@@ -120,7 +120,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     // Tách riêng quản lý Items để các bộ phận khác (có quyền items.view) truy cập được
-    Route::middleware(['permission:items.view'])->group(function () {
+    Route::middleware(['permission:items.list'])->group(function () {
         Route::get('/items', ItemManager::class)->name('items');
         Route::get('/items/{id}/genealogy', \App\Livewire\Production\ItemGenealogyTrace::class)->name('items.genealogy');
         Route::get('/itemproducts', ItemProductManager::class)->name('itemproducts');
