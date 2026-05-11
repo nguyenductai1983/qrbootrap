@@ -32,7 +32,7 @@
             <i class="fa-solid fa-fw fa-chart-line text-warning me-2"></i>
             <span class="sidebar-text">Biểu Đồ &amp; Báo Cáo</span>
         </a>
-        @can('items.view')
+        @can('items.list')
             <a href="{{ route('items') }}"
                 class="list-group-item list-group-item-action py-3 ps-4 {{ request()->routeIs('items') ? 'active' : '' }}"
                 title="Kho Mã Tem">
