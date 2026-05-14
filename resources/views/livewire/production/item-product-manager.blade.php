@@ -9,17 +9,15 @@
                     <div class="col-6 col-md-auto">
                         {{-- <div class="d-flex flex-column flex-sm-row align-items-stretch gap-2"> --}}
                         <div class="input-group input-group-sm">
-                            <span class="input-group-textfw-bold border-0">Từ ngày</span>
+                            <span class="input-group-textfw-bold border-0 me-1">Từ ngày</span>
                             <input type="date" wire:model.live="fromDate" class="form-control border-0">
                         </div>
                     </div>
                     <div class="col-6 col-md-auto">
                         <div class="input-group input-group-sm">
-                            <span class="input-group-textfw-bold border-0">Đến ngày</span>
+                            <span class="input-group-textfw-bold border-0 me-1">Đến ngày</span>
                             <input type="date" wire:model.live="toDate" class="form-control border-0">
                         </div>
-
-                        {{-- </div> --}}
                     </div>
                     <div class="col-12 col-md-auto">
                         <div class="d-flex flex-column flex-sm-row align-items-stretch gap-2">

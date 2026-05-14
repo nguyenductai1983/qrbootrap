@@ -722,7 +722,7 @@ Tự động thu hồi phần biên dư (Sinh mã Mộc mới cất kho cho dả
 <!-- _class: end -->
 
 # 🙏 Hoàn Thành!
-
+**Trao đổi hỏi đáp ghi nhận ý kiến đóng góp**
 **Chúc bạn thao tác thuận lợi.**
 
 <br>
