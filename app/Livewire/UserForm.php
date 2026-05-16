@@ -97,15 +97,17 @@ class UserForm extends Component
             'department_id' => ['nullable', 'exists:departments,id'],
             'shift_id' => ['nullable', 'exists:shifts,id'], // <-- Validate shift_id
             'selectedRoles' => ['nullable', 'array'],
-            'selectedRoles.*' => ['exists:roles,name'], // <-- Mỗi vai trò phải tồn tại
             'selectedPermissions' => ['nullable', 'array'],
-            'selectedPermissions.*' => ['exists:permissions,name'], // <-- Mỗi quyền phải tồn tại
         ];
     }
 
     public function saveUser()
     {
         $this->validate();
+
+        // Lọc các giá trị hợp lệ (loại bỏ null, false, chuỗi rỗng)
+        $this->selectedRoles = array_values(array_filter((array) $this->selectedRoles, fn($v) => is_string($v) && $v !== ''));
+        $this->selectedPermissions = array_values(array_filter((array) $this->selectedPermissions, fn($v) => is_string($v) && $v !== ''));
 
         // Không cho phép người dùng tự gỡ vai trò admin của chính mình
         if ($this->user->id === Auth::id() && !in_array('admin', $this->selectedRoles) && $this->user->hasRole('admin')) {
