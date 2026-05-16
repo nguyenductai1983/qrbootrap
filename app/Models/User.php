@@ -57,6 +57,15 @@ class User extends Authenticatable
         ];
     }
 
+    /**
+     * Ép Spatie Permission luôn dùng guard 'web'
+     * (tránh bị Sanctum override khi user mới chưa lưu)
+     */
+    public function guardName(): string
+    {
+        return 'web';
+    }
+
     public function isAdmin()
     {
         return $this->is_admin || $this->hasRole('admin'); // Kiểm tra boolean cứng HOẶC vai trò 'admin' bằng Spatie
