@@ -76,6 +76,9 @@
             window.currentScannerId = '';
             window.lastScannedText = '';
             window.lastScannedTime = 0;
+            if (!window.scannerAudio) {
+                window.scannerAudio = new Audio('/audio/cartoon_boing.ogg');
+            }
 
             // ===== DỌN DẸP CAMERA KHI LIVEWIRE CHUYỂN TRANG/RENDER =====
             document.addEventListener('livewire:initialized', () => {
@@ -213,8 +216,11 @@
                         // Thêm Timeout và Try/Catch để ngăn lỗi Livewire làm crash đứng khung hình Camera
                         setTimeout(() => {
                             try {
-                                const audioSuccess = new Audio('/audio/cartoon_boing.ogg');
-                                audioSuccess.play().catch(() => {});
+                                if (window.scannerAudio) {
+                                    window.scannerAudio.pause();
+                                    window.scannerAudio.currentTime = 0;
+                                    window.scannerAudio.play().catch(() => {});
+                                }
 
                                 const cameraContainer = document.getElementById('camera-container-' + window
                                     .currentScannerId);
