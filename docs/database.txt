@@ -1,5 +1,7 @@
 composer require --dev "kitloong/laravel-migrations-generator"
 php artisan migrate:generate
 php artisan schema:dump --prune
-
+php artisan migrate
 php artisan make:migration add_shift_id_to_users_table --table=users
+
+php artisan make:migration create_item_photos_table --path=database/migrations

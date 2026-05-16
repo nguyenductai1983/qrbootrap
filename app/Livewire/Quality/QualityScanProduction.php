@@ -11,6 +11,9 @@ use App\Enums\ItemStatus;
 use App\Models\Machine;
 use Livewire\Attributes\Title;
 use App\Models\ItemHistory;
+use App\Models\ItemPhoto;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 #[Title('Xác nhận QC Vải')]
 /**
@@ -39,6 +42,9 @@ class QualityScanProduction extends Component
     // BIẾN CẬP NHẬT GSM
     public mixed $editGsm = null;
     public $editNotes = '';
+
+    // BIẾN ẢNH QC
+    public ?array $currentPhoto = null; // Thông tin ảnh hiện tại của tem đang xem
 
     public function mount()
     {
@@ -92,6 +98,7 @@ class QualityScanProduction extends Component
         $this->itemInfo = [];
         $this->scanStatus = '';
         $this->message = '';
+        $this->currentPhoto = null;
 
         // 1. Tìm tem trong DB
         $item = Item::where('code', $code)->first();
@@ -107,10 +114,11 @@ class QualityScanProduction extends Component
             $this->message = $code . " ⚠️ Cảnh báo: Mã này ĐÃ ĐƯỢC nhập kho.";
 
             // Lấy full model ra view để load được Relationship
-            $this->itemInfo = Item::with(['product', 'color', 'order'])->find($item->id);
+            $this->itemInfo = Item::with(['product', 'color', 'order', 'photo'])->find($item->id);
             $this->scannedItemId = $item->id;
             $this->editGsm = $item->gsm;
             $this->editNotes = '';
+            $this->loadCurrentPhoto($item->id);
 
             $this->dispatch('play-warning-sound');
             if ($source == 'mobile') {
@@ -175,10 +183,11 @@ class QualityScanProduction extends Component
         $this->scanStatus = 'success';
         $this->message = "✅ ĐÃ XÁC NHẬN: " . $code;
         // Lấy full model ra view để load được Relationship
-        $this->itemInfo = Item::with(['product', 'color', 'order'])->find($item->id);
+        $this->itemInfo = Item::with(['product', 'color', 'order', 'photo'])->find($item->id);
         $this->scannedItemId = $item->id; // Lấy ID để có thể bấm nút In Lại
         $this->editGsm = $item->gsm;
         $this->editNotes = '';
+        $this->loadCurrentPhoto($item->id);
 
         $this->dispatch('play-success-sound');
 
@@ -212,6 +221,7 @@ class QualityScanProduction extends Component
         $this->scannedItemId = null;
         $this->editGsm = null;
         $this->editNotes = '';
+        $this->currentPhoto = null;
         $this->dispatch('resume-camera');
     }
 
@@ -258,6 +268,93 @@ class QualityScanProduction extends Component
             $this->editNotes = ''; // Reset notes sau khi lưu
         } else {
             $this->dispatch('show-toast', ...[['type' => 'info', 'title' => 'Bỏ qua', 'text' => 'Không có thay đổi nào.']]);
+        }
+    }
+
+    // ========== QUẢN LÝ ẢNH QC ==========
+
+    /**
+     * Nhận ảnh base64 từ JS, resize, lưu vào storage
+     */
+    public function savePhoto(string $base64Data)
+    {
+        if (!$this->scannedItemId) {
+            $this->dispatch('show-toast', ...[['type' => 'error', 'title' => 'Lỗi!', 'text' => 'Chưa có mã vải nào được chọn.']]);
+            return;
+        }
+
+        // Decode base64
+        if (preg_match('/^data:image\/(\w+);base64,/', $base64Data, $type)) {
+            $imageData = substr($base64Data, strpos($base64Data, ',') + 1);
+            $imageData = base64_decode($imageData);
+
+            if ($imageData === false) {
+                $this->dispatch('show-toast', ...[['type' => 'error', 'title' => 'Lỗi!', 'text' => 'Ảnh không hợp lệ.']]);
+                return;
+            }
+        } else {
+            $this->dispatch('show-toast', ...[['type' => 'error', 'title' => 'Lỗi!', 'text' => 'Định dạng ảnh không hỗ trợ.']]);
+            return;
+        }
+
+        // Xóa ảnh cũ nếu có
+        $existingPhoto = ItemPhoto::where('item_id', $this->scannedItemId)->first();
+        if ($existingPhoto) {
+            $existingPhoto->delete(); // Tự động xóa file vật lý nhờ model booted()
+        }
+
+        // Tạo thư mục và tên file
+        $folder = 'item-photos/' . date('Y/m');
+        $filename = $this->scannedItemId . '_' . Str::random(8) . '.jpg';
+        $storagePath = $folder . '/' . $filename;
+
+        // Lưu file vào disk public
+        Storage::disk('public')->put($storagePath, $imageData);
+
+        // Tạo record DB
+        $photo = ItemPhoto::create([
+            'item_id'  => $this->scannedItemId,
+            'user_id'  => Auth::id(),
+            'path'     => $storagePath,
+            'disk'     => 'public',
+            'size'     => strlen($imageData),
+        ]);
+
+        $this->loadCurrentPhoto($this->scannedItemId);
+        $this->dispatch('show-toast', ...[['type' => 'success', 'title' => 'Đã lưu ảnh!', 'text' => 'Ảnh phiếu vải đã được lưu thành công.']]);
+    }
+
+    /**
+     * Xóa ảnh hiện tại của item đang xem
+     */
+    public function deletePhoto()
+    {
+        if (!$this->scannedItemId) return;
+
+        $photo = ItemPhoto::where('item_id', $this->scannedItemId)->first();
+        if ($photo) {
+            $photo->delete();
+            $this->currentPhoto = null;
+            $this->dispatch('show-toast', ...[['type' => 'info', 'title' => 'Đã xóa ảnh', 'text' => 'Bạn có thể chụp lại ảnh mới.']]);
+        }
+    }
+
+    /**
+     * Load ảnh hiện tại của item vào state
+     */
+    private function loadCurrentPhoto(int $itemId): void
+    {
+        $photo = ItemPhoto::where('item_id', $itemId)->latest()->first();
+        if ($photo) {
+            /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
+            $disk = Storage::disk($photo->disk);
+            $this->currentPhoto = [
+                'id'  => $photo->id,
+                'url' => $disk->url($photo->path),
+                'created_at' => $photo->created_at->format('d/m/Y H:i'),
+            ];
+        } else {
+            $this->currentPhoto = null;
         }
     }
 

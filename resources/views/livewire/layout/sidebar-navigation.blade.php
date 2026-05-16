@@ -88,7 +88,7 @@
                 <a href="{{ route('production.scan-history') }}"
                     class="list-group-item list-group-item-action py-2 ps-5  {{ request()->routeIs('production.scan-history') ? 'active' : '' }}"
                     title="Lịch sử quét">
-                    <i class="fa-solid fa-fw fa-barcode text-primary me-2"></i>
+                    <i class="fa-solid fa-fw fa-history text-primary me-2"></i>
                     <span class="sidebar-text">Lịch sử quét</span>
                 </a>
             </div>

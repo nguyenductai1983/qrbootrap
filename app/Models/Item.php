@@ -154,4 +154,10 @@ class Item extends Model
     {
         return $this->hasMany(ItemHistory::class)->orderBy('created_at', 'desc');
     }
+
+    // --- Ảnh phiếu vải (QC chụp) ---
+    public function photo()
+    {
+        return $this->hasOne(ItemPhoto::class)->latest();
+    }
 }
