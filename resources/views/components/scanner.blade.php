@@ -205,8 +205,9 @@
                     config,
                     (decodedText) => {
                         const now = Date.now();
-                        // Chặn spam mã: Nếu quét trùng mã trong vòng 2.5 giây thì bỏ qua tiếng kêu và event
-                        if (window.lastScannedText === decodedText && (now - window.lastScannedTime) < 2500) {
+                        // Chặn spam mã: Bỏ qua TẤT CẢ các lần quét trong vòng 1.5 giây kể từ lần quét cuối
+                        // để tránh tình trạng camera giật lag nhận sai mã liên tục làm kêu liên tục.
+                        if ((now - window.lastScannedTime) < 1500) {
                             return;
                         }
 
