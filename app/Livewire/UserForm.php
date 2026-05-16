@@ -129,11 +129,16 @@ class UserForm extends Component
 
         $this->user->save();
 
-        // Đồng bộ vai trò cho người dùng
-        $this->user->syncRoles($this->selectedRoles);
+        // Query trực tiếp Role/Permission model để tránh lỗi guard resolution khi tạo mới user
+        $roles = Role::whereIn('name', $this->selectedRoles)
+            ->where('guard_name', 'web')
+            ->get();
+        $this->user->syncRoles($roles);
 
-        // Đồng bộ quyền trực tiếp cho người dùng
-        $this->user->syncPermissions($this->selectedPermissions);
+        $permissions = Permission::whereIn('name', $this->selectedPermissions)
+            ->where('guard_name', 'web')
+            ->get();
+        $this->user->syncPermissions($permissions);
 
         $this->password = '';
         $this->password_confirmation = '';
