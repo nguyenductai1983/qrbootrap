@@ -15,6 +15,7 @@ use Spatie\Permission\Models\Role;
 use App\Livewire\Production\BarcodeGenerator;
 use App\Livewire\Production\BarcodeGeneratorExcel;
 use App\Livewire\Production\ScanProduct;
+use App\Livewire\Production\ScanHistory;
 use App\Livewire\Admin\OrderManager;
 use App\Livewire\Admin\ProductManager;
 use App\Livewire\Production\ExcelManager;
@@ -144,6 +145,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::middleware(['permission:products.scan'])->group(function () {
         Route::prefix('production')->name('production.')->group(function () {
             Route::get('/scan-mobile', ScanProduct::class)->name('scan'); // Đã gộp tiền tố URL
+            Route::get('/scan-history', ScanHistory::class)->name('scan-history');
             Route::get('/excel-manager', ExcelManager::class)->name('excel-manager');
         });
     });

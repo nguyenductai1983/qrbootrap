@@ -554,12 +554,18 @@
 
     document.addEventListener('livewire:initialized', () => {
         Livewire.on('play-success-sound', () => {
+            audioSuccess.pause();
+            audioSuccess.currentTime = 0;
             audioSuccess.play().catch(() => {});
         });
         Livewire.on('play-error-sound', () => {
+            audioError.pause();
+            audioError.currentTime = 0;
             audioError.play().catch(() => {});
         });
         Livewire.on('play-warning-sound', () => {
+            audioError.pause();
+            audioError.currentTime = 0;
             audioError.play().catch(() => {});
         });
         Livewire.on('focus-input', () => {

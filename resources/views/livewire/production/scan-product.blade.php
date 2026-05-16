@@ -4,9 +4,12 @@
 
             {{-- HEADER: CẤU HÌNH LỌC & GÁN DỮ LIỆU --}}
             <div class="card shadow-sm mb-3 border-primary">
-                <div class="card-header bg-primary text-white py-1">
+                <div class="card-header bg-primary text-white py-1 d-flex justify-content-between align-items-center">
                     <small class="fw-bold"><i class="fa-solid fa-gears me-1"></i> Thiết lập quét (Để trống = Giữ
                         nguyên)</small>
+                    <a wire:navigate href="{{ route('production.scan-history') }}" class="btn btn-sm btn-light text-primary fw-bold px-2 py-0">
+                        <i class="fa-solid fa-clock-rotate-left"></i> Lịch sử Ca
+                    </a>
                 </div>
                 <div class="card-body py-2 ">
                     <div class="row g-2">
