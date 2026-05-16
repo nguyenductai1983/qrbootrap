@@ -207,6 +207,23 @@
 
     <script>
         document.addEventListener('livewire:initialized', () => {
+            const audioSuccess = new Audio('/audio/cartoon_boing.ogg');
+            const audioError = new Audio('/audio/beep_short.ogg');
+
+            Livewire.on('play-success-sound', () => {
+                audioError.pause();
+                audioSuccess.pause();
+                audioSuccess.currentTime = 0;
+                audioSuccess.play().catch(() => {});
+            });
+            
+            Livewire.on('play-error-sound', () => {
+                audioSuccess.pause();
+                audioError.pause();
+                audioError.currentTime = 0;
+                audioError.play().catch(() => {});
+            });
+
             Livewire.on('alert', (event) => {
                 Swal.fire({
                     icon: event[0].type ?? 'info',

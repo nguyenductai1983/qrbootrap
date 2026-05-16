@@ -38,6 +38,7 @@ class CoatingUpdate extends Component
 
         if (!$item) {
             $this->dispatch('alert', ['type' => 'error', 'message' => 'Không tìm thấy mã tem này!']);
+            $this->dispatch('play-error-sound');
             return;
         }
 
@@ -49,6 +50,7 @@ class CoatingUpdate extends Component
 
         $this->selectItem($item->id);
         $this->codeInput = '';
+        $this->dispatch('play-success-sound');
     }
 
     public function selectItem(mixed $itemId)

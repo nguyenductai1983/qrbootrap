@@ -100,11 +100,13 @@ class CoatingConfirmation extends Component
 
         if (!$item) {
             $this->dispatch('alert', ['type' => 'error', 'message' => 'Không tìm thấy mã tem này!']);
+            $this->dispatch('play-error-sound');
             return;
         }
 
         if ($item->length <= 0) {
             $this->dispatch('alert', ['type' => 'error', 'message' => 'Cây vải này đã sử dụng hết (0m)!']);
+            $this->dispatch('play-error-sound');
             return;
         }
 
@@ -147,6 +149,7 @@ class CoatingConfirmation extends Component
 
             // Bắn tín hiệu để JS tự động tính lại số mét Thành phẩm
             $this->dispatch('update-calculations');
+            $this->dispatch('play-success-sound');
         }
     }
 
