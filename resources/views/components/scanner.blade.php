@@ -76,9 +76,6 @@
             window.currentScannerId = '';
             window.lastScannedText = '';
             window.lastScannedTime = 0;
-            if (!window.scannerAudio) {
-                window.scannerAudio = new Audio('/audio/cartoon_boing.ogg');
-            }
 
             // ===== DỌN DẸP CAMERA KHI LIVEWIRE CHUYỂN TRANG/RENDER =====
             document.addEventListener('livewire:initialized', () => {
@@ -205,9 +202,8 @@
                     config,
                     (decodedText) => {
                         const now = Date.now();
-                        // Chặn spam mã: Bỏ qua TẤT CẢ các lần quét trong vòng 1.5 giây kể từ lần quét cuối
-                        // để tránh tình trạng camera giật lag nhận sai mã liên tục làm kêu liên tục.
-                        if ((now - window.lastScannedTime) < 1500) {
+                        // Chặn spam mã: Bỏ qua TẤT CẢ các lần quét trong vòng 2.5 giây kể từ lần quét cuối
+                        if ((now - window.lastScannedTime) < 2500) {
                             return;
                         }
 
@@ -217,11 +213,6 @@
                         // Thêm Timeout và Try/Catch để ngăn lỗi Livewire làm crash đứng khung hình Camera
                         setTimeout(() => {
                             try {
-                                if (window.scannerAudio) {
-                                    window.scannerAudio.pause();
-                                    window.scannerAudio.currentTime = 0;
-                                    window.scannerAudio.play().catch(() => {});
-                                }
 
                                 const cameraContainer = document.getElementById('camera-container-' + window
                                     .currentScannerId);

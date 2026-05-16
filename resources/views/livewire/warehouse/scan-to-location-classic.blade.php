@@ -414,16 +414,19 @@
 
     document.addEventListener('livewire:initialized', () => {
         Livewire.on('play-success-sound', () => {
+            audioError.pause();
             audioSuccess.pause();
             audioSuccess.currentTime = 0;
             audioSuccess.play().catch(() => {});
         });
         Livewire.on('play-error-sound', () => {
+            audioSuccess.pause();
             audioError.pause();
             audioError.currentTime = 0;
             audioError.play().catch(() => {});
         });
         Livewire.on('play-warning-sound', () => {
+            audioSuccess.pause();
             audioError.pause();
             audioError.currentTime = 0;
             audioError.play().catch(() => {});
