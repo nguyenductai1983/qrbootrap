@@ -14,6 +14,9 @@ use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ItemsExportProduct;
 use App\Models\ItemHistory;
+use App\Models\ItemPhoto;
+use Illuminate\Filesystem\FilesystemAdapter;
+use Illuminate\Support\Facades\Storage;
 
 #[Title('Danh sách mã code')]
 class ItemProductManager extends Component
@@ -43,6 +46,11 @@ class ItemProductManager extends Component
     public $editNotes = '';
     public $historyItemCode = '';
     public $itemHistories = [];
+
+    // BIẾN XEM ẢNH QC
+    public mixed $viewPhotoItemCode = null;
+    public ?array $viewPhotoData = null; // ['url' => ..., 'created_at' => ...]
+
     public function mount()
     {
         // Mặc định xuất 30 ngày gần đây
@@ -146,6 +154,26 @@ class ItemProductManager extends Component
         }
     }
 
+    public function viewPhoto(mixed $id)
+    {
+        $item = Item::with('photo')->find($id);
+        if ($item) {
+            $this->viewPhotoItemCode = $item->code;
+            if ($item->photo) {
+                /** @var FilesystemAdapter $disk */
+                $disk = Storage::disk($item->photo->disk);
+                $this->viewPhotoData = [
+                    'url'        => $disk->url($item->photo->path),
+                    'created_at' => $item->photo->created_at->format('d/m/Y H:i'),
+                    'user_name'  => $item->photo->user->name ?? 'QC',
+                ];
+            } else {
+                $this->viewPhotoData = null;
+            }
+            $this->dispatch('open-photo-modal');
+        }
+    }
+
     public function viewHistory(mixed $id)
     {
         $item = Item::with('histories.user')->find($id);
@@ -215,7 +243,7 @@ class ItemProductManager extends Component
         // Query cơ bản kèm theo Relationship để tránh N+1 Query
         /** @var \App\Models\User $user */
         $user = Auth::user();
-        $query = Item::with(['order', 'color', 'creator', 'parents'])
+        $query = Item::with(['order', 'color', 'creator', 'parents', 'photo'])
             ->when(!$user->canViewAllDepartments(), function ($q) use ($user) {
                 $q->where('department_id', $user->department_id);
             })

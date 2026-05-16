@@ -232,6 +232,12 @@
                                         {{ $item->notes ?? '' }}
                                     </td>
                                     <td class="text-center" data-label="Hành động">
+                                        {{-- Nút xem ảnh QC --}}
+                                        <button wire:click="viewPhoto({{ $item->id }})"
+                                            class="btn btn-sm {{ $item->photo ? 'btn-success' : 'btn-outline-secondary' }} me-1"
+                                            title="{{ $item->photo ? 'Xem ảnh phiếu vải QC' : 'Chưa có ảnh QC' }}">
+                                            <i class="fa-solid fa-camera"></i>
+                                        </button>
                                         <button wire:click="reprintItems([{{ $item->id }}])"
                                             class="btn btn-sm btn-outline-info me-1" title="In lại tem">
                                             <i class="fa-solid fa-print"></i>
@@ -352,6 +358,47 @@
         </div>
     </div>
 
+    {{-- MODAL XEM ẢNH QC --}}
+    <div wire:ignore.self class="modal fade" id="photoModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-dark text-white">
+                    <h5 class="modal-title fw-bold">
+                        <i class="fa-solid fa-camera me-2"></i>
+                        Ảnh phiếu vải QC: <span class="text-warning">{{ $viewPhotoItemCode }}</span>
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center p-3">
+                    @if ($viewPhotoData)
+                        <img src="{{ $viewPhotoData['url'] }}"
+                            alt="Ảnh phiếu vải"
+                            class="img-fluid rounded shadow"
+                            style="max-height: 70vh; object-fit: contain; cursor: zoom-in;"
+                            onclick="window.open('{{ $viewPhotoData['url'] }}', '_blank')">
+                        <div class="mt-2 text-muted small">
+                            <i class="fa-solid fa-user me-1"></i>{{ $viewPhotoData['user_name'] }}
+                            &nbsp;&middot;&nbsp;
+                            <i class="fa-solid fa-clock me-1"></i>{{ $viewPhotoData['created_at'] }}
+                            <div class="mt-1 text-info small">
+                                <i class="fa-solid fa-up-right-from-square me-1"></i>
+                                Click vào ảnh để mở toàn màn hình
+                            </div>
+                        </div>
+                    @else
+                        <div class="py-5">
+                            <i class="fa-solid fa-camera-slash fa-3x text-muted mb-3 d-block"></i>
+                            <p class="text-muted">Cây vải này chưa có ảnh phiếu QC.</p>
+                        </div>
+                    @endif
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Dóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     {{-- MODAL LỊCH SỬ THAY ĐỔI --}}
     <div wire:ignore.self class="modal fade" id="historyModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg">
@@ -429,6 +476,12 @@
             let historyModal = new bootstrap.Modal(document.getElementById('historyModal'));
             Livewire.on('open-history-modal', () => {
                 historyModal.show();
+            });
+
+            // Modal xem ảnh QC
+            let photoModal = new bootstrap.Modal(document.getElementById('photoModal'));
+            Livewire.on('open-photo-modal', () => {
+                photoModal.show();
             });
         });
     </script>
