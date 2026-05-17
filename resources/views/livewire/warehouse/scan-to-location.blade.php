@@ -406,6 +406,22 @@
                         </div>
                     </div>
                 </div>
+
+                {{-- 📝 GHI CHÚ CẬP NHẬT CÂN (hiện khi cây đã nhập kho) --}}
+                <div class="card shadow-sm mb-3 border-0">
+                    <div class="card-body py-2 px-3">
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-text bg-light">
+                                <i class="fa-solid fa-comment text-muted me-1"></i>
+                                Ghi chú
+                            </span>
+                            <input type="text"
+                                wire:model="warehouseNote"
+                                class="form-control"
+                                placeholder="Lý do cập nhật cân (tùy chọn)...">
+                        </div>
+                    </div>
+                </div>
         </div>
 
         {{-- KHU VỰC QUÉT --}}
@@ -491,6 +507,40 @@
                             </tr>
                         </table>
                     </div>
+
+                    {{-- Nhật ký di chuyển của cây vải --}}
+                    @if ($itemInfo && $itemInfo->movements && $itemInfo->movements->isNotEmpty())
+                        <div class="mt-2">
+                            <div class="d-flex align-items-center mb-1">
+                                <i class="fa-solid fa-clock-rotate-left text-secondary me-2 small"></i>
+                                <span class="fw-bold small text-secondary">Nhật ký cây vải</span>
+                            </div>
+                            <div class="table-responsive rounded border" style="max-height: 180px; overflow-y: auto;">
+                                <table class="table table-sm table-borderless mb-0" style="font-size: 0.75rem;">
+                                    <tbody>
+                                        @foreach ($itemInfo->movements->take(8) as $mv)
+                                            <tr class="border-bottom">
+                                                <td class="py-1 ps-2 text-nowrap text-muted" style="width:70px;">
+                                                    {{ $mv->created_at->format('d/m H:i') }}
+                                                </td>
+                                                <td class="py-1">
+                                                    <span class="badge {{ $mv->action_type->badge() }}">
+                                                        {{ $mv->action_type->label() }}
+                                                    </span>
+                                                </td>
+                                                <td class="py-1 text-muted text-wrap" style="font-size:0.72rem;">
+                                                    {{ $mv->note }}
+                                                </td>
+                                                <td class="py-1 text-muted text-nowrap" style="width:60px;">
+                                                    {{ optional($mv->user)->username ?? '-' }}
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    @endif
                 @endif
             </div>
         </div>

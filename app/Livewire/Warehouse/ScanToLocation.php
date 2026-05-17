@@ -47,6 +47,7 @@ class ScanToLocation extends Component
     public mixed $scaleWeight = null;         // Trọng lượng real-time từ cân (nhận qua JS dispatch)
     public bool $scaleStable = false;   // Số cân đã ổn định chưa
     public mixed $manualWeight = null;        // Trọng lượng nhập tay (fallback khi không có WebSocket)
+    public string $warehouseNote = '';        // Ghi chú khi cập nhật cân
 
     public function mount(): void
     {
@@ -302,7 +303,7 @@ class ScanToLocation extends Component
             ]);
         }
 
-        $item->refresh()->load(['product', 'color', 'order', 'location']);
+        $item->refresh()->load(['product', 'color', 'order', 'location', 'movements.user']);
         $this->addToSession($item);
 
         $this->scanStatus = 'success';
@@ -385,7 +386,7 @@ class ScanToLocation extends Component
             ]);
         }
 
-        $item->refresh()->load(['product', 'color', 'order', 'location']);
+        $item->refresh()->load(['product', 'color', 'order', 'location', 'movements.user']);
         $this->addToSession($item);
 
         $locText = $locationId && $this->currentLocation
@@ -401,25 +402,27 @@ class ScanToLocation extends Component
         $this->dispatch('focus-input');
     }
 
-    /** XỬ LÝ CẬP NHẬT TRỌNG LƯỢNG / TÁI NHẬP DƯ */
+    /** XUẤT CẬP NHẬT TRọNG LƯỢNG (chỉ cân — không bao giờ đổi status) */
     private function handleWeightUpdate(Item $item): void
     {
         $newWeight = (float) $this->getEffectiveWeight();
 
         $service = new ItemWeightService();
-        $result = $service->updateWeight($item, $newWeight, Auth::id());
+        $result = $service->updateWeight(
+            $item,
+            $newWeight,
+            Auth::id(),
+            $this->warehouseNote,
+            forceSurplus: false   // Chỉ WEIGHT_UPDATE, không đổi status
+        );
 
-        $item->refresh()->load(['product', 'color', 'order', 'location']);
+        $item->refresh()->load(['product', 'color', 'order', 'location', 'movements.user']);
         $this->addToSession($item);
 
-        if ($result['is_surplus']) {
-            $this->scanStatus = 'success';
-            $this->message    = "♻️ TÁI NHẬP DƯ: {$item->code} | {$result['old_weight']}kg → {$result['new_weight']}kg (giảm " . round($result['old_weight'] - $result['new_weight'], 2) . "kg)";
-        } else {
-            $this->scanStatus = 'success';
-            $this->message    = "⚖️ ĐÃ CẬP NHẬT CÂN: {$item->code} | {$result['new_weight']}kg";
-        }
-        $this->itemInfo = $item;
+        $noteText = $this->warehouseNote ? " | \"{$this->warehouseNote}\"" : '';
+        $this->scanStatus = 'success';
+        $this->message    = "⚖️ ĐÃ CẬP NHẬT CÂN: {$item->code} | {$result['old_weight']}kg → {$result['new_weight']}kg{$noteText}";
+        $this->itemInfo   = $item;
         $this->dispatch('play-success-sound');
         $this->dispatch('focus-input');
     }

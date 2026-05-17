@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Enums\ItemStatus;
+use App\Models\ItemMovement;
 
 class Item extends Model
 {
@@ -160,4 +161,10 @@ class Item extends Model
     {
         return $this->hasOne(ItemPhoto::class)->latest();
     }
+
+    // --- Nhật ký di chuyển ---
+    /**
+     * 
+     * @return mixed 
+     */
 }

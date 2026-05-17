@@ -49,6 +49,7 @@ use App\Livewire\Ai\AiChat;
 use App\Http\Controllers\AiStreamController;
 use App\Livewire\Production\CoatingUpdate;
 use App\Livewire\Quality\QualityScanProduction;
+use App\Livewire\Warehouse\SurplusEntry;
 //Role::withoutGlobalScopes()->get(); // Lấy tất cả vai trò mà không áp dụng bất kỳ global scope nào
 Route::view('/', 'welcome');
 Route::view('profile', 'profile')
@@ -167,8 +168,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->prefix('warehouse')
         ->name('warehouse.')
         ->group(function () {
-            Route::get('/scan-to-location-classic', ScanToLocationClassic::class)->name('scan-to-location-classic');
             Route::get('/scan-to-location', ScanToLocation::class)->name('scan-to-location');
+            Route::get('/surplus-entry', SurplusEntry::class)->name('surplus-entry');
             Route::get('/locations', LocationManager::class)->name('locations');
             Route::get('/reports', ReportManager::class)->name('reports');
             Route::get('/scan', ScanToLocation::class)->name('scan');

@@ -130,6 +130,27 @@
                         </div>
                     </div>
                 @endcan
+                @can('products.scan')
+                    <div class="col-md-6 col-lg-3">
+                        <div class="card h-100 shadow-sm border-2 hover-card">
+                            <div class="card-body d-flex flex-column text-center p-4">
+                                <div class="mb-3">
+                                    <div class="bg-warning bg-opacity-10 rounded-circle d-inline-flex p-3">
+                                        <i class="fa-solid fa-clock-rotate-left fa-2x"></i>
+                                    </div>
+                                </div>
+                                <h5 class="card-title fw-bold">Lịch sử quét</h5>
+                                <p class="card-text text-muted small mb-4">Xem lịch sử quét cây vải.
+                                </p>
+
+                                <a href="{{ route('production.scan-history') }}"
+                                    class="btn btn-outline-warning  w-100 mt-auto stretched-link">
+                                    Truy cập <i class="fas fa-arrow-right ms-1"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                @endcan
                 {{-- Chức năng: DANH SÁCH TEM --}}
                 @can('warehouse.scan')
                     <div class="col-md-6 col-lg-3">
@@ -233,11 +254,29 @@
                                     <h6 class="fw-bold mb-0">Nhập Kho</h6>
                                     <small class="text-muted">Quét mã nhập & gán vị trí</small>
                                 </div>
-                                <a href="{{ route('warehouse.scan') }}" class="stretched-link text-success"><i
+                                <a href="{{ route('warehouse.scan-to-location') }}"
+                                    class="stretched-link text-success"><i class="fas fa-chevron-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- MỚI: Tái nhập Dư --}}
+                    <div class="col-md-6 col-lg-3">
+                        <div class="card h-100 shadow-sm border-2 border-warning hover-card">
+                            <div class="card-body p-3 d-flex align-items-center">
+                                <div class="bg-warning bg-opacity-10 text-warning p-3 rounded me-3">
+                                    <i class="fa-solid fa-recycle fa-xl"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="fw-bold mb-0">Tái nhập Dư</h6>
+                                    <small class="text-muted">Cập nhật cân & trả về kho</small>
+                                </div>
+                                <a href="{{ route('warehouse.surplus-entry') }}" class="stretched-link text-warning"><i
                                         class="fas fa-chevron-right"></i></a>
                             </div>
                         </div>
                     </div>
+
                     <div class="col-md-6 col-lg-3">
                         <div class="card h-100 shadow-sm border-2 hover-card">
                             <div class="card-body p-3 d-flex align-items-center">

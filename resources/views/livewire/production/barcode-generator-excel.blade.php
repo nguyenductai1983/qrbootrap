@@ -173,31 +173,89 @@
         </div>
     @endif
     <div class="card shadow-sm d-print-none">
-        {{-- Tách card-header và d-flex ra bằng 1 dấu khoảng trắng --}}
-        {{-- <div class="card-header d-flex justify-content-between align-items-center"> --}}
-        <div class="input-group">
-            <h6 class="mb-0 fw-bold form-control me-3">
-                <i class="fa-solid fa-clock-rotate-left me-2"></i>Lịch sử tạo tem
-            </h6>
+        <div class="card-header bg-light py-2">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <h6 class="mb-0 fw-bold">
+                    <i class="fa-solid fa-clock-rotate-left me-2 text-primary"></i>Lịch sử tạo tem
+                    @if(!empty($search) || !empty($searchDateFrom) || !empty($searchDateTo) || !empty($searchProduct))
+                        <span class="badge bg-warning text-dark ms-1">
+                            {{ $historyItems->total() }} kết quả
+                        </span>
+                    @endif
+                </h6>
 
-            {{-- Nút in lại chỉ hiện khi có item được chọn --}}
-            {{-- Dùng x-show của Alpine để tự động ẩn/hiện phía Client (Trình duyệt) mà không cần gọi Server --}}
-            <button x-show="$wire.selectedHistoryIds.length > 0" style="display: none; min-width: 160px;"
-                wire:click="reprintSelected" class="btn btn-sm btn-success shadow-sm form-control">
+                {{-- Nút in lại chỉ hiện khi có item được chọn --}}
+                <button x-show="$wire.selectedHistoryIds.length > 0" style="display: none;"
+                    wire:click="reprintSelected" class="btn btn-sm btn-success shadow-sm">
+                    <span wire:loading.remove wire:target="reprintSelected">
+                        <i class="fa-solid fa-print me-1"></i> In lại <span
+                            x-text="$wire.selectedHistoryIds.length"></span> tem
+                    </span>
+                    <span wire:loading wire:target="reprintSelected">
+                        <i class="fa-solid fa-circle-notch fa-spin me-1"></i> Đang nạp tem...
+                    </span>
+                </button>
+            </div>
 
-                {{-- Trạng thái bình thường --}}
-                <span wire:loading.remove wire:target="reprintSelected">
-                    <i class="fa-solid fa-print me-1"></i> In lại <span
-                        x-text="$wire.selectedHistoryIds.length"></span> tem
-                </span>
+            {{-- 🔍 THANH TÌM KIẾM TEM CŨ --}}
+            <div class="row g-2 mt-2">
+                {{-- Tìm theo mã barcode / đơn hàng / màu --}}
+                <div class="col-12 col-md-4">
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text bg-white">
+                            <i class="fa-solid fa-magnifying-glass text-primary"></i>
+                        </span>
+                        <input type="text"
+                            wire:model.live.debounce.400ms="search"
+                            class="form-control"
+                            placeholder="Tìm mã barcode, đơn hàng, màu..."
+                            id="search-history">
+                        @if(!empty($search))
+                            <button wire:click="$set('search', '')" class="btn btn-outline-secondary" type="button" title="Xóa">
+                                <i class="fa-solid fa-xmark"></i>
+                            </button>
+                        @endif
+                    </div>
+                </div>
 
-                {{-- Trạng thái đang tải (Quay vòng vòng) --}}
-                <span wire:loading wire:target="reprintSelected">
-                    <i class="fa-solid fa-circle-notch fa-spin me-1"></i> Đang nạp tem...
-                </span>
-            </button>
+                {{-- Lọc theo sản phẩm --}}
+                <div class="col-12 col-md-3">
+                    <select wire:model.live="searchProduct" class="form-select form-select-sm" id="search-product">
+                        <option value="">-- Tất cả sản phẩm --</option>
+                        @foreach ($availableProducts as $product)
+                            <option value="{{ $product->id }}">{{ $product->code }} - {{ $product->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                {{-- Lọc từ ngày --}}
+                <div class="col-6 col-md-2">
+                    <input type="date"
+                        wire:model.live="searchDateFrom"
+                        class="form-control form-control-sm"
+                        id="search-date-from"
+                        title="Từ ngày">
+                </div>
+
+                {{-- Lọc đến ngày --}}
+                <div class="col-6 col-md-2">
+                    <input type="date"
+                        wire:model.live="searchDateTo"
+                        class="form-control form-control-sm"
+                        id="search-date-to"
+                        title="Đến ngày">
+                </div>
+
+                {{-- Nút xóa tất cả bộ lọc --}}
+                @if(!empty($search) || !empty($searchDateFrom) || !empty($searchDateTo) || !empty($searchProduct))
+                <div class="col-12 col-md-1">
+                    <button wire:click="clearSearch" class="btn btn-sm btn-outline-danger w-100" title="Xóa tất cả bộ lọc">
+                        <i class="fa-solid fa-filter-circle-xmark me-1"></i> Xóa lọc
+                    </button>
+                </div>
+                @endif
+            </div>
         </div>
-        {{-- </div> --}}
 
         <div class="table-responsive">
             <table class="table table-hover table-sm mb-0 align-middle">

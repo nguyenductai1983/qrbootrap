@@ -150,6 +150,132 @@
             </div>
         </div>
     </div>
+
+    {{-- 2 CARD: LỊCH SỬ GẦN NHẤT --}}
+    <div class="row g-4 mb-4">
+
+        {{-- Card: Lịch sử Nhập Kho --}}
+        <div class="col-12 col-lg-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header py-3 d-flex justify-content-between align-items-center bg-white border-bottom">
+                    <h6 class="fw-bold mb-0">
+                        <i class="fa-solid fa-barcode text-success me-2"></i>
+                        Lịch sử Nhập Kho gần nhất
+                    </h6>
+                    <a href="{{ route('warehouse.scan-to-location') }}" class="btn btn-sm btn-outline-success">
+                        <i class="fa-solid fa-plus me-1"></i>Nhập kho
+                    </a>
+                </div>
+                <div class="card-body p-0" style="max-height: 400px; overflow-y: auto;">
+                    @if ($recentInbound && count($recentInbound) > 0)
+                        <table class="table table-sm table-hover align-middle mb-0">
+                            <thead class="table-light sticky-top" style="font-size: 0.78rem;">
+                                <tr>
+                                    <th class="ps-3 py-2">Mã Tem</th>
+                                    <th class="py-2">Vị trí</th>
+                                    <th class="py-2">Ghi chú</th>
+                                    <th class="py-2 text-end">Người</th>
+                                    <th class="pe-3 py-2 text-end">Giờ</th>
+                                </tr>
+                            </thead>
+                            <tbody style="font-size: 0.8rem;">
+                                @foreach ($recentInbound as $mv)
+                                    <tr>
+                                        <td class="ps-3 fw-bold font-monospace text-primary">
+                                            {{ optional($mv->item)->code ?? '-' }}
+                                        </td>
+                                        <td>
+                                            @if ($mv->toLocation)
+                                                <span class="badge bg-success">{{ $mv->toLocation->code }}</span>
+                                            @else
+                                                <span class="text-muted small">Tạm</span>
+                                            @endif
+                                        </td>
+                                        <td class="text-muted small text-truncate" style="max-width: 140px;">
+                                            {{ $mv->note ?? '-' }}
+                                        </td>
+                                        <td class="text-end text-muted small">
+                                            {{ optional($mv->user)->username ?? '-' }}
+                                        </td>
+                                        <td class="pe-3 text-end text-muted small text-nowrap">
+                                            {{ $mv->created_at->format('d/m H:i') }}
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    @else
+                        <div class="text-center text-muted py-5">
+                            <i class="fa-solid fa-inbox fa-2x mb-2 d-block text-light"></i>
+                            Chưa có dữ liệu nhập kho
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+
+        {{-- Card: Tái nhập Dư --}}
+        <div class="col-12 col-lg-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header py-3 d-flex justify-content-between align-items-center bg-white border-bottom">
+                    <h6 class="fw-bold mb-0">
+                        <i class="fa-solid fa-recycle text-warning me-2"></i>
+                        Lịch sử Tái nhập Dư gần nhất
+                    </h6>
+                    <a href="{{ route('warehouse.surplus-entry') }}" class="btn btn-sm btn-outline-warning">
+                        <i class="fa-solid fa-plus me-1"></i>Tái nhập
+                    </a>
+                </div>
+                <div class="card-body p-0" style="max-height: 400px; overflow-y: auto;">
+                    @if ($recentSurplus && count($recentSurplus) > 0)
+                        <table class="table table-sm table-hover align-middle mb-0">
+                            <thead class="table-light sticky-top" style="font-size: 0.78rem;">
+                                <tr>
+                                    <th class="ps-3 py-2">Mã Tem</th>
+                                    <th class="py-2">Cân</th>
+                                    <th class="py-2">Lý do</th>
+                                    <th class="py-2 text-end">Người</th>
+                                    <th class="pe-3 py-2 text-end">Giờ</th>
+                                </tr>
+                            </thead>
+                            <tbody style="font-size: 0.8rem;">
+                                @foreach ($recentSurplus as $mv)
+                                    <tr>
+                                        <td class="ps-3 fw-bold font-monospace text-warning">
+                                            {{ optional($mv->item)->code ?? '-' }}
+                                        </td>
+                                        <td class="text-success fw-bold">
+                                            @if ($mv->item && $mv->item->weight)
+                                                {{ number_format($mv->item->weight, 2) }}kg
+                                            @else
+                                                <span class="text-muted">-</span>
+                                            @endif
+                                        </td>
+                                        <td class="text-muted small text-truncate" style="max-width: 140px;">
+                                            {{ $mv->note ?? '-' }}
+                                        </td>
+                                        <td class="text-end text-muted small">
+                                            {{ optional($mv->user)->username ?? '-' }}
+                                        </td>
+                                        <td class="pe-3 text-end text-muted small text-nowrap">
+                                            {{ $mv->created_at->format('d/m H:i') }}
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    @else
+                        <div class="text-center text-muted py-5">
+                            <i class="fa-solid fa-recycle fa-2x mb-2 d-block text-light"></i>
+                            Chưa có dữ liệu tái nhập dư
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+
+    </div>
+
 </div>
 
 <style>

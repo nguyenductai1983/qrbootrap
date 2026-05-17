@@ -4,7 +4,9 @@ namespace App\Livewire\Warehouse;
 
 use Livewire\Component;
 use App\Models\Item;
+use App\Models\ItemMovement;
 use App\Enums\ItemStatus;
+use App\Enums\MovementAction;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Title;
 use Carbon\Carbon;
@@ -15,9 +17,13 @@ class WarehouseDashboard extends Component
     public $totalItems = 0;
     public $totalLength = 0;
     public $totalWeight = 0;
-    
+
     // Thống kê theo sản phẩm
     public $stockByProduct = [];
+
+    // Hoạt động gần nhất
+    public $recentInbound  = [];   // Nhập kho gần nhất
+    public $recentSurplus  = [];   // Tái nhập dư gần nhất
 
     // Chart
     public string $period = '30';
@@ -54,6 +60,20 @@ class WarehouseDashboard extends Component
             ->with('product') // Load thông tin sản phẩm
             ->groupBy('product_id')
             ->orderByDesc('total_items')
+            ->get();
+
+        // Hoạt động nhập kho gần nhất
+        $this->recentInbound = ItemMovement::with(['item', 'user', 'toLocation'])
+            ->where('action_type', MovementAction::IN_WAREHOUSE->value)
+            ->orderBy('created_at', 'desc')
+            ->limit(20)
+            ->get();
+
+        // Hoạt động tái nhập dư gần nhất
+        $this->recentSurplus = ItemMovement::with(['item', 'user'])
+            ->where('action_type', MovementAction::SURPLUS_ENTRY->value)
+            ->orderBy('created_at', 'desc')
+            ->limit(20)
             ->get();
 
         // --- Dữ liệu Chart ---

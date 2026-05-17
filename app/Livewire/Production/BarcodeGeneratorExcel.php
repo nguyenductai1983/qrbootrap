@@ -43,6 +43,39 @@ class BarcodeGeneratorExcel extends Component
     public $printColumns = 2;
     public $fontSize = 7;
     public $rowsPerPage = 2;
+
+    // 🔍 Tìm kiếm tem cũ
+    public $search = '';
+    public $searchDateFrom = '';
+    public $searchDateTo = '';
+    public $searchProduct = '';
+
+    // Reset pagination khi search thay đổi
+    public function updatedSearch()
+    {
+        $this->resetPage();
+    }
+    public function updatedSearchDateFrom()
+    {
+        $this->resetPage();
+    }
+    public function updatedSearchDateTo()
+    {
+        $this->resetPage();
+    }
+    public function updatedSearchProduct()
+    {
+        $this->resetPage();
+    }
+
+    public function clearSearch()
+    {
+        $this->search = '';
+        $this->searchDateFrom = '';
+        $this->searchDateTo = '';
+        $this->searchProduct = '';
+        $this->resetPage();
+    }
     public function mount()
     {
         /** @var \App\Models\User $user */
@@ -376,7 +409,33 @@ class BarcodeGeneratorExcel extends Component
 
     public function render()
     {
-        $historyItems = Item::orderBy('id', 'desc')->paginate(20);
+        $query = Item::with(['order', 'color', 'product'])
+            ->orderBy('id', 'desc');
+
+        // Lọc theo từ khóa tìm kiếm (mã barcode, mã đơn hàng, màu)
+        if (!empty($this->search)) {
+            $keyword = $this->search;
+            $query->where(function ($q) use ($keyword) {
+                $q->where('code', 'like', "%{$keyword}%")
+                  ->orWhereHas('order', fn($o) => $o->where('code', 'like', "%{$keyword}%"))
+                  ->orWhereHas('color', fn($c) => $c->where('code', 'like', "%{$keyword}%"));
+            });
+        }
+
+        // Lọc theo sản phẩm
+        if (!empty($this->searchProduct)) {
+            $query->whereHas('product', fn($p) => $p->where('id', $this->searchProduct));
+        }
+
+        // Lọc theo khoảng ngày tạo
+        if (!empty($this->searchDateFrom)) {
+            $query->whereDate('created_at', '>=', $this->searchDateFrom);
+        }
+        if (!empty($this->searchDateTo)) {
+            $query->whereDate('created_at', '<=', $this->searchDateTo);
+        }
+
+        $historyItems = $query->paginate(20);
         return view('livewire.production.barcode-generator-excel', [
             'historyItems' => $historyItems
         ]);
