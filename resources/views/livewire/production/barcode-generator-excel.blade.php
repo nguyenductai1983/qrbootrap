@@ -179,7 +179,7 @@
                     <i class="fa-solid fa-clock-rotate-left me-2 text-primary"></i>Lịch sử tạo tem
                     @if(!empty($search) || !empty($searchDateFrom) || !empty($searchDateTo) || !empty($searchProduct))
                         <span class="badge bg-warning text-dark ms-1">
-                            {{ $historyItems->total() }} kết quả
+                            <i class="fa-solid fa-filter fa-xs me-1"></i> Đang lọc
                         </span>
                     @endif
                 </h6>
@@ -298,8 +298,32 @@
                     @endforeach
                 </tbody>
             </table>
-            <div class="p-2">
-                {{ $historyItems->links() }}
+            <div class="d-flex align-items-center justify-content-between px-3 py-2 border-top bg-light">
+                <small class="text-muted">
+                    Trang <strong>{{ $historyItems->currentPage() }}</strong>
+                    &nbsp;·&nbsp; {{ $historyItems->count() }} tem
+                </small>
+                <div class="d-flex gap-2">
+                    @if ($historyItems->onFirstPage())
+                        <button class="btn btn-sm btn-outline-secondary" disabled>
+                            <i class="fa-solid fa-arrow-left me-1"></i> Trang trước
+                        </button>
+                    @else
+                        <button wire:click="previousPage" class="btn btn-sm btn-outline-primary">
+                            <i class="fa-solid fa-arrow-left me-1"></i> Trang trước
+                        </button>
+                    @endif
+
+                    @if ($historyItems->hasMorePages())
+                        <button wire:click="nextPage" class="btn btn-sm btn-outline-primary">
+                            Trang tiếp <i class="fa-solid fa-arrow-right ms-1"></i>
+                        </button>
+                    @else
+                        <button class="btn btn-sm btn-outline-secondary" disabled>
+                            Trang tiếp <i class="fa-solid fa-arrow-right ms-1"></i>
+                        </button>
+                    @endif
+                </div>
             </div>
         </div>
     </div>

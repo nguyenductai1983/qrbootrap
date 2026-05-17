@@ -409,8 +409,16 @@ class BarcodeGeneratorExcel extends Component
 
     public function render()
     {
+        // Chỉ hiển thị tem thuộc sản phẩm được phân cho bộ phận của user
+        $allowedProductIds = collect($this->availableProducts)->pluck('id')->all();
+
         $query = Item::with(['order', 'color', 'product'])
             ->orderBy('id', 'desc');
+
+        // Giới hạn theo sản phẩm của bộ phận user (luôn áp dụng)
+        if (!empty($allowedProductIds)) {
+            $query->whereIn('product_id', $allowedProductIds);
+        }
 
         // Lọc theo từ khóa tìm kiếm (mã barcode, mã đơn hàng, màu)
         if (!empty($this->search)) {
@@ -422,9 +430,9 @@ class BarcodeGeneratorExcel extends Component
             });
         }
 
-        // Lọc theo sản phẩm
+        // Lọc theo sản phẩm (trong danh sách được phép)
         if (!empty($this->searchProduct)) {
-            $query->whereHas('product', fn($p) => $p->where('id', $this->searchProduct));
+            $query->where('product_id', $this->searchProduct);
         }
 
         // Lọc theo khoảng ngày tạo
@@ -435,7 +443,7 @@ class BarcodeGeneratorExcel extends Component
             $query->whereDate('created_at', '<=', $this->searchDateTo);
         }
 
-        $historyItems = $query->paginate(20);
+        $historyItems = $query->simplePaginate(20);
         return view('livewire.production.barcode-generator-excel', [
             'historyItems' => $historyItems
         ]);
